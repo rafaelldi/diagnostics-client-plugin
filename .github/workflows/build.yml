@@ -49,6 +49,12 @@ jobs:
           java-version: 11
           cache: gradle
 
+      # Setup .NET environment for the next steps
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: '6.x'
+
       # Set environment variables
       - name: Export Properties
         id: properties
