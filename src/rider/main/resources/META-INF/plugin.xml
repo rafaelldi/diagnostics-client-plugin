@@ -8,12 +8,77 @@
     <depends>com.intellij.modules.rider</depends>
 
     <extensions defaultExtensionNs="com.intellij">
-        <applicationService serviceImplementation="com.github.rafaelldi.diagnosticsclientplugin.services.MyApplicationService"/>
-        <projectService serviceImplementation="com.github.rafaelldi.diagnosticsclientplugin.services.MyProjectService"/>
+        <toolWindow id="Diagnostics Client" anchor="bottom" icon="DiagnosticsClientIcons.ToolWindow"
+                    canCloseContents="true"
+                    factoryClass="com.github.rafaelldi.diagnosticsclientplugin.toolWindow.DiagnosticsToolWindowFactory"/>
+
+        <notificationGroup id="Diagnostics Client" displayType="BALLOON"/>
     </extensions>
 
-    <applicationListeners>
-        <listener class="com.github.rafaelldi.diagnosticsclientplugin.listeners.MyProjectManagerListener"
-                  topic="com.intellij.openapi.project.ProjectManagerListener"/>
-    </applicationListeners>
+    <actions>
+        <group id="DiagnosticsClient.ToolWindow.Explorer">
+            <action id="DiagnosticsClient.ToolWindow.Explorer.RefreshList"
+                    class="com.github.rafaelldi.diagnosticsclientplugin.actions.RefreshListAction"
+                    text="Refresh"
+                    description="Refresh process list"
+                    icon="AllIcons.Actions.Refresh">
+            </action>
+            <separator/>
+            <group id="DiagnosticsClient.ToolWindow.Explorer.Counters"
+                   icon="DiagnosticsClientIcons.Counters"
+                   text="Counters"
+                   popup="true">
+                <action id="DiagnosticsClient.ToolWindow.Explorer.StartCountersMonitoring"
+                        class="com.github.rafaelldi.diagnosticsclientplugin.actions.StartCountersMonitoringAction"
+                        text="Start Counters Monitoring"
+                        description="Monitor counters"
+                        icon="AllIcons.Actions.Show">
+                </action>
+                <action id="DiagnosticsClient.ToolWindow.Explorer.StopCountersMonitoring"
+                        class="com.github.rafaelldi.diagnosticsclientplugin.actions.StopCountersMonitoringAction"
+                        text="Stop Counters Monitoring"
+                        description="Stop counters monitoring"
+                        icon="AllIcons.Actions.Suspend">
+                </action>
+                <action id="DiagnosticsClient.ToolWindow.Explorer.StartCountersCollection"
+                        class="com.github.rafaelldi.diagnosticsclientplugin.actions.StartCountersCollectionAction"
+                        text="Start Counters Collection"
+                        description="Collect counters and export them to a file"
+                        icon="AllIcons.Actions.MenuSaveall">
+                </action>
+                <action id="DiagnosticsClient.ToolWindow.Explorer.StopCountersCollection"
+                        class="com.github.rafaelldi.diagnosticsclientplugin.actions.StopCountersCollectionAction"
+                        text="Stop Counters Collection"
+                        description="Stop counters collection"
+                        icon="AllIcons.Actions.Suspend">
+                </action>
+            </group>
+            <action id="DiagnosticsClient.ToolWindow.Explorer.CollectDump"
+                    class="com.github.rafaelldi.diagnosticsclientplugin.actions.CollectDumpAction"
+                    text="Memory Dump"
+                    description="Collect memory dump"
+                    icon="AllIcons.Actions.Dump">
+            </action>
+        </group>
+        <group id="DiagnosticsClient.ToolWindow.CountersSession">
+            <action id="DiagnosticsClient.ToolWindow.CountersSession.Start"
+                    class="com.github.rafaelldi.diagnosticsclientplugin.actions.StartCountersSessionAction"
+                    text="Start Counters Session"
+                    description="Start counters monitoring session"
+                    icon="AllIcons.Actions.Execute">
+            </action>
+            <action id="DiagnosticsClient.ToolWindow.CountersSession.StartWithTimer"
+                    class="com.github.rafaelldi.diagnosticsclientplugin.actions.StartCountersSessionWithTimerAction"
+                    text="Start Counters Session With Timer"
+                    description="Start counters monitoring session with timer"
+                    icon="AllIcons.Actions.Profile">
+            </action>
+            <action id="DiagnosticsClient.ToolWindow.CountersSession.Stop"
+                    class="com.github.rafaelldi.diagnosticsclientplugin.actions.StopCountersSessionAction"
+                    text="Stop Counters Session"
+                    description="Stop counters monitoring session"
+                    icon="AllIcons.Actions.Suspend">
+            </action>
+        </group>
+    </actions>
 </idea-plugin>
