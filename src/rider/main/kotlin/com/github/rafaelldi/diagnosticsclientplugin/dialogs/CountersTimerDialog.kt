@@ -12,10 +12,10 @@ class CountersTimerDialog(project: Project) : DialogWrapper(project) {
     init {
         init()
         title = "Monitor Counters"
-        setOKButtonText("Start")
+        setOKButtonText("Start With Timer")
     }
 
-    override fun createCenterPanel(): JComponent? = panel {
+    override fun createCenterPanel(): JComponent = panel {
         row("Duration (sec.):") {
             spinner(1..3600, 1)
                 .bindIntValue(model::duration)
