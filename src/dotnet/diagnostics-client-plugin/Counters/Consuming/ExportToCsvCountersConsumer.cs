@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Globalization;
+using System.IO;
 using System.Text;
 using System.Threading.Channels;
 using System.Threading.Tasks;
@@ -28,13 +29,13 @@ internal sealed class ExportToCsvCountersConsumer : AbstractFileCountersConsumer
         }
 
         _stringBuilder
-            .Append(counter.TimeStamp)
+            .Append(counter.TimeStamp.ToString(CultureInfo.CurrentCulture))
             .Append(",")
             .Append(counter.ProviderName)
             .Append(",")
             .Append(counter.Name)
             .Append(",")
-            .Append(counter.Value)
+            .Append(counter.Value.ToString(CultureInfo.InvariantCulture))
             .Append(",")
             .Append(counter.Type.ToValue());
 

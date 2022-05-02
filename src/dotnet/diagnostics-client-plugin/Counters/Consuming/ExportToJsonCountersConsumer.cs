@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Globalization;
+using System.IO;
 using System.Text;
 using System.Threading.Channels;
 using System.Threading.Tasks;
@@ -30,13 +31,13 @@ internal sealed class ExportToJsonCountersConsumer : AbstractFileCountersConsume
 
         _stringBuilder
             .Append(@"{""timestamp"":""")
-            .Append(counter.TimeStamp)
+            .Append(counter.TimeStamp.ToString(CultureInfo.CurrentCulture))
             .Append(@""",""provider"":""")
             .Append(counter.ProviderName)
             .Append(@""",""counter"":""")
             .Append(counter.Name)
             .Append(@""",""value"":""")
-            .Append(counter.Value)
+            .Append(counter.Value.ToString(CultureInfo.InvariantCulture))
             .Append(@""",""type"":""")
             .Append(counter.Type.ToValue())
             .Append(@"""}");
