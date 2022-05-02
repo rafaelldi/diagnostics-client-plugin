@@ -54,7 +54,7 @@ internal sealed class CountersProducer
         return tcs.Task;
     }
 
-    private static void Process(EventPipeEventSource source, TaskCompletionSource<bool> tcs, Lifetime lt)
+    private static void Process(EventPipeEventSource source, TaskCompletionSource<bool> tcs, in Lifetime lt)
     {
         Task.Run(() =>
         {

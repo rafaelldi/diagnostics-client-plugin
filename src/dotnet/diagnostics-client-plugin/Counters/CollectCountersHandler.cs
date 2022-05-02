@@ -45,7 +45,7 @@ internal sealed class CollectCountersHandler
         }
 
         var sessionLifetime = CreateSessionLifetime(sessionLifetimeDefinition, lifetime, command.Duration);
-        sessionLifetime.OnTermination(() => RemoveDefinition(command.Pid));
+        sessionLifetime.OnTermination(() => _definitions.TryRemove(command.Pid, out _));
 
         var session = new CountersCollectionSession(command.Pid, command.FilePath);
         _hostModel.CountersCollectionSessions.Add(sessionLifetime, command.Pid, session);
@@ -78,11 +78,6 @@ internal sealed class CollectCountersHandler
         return duration.HasValue
             ? sessionLifetime.CreateTerminatedAfter(TimeSpan.FromSeconds(duration.Value))
             : sessionLifetime;
-    }
-
-    private void RemoveDefinition(int pid)
-    {
-        _definitions.TryRemove(pid, out _);
     }
 
     private void Stop(StopCountersCollectionCommand command)
