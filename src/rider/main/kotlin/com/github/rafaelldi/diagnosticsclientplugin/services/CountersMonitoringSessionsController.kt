@@ -4,9 +4,12 @@ import com.github.rafaelldi.diagnosticsclientplugin.dialogs.MonitorCountersModel
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.StoppingType
 import com.github.rafaelldi.diagnosticsclientplugin.generated.*
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.DiagnosticsTabsManager
+import com.intellij.notification.Notification
+import com.intellij.notification.NotificationType
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
+import com.jetbrains.rd.framework.RdTaskResult
 import com.jetbrains.rd.platform.util.idea.ProtocolSubscribedProjectComponent
 import com.jetbrains.rd.util.lifetime.Lifetime
 import com.jetbrains.rider.projectView.solution
@@ -24,9 +27,18 @@ class CountersMonitoringSessionsController(project: Project) : ProtocolSubscribe
     fun startSession(pid: Int, model: MonitorCountersModel) {
         val duration = if (model.stoppingType == StoppingType.AfterPeriod) model.duration else null
         val command = MonitorCountersCommand(pid, model.interval, model.providers, duration)
-        hostModel.monitorCounters.start(projectComponentLifetime, command)
+        val monitorTask = hostModel.monitorCounters.start(projectComponentLifetime, command)
+        sessionStarted(pid)
+
+        monitorTask
             .result
-            .advise(projectComponentLifetime) { result -> result.unwrap() }
+            .advise(projectComponentLifetime) { result ->
+                if (result is RdTaskResult.Success) {
+                    sessionFinished(pid)
+                } else if (result is RdTaskResult.Fault) {
+                    sessionFaulted(pid, result.error.reasonMessage)
+                }
+            }
     }
 
     fun stopSession(pid: Int) {
@@ -35,9 +47,18 @@ class CountersMonitoringSessionsController(project: Project) : ProtocolSubscribe
 
     fun startExistingSession(pid: Int, duration: Int?) {
         val session = hostModel.countersMonitoringSessions[pid] ?: return
-        session.monitor.start(projectComponentLifetime, duration)
+        val monitorTask = session.monitor.start(projectComponentLifetime, duration)
+        sessionStarted(pid)
+
+        monitorTask
             .result
-            .advise(projectComponentLifetime) { result -> result.unwrap() }
+            .advise(projectComponentLifetime) { result ->
+                if (result is RdTaskResult.Success) {
+                    sessionFinished(pid)
+                } else if (result is RdTaskResult.Fault) {
+                    sessionFaulted(pid, result.error.reasonMessage)
+                }
+            }
     }
 
     fun stopExistingSession(pid: Int) {
@@ -48,4 +69,28 @@ class CountersMonitoringSessionsController(project: Project) : ProtocolSubscribe
         val tabsManager = project.service<DiagnosticsTabsManager>()
         tabsManager.createCountersTab(lt, session)
     }
+
+    private fun sessionStarted(pid: Int) = Notification(
+        "Diagnostics Client",
+        "Counters monitoring started",
+        "Session for process $pid started",
+        NotificationType.INFORMATION
+    )
+        .notify(project)
+
+    private fun sessionFinished(pid: Int) = Notification(
+        "Diagnostics Client",
+        "Counters monitoring finished",
+        "Session for process $pid finished",
+        NotificationType.INFORMATION
+    )
+        .notify(project)
+
+    private fun sessionFaulted(pid: Int, message: String) = Notification(
+        "Diagnostics Client",
+        "Counters monitoring for $pid faulted",
+        message,
+        NotificationType.ERROR
+    )
+        .notify(project)
 }

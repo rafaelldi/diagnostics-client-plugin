@@ -128,7 +128,7 @@ namespace DiagnosticsClientPlugin.Generated
     
     
     
-    protected override long SerializationHash => 8845039096507152144L;
+    protected override long SerializationHash => 1120346281893133712L;
     
     protected override Action<ISerializers> Register => RegisterDeclaredTypesSerializers;
     public static void RegisterDeclaredTypesSerializers(ISerializers serializers)
@@ -179,7 +179,7 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:71</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:69</p>
   /// </summary>
   public sealed class CollectCountersCommand : IPrintable, IEquatable<CollectCountersCommand>
   {
@@ -307,7 +307,7 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:55</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:52</p>
   /// </summary>
   public sealed class CollectDumpCommand : IPrintable, IEquatable<CollectDumpCommand>
   {
@@ -425,7 +425,7 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:41</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:38</p>
   /// </summary>
   public sealed class Counter : IPrintable, IEquatable<Counter>
   {
@@ -611,7 +611,7 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:74</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:72</p>
   /// </summary>
   public enum CountersFileFormat {
     Csv,
@@ -631,16 +631,12 @@ namespace DiagnosticsClientPlugin.Generated
     [NotNull] public IViewableMap<string, Counter> Counters => _Counters;
     [NotNull] public IRdEndpoint<int?, Unit> Monitor => _Monitor;
     [NotNull] public ISignal<Unit> Stop => _Stop;
-    [NotNull] public void Started() => _Started.Fire();
-    [NotNull] public void Stopped() => _Stopped.Fire();
     
     //private fields
     [NotNull] private readonly RdProperty<bool> _Active;
     [NotNull] private readonly RdMap<string, Counter> _Counters;
     [NotNull] private readonly RdCall<int?, Unit> _Monitor;
     [NotNull] private readonly RdSignal<Unit> _Stop;
-    [NotNull] private readonly RdSignal<Unit> _Started;
-    [NotNull] private readonly RdSignal<Unit> _Stopped;
     
     //primary constructor
     private CountersMonitoringSession(
@@ -648,39 +644,29 @@ namespace DiagnosticsClientPlugin.Generated
       [NotNull] RdProperty<bool> active,
       [NotNull] RdMap<string, Counter> counters,
       [NotNull] RdCall<int?, Unit> monitor,
-      [NotNull] RdSignal<Unit> stop,
-      [NotNull] RdSignal<Unit> started,
-      [NotNull] RdSignal<Unit> stopped
+      [NotNull] RdSignal<Unit> stop
     )
     {
       if (active == null) throw new ArgumentNullException("active");
       if (counters == null) throw new ArgumentNullException("counters");
       if (monitor == null) throw new ArgumentNullException("monitor");
       if (stop == null) throw new ArgumentNullException("stop");
-      if (started == null) throw new ArgumentNullException("started");
-      if (stopped == null) throw new ArgumentNullException("stopped");
       
       Pid = pid;
       _Active = active;
       _Counters = counters;
       _Monitor = monitor;
       _Stop = stop;
-      _Started = started;
-      _Stopped = stopped;
       _Active.OptimizeNested = true;
       _Counters.OptimizeNested = true;
       _Active.Async = true;
       _Counters.Async = true;
       _Stop.Async = true;
-      _Started.Async = true;
-      _Stopped.Async = true;
       _Monitor.ValueCanBeNull = true;
       BindableChildren.Add(new KeyValuePair<string, object>("active", _Active));
       BindableChildren.Add(new KeyValuePair<string, object>("counters", _Counters));
       BindableChildren.Add(new KeyValuePair<string, object>("monitor", _Monitor));
       BindableChildren.Add(new KeyValuePair<string, object>("stop", _Stop));
-      BindableChildren.Add(new KeyValuePair<string, object>("started", _Started));
-      BindableChildren.Add(new KeyValuePair<string, object>("stopped", _Stopped));
     }
     //secondary constructor
     public CountersMonitoringSession (
@@ -690,8 +676,6 @@ namespace DiagnosticsClientPlugin.Generated
       new RdProperty<bool>(JetBrains.Rd.Impl.Serializers.ReadBool, JetBrains.Rd.Impl.Serializers.WriteBool),
       new RdMap<string, Counter>(JetBrains.Rd.Impl.Serializers.ReadString, JetBrains.Rd.Impl.Serializers.WriteString, Counter.Read, Counter.Write),
       new RdCall<int?, Unit>(ReadIntNullable, WriteIntNullable, JetBrains.Rd.Impl.Serializers.ReadVoid, JetBrains.Rd.Impl.Serializers.WriteVoid),
-      new RdSignal<Unit>(JetBrains.Rd.Impl.Serializers.ReadVoid, JetBrains.Rd.Impl.Serializers.WriteVoid),
-      new RdSignal<Unit>(JetBrains.Rd.Impl.Serializers.ReadVoid, JetBrains.Rd.Impl.Serializers.WriteVoid),
       new RdSignal<Unit>(JetBrains.Rd.Impl.Serializers.ReadVoid, JetBrains.Rd.Impl.Serializers.WriteVoid)
     ) {}
     //deconstruct trait
@@ -705,9 +689,7 @@ namespace DiagnosticsClientPlugin.Generated
       var counters = RdMap<string, Counter>.Read(ctx, reader, JetBrains.Rd.Impl.Serializers.ReadString, JetBrains.Rd.Impl.Serializers.WriteString, Counter.Read, Counter.Write);
       var monitor = RdCall<int?, Unit>.Read(ctx, reader, ReadIntNullable, WriteIntNullable, JetBrains.Rd.Impl.Serializers.ReadVoid, JetBrains.Rd.Impl.Serializers.WriteVoid);
       var stop = RdSignal<Unit>.Read(ctx, reader, JetBrains.Rd.Impl.Serializers.ReadVoid, JetBrains.Rd.Impl.Serializers.WriteVoid);
-      var started = RdSignal<Unit>.Read(ctx, reader, JetBrains.Rd.Impl.Serializers.ReadVoid, JetBrains.Rd.Impl.Serializers.WriteVoid);
-      var stopped = RdSignal<Unit>.Read(ctx, reader, JetBrains.Rd.Impl.Serializers.ReadVoid, JetBrains.Rd.Impl.Serializers.WriteVoid);
-      var _result = new CountersMonitoringSession(pid, active, counters, monitor, stop, started, stopped).WithId(_id);
+      var _result = new CountersMonitoringSession(pid, active, counters, monitor, stop).WithId(_id);
       return _result;
     };
     public static CtxReadDelegate<int?> ReadIntNullable = JetBrains.Rd.Impl.Serializers.ReadInt.NullableStruct();
@@ -720,8 +702,6 @@ namespace DiagnosticsClientPlugin.Generated
       RdMap<string, Counter>.Write(ctx, writer, value._Counters);
       RdCall<int?, Unit>.Write(ctx, writer, value._Monitor);
       RdSignal<Unit>.Write(ctx, writer, value._Stop);
-      RdSignal<Unit>.Write(ctx, writer, value._Started);
-      RdSignal<Unit>.Write(ctx, writer, value._Stopped);
     };
     public static  CtxWriteDelegate<int?> WriteIntNullable = JetBrains.Rd.Impl.Serializers.WriteInt.NullableStruct();
     
@@ -741,8 +721,6 @@ namespace DiagnosticsClientPlugin.Generated
         printer.Print("counters = "); _Counters.PrintEx(printer); printer.Println();
         printer.Print("monitor = "); _Monitor.PrintEx(printer); printer.Println();
         printer.Print("stop = "); _Stop.PrintEx(printer); printer.Println();
-        printer.Print("started = "); _Started.PrintEx(printer); printer.Println();
-        printer.Print("stopped = "); _Stopped.PrintEx(printer); printer.Println();
       }
       printer.Print(")");
     }
@@ -757,7 +735,7 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:66</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:63</p>
   /// </summary>
   public sealed class DumpCollectionResult : IPrintable, IEquatable<DumpCollectionResult>
   {
@@ -842,7 +820,7 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:57</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:54</p>
   /// </summary>
   public enum DumpType {
     Full,
@@ -853,7 +831,7 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:89</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:88</p>
   /// </summary>
   public sealed class MonitorCountersCommand : IPrintable, IEquatable<MonitorCountersCommand>
   {
@@ -1169,7 +1147,7 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:100</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:99</p>
   /// </summary>
   public sealed class RemoveCountersMonitoringSessionCommand : IPrintable, IEquatable<RemoveCountersMonitoringSessionCommand>
   {
@@ -1252,7 +1230,7 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:84</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:82</p>
   /// </summary>
   public sealed class StopCountersCollectionCommand : IPrintable, IEquatable<StopCountersCollectionCommand>
   {
@@ -1335,7 +1313,7 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:97</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:96</p>
   /// </summary>
   public sealed class StopCountersMonitoringCommand : IPrintable, IEquatable<StopCountersMonitoringCommand>
   {

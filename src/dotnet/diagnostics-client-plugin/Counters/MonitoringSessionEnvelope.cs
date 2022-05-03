@@ -53,11 +53,6 @@ internal sealed class MonitoringSessionEnvelope
             () => Session.Active.Value = false
         );
 
-        sessionLifetime.Bracket(
-            () => Session.Started(),
-            () => Session.Stopped()
-        );
-
         var consumerTask = _consumer.ConsumeAsync(sessionLifetime);
         var producerTask = _producer.Produce(sessionLifetime);
 

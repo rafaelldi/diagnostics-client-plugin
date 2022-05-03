@@ -33,9 +33,6 @@ object DiagnosticsHostModel : Ext(SolutionModel.Solution) {
 
         call("monitor", int.nullable, void)
         source("stop", void).async
-
-        sink("started", void).async
-        sink("stopped", void).async
     }
 
     private val Counter = structdef {

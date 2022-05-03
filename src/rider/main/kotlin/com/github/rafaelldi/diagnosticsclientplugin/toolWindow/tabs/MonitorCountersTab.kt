@@ -7,8 +7,6 @@ import com.github.rafaelldi.diagnosticsclientplugin.generated.diagnosticsHostMod
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.DiagnosticsClientDataKeys
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.DiagnosticsTabsManager
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.components.CounterTableComponent
-import com.intellij.notification.Notification
-import com.intellij.notification.NotificationType
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ActionGroup
 import com.intellij.openapi.actionSystem.ActionManager
@@ -40,9 +38,8 @@ class MonitorCountersTab(
         setContent(panel)
         initActionToolbar()
 
-        session.counters.advise(lt) { handle(it) }
-        session.started.advise(lt) { sessionStarted() }
-        session.stopped.advise(lt) { sessionFinished() }
+        session.counters.advise(lt) { countersCollectionChanged(it) }
+        session.active.advise(lt) { statusChanged(it) }
     }
 
     fun getSessionPid() = session.pid
@@ -59,7 +56,7 @@ class MonitorCountersTab(
         toolbar = actionToolbar.component
     }
 
-    private fun handle(event: IViewableMap.Event<String, Counter>) {
+    private fun countersCollectionChanged(event: IViewableMap.Event<String, Counter>) {
         when (event) {
             is IViewableMap.Event.Add -> table.add(event.key, event.newValue)
             is IViewableMap.Event.Update -> table.update(event.key, event.newValue)
@@ -67,26 +64,12 @@ class MonitorCountersTab(
         }
     }
 
-    private fun sessionStarted() {
-        tabsManager.activateCountersSessionTab(session.pid)
-        Notification(
-            "Diagnostics Client",
-            "Counters monitoring started",
-            "Session for process ${session.pid} started",
-            NotificationType.INFORMATION
-        )
-            .notify(project)
-    }
-
-    private fun sessionFinished() {
-        tabsManager.deactivateCountersSessionTab(session.pid)
-        Notification(
-            "Diagnostics Client",
-            "Counters monitoring finished",
-            "Session for process ${session.pid} finished",
-            NotificationType.INFORMATION
-        )
-            .notify(project)
+    private fun statusChanged(isActive: Boolean) {
+        if (isActive) {
+            tabsManager.activateCountersSessionTab(session.pid)
+        } else {
+            tabsManager.deactivateCountersSessionTab(session.pid)
+        }
     }
 
     override fun getData(dataId: String): Any? {
