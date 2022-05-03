@@ -1,8 +1,6 @@
 ﻿using System.Globalization;
-using System.IO;
 using System.Text;
 using System.Threading.Channels;
-using System.Threading.Tasks;
 using DiagnosticsClientPlugin.Counters.Common;
 
 namespace DiagnosticsClientPlugin.Counters.Consuming;
@@ -11,17 +9,14 @@ internal sealed class ExportToCsvCountersConsumer : AbstractFileCountersConsumer
 {
     private readonly StringBuilder _stringBuilder = new(9);
 
-    public ExportToCsvCountersConsumer(string filePath, ChannelReader<Counter> reader)
+    public ExportToCsvCountersConsumer(string filePath, ChannelReader<ValueCounter> reader)
         : base(filePath, reader)
     {
     }
 
-    protected override async Task InitializeFileAsync(StreamWriter sw)
-    {
-        await sw.WriteLineAsync("Timestamp,Provider,Counter,Value,Type");
-    }
+    protected override string GetFileHeader() => "Timestamp,Provider,Counter,Value,Type";
 
-    protected override async Task HandleCounterAsync(StreamWriter sw, Counter counter)
+    protected override string GetCounterString(in ValueCounter counter)
     {
         if (_stringBuilder.Length > 0)
         {
@@ -39,11 +34,8 @@ internal sealed class ExportToCsvCountersConsumer : AbstractFileCountersConsumer
             .Append(",")
             .Append(counter.Type.ToValue());
 
-        await sw.WriteLineAsync(_stringBuilder.ToString());
+        return _stringBuilder.ToString();
     }
 
-    protected override Task FinalizeFileAsync(StreamWriter sw)
-    {
-        return Task.CompletedTask;
-    }
+    protected override string? GetFileFooter() => null;
 }

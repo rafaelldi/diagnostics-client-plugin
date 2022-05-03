@@ -1,8 +1,6 @@
 ﻿using System.Globalization;
-using System.IO;
 using System.Text;
 using System.Threading.Channels;
-using System.Threading.Tasks;
 using DiagnosticsClientPlugin.Counters.Common;
 
 namespace DiagnosticsClientPlugin.Counters.Consuming;
@@ -11,17 +9,14 @@ internal sealed class ExportToJsonCountersConsumer : AbstractFileCountersConsume
 {
     private readonly StringBuilder _stringBuilder = new(11);
 
-    internal ExportToJsonCountersConsumer(string filePath, ChannelReader<Counter> reader)
+    internal ExportToJsonCountersConsumer(string filePath, ChannelReader<ValueCounter> reader)
         : base(filePath, reader)
     {
     }
 
-    protected override async Task InitializeFileAsync(StreamWriter sw)
-    {
-        await sw.WriteAsync(@"{""Events"":[");
-    }
+    protected override string GetFileHeader() => @"{""Events"":[";
 
-    protected override async Task HandleCounterAsync(StreamWriter sw, Counter counter)
+    protected override string GetCounterString(in ValueCounter counter)
     {
         if (_stringBuilder.Length > 0)
         {
@@ -42,11 +37,8 @@ internal sealed class ExportToJsonCountersConsumer : AbstractFileCountersConsume
             .Append(counter.Type.ToValue())
             .Append(@"""}");
 
-        await sw.WriteAsync(_stringBuilder.ToString());
+        return _stringBuilder.ToString();
     }
 
-    protected override async Task FinalizeFileAsync(StreamWriter sw)
-    {
-        await sw.WriteAsync("]}");
-    }
+    protected override string GetFileFooter() => "]}";
 }

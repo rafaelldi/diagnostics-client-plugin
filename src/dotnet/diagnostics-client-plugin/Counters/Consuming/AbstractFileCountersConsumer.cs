@@ -9,10 +9,10 @@ namespace DiagnosticsClientPlugin.Counters.Consuming;
 
 internal abstract class AbstractFileCountersConsumer
 {
-    private readonly ChannelReader<Counter> _reader;
+    private readonly ChannelReader<ValueCounter> _reader;
     private readonly FileInfo _file;
 
-    protected AbstractFileCountersConsumer(string filePath, ChannelReader<Counter> reader)
+    protected AbstractFileCountersConsumer(string filePath, ChannelReader<ValueCounter> reader)
     {
         _file = CreateFile(filePath);
         _reader = reader;
@@ -40,7 +40,11 @@ internal abstract class AbstractFileCountersConsumer
 
         using var streamWriter = _file.AppendText();
 
-        await InitializeFileAsync(streamWriter);
+        var header = GetFileHeader();
+        if (header != null)
+        {
+            await streamWriter.WriteLineAsync(header);
+        }
 
         try
         {
@@ -48,7 +52,8 @@ internal abstract class AbstractFileCountersConsumer
             {
                 if (_reader.TryRead(out var counter))
                 {
-                    await HandleCounterAsync(streamWriter, counter);
+                    var counterString = GetCounterString(in counter);
+                    await streamWriter.WriteLineAsync(counterString);
                 }
             }
         }
@@ -57,12 +62,16 @@ internal abstract class AbstractFileCountersConsumer
             //do nothing
         }
 
-        await FinalizeFileAsync(streamWriter);
+        var footer = GetFileFooter();
+        if (footer != null)
+        {
+            await streamWriter.WriteLineAsync(footer);
+        }
     }
 
-    protected abstract Task InitializeFileAsync(StreamWriter sw);
+    protected abstract string? GetFileHeader();
 
-    protected abstract Task HandleCounterAsync(StreamWriter sw, Counter counter);
+    protected abstract string GetCounterString(in ValueCounter counter);
 
-    protected abstract Task FinalizeFileAsync(StreamWriter sw);
+    protected abstract string? GetFileFooter();
 }

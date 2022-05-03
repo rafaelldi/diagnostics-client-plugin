@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Threading.Channels;
 using System.Threading.Tasks;
+using DiagnosticsClientPlugin.Counters.Common;
 using DiagnosticsClientPlugin.Counters.Consuming;
 using DiagnosticsClientPlugin.Counters.Producing;
 using DiagnosticsClientPlugin.Generated;
 using JetBrains.Core;
 using JetBrains.Lifetimes;
 using JetBrains.Rd.Tasks;
-using Counter = DiagnosticsClientPlugin.Counters.Common.Counter;
 
 namespace DiagnosticsClientPlugin.Counters.Monitoring;
 
@@ -22,7 +22,7 @@ internal sealed class MonitoringSessionEnvelope
         Session = new CountersMonitoringSession(pid);
         _sessionLifetimes = new SequentialLifetimes(lifetime);
 
-        var channel = Channel.CreateBounded<Counter>(new BoundedChannelOptions(100)
+        var channel = Channel.CreateBounded<ValueCounter>(new BoundedChannelOptions(100)
         {
             SingleReader = true,
             SingleWriter = true,

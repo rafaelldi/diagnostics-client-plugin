@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Threading.Channels;
 using System.Threading.Tasks;
+using DiagnosticsClientPlugin.Counters.Common;
 using DiagnosticsClientPlugin.Counters.Consuming;
 using DiagnosticsClientPlugin.Counters.Producing;
 using DiagnosticsClientPlugin.Generated;
@@ -11,7 +12,6 @@ using JetBrains.Lifetimes;
 using JetBrains.ProjectModel;
 using JetBrains.Rd.Tasks;
 using JetBrains.RdBackend.Common.Features;
-using Counter = DiagnosticsClientPlugin.Counters.Common.Counter;
 
 namespace DiagnosticsClientPlugin.Counters.Collection;
 
@@ -50,7 +50,7 @@ internal sealed class CollectCountersHandler
         var session = new CountersCollectionSession(command.Pid, command.FilePath);
         _hostModel.CountersCollectionSessions.Add(sessionLifetime, command.Pid, session);
 
-        var channel = Channel.CreateBounded<Counter>(new BoundedChannelOptions(100)
+        var channel = Channel.CreateBounded<ValueCounter>(new BoundedChannelOptions(100)
         {
             SingleReader = true,
             SingleWriter = true,
@@ -90,12 +90,12 @@ internal sealed class CollectCountersHandler
 
     private AbstractFileCountersConsumer CreateConsumer(
         CollectCountersCommand command,
-        Channel<Counter> channel) =>
+        Channel<ValueCounter> channel) =>
         CountersConsumerFactory.Create(command.FilePath, command.Format, channel.Reader);
 
     private CountersProducer CreateProducer(
         CollectCountersCommand command,
-        Channel<Counter> channel,
+        Channel<ValueCounter> channel,
         in Lifetime lt)
     {
         var providers = new CounterProviderCollection(command.Providers);

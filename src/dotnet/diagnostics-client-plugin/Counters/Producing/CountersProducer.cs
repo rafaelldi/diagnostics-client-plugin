@@ -14,13 +14,13 @@ internal sealed class CountersProducer
 {
     private readonly DiagnosticsClient _client;
     private readonly CountersProducerConfiguration _configuration;
-    private readonly ChannelWriter<Counter> _writer;
+    private readonly ChannelWriter<ValueCounter> _writer;
     private readonly Lifetime _lt;
 
     internal CountersProducer(
         int pid,
         CountersProducerConfiguration configuration,
-        ChannelWriter<Counter> writer,
+        ChannelWriter<ValueCounter> writer,
         Lifetime lt)
     {
         _client = new DiagnosticsClient(pid);
@@ -113,7 +113,7 @@ internal sealed class CountersProducer
         }
     }
 
-    private Counter Map(string providerName, string name, DateTime timeStamp, IDictionary<string, object> payloadFields)
+    private ValueCounter Map(string providerName, string name, DateTime timeStamp, IDictionary<string, object> payloadFields)
     {
         var displayName = payloadFields["DisplayName"].ToString();
         displayName = string.IsNullOrEmpty(displayName) ? name : displayName;
@@ -125,7 +125,7 @@ internal sealed class CountersProducer
             var value = (double)payloadFields["Increment"];
             displayUnits = string.IsNullOrEmpty(displayUnits) ? "Count" : displayUnits;
             var counterName = $"{displayName} ({displayUnits} / {_configuration.RefreshInterval} sec)";
-            return new Counter(
+            return new ValueCounter(
                 timeStamp,
                 counterName,
                 providerName,
@@ -136,7 +136,7 @@ internal sealed class CountersProducer
         {
             var value = (double)payloadFields["Mean"];
             var counterName = string.IsNullOrEmpty(displayUnits) ? displayName : $"{displayName} ({displayUnits})";
-            return new Counter(
+            return new ValueCounter(
                 timeStamp,
                 counterName,
                 providerName,

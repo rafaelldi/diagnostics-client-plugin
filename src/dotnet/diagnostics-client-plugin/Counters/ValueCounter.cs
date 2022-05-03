@@ -2,7 +2,7 @@
 
 namespace DiagnosticsClientPlugin.Counters.Common;
 
-internal record Counter(
+internal readonly record struct ValueCounter(
     DateTime TimeStamp,
     string Name,
     string ProviderName,
