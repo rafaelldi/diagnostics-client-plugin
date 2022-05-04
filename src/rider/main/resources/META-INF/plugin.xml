@@ -29,25 +29,25 @@
                    text="Counters"
                    popup="true">
                 <action id="DiagnosticsClient.ToolWindow.Explorer.StartCountersMonitoring"
-                        class="com.github.rafaelldi.diagnosticsclientplugin.actions.StartCountersMonitoringAction"
+                        class="com.github.rafaelldi.diagnosticsclientplugin.actions.StartMonitoringCountersAction"
                         text="Start Counters Monitoring"
                         description="Monitor counters"
                         icon="AllIcons.Actions.Show">
                 </action>
                 <action id="DiagnosticsClient.ToolWindow.Explorer.StopCountersMonitoring"
-                        class="com.github.rafaelldi.diagnosticsclientplugin.actions.StopCountersMonitoringAction"
+                        class="com.github.rafaelldi.diagnosticsclientplugin.actions.StopMonitoringCountersAction"
                         text="Stop Counters Monitoring"
                         description="Stop counters monitoring"
                         icon="AllIcons.Actions.Suspend">
                 </action>
                 <action id="DiagnosticsClient.ToolWindow.Explorer.StartCountersCollection"
-                        class="com.github.rafaelldi.diagnosticsclientplugin.actions.StartCountersCollectionAction"
+                        class="com.github.rafaelldi.diagnosticsclientplugin.actions.StartCollectingCountersAction"
                         text="Start Counters Collection"
                         description="Collect counters and export them to a file"
                         icon="AllIcons.Actions.MenuSaveall">
                 </action>
                 <action id="DiagnosticsClient.ToolWindow.Explorer.StopCountersCollection"
-                        class="com.github.rafaelldi.diagnosticsclientplugin.actions.StopCountersCollectionAction"
+                        class="com.github.rafaelldi.diagnosticsclientplugin.actions.StopCollectingCountersAction"
                         text="Stop Counters Collection"
                         description="Stop counters collection"
                         icon="AllIcons.Actions.Suspend">
@@ -62,19 +62,19 @@
         </group>
         <group id="DiagnosticsClient.ToolWindow.CountersSession">
             <action id="DiagnosticsClient.ToolWindow.CountersSession.Start"
-                    class="com.github.rafaelldi.diagnosticsclientplugin.actions.StartCountersSessionAction"
+                    class="com.github.rafaelldi.diagnosticsclientplugin.actions.StartCounterSessionAction"
                     text="Start Counters Session"
                     description="Start counters monitoring session"
                     icon="AllIcons.Actions.Execute">
             </action>
             <action id="DiagnosticsClient.ToolWindow.CountersSession.StartWithTimer"
-                    class="com.github.rafaelldi.diagnosticsclientplugin.actions.StartCountersSessionWithTimerAction"
+                    class="com.github.rafaelldi.diagnosticsclientplugin.actions.StartCounterSessionWithTimerAction"
                     text="Start Counters Session With Timer"
                     description="Start counters monitoring session with timer"
                     icon="AllIcons.Actions.Profile">
             </action>
             <action id="DiagnosticsClient.ToolWindow.CountersSession.Stop"
-                    class="com.github.rafaelldi.diagnosticsclientplugin.actions.StopCountersSessionAction"
+                    class="com.github.rafaelldi.diagnosticsclientplugin.actions.StopCounterSessionAction"
                     text="Stop Counters Session"
                     description="Stop counters monitoring session"
                     icon="AllIcons.Actions.Suspend">

@@ -6,7 +6,7 @@ import com.intellij.ui.dsl.builder.bindIntValue
 import com.intellij.ui.dsl.builder.panel
 import javax.swing.JComponent
 
-class CountersTimerDialog(project: Project) : DialogWrapper(project) {
+class CounterTimerDialog(project: Project) : DialogWrapper(project) {
     private val model: CountersTimerModel = CountersTimerModel(30)
 
     init {

@@ -15,7 +15,7 @@ import com.jetbrains.rider.projectView.solution
 import com.jetbrains.rider.util.idea.runUnderProgress
 
 @Service
-class MemoryDumpCollectionController(project: Project) : ProtocolSubscribedProjectComponent(project) {
+class DumpCollectionController(project: Project) : ProtocolSubscribedProjectComponent(project) {
     private val hostModel: DiagnosticsHostModel = project.solution.diagnosticsHostModel
 
     fun collectDump(pid: Int, model: CollectDumpModel) {

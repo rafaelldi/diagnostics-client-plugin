@@ -2,7 +2,7 @@ package com.github.rafaelldi.diagnosticsclientplugin.actions
 
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.CollectDumpDialog
 import com.github.rafaelldi.diagnosticsclientplugin.generated.diagnosticsHostModel
-import com.github.rafaelldi.diagnosticsclientplugin.services.MemoryDumpCollectionController
+import com.github.rafaelldi.diagnosticsclientplugin.services.DumpCollectionController
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.components.service
@@ -15,7 +15,7 @@ class CollectDumpAction : AnAction() {
         val dialog = CollectDumpDialog(project)
         if (dialog.showAndGet()) {
             val model = dialog.getModel()
-            val controller = project.service<MemoryDumpCollectionController>()
+            val controller = project.service<DumpCollectionController>()
             controller.collectDump(pid, model)
         }
     }
