@@ -26,8 +26,6 @@ internal sealed class MonitorCountersHandler
         _hostModel = solution.GetProtocolSolution().GetDiagnosticsHostModel();
 
         _hostModel.MonitorCounters.Set(async (lt, command) => await Monitor(command, lt));
-        _hostModel.StopCountersMonitoring.Advise(lifetime, it => Stop(it));
-        _hostModel.RemoveCountersMonitoringSession.Advise(lifetime, it => Remove(it));
     }
 
     private async Task<Unit> Monitor(MonitorCountersCommand command, Lifetime lifetime)
@@ -55,17 +53,9 @@ internal sealed class MonitorCountersHandler
         return Unit.Instance;
     }
 
-    private void Stop(StopCountersMonitoringCommand command)
+    private void Close(int pid)
     {
-        if (_sessions.TryGetValue(command.Pid, out var session))
-        {
-            session.Envelope.Stop();
-        }
-    }
-
-    private void Remove(RemoveCountersMonitoringSessionCommand command)
-    {
-        if (_sessions.TryRemove(command.Pid, out var session))
+        if (_sessions.TryRemove(pid, out var session))
         {
             session.Definition.Terminate();
         }

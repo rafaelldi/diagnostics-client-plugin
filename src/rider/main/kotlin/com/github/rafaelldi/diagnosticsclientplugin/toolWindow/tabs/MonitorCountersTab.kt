@@ -2,8 +2,6 @@ package com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs
 
 import com.github.rafaelldi.diagnosticsclientplugin.generated.Counter
 import com.github.rafaelldi.diagnosticsclientplugin.generated.CountersMonitoringSession
-import com.github.rafaelldi.diagnosticsclientplugin.generated.RemoveCountersMonitoringSessionCommand
-import com.github.rafaelldi.diagnosticsclientplugin.generated.diagnosticsHostModel
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.DiagnosticsClientDataKeys
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.DiagnosticsTabsManager
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.components.CounterTableComponent
@@ -15,7 +13,6 @@ import com.intellij.openapi.ui.SimpleToolWindowPanel
 import com.intellij.ui.components.JBScrollPane
 import com.jetbrains.rd.util.lifetime.Lifetime
 import com.jetbrains.rd.util.reactive.IViewableMap
-import com.jetbrains.rider.projectView.solution
 import java.awt.BorderLayout
 import javax.swing.JPanel
 
@@ -78,8 +75,6 @@ class MonitorCountersTab(
     }
 
     override fun dispose() {
-        project.solution.diagnosticsHostModel.removeCountersMonitoringSession.fire(
-            RemoveCountersMonitoringSessionCommand(session.pid)
-        )
+        session.close.fire(Unit)
     }
 }

@@ -23,10 +23,7 @@ class DiagnosticsHostModel private constructor(
     private val _countersMonitoringSessions: RdMap<Int, CountersMonitoringSession>,
     private val _collectDump: RdCall<CollectDumpCommand, DumpCollectionResult>,
     private val _collectCounters: RdCall<CollectCountersCommand, Unit>,
-    private val _stopCountersCollection: RdSignal<StopCountersCollectionCommand>,
-    private val _monitorCounters: RdCall<MonitorCountersCommand, Unit>,
-    private val _stopCountersMonitoring: RdSignal<StopCountersMonitoringCommand>,
-    private val _removeCountersMonitoringSession: RdSignal<RemoveCountersMonitoringSessionCommand>
+    private val _monitorCounters: RdCall<MonitorCountersCommand, Unit>
 ) : RdExtBase() {
     //companion
     
@@ -41,10 +38,7 @@ class DiagnosticsHostModel private constructor(
             serializers.register(CollectDumpCommand)
             serializers.register(DumpCollectionResult)
             serializers.register(CollectCountersCommand)
-            serializers.register(StopCountersCollectionCommand)
             serializers.register(MonitorCountersCommand)
-            serializers.register(StopCountersMonitoringCommand)
-            serializers.register(RemoveCountersMonitoringSessionCommand)
             serializers.register(DumpType.marshaller)
             serializers.register(CountersFileFormat.marshaller)
         }
@@ -53,7 +47,7 @@ class DiagnosticsHostModel private constructor(
         
         
         
-        const val serializationHash = 1120346281893133712L
+        const val serializationHash = 1327875831967689952L
         
     }
     override val serializersOwner: ISerializersOwner get() = DiagnosticsHostModel
@@ -64,10 +58,7 @@ class DiagnosticsHostModel private constructor(
     val countersMonitoringSessions: IMutableViewableMap<Int, CountersMonitoringSession> get() = _countersMonitoringSessions
     val collectDump: IRdCall<CollectDumpCommand, DumpCollectionResult> get() = _collectDump
     val collectCounters: IRdCall<CollectCountersCommand, Unit> get() = _collectCounters
-    val stopCountersCollection: IAsyncSignal<StopCountersCollectionCommand> get() = _stopCountersCollection
     val monitorCounters: IRdCall<MonitorCountersCommand, Unit> get() = _monitorCounters
-    val stopCountersMonitoring: IAsyncSignal<StopCountersMonitoringCommand> get() = _stopCountersMonitoring
-    val removeCountersMonitoringSession: IAsyncSignal<RemoveCountersMonitoringSessionCommand> get() = _removeCountersMonitoringSession
     //methods
     //initializer
     init {
@@ -77,9 +68,6 @@ class DiagnosticsHostModel private constructor(
     init {
         _countersCollectionSessions.async = true
         _countersMonitoringSessions.async = true
-        _stopCountersCollection.async = true
-        _stopCountersMonitoring.async = true
-        _removeCountersMonitoringSession.async = true
     }
     
     init {
@@ -88,10 +76,7 @@ class DiagnosticsHostModel private constructor(
         bindableChildren.add("countersMonitoringSessions" to _countersMonitoringSessions)
         bindableChildren.add("collectDump" to _collectDump)
         bindableChildren.add("collectCounters" to _collectCounters)
-        bindableChildren.add("stopCountersCollection" to _stopCountersCollection)
         bindableChildren.add("monitorCounters" to _monitorCounters)
-        bindableChildren.add("stopCountersMonitoring" to _stopCountersMonitoring)
-        bindableChildren.add("removeCountersMonitoringSession" to _removeCountersMonitoringSession)
     }
     
     //secondary constructor
@@ -102,10 +87,7 @@ class DiagnosticsHostModel private constructor(
         RdMap<Int, CountersMonitoringSession>(FrameworkMarshallers.Int, CountersMonitoringSession),
         RdCall<CollectDumpCommand, DumpCollectionResult>(CollectDumpCommand, DumpCollectionResult),
         RdCall<CollectCountersCommand, Unit>(CollectCountersCommand, FrameworkMarshallers.Void),
-        RdSignal<StopCountersCollectionCommand>(StopCountersCollectionCommand),
-        RdCall<MonitorCountersCommand, Unit>(MonitorCountersCommand, FrameworkMarshallers.Void),
-        RdSignal<StopCountersMonitoringCommand>(StopCountersMonitoringCommand),
-        RdSignal<RemoveCountersMonitoringSessionCommand>(RemoveCountersMonitoringSessionCommand)
+        RdCall<MonitorCountersCommand, Unit>(MonitorCountersCommand, FrameworkMarshallers.Void)
     )
     
     //equals trait
@@ -119,10 +101,7 @@ class DiagnosticsHostModel private constructor(
             print("countersMonitoringSessions = "); _countersMonitoringSessions.print(printer); println()
             print("collectDump = "); _collectDump.print(printer); println()
             print("collectCounters = "); _collectCounters.print(printer); println()
-            print("stopCountersCollection = "); _stopCountersCollection.print(printer); println()
             print("monitorCounters = "); _monitorCounters.print(printer); println()
-            print("stopCountersMonitoring = "); _stopCountersMonitoring.print(printer); println()
-            print("removeCountersMonitoringSession = "); _removeCountersMonitoringSession.print(printer); println()
         }
         printer.print(")")
     }
@@ -134,10 +113,7 @@ class DiagnosticsHostModel private constructor(
             _countersMonitoringSessions.deepClonePolymorphic(),
             _collectDump.deepClonePolymorphic(),
             _collectCounters.deepClonePolymorphic(),
-            _stopCountersCollection.deepClonePolymorphic(),
-            _monitorCounters.deepClonePolymorphic(),
-            _stopCountersMonitoring.deepClonePolymorphic(),
-            _removeCountersMonitoringSession.deepClonePolymorphic()
+            _monitorCounters.deepClonePolymorphic()
         )
     }
     //contexts
@@ -462,7 +438,7 @@ class CountersMonitoringSession private constructor(
     private val _active: RdOptionalProperty<Boolean>,
     private val _counters: RdMap<String, Counter>,
     private val _monitor: RdCall<Int?, Unit>,
-    private val _stop: RdSignal<Unit>
+    private val _close: RdSignal<Unit>
 ) : RdBindableBase() {
     //companion
     
@@ -476,8 +452,8 @@ class CountersMonitoringSession private constructor(
             val _active = RdOptionalProperty.read(ctx, buffer, FrameworkMarshallers.Bool)
             val _counters = RdMap.read(ctx, buffer, FrameworkMarshallers.String, Counter)
             val _monitor = RdCall.read(ctx, buffer, __IntNullableSerializer, FrameworkMarshallers.Void)
-            val _stop = RdSignal.read(ctx, buffer, FrameworkMarshallers.Void)
-            return CountersMonitoringSession(pid, _active, _counters, _monitor, _stop).withId(_id)
+            val _close = RdSignal.read(ctx, buffer, FrameworkMarshallers.Void)
+            return CountersMonitoringSession(pid, _active, _counters, _monitor, _close).withId(_id)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: CountersMonitoringSession)  {
@@ -486,7 +462,7 @@ class CountersMonitoringSession private constructor(
             RdOptionalProperty.write(ctx, buffer, value._active)
             RdMap.write(ctx, buffer, value._counters)
             RdCall.write(ctx, buffer, value._monitor)
-            RdSignal.write(ctx, buffer, value._stop)
+            RdSignal.write(ctx, buffer, value._close)
         }
         
         private val __IntNullableSerializer = FrameworkMarshallers.Int.nullable()
@@ -496,7 +472,7 @@ class CountersMonitoringSession private constructor(
     val active: IOptProperty<Boolean> get() = _active
     val counters: IMutableViewableMap<String, Counter> get() = _counters
     val monitor: IRdCall<Int?, Unit> get() = _monitor
-    val stop: IAsyncSignal<Unit> get() = _stop
+    val close: IAsyncSignal<Unit> get() = _close
     //methods
     //initializer
     init {
@@ -507,14 +483,14 @@ class CountersMonitoringSession private constructor(
     init {
         _active.async = true
         _counters.async = true
-        _stop.async = true
+        _close.async = true
     }
     
     init {
         bindableChildren.add("active" to _active)
         bindableChildren.add("counters" to _counters)
         bindableChildren.add("monitor" to _monitor)
-        bindableChildren.add("stop" to _stop)
+        bindableChildren.add("close" to _close)
     }
     
     //secondary constructor
@@ -538,7 +514,7 @@ class CountersMonitoringSession private constructor(
             print("active = "); _active.print(printer); println()
             print("counters = "); _counters.print(printer); println()
             print("monitor = "); _monitor.print(printer); println()
-            print("stop = "); _stop.print(printer); println()
+            print("close = "); _close.print(printer); println()
         }
         printer.print(")")
     }
@@ -549,7 +525,7 @@ class CountersMonitoringSession private constructor(
             _active.deepClonePolymorphic(),
             _counters.deepClonePolymorphic(),
             _monitor.deepClonePolymorphic(),
-            _stop.deepClonePolymorphic()
+            _close.deepClonePolymorphic()
         )
     }
     //contexts
@@ -630,7 +606,7 @@ enum class DumpType {
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:88]
+ * #### Generated from [DiagnosticsHostModel.kt:85]
  */
 data class MonitorCountersCommand (
     val pid: Int,
@@ -856,176 +832,5 @@ class ProcessList private constructor(
             _refresh.deepClonePolymorphic()
         )
     }
-    //contexts
-}
-
-
-/**
- * #### Generated from [DiagnosticsHostModel.kt:99]
- */
-data class RemoveCountersMonitoringSessionCommand (
-    val pid: Int
-) : IPrintable {
-    //companion
-    
-    companion object : IMarshaller<RemoveCountersMonitoringSessionCommand> {
-        override val _type: KClass<RemoveCountersMonitoringSessionCommand> = RemoveCountersMonitoringSessionCommand::class
-        
-        @Suppress("UNCHECKED_CAST")
-        override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RemoveCountersMonitoringSessionCommand  {
-            val pid = buffer.readInt()
-            return RemoveCountersMonitoringSessionCommand(pid)
-        }
-        
-        override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: RemoveCountersMonitoringSessionCommand)  {
-            buffer.writeInt(value.pid)
-        }
-        
-        
-    }
-    //fields
-    //methods
-    //initializer
-    //secondary constructor
-    //equals trait
-    override fun equals(other: Any?): Boolean  {
-        if (this === other) return true
-        if (other == null || other::class != this::class) return false
-        
-        other as RemoveCountersMonitoringSessionCommand
-        
-        if (pid != other.pid) return false
-        
-        return true
-    }
-    //hash code trait
-    override fun hashCode(): Int  {
-        var __r = 0
-        __r = __r*31 + pid.hashCode()
-        return __r
-    }
-    //pretty print
-    override fun print(printer: PrettyPrinter)  {
-        printer.println("RemoveCountersMonitoringSessionCommand (")
-        printer.indent {
-            print("pid = "); pid.print(printer); println()
-        }
-        printer.print(")")
-    }
-    //deepClone
-    //contexts
-}
-
-
-/**
- * #### Generated from [DiagnosticsHostModel.kt:82]
- */
-data class StopCountersCollectionCommand (
-    val pid: Int
-) : IPrintable {
-    //companion
-    
-    companion object : IMarshaller<StopCountersCollectionCommand> {
-        override val _type: KClass<StopCountersCollectionCommand> = StopCountersCollectionCommand::class
-        
-        @Suppress("UNCHECKED_CAST")
-        override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): StopCountersCollectionCommand  {
-            val pid = buffer.readInt()
-            return StopCountersCollectionCommand(pid)
-        }
-        
-        override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: StopCountersCollectionCommand)  {
-            buffer.writeInt(value.pid)
-        }
-        
-        
-    }
-    //fields
-    //methods
-    //initializer
-    //secondary constructor
-    //equals trait
-    override fun equals(other: Any?): Boolean  {
-        if (this === other) return true
-        if (other == null || other::class != this::class) return false
-        
-        other as StopCountersCollectionCommand
-        
-        if (pid != other.pid) return false
-        
-        return true
-    }
-    //hash code trait
-    override fun hashCode(): Int  {
-        var __r = 0
-        __r = __r*31 + pid.hashCode()
-        return __r
-    }
-    //pretty print
-    override fun print(printer: PrettyPrinter)  {
-        printer.println("StopCountersCollectionCommand (")
-        printer.indent {
-            print("pid = "); pid.print(printer); println()
-        }
-        printer.print(")")
-    }
-    //deepClone
-    //contexts
-}
-
-
-/**
- * #### Generated from [DiagnosticsHostModel.kt:96]
- */
-data class StopCountersMonitoringCommand (
-    val pid: Int
-) : IPrintable {
-    //companion
-    
-    companion object : IMarshaller<StopCountersMonitoringCommand> {
-        override val _type: KClass<StopCountersMonitoringCommand> = StopCountersMonitoringCommand::class
-        
-        @Suppress("UNCHECKED_CAST")
-        override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): StopCountersMonitoringCommand  {
-            val pid = buffer.readInt()
-            return StopCountersMonitoringCommand(pid)
-        }
-        
-        override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: StopCountersMonitoringCommand)  {
-            buffer.writeInt(value.pid)
-        }
-        
-        
-    }
-    //fields
-    //methods
-    //initializer
-    //secondary constructor
-    //equals trait
-    override fun equals(other: Any?): Boolean  {
-        if (this === other) return true
-        if (other == null || other::class != this::class) return false
-        
-        other as StopCountersMonitoringCommand
-        
-        if (pid != other.pid) return false
-        
-        return true
-    }
-    //hash code trait
-    override fun hashCode(): Int  {
-        var __r = 0
-        __r = __r*31 + pid.hashCode()
-        return __r
-    }
-    //pretty print
-    override fun print(printer: PrettyPrinter)  {
-        printer.println("StopCountersMonitoringCommand (")
-        printer.indent {
-            print("pid = "); pid.print(printer); println()
-        }
-        printer.print(")")
-    }
-    //deepClone
     //contexts
 }

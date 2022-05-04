@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Threading.Channels;
 using System.Threading.Tasks;
 using DiagnosticsClientPlugin.Counters.Common;
@@ -18,34 +17,17 @@ namespace DiagnosticsClientPlugin.Counters.Collection;
 [SolutionComponent]
 internal sealed class CollectCountersHandler
 {
-    private readonly ConcurrentDictionary<int, LifetimeDefinition> _definitions = new();
     private readonly DiagnosticsHostModel _hostModel;
-    private readonly Lifetime _lifetime;
 
-    public CollectCountersHandler(Lifetime lifetime, ISolution solution)
+    public CollectCountersHandler(ISolution solution)
     {
-        _lifetime = lifetime;
         _hostModel = solution.GetProtocolSolution().GetDiagnosticsHostModel();
-
         _hostModel.CollectCounters.Set(async (lt, command) => await Collect(command, lt));
-        _hostModel.StopCountersCollection.Advise(lifetime, it => Stop(it));
     }
 
     private async Task<Unit> Collect(CollectCountersCommand command, Lifetime lifetime)
     {
-        if (_definitions.ContainsKey(command.Pid))
-        {
-            return Unit.Instance;
-        }
-
-        var sessionLifetimeDefinition = _lifetime.CreateNested();
-        if (!_definitions.TryAdd(command.Pid, sessionLifetimeDefinition))
-        {
-            return Unit.Instance;
-        }
-
-        var sessionLifetime = CreateSessionLifetime(sessionLifetimeDefinition, lifetime, command.Duration);
-        sessionLifetime.OnTermination(() => _definitions.TryRemove(command.Pid, out _));
+        var sessionLifetime = CreateSessionLifetime(lifetime, command.Duration);
 
         var session = new CountersCollectionSession(command.Pid, command.FilePath);
         _hostModel.CountersCollectionSessions.Add(sessionLifetime, command.Pid, session);
@@ -69,24 +51,10 @@ internal sealed class CollectCountersHandler
         return Unit.Instance;
     }
 
-    private Lifetime CreateSessionLifetime(
-        LifetimeDefinition manualLifetimeDefinition,
-        in Lifetime operationLifetime,
-        int? duration)
-    {
-        var sessionLifetime = manualLifetimeDefinition.Lifetime.Intersect(operationLifetime);
-        return duration.HasValue
+    private Lifetime CreateSessionLifetime(in Lifetime sessionLifetime, int? duration) =>
+        duration.HasValue
             ? sessionLifetime.CreateTerminatedAfter(TimeSpan.FromSeconds(duration.Value))
             : sessionLifetime;
-    }
-
-    private void Stop(StopCountersCollectionCommand command)
-    {
-        if (_definitions.TryGetValue(command.Pid, out var definition))
-        {
-            definition.Terminate();
-        }
-    }
 
     private AbstractFileCountersConsumer CreateConsumer(
         CollectCountersCommand command,

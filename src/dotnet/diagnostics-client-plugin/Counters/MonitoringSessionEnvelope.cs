@@ -13,14 +13,14 @@ namespace DiagnosticsClientPlugin.Counters.Monitoring;
 
 internal sealed class MonitoringSessionEnvelope
 {
-    private readonly SequentialLifetimes _sessionLifetimes;
+    private readonly Lifetime _lifetime;
     private readonly ExportToProtocolCountersConsumer _consumer;
     private readonly CountersProducer _producer;
 
     internal MonitoringSessionEnvelope(int pid, CountersProducerConfiguration producerConfiguration, Lifetime lifetime)
     {
+        _lifetime = lifetime;
         Session = new CountersMonitoringSession(pid);
-        _sessionLifetimes = new SequentialLifetimes(lifetime);
 
         var channel = Channel.CreateBounded<ValueCounter>(new BoundedChannelOptions(100)
         {
@@ -33,28 +33,22 @@ internal sealed class MonitoringSessionEnvelope
         _producer = new CountersProducer(pid, producerConfiguration, channel.Writer, lifetime);
 
         Session.Monitor.Set(async (lt, duration) => await Monitor(duration, lt));
-        Session.Stop.Advise(lifetime, _ => Stop());
+        Session.Close.Advise(lifetime, _ => Close());
     }
 
     internal CountersMonitoringSession Session { get; }
 
     internal async Task<Unit> Monitor(int? duration, Lifetime lifetime)
     {
-        if (!_sessionLifetimes.IsCurrentTerminated)
-        {
-            return Unit.Instance;
-        }
+        var operationLifetime = CreateOperationLifetime(lifetime, duration);
 
-        var sessionLifetime = CreateSessionLifetime(_sessionLifetimes.Next(), lifetime, duration);
-        sessionLifetime.OnTermination(() => _sessionLifetimes.TerminateCurrent());
-
-        sessionLifetime.Bracket(
+        operationLifetime.Bracket(
             () => Session.Active.Value = true,
             () => Session.Active.Value = false
         );
 
-        var consumerTask = _consumer.ConsumeAsync(sessionLifetime);
-        var producerTask = _producer.Produce(sessionLifetime);
+        var consumerTask = _consumer.ConsumeAsync(operationLifetime);
+        var producerTask = _producer.Produce(operationLifetime);
 
         var completedTask = await Task.WhenAny(consumerTask, producerTask);
         await completedTask;
@@ -62,19 +56,16 @@ internal sealed class MonitoringSessionEnvelope
         return Unit.Instance;
     }
 
-    private Lifetime CreateSessionLifetime(
-        in Lifetime nextLifetime,
-        in Lifetime operationLifetime,
-        int? duration)
+    private Lifetime CreateOperationLifetime(in Lifetime operationLifetime, int? duration)
     {
-        var sessionLifetime = nextLifetime.Intersect(operationLifetime);
+        var sessionLifetime = _lifetime.Intersect(operationLifetime);
         return duration.HasValue
             ? sessionLifetime.CreateTerminatedAfter(TimeSpan.FromSeconds(duration.Value))
             : sessionLifetime;
     }
 
-    internal void Stop()
+    private void Close()
     {
-        _sessionLifetimes.TerminateCurrent();
+        throw new NotImplementedException();
     }
 }

@@ -47,20 +47,14 @@ namespace DiagnosticsClientPlugin.Generated
     [NotNull] public IViewableMap<int, CountersMonitoringSession> CountersMonitoringSessions => _CountersMonitoringSessions;
     [NotNull] public IRdEndpoint<CollectDumpCommand, DumpCollectionResult> CollectDump => _CollectDump;
     [NotNull] public IRdEndpoint<CollectCountersCommand, Unit> CollectCounters => _CollectCounters;
-    [NotNull] public ISignal<StopCountersCollectionCommand> StopCountersCollection => _StopCountersCollection;
     [NotNull] public IRdEndpoint<MonitorCountersCommand, Unit> MonitorCounters => _MonitorCounters;
-    [NotNull] public ISignal<StopCountersMonitoringCommand> StopCountersMonitoring => _StopCountersMonitoring;
-    [NotNull] public ISignal<RemoveCountersMonitoringSessionCommand> RemoveCountersMonitoringSession => _RemoveCountersMonitoringSession;
     
     //private fields
     [NotNull] private readonly RdMap<int, CountersCollectionSession> _CountersCollectionSessions;
     [NotNull] private readonly RdMap<int, CountersMonitoringSession> _CountersMonitoringSessions;
     [NotNull] private readonly RdCall<CollectDumpCommand, DumpCollectionResult> _CollectDump;
     [NotNull] private readonly RdCall<CollectCountersCommand, Unit> _CollectCounters;
-    [NotNull] private readonly RdSignal<StopCountersCollectionCommand> _StopCountersCollection;
     [NotNull] private readonly RdCall<MonitorCountersCommand, Unit> _MonitorCounters;
-    [NotNull] private readonly RdSignal<StopCountersMonitoringCommand> _StopCountersMonitoring;
-    [NotNull] private readonly RdSignal<RemoveCountersMonitoringSessionCommand> _RemoveCountersMonitoringSession;
     
     //primary constructor
     private DiagnosticsHostModel(
@@ -69,10 +63,7 @@ namespace DiagnosticsClientPlugin.Generated
       [NotNull] RdMap<int, CountersMonitoringSession> countersMonitoringSessions,
       [NotNull] RdCall<CollectDumpCommand, DumpCollectionResult> collectDump,
       [NotNull] RdCall<CollectCountersCommand, Unit> collectCounters,
-      [NotNull] RdSignal<StopCountersCollectionCommand> stopCountersCollection,
-      [NotNull] RdCall<MonitorCountersCommand, Unit> monitorCounters,
-      [NotNull] RdSignal<StopCountersMonitoringCommand> stopCountersMonitoring,
-      [NotNull] RdSignal<RemoveCountersMonitoringSessionCommand> removeCountersMonitoringSession
+      [NotNull] RdCall<MonitorCountersCommand, Unit> monitorCounters
     )
     {
       if (processList == null) throw new ArgumentNullException("processList");
@@ -80,35 +71,23 @@ namespace DiagnosticsClientPlugin.Generated
       if (countersMonitoringSessions == null) throw new ArgumentNullException("countersMonitoringSessions");
       if (collectDump == null) throw new ArgumentNullException("collectDump");
       if (collectCounters == null) throw new ArgumentNullException("collectCounters");
-      if (stopCountersCollection == null) throw new ArgumentNullException("stopCountersCollection");
       if (monitorCounters == null) throw new ArgumentNullException("monitorCounters");
-      if (stopCountersMonitoring == null) throw new ArgumentNullException("stopCountersMonitoring");
-      if (removeCountersMonitoringSession == null) throw new ArgumentNullException("removeCountersMonitoringSession");
       
       ProcessList = processList;
       _CountersCollectionSessions = countersCollectionSessions;
       _CountersMonitoringSessions = countersMonitoringSessions;
       _CollectDump = collectDump;
       _CollectCounters = collectCounters;
-      _StopCountersCollection = stopCountersCollection;
       _MonitorCounters = monitorCounters;
-      _StopCountersMonitoring = stopCountersMonitoring;
-      _RemoveCountersMonitoringSession = removeCountersMonitoringSession;
       _CountersCollectionSessions.OptimizeNested = true;
       _CountersCollectionSessions.Async = true;
       _CountersMonitoringSessions.Async = true;
-      _StopCountersCollection.Async = true;
-      _StopCountersMonitoring.Async = true;
-      _RemoveCountersMonitoringSession.Async = true;
       BindableChildren.Add(new KeyValuePair<string, object>("processList", ProcessList));
       BindableChildren.Add(new KeyValuePair<string, object>("countersCollectionSessions", _CountersCollectionSessions));
       BindableChildren.Add(new KeyValuePair<string, object>("countersMonitoringSessions", _CountersMonitoringSessions));
       BindableChildren.Add(new KeyValuePair<string, object>("collectDump", _CollectDump));
       BindableChildren.Add(new KeyValuePair<string, object>("collectCounters", _CollectCounters));
-      BindableChildren.Add(new KeyValuePair<string, object>("stopCountersCollection", _StopCountersCollection));
       BindableChildren.Add(new KeyValuePair<string, object>("monitorCounters", _MonitorCounters));
-      BindableChildren.Add(new KeyValuePair<string, object>("stopCountersMonitoring", _StopCountersMonitoring));
-      BindableChildren.Add(new KeyValuePair<string, object>("removeCountersMonitoringSession", _RemoveCountersMonitoringSession));
     }
     //secondary constructor
     internal DiagnosticsHostModel (
@@ -118,17 +97,14 @@ namespace DiagnosticsClientPlugin.Generated
       new RdMap<int, CountersMonitoringSession>(JetBrains.Rd.Impl.Serializers.ReadInt, JetBrains.Rd.Impl.Serializers.WriteInt, CountersMonitoringSession.Read, CountersMonitoringSession.Write),
       new RdCall<CollectDumpCommand, DumpCollectionResult>(CollectDumpCommand.Read, CollectDumpCommand.Write, DumpCollectionResult.Read, DumpCollectionResult.Write),
       new RdCall<CollectCountersCommand, Unit>(CollectCountersCommand.Read, CollectCountersCommand.Write, JetBrains.Rd.Impl.Serializers.ReadVoid, JetBrains.Rd.Impl.Serializers.WriteVoid),
-      new RdSignal<StopCountersCollectionCommand>(StopCountersCollectionCommand.Read, StopCountersCollectionCommand.Write),
-      new RdCall<MonitorCountersCommand, Unit>(MonitorCountersCommand.Read, MonitorCountersCommand.Write, JetBrains.Rd.Impl.Serializers.ReadVoid, JetBrains.Rd.Impl.Serializers.WriteVoid),
-      new RdSignal<StopCountersMonitoringCommand>(StopCountersMonitoringCommand.Read, StopCountersMonitoringCommand.Write),
-      new RdSignal<RemoveCountersMonitoringSessionCommand>(RemoveCountersMonitoringSessionCommand.Read, RemoveCountersMonitoringSessionCommand.Write)
+      new RdCall<MonitorCountersCommand, Unit>(MonitorCountersCommand.Read, MonitorCountersCommand.Write, JetBrains.Rd.Impl.Serializers.ReadVoid, JetBrains.Rd.Impl.Serializers.WriteVoid)
     ) {}
     //deconstruct trait
     //statics
     
     
     
-    protected override long SerializationHash => 1120346281893133712L;
+    protected override long SerializationHash => 1327875831967689952L;
     
     protected override Action<ISerializers> Register => RegisterDeclaredTypesSerializers;
     public static void RegisterDeclaredTypesSerializers(ISerializers serializers)
@@ -154,10 +130,7 @@ namespace DiagnosticsClientPlugin.Generated
         printer.Print("countersMonitoringSessions = "); _CountersMonitoringSessions.PrintEx(printer); printer.Println();
         printer.Print("collectDump = "); _CollectDump.PrintEx(printer); printer.Println();
         printer.Print("collectCounters = "); _CollectCounters.PrintEx(printer); printer.Println();
-        printer.Print("stopCountersCollection = "); _StopCountersCollection.PrintEx(printer); printer.Println();
         printer.Print("monitorCounters = "); _MonitorCounters.PrintEx(printer); printer.Println();
-        printer.Print("stopCountersMonitoring = "); _StopCountersMonitoring.PrintEx(printer); printer.Println();
-        printer.Print("removeCountersMonitoringSession = "); _RemoveCountersMonitoringSession.PrintEx(printer); printer.Println();
       }
       printer.Print(")");
     }
@@ -630,13 +603,13 @@ namespace DiagnosticsClientPlugin.Generated
     [NotNull] public IViewableProperty<bool> Active => _Active;
     [NotNull] public IViewableMap<string, Counter> Counters => _Counters;
     [NotNull] public IRdEndpoint<int?, Unit> Monitor => _Monitor;
-    [NotNull] public ISignal<Unit> Stop => _Stop;
+    [NotNull] public ISignal<Unit> Close => _Close;
     
     //private fields
     [NotNull] private readonly RdProperty<bool> _Active;
     [NotNull] private readonly RdMap<string, Counter> _Counters;
     [NotNull] private readonly RdCall<int?, Unit> _Monitor;
-    [NotNull] private readonly RdSignal<Unit> _Stop;
+    [NotNull] private readonly RdSignal<Unit> _Close;
     
     //primary constructor
     private CountersMonitoringSession(
@@ -644,29 +617,29 @@ namespace DiagnosticsClientPlugin.Generated
       [NotNull] RdProperty<bool> active,
       [NotNull] RdMap<string, Counter> counters,
       [NotNull] RdCall<int?, Unit> monitor,
-      [NotNull] RdSignal<Unit> stop
+      [NotNull] RdSignal<Unit> close
     )
     {
       if (active == null) throw new ArgumentNullException("active");
       if (counters == null) throw new ArgumentNullException("counters");
       if (monitor == null) throw new ArgumentNullException("monitor");
-      if (stop == null) throw new ArgumentNullException("stop");
+      if (close == null) throw new ArgumentNullException("close");
       
       Pid = pid;
       _Active = active;
       _Counters = counters;
       _Monitor = monitor;
-      _Stop = stop;
+      _Close = close;
       _Active.OptimizeNested = true;
       _Counters.OptimizeNested = true;
       _Active.Async = true;
       _Counters.Async = true;
-      _Stop.Async = true;
+      _Close.Async = true;
       _Monitor.ValueCanBeNull = true;
       BindableChildren.Add(new KeyValuePair<string, object>("active", _Active));
       BindableChildren.Add(new KeyValuePair<string, object>("counters", _Counters));
       BindableChildren.Add(new KeyValuePair<string, object>("monitor", _Monitor));
-      BindableChildren.Add(new KeyValuePair<string, object>("stop", _Stop));
+      BindableChildren.Add(new KeyValuePair<string, object>("close", _Close));
     }
     //secondary constructor
     public CountersMonitoringSession (
@@ -688,8 +661,8 @@ namespace DiagnosticsClientPlugin.Generated
       var active = RdProperty<bool>.Read(ctx, reader, JetBrains.Rd.Impl.Serializers.ReadBool, JetBrains.Rd.Impl.Serializers.WriteBool);
       var counters = RdMap<string, Counter>.Read(ctx, reader, JetBrains.Rd.Impl.Serializers.ReadString, JetBrains.Rd.Impl.Serializers.WriteString, Counter.Read, Counter.Write);
       var monitor = RdCall<int?, Unit>.Read(ctx, reader, ReadIntNullable, WriteIntNullable, JetBrains.Rd.Impl.Serializers.ReadVoid, JetBrains.Rd.Impl.Serializers.WriteVoid);
-      var stop = RdSignal<Unit>.Read(ctx, reader, JetBrains.Rd.Impl.Serializers.ReadVoid, JetBrains.Rd.Impl.Serializers.WriteVoid);
-      var _result = new CountersMonitoringSession(pid, active, counters, monitor, stop).WithId(_id);
+      var close = RdSignal<Unit>.Read(ctx, reader, JetBrains.Rd.Impl.Serializers.ReadVoid, JetBrains.Rd.Impl.Serializers.WriteVoid);
+      var _result = new CountersMonitoringSession(pid, active, counters, monitor, close).WithId(_id);
       return _result;
     };
     public static CtxReadDelegate<int?> ReadIntNullable = JetBrains.Rd.Impl.Serializers.ReadInt.NullableStruct();
@@ -701,7 +674,7 @@ namespace DiagnosticsClientPlugin.Generated
       RdProperty<bool>.Write(ctx, writer, value._Active);
       RdMap<string, Counter>.Write(ctx, writer, value._Counters);
       RdCall<int?, Unit>.Write(ctx, writer, value._Monitor);
-      RdSignal<Unit>.Write(ctx, writer, value._Stop);
+      RdSignal<Unit>.Write(ctx, writer, value._Close);
     };
     public static  CtxWriteDelegate<int?> WriteIntNullable = JetBrains.Rd.Impl.Serializers.WriteInt.NullableStruct();
     
@@ -720,7 +693,7 @@ namespace DiagnosticsClientPlugin.Generated
         printer.Print("active = "); _Active.PrintEx(printer); printer.Println();
         printer.Print("counters = "); _Counters.PrintEx(printer); printer.Println();
         printer.Print("monitor = "); _Monitor.PrintEx(printer); printer.Println();
-        printer.Print("stop = "); _Stop.PrintEx(printer); printer.Println();
+        printer.Print("close = "); _Close.PrintEx(printer); printer.Println();
       }
       printer.Print(")");
     }
@@ -831,7 +804,7 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:88</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:85</p>
   /// </summary>
   public sealed class MonitorCountersCommand : IPrintable, IEquatable<MonitorCountersCommand>
   {
@@ -1133,255 +1106,6 @@ namespace DiagnosticsClientPlugin.Generated
         printer.Print("items = "); _Items.PrintEx(printer); printer.Println();
         printer.Print("selected = "); _Selected.PrintEx(printer); printer.Println();
         printer.Print("refresh = "); _Refresh.PrintEx(printer); printer.Println();
-      }
-      printer.Print(")");
-    }
-    //toString
-    public override string ToString()
-    {
-      var printer = new SingleLinePrettyPrinter();
-      Print(printer);
-      return printer.ToString();
-    }
-  }
-  
-  
-  /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:99</p>
-  /// </summary>
-  public sealed class RemoveCountersMonitoringSessionCommand : IPrintable, IEquatable<RemoveCountersMonitoringSessionCommand>
-  {
-    //fields
-    //public fields
-    public int Pid {get; private set;}
-    
-    //private fields
-    //primary constructor
-    public RemoveCountersMonitoringSessionCommand(
-      int pid
-    )
-    {
-      Pid = pid;
-    }
-    //secondary constructor
-    //deconstruct trait
-    public void Deconstruct(out int pid)
-    {
-      pid = Pid;
-    }
-    //statics
-    
-    public static CtxReadDelegate<RemoveCountersMonitoringSessionCommand> Read = (ctx, reader) => 
-    {
-      var pid = reader.ReadInt();
-      var _result = new RemoveCountersMonitoringSessionCommand(pid);
-      return _result;
-    };
-    
-    public static CtxWriteDelegate<RemoveCountersMonitoringSessionCommand> Write = (ctx, writer, value) => 
-    {
-      writer.Write(value.Pid);
-    };
-    
-    //constants
-    
-    //custom body
-    //methods
-    //equals trait
-    public override bool Equals(object obj)
-    {
-      if (ReferenceEquals(null, obj)) return false;
-      if (ReferenceEquals(this, obj)) return true;
-      if (obj.GetType() != GetType()) return false;
-      return Equals((RemoveCountersMonitoringSessionCommand) obj);
-    }
-    public bool Equals(RemoveCountersMonitoringSessionCommand other)
-    {
-      if (ReferenceEquals(null, other)) return false;
-      if (ReferenceEquals(this, other)) return true;
-      return Pid == other.Pid;
-    }
-    //hash code trait
-    public override int GetHashCode()
-    {
-      unchecked {
-        var hash = 0;
-        hash = hash * 31 + Pid.GetHashCode();
-        return hash;
-      }
-    }
-    //pretty print
-    public void Print(PrettyPrinter printer)
-    {
-      printer.Println("RemoveCountersMonitoringSessionCommand (");
-      using (printer.IndentCookie()) {
-        printer.Print("pid = "); Pid.PrintEx(printer); printer.Println();
-      }
-      printer.Print(")");
-    }
-    //toString
-    public override string ToString()
-    {
-      var printer = new SingleLinePrettyPrinter();
-      Print(printer);
-      return printer.ToString();
-    }
-  }
-  
-  
-  /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:82</p>
-  /// </summary>
-  public sealed class StopCountersCollectionCommand : IPrintable, IEquatable<StopCountersCollectionCommand>
-  {
-    //fields
-    //public fields
-    public int Pid {get; private set;}
-    
-    //private fields
-    //primary constructor
-    public StopCountersCollectionCommand(
-      int pid
-    )
-    {
-      Pid = pid;
-    }
-    //secondary constructor
-    //deconstruct trait
-    public void Deconstruct(out int pid)
-    {
-      pid = Pid;
-    }
-    //statics
-    
-    public static CtxReadDelegate<StopCountersCollectionCommand> Read = (ctx, reader) => 
-    {
-      var pid = reader.ReadInt();
-      var _result = new StopCountersCollectionCommand(pid);
-      return _result;
-    };
-    
-    public static CtxWriteDelegate<StopCountersCollectionCommand> Write = (ctx, writer, value) => 
-    {
-      writer.Write(value.Pid);
-    };
-    
-    //constants
-    
-    //custom body
-    //methods
-    //equals trait
-    public override bool Equals(object obj)
-    {
-      if (ReferenceEquals(null, obj)) return false;
-      if (ReferenceEquals(this, obj)) return true;
-      if (obj.GetType() != GetType()) return false;
-      return Equals((StopCountersCollectionCommand) obj);
-    }
-    public bool Equals(StopCountersCollectionCommand other)
-    {
-      if (ReferenceEquals(null, other)) return false;
-      if (ReferenceEquals(this, other)) return true;
-      return Pid == other.Pid;
-    }
-    //hash code trait
-    public override int GetHashCode()
-    {
-      unchecked {
-        var hash = 0;
-        hash = hash * 31 + Pid.GetHashCode();
-        return hash;
-      }
-    }
-    //pretty print
-    public void Print(PrettyPrinter printer)
-    {
-      printer.Println("StopCountersCollectionCommand (");
-      using (printer.IndentCookie()) {
-        printer.Print("pid = "); Pid.PrintEx(printer); printer.Println();
-      }
-      printer.Print(")");
-    }
-    //toString
-    public override string ToString()
-    {
-      var printer = new SingleLinePrettyPrinter();
-      Print(printer);
-      return printer.ToString();
-    }
-  }
-  
-  
-  /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:96</p>
-  /// </summary>
-  public sealed class StopCountersMonitoringCommand : IPrintable, IEquatable<StopCountersMonitoringCommand>
-  {
-    //fields
-    //public fields
-    public int Pid {get; private set;}
-    
-    //private fields
-    //primary constructor
-    public StopCountersMonitoringCommand(
-      int pid
-    )
-    {
-      Pid = pid;
-    }
-    //secondary constructor
-    //deconstruct trait
-    public void Deconstruct(out int pid)
-    {
-      pid = Pid;
-    }
-    //statics
-    
-    public static CtxReadDelegate<StopCountersMonitoringCommand> Read = (ctx, reader) => 
-    {
-      var pid = reader.ReadInt();
-      var _result = new StopCountersMonitoringCommand(pid);
-      return _result;
-    };
-    
-    public static CtxWriteDelegate<StopCountersMonitoringCommand> Write = (ctx, writer, value) => 
-    {
-      writer.Write(value.Pid);
-    };
-    
-    //constants
-    
-    //custom body
-    //methods
-    //equals trait
-    public override bool Equals(object obj)
-    {
-      if (ReferenceEquals(null, obj)) return false;
-      if (ReferenceEquals(this, obj)) return true;
-      if (obj.GetType() != GetType()) return false;
-      return Equals((StopCountersMonitoringCommand) obj);
-    }
-    public bool Equals(StopCountersMonitoringCommand other)
-    {
-      if (ReferenceEquals(null, other)) return false;
-      if (ReferenceEquals(this, other)) return true;
-      return Pid == other.Pid;
-    }
-    //hash code trait
-    public override int GetHashCode()
-    {
-      unchecked {
-        var hash = 0;
-        hash = hash * 31 + Pid.GetHashCode();
-        return hash;
-      }
-    }
-    //pretty print
-    public void Print(PrettyPrinter printer)
-    {
-      printer.Println("StopCountersMonitoringCommand (");
-      using (printer.IndentCookie()) {
-        printer.Print("pid = "); Pid.PrintEx(printer); printer.Println();
       }
       printer.Print(")");
     }

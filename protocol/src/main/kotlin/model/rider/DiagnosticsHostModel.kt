@@ -32,7 +32,7 @@ object DiagnosticsHostModel : Ext(SolutionModel.Solution) {
         map("counters", string, Counter).async
 
         call("monitor", int.nullable, void)
-        source("stop", void).async
+        source("close", void).async
     }
 
     private val Counter = structdef {
@@ -79,9 +79,6 @@ object DiagnosticsHostModel : Ext(SolutionModel.Solution) {
             },
             void
         )
-        source("stopCountersCollection", structdef("StopCountersCollectionCommand") {
-            field("pid", int)
-        }).async
 
         call(
             "monitorCounters",
@@ -93,11 +90,5 @@ object DiagnosticsHostModel : Ext(SolutionModel.Solution) {
             },
             void
         )
-        source("stopCountersMonitoring", structdef("StopCountersMonitoringCommand") {
-            field("pid", int)
-        }).async
-        source("removeCountersMonitoringSession", structdef("RemoveCountersMonitoringSessionCommand") {
-            field("pid", int)
-        }).async
     }
 }

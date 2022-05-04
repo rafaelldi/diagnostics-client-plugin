@@ -7,7 +7,6 @@ import com.github.rafaelldi.diagnosticsclientplugin.dialogs.StoppingType
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.map
 import com.github.rafaelldi.diagnosticsclientplugin.generated.CollectCountersCommand
 import com.github.rafaelldi.diagnosticsclientplugin.generated.DiagnosticsHostModel
-import com.github.rafaelldi.diagnosticsclientplugin.generated.StopCountersCollectionCommand
 import com.github.rafaelldi.diagnosticsclientplugin.generated.diagnosticsHostModel
 import com.intellij.notification.Notification
 import com.intellij.notification.NotificationType
@@ -15,15 +14,20 @@ import com.intellij.openapi.components.Service
 import com.intellij.openapi.project.Project
 import com.jetbrains.rd.framework.RdTaskResult
 import com.jetbrains.rd.platform.util.idea.ProtocolSubscribedProjectComponent
+import com.jetbrains.rd.util.lifetime.LifetimeDefinition
 import com.jetbrains.rider.projectView.solution
+import java.util.concurrent.ConcurrentHashMap
 import kotlin.io.path.Path
 import kotlin.io.path.pathString
 
 @Service
 class CountersCollectionSessionsController(project: Project) : ProtocolSubscribedProjectComponent(project) {
     private val hostModel: DiagnosticsHostModel = project.solution.diagnosticsHostModel
+    private val definitions: ConcurrentHashMap<Int, LifetimeDefinition> = ConcurrentHashMap()
 
     fun startSession(pid: Int, model: CollectCountersModel) {
+        val sessionDefinition = createDefinitionForSession(pid) ?: return
+
         val filepath = calculateFilePath(model)
         val duration = if (model.stoppingType == StoppingType.AfterPeriod) model.duration else null
         val command = CollectCountersCommand(
@@ -34,18 +38,40 @@ class CountersCollectionSessionsController(project: Project) : ProtocolSubscribe
             model.providers,
             duration
         )
-        val collectTask = hostModel.collectCounters.start(projectComponentLifetime, command)
+
+        val collectTask = hostModel.collectCounters.start(sessionDefinition.lifetime, command)
         sessionStarted(pid)
 
         collectTask
             .result
             .advise(projectComponentLifetime) { result ->
-                if (result is RdTaskResult.Success) {
-                    sessionFinished(pid, filepath)
-                } else if (result is RdTaskResult.Fault) {
-                    sessionFaulted(pid, result.error.reasonMessage)
+                when (result) {
+                    is RdTaskResult.Success -> {
+                        definitions.remove(pid)
+                        sessionFinished(pid, filepath)
+                    }
+                    is RdTaskResult.Cancelled -> {
+                        sessionFinished(pid, filepath)
+                    }
+                    is RdTaskResult.Fault -> {
+                        sessionFaulted(pid, result.error.reasonMessage)
+                    }
                 }
             }
+    }
+
+    private fun createDefinitionForSession(pid: Int): LifetimeDefinition? {
+        if (definitions.containsKey(pid)) {
+            return null
+        }
+
+        val sessionDefinition = projectComponentLifetime.createNested()
+        val currentDefinition = definitions.putIfAbsent(pid, sessionDefinition)
+        if (currentDefinition != null) {
+            return null
+        }
+
+        return sessionDefinition
     }
 
     private fun calculateFilePath(model: CollectCountersModel): String {
@@ -68,7 +94,8 @@ class CountersCollectionSessionsController(project: Project) : ProtocolSubscribe
     }
 
     fun stopSession(pid: Int) {
-        hostModel.stopCountersCollection.fire(StopCountersCollectionCommand(pid))
+        val sessionDefinition = definitions.remove(pid) ?: return
+        sessionDefinition.terminate()
     }
 
     private fun sessionStarted(pid: Int) = Notification(
