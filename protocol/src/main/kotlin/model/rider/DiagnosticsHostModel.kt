@@ -65,7 +65,7 @@ object DiagnosticsHostModel : Ext(SolutionModel.Solution) {
             structdef("CollectCountersCommand") {
                 field("pid", int)
                 field("filePath", string)
-                field("format", enum("CountersFileFormat") {
+                field("format", enum("CounterFileFormat") {
                     +"Csv"
                     +"Json"
                 })
@@ -92,6 +92,7 @@ object DiagnosticsHostModel : Ext(SolutionModel.Solution) {
             structdef("CollectTracesCommand") {
                 field("pid", int)
                 field("filePath", string)
+                field("duration", int.nullable)
             },
             void
         )

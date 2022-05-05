@@ -3,13 +3,13 @@ using System.Text;
 using System.Threading.Channels;
 using DiagnosticsClientPlugin.Counters.Common;
 
-namespace DiagnosticsClientPlugin.Counters.Consuming;
+namespace DiagnosticsClientPlugin.Counters.Exporters;
 
-internal sealed class ExportToJsonCountersConsumer : AbstractFileCountersConsumer
+internal sealed class JsonCounterExporter : AbstractFileCounterExporter
 {
     private readonly StringBuilder _stringBuilder = new(11);
 
-    internal ExportToJsonCountersConsumer(string filePath, ChannelReader<ValueCounter> reader)
+    internal JsonCounterExporter(string filePath, ChannelReader<ValueCounter> reader)
         : base(filePath, reader)
     {
     }

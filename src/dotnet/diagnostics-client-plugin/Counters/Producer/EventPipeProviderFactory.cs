@@ -3,7 +3,7 @@ using System.Diagnostics.Tracing;
 using System.Linq;
 using Microsoft.Diagnostics.NETCore.Client;
 
-namespace DiagnosticsClientPlugin.Counters.Producing;
+namespace DiagnosticsClientPlugin.Counters.Producer;
 
 internal static class EventPipeProviderFactory
 {

@@ -3,13 +3,13 @@ using System.Text;
 using System.Threading.Channels;
 using DiagnosticsClientPlugin.Counters.Common;
 
-namespace DiagnosticsClientPlugin.Counters.Consuming;
+namespace DiagnosticsClientPlugin.Counters.Exporters;
 
-internal sealed class ExportToCsvCountersConsumer : AbstractFileCountersConsumer
+internal sealed class CsvCounterExporter : AbstractFileCounterExporter
 {
     private readonly StringBuilder _stringBuilder = new(9);
 
-    public ExportToCsvCountersConsumer(string filePath, ChannelReader<ValueCounter> reader)
+    public CsvCounterExporter(string filePath, ChannelReader<ValueCounter> reader)
         : base(filePath, reader)
     {
     }

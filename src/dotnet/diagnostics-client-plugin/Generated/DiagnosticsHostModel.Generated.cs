@@ -120,7 +120,7 @@ namespace DiagnosticsClientPlugin.Generated
     
     
     
-    protected override long SerializationHash => -6652048788474879899L;
+    protected override long SerializationHash => 5936015768702099124L;
     
     protected override Action<ISerializers> Register => RegisterDeclaredTypesSerializers;
     public static void RegisterDeclaredTypesSerializers(ISerializers serializers)
@@ -178,7 +178,7 @@ namespace DiagnosticsClientPlugin.Generated
     //public fields
     public int Pid {get; private set;}
     [NotNull] public string FilePath {get; private set;}
-    public CountersFileFormat Format {get; private set;}
+    public CounterFileFormat Format {get; private set;}
     public int RefreshInterval {get; private set;}
     [NotNull] public string Providers {get; private set;}
     [CanBeNull] public int? Duration {get; private set;}
@@ -188,7 +188,7 @@ namespace DiagnosticsClientPlugin.Generated
     public CollectCountersCommand(
       int pid,
       [NotNull] string filePath,
-      CountersFileFormat format,
+      CounterFileFormat format,
       int refreshInterval,
       [NotNull] string providers,
       [CanBeNull] int? duration
@@ -206,7 +206,7 @@ namespace DiagnosticsClientPlugin.Generated
     }
     //secondary constructor
     //deconstruct trait
-    public void Deconstruct(out int pid, [NotNull] out string filePath, out CountersFileFormat format, out int refreshInterval, [NotNull] out string providers, [CanBeNull] out int? duration)
+    public void Deconstruct(out int pid, [NotNull] out string filePath, out CounterFileFormat format, out int refreshInterval, [NotNull] out string providers, [CanBeNull] out int? duration)
     {
       pid = Pid;
       filePath = FilePath;
@@ -221,7 +221,7 @@ namespace DiagnosticsClientPlugin.Generated
     {
       var pid = reader.ReadInt();
       var filePath = reader.ReadString();
-      var format = (CountersFileFormat)reader.ReadInt();
+      var format = (CounterFileFormat)reader.ReadInt();
       var refreshInterval = reader.ReadInt();
       var providers = reader.ReadString();
       var duration = ReadIntNullable(ctx, reader);
@@ -424,25 +424,29 @@ namespace DiagnosticsClientPlugin.Generated
     //public fields
     public int Pid {get; private set;}
     [NotNull] public string FilePath {get; private set;}
+    [CanBeNull] public int? Duration {get; private set;}
     
     //private fields
     //primary constructor
     public CollectTracesCommand(
       int pid,
-      [NotNull] string filePath
+      [NotNull] string filePath,
+      [CanBeNull] int? duration
     )
     {
       if (filePath == null) throw new ArgumentNullException("filePath");
       
       Pid = pid;
       FilePath = filePath;
+      Duration = duration;
     }
     //secondary constructor
     //deconstruct trait
-    public void Deconstruct(out int pid, [NotNull] out string filePath)
+    public void Deconstruct(out int pid, [NotNull] out string filePath, [CanBeNull] out int? duration)
     {
       pid = Pid;
       filePath = FilePath;
+      duration = Duration;
     }
     //statics
     
@@ -450,15 +454,19 @@ namespace DiagnosticsClientPlugin.Generated
     {
       var pid = reader.ReadInt();
       var filePath = reader.ReadString();
-      var _result = new CollectTracesCommand(pid, filePath);
+      var duration = ReadIntNullable(ctx, reader);
+      var _result = new CollectTracesCommand(pid, filePath, duration);
       return _result;
     };
+    public static CtxReadDelegate<int?> ReadIntNullable = JetBrains.Rd.Impl.Serializers.ReadInt.NullableStruct();
     
     public static CtxWriteDelegate<CollectTracesCommand> Write = (ctx, writer, value) => 
     {
       writer.Write(value.Pid);
       writer.Write(value.FilePath);
+      WriteIntNullable(ctx, writer, value.Duration);
     };
+    public static  CtxWriteDelegate<int?> WriteIntNullable = JetBrains.Rd.Impl.Serializers.WriteInt.NullableStruct();
     
     //constants
     
@@ -476,7 +484,7 @@ namespace DiagnosticsClientPlugin.Generated
     {
       if (ReferenceEquals(null, other)) return false;
       if (ReferenceEquals(this, other)) return true;
-      return Pid == other.Pid && FilePath == other.FilePath;
+      return Pid == other.Pid && FilePath == other.FilePath && Equals(Duration, other.Duration);
     }
     //hash code trait
     public override int GetHashCode()
@@ -485,6 +493,7 @@ namespace DiagnosticsClientPlugin.Generated
         var hash = 0;
         hash = hash * 31 + Pid.GetHashCode();
         hash = hash * 31 + FilePath.GetHashCode();
+        hash = hash * 31 + (Duration != null ? Duration.GetHashCode() : 0);
         return hash;
       }
     }
@@ -495,6 +504,7 @@ namespace DiagnosticsClientPlugin.Generated
       using (printer.IndentCookie()) {
         printer.Print("pid = "); Pid.PrintEx(printer); printer.Println();
         printer.Print("filePath = "); FilePath.PrintEx(printer); printer.Println();
+        printer.Print("duration = "); Duration.PrintEx(printer); printer.Println();
       }
       printer.Print(")");
     }
@@ -604,7 +614,7 @@ namespace DiagnosticsClientPlugin.Generated
   /// <summary>
   /// <p>Generated from: DiagnosticsHostModel.kt:68</p>
   /// </summary>
-  public enum CountersFileFormat {
+  public enum CounterFileFormat {
     Csv,
     Json
   }

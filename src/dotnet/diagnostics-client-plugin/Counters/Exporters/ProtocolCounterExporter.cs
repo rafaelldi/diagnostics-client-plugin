@@ -5,14 +5,14 @@ using System.Threading.Tasks;
 using DiagnosticsClientPlugin.Counters.Common;
 using DiagnosticsClientPlugin.Generated;
 
-namespace DiagnosticsClientPlugin.Counters.Consuming;
+namespace DiagnosticsClientPlugin.Counters.Exporters;
 
-internal sealed class ExportToProtocolCountersConsumer
+internal sealed class ProtocolCounterExporter
 {
     private readonly CountersMonitoringSession _session;
     private readonly ChannelReader<ValueCounter> _reader;
 
-    internal ExportToProtocolCountersConsumer(
+    internal ProtocolCounterExporter(
         CountersMonitoringSession session,
         ChannelReader<ValueCounter> reader )
     {

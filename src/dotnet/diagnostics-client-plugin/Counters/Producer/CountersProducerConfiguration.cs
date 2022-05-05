@@ -1,6 +1,6 @@
 ﻿using Microsoft.Diagnostics.NETCore.Client;
 
-namespace DiagnosticsClientPlugin.Counters.Producing;
+namespace DiagnosticsClientPlugin.Counters.Producer;
 
 internal sealed class CountersProducerConfiguration
 {

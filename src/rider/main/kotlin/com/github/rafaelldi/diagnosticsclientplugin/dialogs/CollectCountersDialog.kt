@@ -15,7 +15,7 @@ class CollectCountersDialog(private val project: Project) : DialogWrapper(projec
         CollectCountersModel(
             project.solutionDirectoryPath.toString(),
             "counters",
-            CountersFileFormat.Csv,
+            CounterFileFormat.Csv,
             1,
             StoppingType.AfterPeriod,
             30,
@@ -61,7 +61,7 @@ class CollectCountersDialog(private val project: Project) : DialogWrapper(projec
         groupRowsRange("File Settings") {
             buttonsGroup {
                 row("File format:") {
-                    for (format in CountersFileFormat.values()) {
+                    for (format in CounterFileFormat.values()) {
                         radioButton(format.name, format)
                     }
                 }

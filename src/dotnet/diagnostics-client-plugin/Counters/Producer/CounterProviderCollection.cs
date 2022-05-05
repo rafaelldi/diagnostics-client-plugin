@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace DiagnosticsClientPlugin.Counters.Producing;
+namespace DiagnosticsClientPlugin.Counters.Producer;
 
 internal sealed class CounterProviderCollection
 {

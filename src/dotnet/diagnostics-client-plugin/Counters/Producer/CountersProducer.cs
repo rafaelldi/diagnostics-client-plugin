@@ -8,7 +8,7 @@ using JetBrains.Lifetimes;
 using Microsoft.Diagnostics.NETCore.Client;
 using Microsoft.Diagnostics.Tracing;
 
-namespace DiagnosticsClientPlugin.Counters.Producing;
+namespace DiagnosticsClientPlugin.Counters.Producer;
 
 internal sealed class CountersProducer
 {

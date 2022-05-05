@@ -5,14 +5,14 @@ using System.Threading.Channels;
 using System.Threading.Tasks;
 using DiagnosticsClientPlugin.Counters.Common;
 
-namespace DiagnosticsClientPlugin.Counters.Consuming;
+namespace DiagnosticsClientPlugin.Counters.Exporters;
 
-internal abstract class AbstractFileCountersConsumer
+internal abstract class AbstractFileCounterExporter
 {
     private readonly ChannelReader<ValueCounter> _reader;
     private readonly FileInfo _file;
 
-    protected AbstractFileCountersConsumer(string filePath, ChannelReader<ValueCounter> reader)
+    protected AbstractFileCounterExporter(string filePath, ChannelReader<ValueCounter> reader)
     {
         _file = CreateFile(filePath);
         _reader = reader;

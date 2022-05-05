@@ -2,8 +2,8 @@
 using System.Threading.Tasks;
 using DiagnosticsClientPlugin.Common;
 using DiagnosticsClientPlugin.Counters.Common;
-using DiagnosticsClientPlugin.Counters.Consuming;
-using DiagnosticsClientPlugin.Counters.Producing;
+using DiagnosticsClientPlugin.Counters.Exporters;
+using DiagnosticsClientPlugin.Counters.Producer;
 using DiagnosticsClientPlugin.Generated;
 using JetBrains.Core;
 using JetBrains.Lifetimes;
@@ -15,7 +15,7 @@ internal sealed class MonitoringSessionEnvelope
 {
     private readonly CounterMonitoringHandler _handler;
     private readonly Lifetime _lifetime;
-    private readonly ExportToProtocolCountersConsumer _consumer;
+    private readonly ProtocolCounterExporter _exporter;
     private readonly CountersProducer _producer;
 
     internal MonitoringSessionEnvelope(int pid, CountersProducerConfiguration producerConfiguration,
@@ -32,7 +32,7 @@ internal sealed class MonitoringSessionEnvelope
             FullMode = BoundedChannelFullMode.DropOldest
         });
 
-        _consumer = new ExportToProtocolCountersConsumer(Session, channel.Reader);
+        _exporter = new ProtocolCounterExporter(Session, channel.Reader);
         _producer = new CountersProducer(pid, producerConfiguration, channel.Writer, lifetime);
 
         Session.Monitor.Set(async (lt, duration) => await Monitor(duration, lt));
@@ -50,10 +50,10 @@ internal sealed class MonitoringSessionEnvelope
             () => Session.Active.Value = false
         );
 
-        var consumerTask = _consumer.ConsumeAsync(operationLifetime);
+        var exporterTask = _exporter.ConsumeAsync(operationLifetime);
         var producerTask = _producer.Produce(operationLifetime);
 
-        var completedTask = await Task.WhenAny(consumerTask, producerTask);
+        var completedTask = await Task.WhenAny(exporterTask, producerTask);
         await completedTask;
 
         return Unit.Instance;

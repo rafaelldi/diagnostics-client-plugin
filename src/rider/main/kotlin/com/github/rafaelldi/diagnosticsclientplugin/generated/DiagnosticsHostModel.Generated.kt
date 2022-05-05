@@ -42,14 +42,14 @@ class DiagnosticsHostModel private constructor(
             serializers.register(MonitorCountersCommand)
             serializers.register(CollectTracesCommand)
             serializers.register(DumpType.marshaller)
-            serializers.register(CountersFileFormat.marshaller)
+            serializers.register(CounterFileFormat.marshaller)
         }
         
         
         
         
         
-        const val serializationHash = -6652048788474879899L
+        const val serializationHash = 5936015768702099124L
         
     }
     override val serializersOwner: ISerializersOwner get() = DiagnosticsHostModel
@@ -142,7 +142,7 @@ val com.jetbrains.rd.ide.model.Solution.diagnosticsHostModel get() = getOrCreate
 data class CollectCountersCommand (
     val pid: Int,
     val filePath: String,
-    val format: CountersFileFormat,
+    val format: CounterFileFormat,
     val refreshInterval: Int,
     val providers: String,
     val duration: Int?
@@ -156,7 +156,7 @@ data class CollectCountersCommand (
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): CollectCountersCommand  {
             val pid = buffer.readInt()
             val filePath = buffer.readString()
-            val format = buffer.readEnum<CountersFileFormat>()
+            val format = buffer.readEnum<CounterFileFormat>()
             val refreshInterval = buffer.readInt()
             val providers = buffer.readString()
             val duration = buffer.readNullable { buffer.readInt() }
@@ -309,7 +309,8 @@ data class CollectDumpCommand (
  */
 data class CollectTracesCommand (
     val pid: Int,
-    val filePath: String
+    val filePath: String,
+    val duration: Int?
 ) : IPrintable {
     //companion
     
@@ -320,12 +321,14 @@ data class CollectTracesCommand (
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): CollectTracesCommand  {
             val pid = buffer.readInt()
             val filePath = buffer.readString()
-            return CollectTracesCommand(pid, filePath)
+            val duration = buffer.readNullable { buffer.readInt() }
+            return CollectTracesCommand(pid, filePath, duration)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: CollectTracesCommand)  {
             buffer.writeInt(value.pid)
             buffer.writeString(value.filePath)
+            buffer.writeNullable(value.duration) { buffer.writeInt(it) }
         }
         
         
@@ -343,6 +346,7 @@ data class CollectTracesCommand (
         
         if (pid != other.pid) return false
         if (filePath != other.filePath) return false
+        if (duration != other.duration) return false
         
         return true
     }
@@ -351,6 +355,7 @@ data class CollectTracesCommand (
         var __r = 0
         __r = __r*31 + pid.hashCode()
         __r = __r*31 + filePath.hashCode()
+        __r = __r*31 + if (duration != null) duration.hashCode() else 0
         return __r
     }
     //pretty print
@@ -359,6 +364,7 @@ data class CollectTracesCommand (
         printer.indent {
             print("pid = "); pid.print(printer); println()
             print("filePath = "); filePath.print(printer); println()
+            print("duration = "); duration.print(printer); println()
         }
         printer.print(")")
     }
@@ -433,12 +439,12 @@ data class Counter (
 /**
  * #### Generated from [DiagnosticsHostModel.kt:68]
  */
-enum class CountersFileFormat {
+enum class CounterFileFormat {
     Csv, 
     Json;
     
     companion object {
-        val marshaller = FrameworkMarshallers.enum<CountersFileFormat>()
+        val marshaller = FrameworkMarshallers.enum<CounterFileFormat>()
         
     }
 }

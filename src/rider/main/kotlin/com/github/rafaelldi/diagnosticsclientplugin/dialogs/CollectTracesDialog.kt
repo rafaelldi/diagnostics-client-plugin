@@ -4,8 +4,8 @@ import com.github.rafaelldi.diagnosticsclientplugin.utils.isValidFilename
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogWrapper
-import com.intellij.ui.dsl.builder.bindText
-import com.intellij.ui.dsl.builder.panel
+import com.intellij.ui.components.JBRadioButton
+import com.intellij.ui.dsl.builder.*
 import com.jetbrains.rider.projectView.solutionDirectoryPath
 import javax.swing.JComponent
 
@@ -13,7 +13,9 @@ class CollectTracesDialog(private val project: Project) : DialogWrapper(project)
     private val model: CollectTracesModel =
         CollectTracesModel(
             project.solutionDirectoryPath.toString(),
-            "trace.nettrace"
+            "trace.nettrace",
+            StoppingType.AfterPeriod,
+            30
         )
 
     init {
@@ -23,6 +25,19 @@ class CollectTracesDialog(private val project: Project) : DialogWrapper(project)
     }
 
     override fun createCenterPanel(): JComponent = panel {
+        lateinit var periodStoppingType: Cell<JBRadioButton>
+
+        buttonsGroup {
+            row("Stop collection:") {
+                periodStoppingType = radioButton(StoppingType.AfterPeriod.label, StoppingType.AfterPeriod)
+                radioButton(StoppingType.Manually.label, StoppingType.Manually)
+            }
+        }.bind(model::stoppingType)
+        row("Duration (sec.):") {
+            spinner(1..3600, 1)
+                .bindIntValue(model::duration)
+                .enabledIf(periodStoppingType.selected)
+        }
         row("Output filename:") {
             textField()
                 .validationOnInput {

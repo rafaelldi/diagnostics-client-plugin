@@ -2,7 +2,7 @@ package com.github.rafaelldi.diagnosticsclientplugin.services
 
 import com.github.rafaelldi.diagnosticsclientplugin.actions.notification.OpenFileAction
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.CollectCountersModel
-import com.github.rafaelldi.diagnosticsclientplugin.dialogs.CountersFileFormat
+import com.github.rafaelldi.diagnosticsclientplugin.dialogs.CounterFileFormat
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.StoppingType
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.map
 import com.github.rafaelldi.diagnosticsclientplugin.generated.CollectCountersCommand
@@ -76,13 +76,13 @@ class CounterCollectionSessionController(project: Project) : ProtocolSubscribedP
 
     private fun calculateFilePath(model: CollectCountersModel): String {
         val filename = when (model.format) {
-            CountersFileFormat.Csv -> {
+            CounterFileFormat.Csv -> {
                 if (model.filename.endsWith(".csv"))
                     model.filename
                 else
                     "${model.filename}.csv"
             }
-            CountersFileFormat.Json -> {
+            CounterFileFormat.Json -> {
                 if (model.filename.endsWith(".json"))
                     model.filename
                 else

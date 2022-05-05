@@ -12,7 +12,7 @@ data class MonitorCountersModel(
 data class CollectCountersModel(
     var path: String,
     var filename: String,
-    var format: CountersFileFormat,
+    var format: CounterFileFormat,
     var interval: Int,
     var stoppingType: StoppingType,
     var duration: Int,
@@ -23,5 +23,7 @@ data class CounterTimerModel(var duration: Int)
 
 data class CollectTracesModel(
     var path: String,
-    var filename: String
+    var filename: String,
+    var stoppingType: StoppingType,
+    var duration: Int,
 )

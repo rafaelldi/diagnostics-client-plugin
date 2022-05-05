@@ -2,8 +2,8 @@
 using System.Threading.Tasks;
 using DiagnosticsClientPlugin.Common;
 using DiagnosticsClientPlugin.Counters.Common;
-using DiagnosticsClientPlugin.Counters.Consuming;
-using DiagnosticsClientPlugin.Counters.Producing;
+using DiagnosticsClientPlugin.Counters.Exporters;
+using DiagnosticsClientPlugin.Counters.Producer;
 using DiagnosticsClientPlugin.Generated;
 using JetBrains.Core;
 using JetBrains.Lifetimes;
@@ -38,22 +38,22 @@ internal sealed class CounterCollectionHandler
             FullMode = BoundedChannelFullMode.DropOldest
         });
 
-        var consumer = CreateConsumer(command, channel);
+        var exporter = CreateExporter(command, channel);
         var producer = CreateProducer(command, channel, sessionLifetime);
 
-        var consumerTask = consumer.ConsumeAsync(sessionLifetime);
+        var exporterTask = exporter.ConsumeAsync(sessionLifetime);
         var producerTask = producer.Produce(sessionLifetime);
 
-        var completedTask = await Task.WhenAny(consumerTask, producerTask);
+        var completedTask = await Task.WhenAny(exporterTask, producerTask);
         await completedTask;
 
         return Unit.Instance;
     }
 
-    private AbstractFileCountersConsumer CreateConsumer(
+    private AbstractFileCounterExporter CreateExporter(
         CollectCountersCommand command,
         Channel<ValueCounter> channel) =>
-        CountersConsumerFactory.Create(command.FilePath, command.Format, channel.Reader);
+        FileCounterExporterFactory.Create(command.FilePath, command.Format, channel.Reader);
 
     private CountersProducer CreateProducer(
         CollectCountersCommand command,

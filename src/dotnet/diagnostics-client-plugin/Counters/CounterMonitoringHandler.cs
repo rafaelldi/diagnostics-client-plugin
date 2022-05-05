@@ -1,6 +1,6 @@
 ﻿using System.Collections.Concurrent;
 using System.Threading.Tasks;
-using DiagnosticsClientPlugin.Counters.Producing;
+using DiagnosticsClientPlugin.Counters.Producer;
 using DiagnosticsClientPlugin.Generated;
 using JetBrains;
 using JetBrains.Core;
