@@ -1,17 +1,17 @@
 package com.github.rafaelldi.diagnosticsclientplugin.actions
 
 import com.github.rafaelldi.diagnosticsclientplugin.generated.diagnosticsHostModel
-import com.github.rafaelldi.diagnosticsclientplugin.services.CounterCollectionSessionController
+import com.github.rafaelldi.diagnosticsclientplugin.services.TraceCollectionSessionController
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.components.service
 import com.jetbrains.rider.projectView.solution
 
-class StopCollectingCountersAction : AnAction() {
+class StopCollectingTracesAction : AnAction() {
     override fun actionPerformed(event: AnActionEvent) {
         val project = event.project ?: return
         val pid = project.solution.diagnosticsHostModel.processList.selected.value ?: return
-        val controller = project.service<CounterCollectionSessionController>()
+        val controller = project.service<TraceCollectionSessionController>()
         controller.stopSession(pid)
     }
 
@@ -25,7 +25,7 @@ class StopCollectingCountersAction : AnAction() {
             if (selected == null) {
                 event.presentation.isEnabledAndVisible = false
             } else {
-                event.presentation.isEnabledAndVisible = model.counterCollectionSessions.contains(selected)
+                event.presentation.isEnabledAndVisible = model.traceCollectionSessions.contains(selected)
             }
         }
     }

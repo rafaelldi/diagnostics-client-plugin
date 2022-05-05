@@ -1,11 +1,8 @@
 package com.github.rafaelldi.diagnosticsclientplugin.services
 
-import com.github.rafaelldi.diagnosticsclientplugin.actions.notification.OpenFileAction
-import com.github.rafaelldi.diagnosticsclientplugin.dialogs.CollectCountersModel
-import com.github.rafaelldi.diagnosticsclientplugin.dialogs.CountersFileFormat
-import com.github.rafaelldi.diagnosticsclientplugin.dialogs.StoppingType
-import com.github.rafaelldi.diagnosticsclientplugin.dialogs.map
-import com.github.rafaelldi.diagnosticsclientplugin.generated.CollectCountersCommand
+import com.github.rafaelldi.diagnosticsclientplugin.actions.notification.RevealFileAction
+import com.github.rafaelldi.diagnosticsclientplugin.dialogs.CollectTracesModel
+import com.github.rafaelldi.diagnosticsclientplugin.generated.CollectTracesCommand
 import com.github.rafaelldi.diagnosticsclientplugin.generated.DiagnosticsHostModel
 import com.github.rafaelldi.diagnosticsclientplugin.generated.diagnosticsHostModel
 import com.intellij.notification.Notification
@@ -21,25 +18,17 @@ import kotlin.io.path.Path
 import kotlin.io.path.pathString
 
 @Service
-class CounterCollectionSessionController(project: Project) : ProtocolSubscribedProjectComponent(project) {
+class TraceCollectionSessionController(project: Project) : ProtocolSubscribedProjectComponent(project) {
     private val hostModel: DiagnosticsHostModel = project.solution.diagnosticsHostModel
     private val activeSessions: ConcurrentHashMap<Int, LifetimeDefinition> = ConcurrentHashMap()
 
-    fun startSession(pid: Int, model: CollectCountersModel) {
+    fun startSession(pid: Int, model: CollectTracesModel) {
         val sessionDefinition = createDefinitionForSession(pid) ?: return
+        val filePath = Path(model.path, model.filename).pathString
 
-        val filePath = calculateFilePath(model)
-        val duration = if (model.stoppingType == StoppingType.AfterPeriod) model.duration else null
-        val command = CollectCountersCommand(
-            pid,
-            filePath,
-            model.format.map(),
-            model.interval,
-            model.providers,
-            duration
-        )
+        val command = CollectTracesCommand(pid, filePath)
 
-        val collectTask = hostModel.collectCounters.start(sessionDefinition.lifetime, command)
+        val collectTask = hostModel.collectTraces.start(sessionDefinition.lifetime, command)
         sessionStarted(pid)
 
         collectTask
@@ -74,25 +63,6 @@ class CounterCollectionSessionController(project: Project) : ProtocolSubscribedP
         return sessionDefinition
     }
 
-    private fun calculateFilePath(model: CollectCountersModel): String {
-        val filename = when (model.format) {
-            CountersFileFormat.Csv -> {
-                if (model.filename.endsWith(".csv"))
-                    model.filename
-                else
-                    "${model.filename}.csv"
-            }
-            CountersFileFormat.Json -> {
-                if (model.filename.endsWith(".json"))
-                    model.filename
-                else
-                    "${model.filename}.json"
-            }
-        }
-
-        return Path(model.path, filename).pathString
-    }
-
     fun stopSession(pid: Int) {
         val sessionDefinition = activeSessions.remove(pid) ?: return
         sessionDefinition.terminate()
@@ -100,7 +70,7 @@ class CounterCollectionSessionController(project: Project) : ProtocolSubscribedP
 
     private fun sessionStarted(pid: Int) = Notification(
         "Diagnostics Client",
-        "Counters collection started",
+        "Traces collection started",
         "Session for process $pid started",
         NotificationType.INFORMATION
     )
@@ -108,16 +78,16 @@ class CounterCollectionSessionController(project: Project) : ProtocolSubscribedP
 
     private fun sessionFinished(pid: Int, filePath: String) = Notification(
         "Diagnostics Client",
-        "Counters collection finished",
+        "Traces collection finished",
         "Session for process $pid finished",
         NotificationType.INFORMATION
     )
-        .addAction(OpenFileAction(filePath))
+        .addAction(RevealFileAction(filePath))
         .notify(project)
 
     private fun sessionFaulted(pid: Int, message: String) = Notification(
         "Diagnostics Client",
-        "Counters collection for $pid faulted",
+        "Traces collection for $pid faulted",
         message,
         NotificationType.ERROR
     )

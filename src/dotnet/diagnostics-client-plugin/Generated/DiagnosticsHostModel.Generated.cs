@@ -43,68 +43,84 @@ namespace DiagnosticsClientPlugin.Generated
     //fields
     //public fields
     [NotNull] public DiagnosticsClientPlugin.Generated.ProcessList ProcessList {get; private set;}
-    [NotNull] public IViewableMap<int, CountersCollectionSession> CountersCollectionSessions => _CountersCollectionSessions;
-    [NotNull] public IViewableMap<int, CountersMonitoringSession> CountersMonitoringSessions => _CountersMonitoringSessions;
+    [NotNull] public IViewableList<int> CounterCollectionSessions => _CounterCollectionSessions;
+    [NotNull] public IViewableMap<int, CountersMonitoringSession> CounterMonitoringSessions => _CounterMonitoringSessions;
+    [NotNull] public IViewableList<int> TraceCollectionSessions => _TraceCollectionSessions;
     [NotNull] public IRdEndpoint<CollectDumpCommand, DumpCollectionResult> CollectDump => _CollectDump;
     [NotNull] public IRdEndpoint<CollectCountersCommand, Unit> CollectCounters => _CollectCounters;
     [NotNull] public IRdEndpoint<MonitorCountersCommand, Unit> MonitorCounters => _MonitorCounters;
+    [NotNull] public IRdEndpoint<CollectTracesCommand, Unit> CollectTraces => _CollectTraces;
     
     //private fields
-    [NotNull] private readonly RdMap<int, CountersCollectionSession> _CountersCollectionSessions;
-    [NotNull] private readonly RdMap<int, CountersMonitoringSession> _CountersMonitoringSessions;
+    [NotNull] private readonly RdList<int> _CounterCollectionSessions;
+    [NotNull] private readonly RdMap<int, CountersMonitoringSession> _CounterMonitoringSessions;
+    [NotNull] private readonly RdList<int> _TraceCollectionSessions;
     [NotNull] private readonly RdCall<CollectDumpCommand, DumpCollectionResult> _CollectDump;
     [NotNull] private readonly RdCall<CollectCountersCommand, Unit> _CollectCounters;
     [NotNull] private readonly RdCall<MonitorCountersCommand, Unit> _MonitorCounters;
+    [NotNull] private readonly RdCall<CollectTracesCommand, Unit> _CollectTraces;
     
     //primary constructor
     private DiagnosticsHostModel(
       [NotNull] DiagnosticsClientPlugin.Generated.ProcessList processList,
-      [NotNull] RdMap<int, CountersCollectionSession> countersCollectionSessions,
-      [NotNull] RdMap<int, CountersMonitoringSession> countersMonitoringSessions,
+      [NotNull] RdList<int> counterCollectionSessions,
+      [NotNull] RdMap<int, CountersMonitoringSession> counterMonitoringSessions,
+      [NotNull] RdList<int> traceCollectionSessions,
       [NotNull] RdCall<CollectDumpCommand, DumpCollectionResult> collectDump,
       [NotNull] RdCall<CollectCountersCommand, Unit> collectCounters,
-      [NotNull] RdCall<MonitorCountersCommand, Unit> monitorCounters
+      [NotNull] RdCall<MonitorCountersCommand, Unit> monitorCounters,
+      [NotNull] RdCall<CollectTracesCommand, Unit> collectTraces
     )
     {
       if (processList == null) throw new ArgumentNullException("processList");
-      if (countersCollectionSessions == null) throw new ArgumentNullException("countersCollectionSessions");
-      if (countersMonitoringSessions == null) throw new ArgumentNullException("countersMonitoringSessions");
+      if (counterCollectionSessions == null) throw new ArgumentNullException("counterCollectionSessions");
+      if (counterMonitoringSessions == null) throw new ArgumentNullException("counterMonitoringSessions");
+      if (traceCollectionSessions == null) throw new ArgumentNullException("traceCollectionSessions");
       if (collectDump == null) throw new ArgumentNullException("collectDump");
       if (collectCounters == null) throw new ArgumentNullException("collectCounters");
       if (monitorCounters == null) throw new ArgumentNullException("monitorCounters");
+      if (collectTraces == null) throw new ArgumentNullException("collectTraces");
       
       ProcessList = processList;
-      _CountersCollectionSessions = countersCollectionSessions;
-      _CountersMonitoringSessions = countersMonitoringSessions;
+      _CounterCollectionSessions = counterCollectionSessions;
+      _CounterMonitoringSessions = counterMonitoringSessions;
+      _TraceCollectionSessions = traceCollectionSessions;
       _CollectDump = collectDump;
       _CollectCounters = collectCounters;
       _MonitorCounters = monitorCounters;
-      _CountersCollectionSessions.OptimizeNested = true;
-      _CountersCollectionSessions.Async = true;
-      _CountersMonitoringSessions.Async = true;
+      _CollectTraces = collectTraces;
+      _CounterCollectionSessions.OptimizeNested = true;
+      _TraceCollectionSessions.OptimizeNested = true;
+      _CounterCollectionSessions.Async = true;
+      _CounterMonitoringSessions.Async = true;
+      _TraceCollectionSessions.Async = true;
       BindableChildren.Add(new KeyValuePair<string, object>("processList", ProcessList));
-      BindableChildren.Add(new KeyValuePair<string, object>("countersCollectionSessions", _CountersCollectionSessions));
-      BindableChildren.Add(new KeyValuePair<string, object>("countersMonitoringSessions", _CountersMonitoringSessions));
+      BindableChildren.Add(new KeyValuePair<string, object>("counterCollectionSessions", _CounterCollectionSessions));
+      BindableChildren.Add(new KeyValuePair<string, object>("counterMonitoringSessions", _CounterMonitoringSessions));
+      BindableChildren.Add(new KeyValuePair<string, object>("traceCollectionSessions", _TraceCollectionSessions));
       BindableChildren.Add(new KeyValuePair<string, object>("collectDump", _CollectDump));
       BindableChildren.Add(new KeyValuePair<string, object>("collectCounters", _CollectCounters));
       BindableChildren.Add(new KeyValuePair<string, object>("monitorCounters", _MonitorCounters));
+      BindableChildren.Add(new KeyValuePair<string, object>("collectTraces", _CollectTraces));
     }
     //secondary constructor
     internal DiagnosticsHostModel (
     ) : this (
       new DiagnosticsClientPlugin.Generated.ProcessList(),
-      new RdMap<int, CountersCollectionSession>(JetBrains.Rd.Impl.Serializers.ReadInt, JetBrains.Rd.Impl.Serializers.WriteInt, CountersCollectionSession.Read, CountersCollectionSession.Write),
+      new RdList<int>(JetBrains.Rd.Impl.Serializers.ReadInt, JetBrains.Rd.Impl.Serializers.WriteInt),
       new RdMap<int, CountersMonitoringSession>(JetBrains.Rd.Impl.Serializers.ReadInt, JetBrains.Rd.Impl.Serializers.WriteInt, CountersMonitoringSession.Read, CountersMonitoringSession.Write),
+      new RdList<int>(JetBrains.Rd.Impl.Serializers.ReadInt, JetBrains.Rd.Impl.Serializers.WriteInt),
       new RdCall<CollectDumpCommand, DumpCollectionResult>(CollectDumpCommand.Read, CollectDumpCommand.Write, DumpCollectionResult.Read, DumpCollectionResult.Write),
       new RdCall<CollectCountersCommand, Unit>(CollectCountersCommand.Read, CollectCountersCommand.Write, JetBrains.Rd.Impl.Serializers.ReadVoid, JetBrains.Rd.Impl.Serializers.WriteVoid),
-      new RdCall<MonitorCountersCommand, Unit>(MonitorCountersCommand.Read, MonitorCountersCommand.Write, JetBrains.Rd.Impl.Serializers.ReadVoid, JetBrains.Rd.Impl.Serializers.WriteVoid)
+      new RdCall<MonitorCountersCommand, Unit>(MonitorCountersCommand.Read, MonitorCountersCommand.Write, JetBrains.Rd.Impl.Serializers.ReadVoid, JetBrains.Rd.Impl.Serializers.WriteVoid),
+      new RdCall<CollectTracesCommand, Unit>(CollectTracesCommand.Read, CollectTracesCommand.Write, JetBrains.Rd.Impl.Serializers.ReadVoid, JetBrains.Rd.Impl.Serializers.WriteVoid)
     ) {}
     //deconstruct trait
     //statics
     
     
     
-    protected override long SerializationHash => 1327875831967689952L;
+    protected override long SerializationHash => -6652048788474879899L;
     
     protected override Action<ISerializers> Register => RegisterDeclaredTypesSerializers;
     public static void RegisterDeclaredTypesSerializers(ISerializers serializers)
@@ -126,11 +142,13 @@ namespace DiagnosticsClientPlugin.Generated
       printer.Println("DiagnosticsHostModel (");
       using (printer.IndentCookie()) {
         printer.Print("processList = "); ProcessList.PrintEx(printer); printer.Println();
-        printer.Print("countersCollectionSessions = "); _CountersCollectionSessions.PrintEx(printer); printer.Println();
-        printer.Print("countersMonitoringSessions = "); _CountersMonitoringSessions.PrintEx(printer); printer.Println();
+        printer.Print("counterCollectionSessions = "); _CounterCollectionSessions.PrintEx(printer); printer.Println();
+        printer.Print("counterMonitoringSessions = "); _CounterMonitoringSessions.PrintEx(printer); printer.Println();
+        printer.Print("traceCollectionSessions = "); _TraceCollectionSessions.PrintEx(printer); printer.Println();
         printer.Print("collectDump = "); _CollectDump.PrintEx(printer); printer.Println();
         printer.Print("collectCounters = "); _CollectCounters.PrintEx(printer); printer.Println();
         printer.Print("monitorCounters = "); _MonitorCounters.PrintEx(printer); printer.Println();
+        printer.Print("collectTraces = "); _CollectTraces.PrintEx(printer); printer.Println();
       }
       printer.Print(")");
     }
@@ -152,7 +170,7 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:69</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:65</p>
   /// </summary>
   public sealed class CollectCountersCommand : IPrintable, IEquatable<CollectCountersCommand>
   {
@@ -280,7 +298,7 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:52</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:48</p>
   /// </summary>
   public sealed class CollectDumpCommand : IPrintable, IEquatable<CollectDumpCommand>
   {
@@ -398,7 +416,100 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:38</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:92</p>
+  /// </summary>
+  public sealed class CollectTracesCommand : IPrintable, IEquatable<CollectTracesCommand>
+  {
+    //fields
+    //public fields
+    public int Pid {get; private set;}
+    [NotNull] public string FilePath {get; private set;}
+    
+    //private fields
+    //primary constructor
+    public CollectTracesCommand(
+      int pid,
+      [NotNull] string filePath
+    )
+    {
+      if (filePath == null) throw new ArgumentNullException("filePath");
+      
+      Pid = pid;
+      FilePath = filePath;
+    }
+    //secondary constructor
+    //deconstruct trait
+    public void Deconstruct(out int pid, [NotNull] out string filePath)
+    {
+      pid = Pid;
+      filePath = FilePath;
+    }
+    //statics
+    
+    public static CtxReadDelegate<CollectTracesCommand> Read = (ctx, reader) => 
+    {
+      var pid = reader.ReadInt();
+      var filePath = reader.ReadString();
+      var _result = new CollectTracesCommand(pid, filePath);
+      return _result;
+    };
+    
+    public static CtxWriteDelegate<CollectTracesCommand> Write = (ctx, writer, value) => 
+    {
+      writer.Write(value.Pid);
+      writer.Write(value.FilePath);
+    };
+    
+    //constants
+    
+    //custom body
+    //methods
+    //equals trait
+    public override bool Equals(object obj)
+    {
+      if (ReferenceEquals(null, obj)) return false;
+      if (ReferenceEquals(this, obj)) return true;
+      if (obj.GetType() != GetType()) return false;
+      return Equals((CollectTracesCommand) obj);
+    }
+    public bool Equals(CollectTracesCommand other)
+    {
+      if (ReferenceEquals(null, other)) return false;
+      if (ReferenceEquals(this, other)) return true;
+      return Pid == other.Pid && FilePath == other.FilePath;
+    }
+    //hash code trait
+    public override int GetHashCode()
+    {
+      unchecked {
+        var hash = 0;
+        hash = hash * 31 + Pid.GetHashCode();
+        hash = hash * 31 + FilePath.GetHashCode();
+        return hash;
+      }
+    }
+    //pretty print
+    public void Print(PrettyPrinter printer)
+    {
+      printer.Println("CollectTracesCommand (");
+      using (printer.IndentCookie()) {
+        printer.Print("pid = "); Pid.PrintEx(printer); printer.Println();
+        printer.Print("filePath = "); FilePath.PrintEx(printer); printer.Println();
+      }
+      printer.Print(")");
+    }
+    //toString
+    public override string ToString()
+    {
+      var printer = new SingleLinePrettyPrinter();
+      Print(printer);
+      return printer.ToString();
+    }
+  }
+  
+  
+  /// <summary>
+  /// <p>Generated from: DiagnosticsHostModel.kt:33</p>
   /// </summary>
   public sealed class Counter : IPrintable, IEquatable<Counter>
   {
@@ -491,100 +602,7 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:24</p>
-  /// </summary>
-  public sealed class CountersCollectionSession : IPrintable, IEquatable<CountersCollectionSession>
-  {
-    //fields
-    //public fields
-    public int Pid {get; private set;}
-    [NotNull] public string FilePath {get; private set;}
-    
-    //private fields
-    //primary constructor
-    public CountersCollectionSession(
-      int pid,
-      [NotNull] string filePath
-    )
-    {
-      if (filePath == null) throw new ArgumentNullException("filePath");
-      
-      Pid = pid;
-      FilePath = filePath;
-    }
-    //secondary constructor
-    //deconstruct trait
-    public void Deconstruct(out int pid, [NotNull] out string filePath)
-    {
-      pid = Pid;
-      filePath = FilePath;
-    }
-    //statics
-    
-    public static CtxReadDelegate<CountersCollectionSession> Read = (ctx, reader) => 
-    {
-      var pid = reader.ReadInt();
-      var filePath = reader.ReadString();
-      var _result = new CountersCollectionSession(pid, filePath);
-      return _result;
-    };
-    
-    public static CtxWriteDelegate<CountersCollectionSession> Write = (ctx, writer, value) => 
-    {
-      writer.Write(value.Pid);
-      writer.Write(value.FilePath);
-    };
-    
-    //constants
-    
-    //custom body
-    //methods
-    //equals trait
-    public override bool Equals(object obj)
-    {
-      if (ReferenceEquals(null, obj)) return false;
-      if (ReferenceEquals(this, obj)) return true;
-      if (obj.GetType() != GetType()) return false;
-      return Equals((CountersCollectionSession) obj);
-    }
-    public bool Equals(CountersCollectionSession other)
-    {
-      if (ReferenceEquals(null, other)) return false;
-      if (ReferenceEquals(this, other)) return true;
-      return Pid == other.Pid && FilePath == other.FilePath;
-    }
-    //hash code trait
-    public override int GetHashCode()
-    {
-      unchecked {
-        var hash = 0;
-        hash = hash * 31 + Pid.GetHashCode();
-        hash = hash * 31 + FilePath.GetHashCode();
-        return hash;
-      }
-    }
-    //pretty print
-    public void Print(PrettyPrinter printer)
-    {
-      printer.Println("CountersCollectionSession (");
-      using (printer.IndentCookie()) {
-        printer.Print("pid = "); Pid.PrintEx(printer); printer.Println();
-        printer.Print("filePath = "); FilePath.PrintEx(printer); printer.Println();
-      }
-      printer.Print(")");
-    }
-    //toString
-    public override string ToString()
-    {
-      var printer = new SingleLinePrettyPrinter();
-      Print(printer);
-      return printer.ToString();
-    }
-  }
-  
-  
-  /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:72</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:68</p>
   /// </summary>
   public enum CountersFileFormat {
     Csv,
@@ -593,7 +611,7 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:29</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:24</p>
   /// </summary>
   public sealed class CountersMonitoringSession : RdBindableBase
   {
@@ -708,7 +726,7 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:63</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:59</p>
   /// </summary>
   public sealed class DumpCollectionResult : IPrintable, IEquatable<DumpCollectionResult>
   {
@@ -793,7 +811,7 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:54</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:50</p>
   /// </summary>
   public enum DumpType {
     Full,
@@ -804,7 +822,7 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:85</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:81</p>
   /// </summary>
   public sealed class MonitorCountersCommand : IPrintable, IEquatable<MonitorCountersCommand>
   {

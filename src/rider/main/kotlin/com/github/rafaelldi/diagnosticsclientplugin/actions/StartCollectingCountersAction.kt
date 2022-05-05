@@ -30,7 +30,7 @@ class StartCollectingCountersAction : AnAction() {
             if (selected == null) {
                 event.presentation.isEnabled = false
             } else {
-                event.presentation.isEnabledAndVisible = !model.countersCollectionSessions.containsKey(selected)
+                event.presentation.isEnabledAndVisible = !model.counterCollectionSessions.contains(selected)
             }
         }
     }

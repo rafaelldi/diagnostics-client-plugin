@@ -19,4 +19,9 @@ data class CollectCountersModel(
     var providers: String
 )
 
-data class CountersTimerModel(var duration: Int)
+data class CounterTimerModel(var duration: Int)
+
+data class CollectTracesModel(
+    var path: String,
+    var filename: String
+)

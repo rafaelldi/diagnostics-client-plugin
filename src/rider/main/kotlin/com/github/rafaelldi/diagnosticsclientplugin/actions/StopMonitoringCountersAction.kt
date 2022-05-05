@@ -25,7 +25,7 @@ class StopMonitoringCountersAction : AnAction() {
             if (selected == null) {
                 event.presentation.isEnabledAndVisible = false
             } else {
-                val session = model.countersMonitoringSessions[selected]
+                val session = model.counterMonitoringSessions[selected]
                 val isActive = session?.active?.valueOrNull ?: false
                 event.presentation.isEnabledAndVisible = isActive
             }

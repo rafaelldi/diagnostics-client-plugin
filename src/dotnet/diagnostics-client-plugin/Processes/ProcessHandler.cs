@@ -11,17 +11,17 @@ using Microsoft.Diagnostics.NETCore.Client;
 namespace DiagnosticsClientPlugin.Processes;
 
 [SolutionComponent]
-internal sealed class RefreshProcessesHandler
+internal sealed class ProcessHandler
 {
     private readonly DiagnosticsHostModel _model;
 
-    public RefreshProcessesHandler(ISolution solution, Lifetime lifetime)
+    public ProcessHandler(ISolution solution, Lifetime lifetime)
     {
         _model = solution.GetProtocolSolution().GetDiagnosticsHostModel();
-        _model.ProcessList.Refresh.Advise(lifetime, _ => Handle());
+        _model.ProcessList.Refresh.Advise(lifetime, _ => Refresh());
     }
 
-    private void Handle()
+    private void Refresh()
     {
         var processes = DiagnosticsClient.GetPublishedProcesses().ToList();
 

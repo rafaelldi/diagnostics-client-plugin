@@ -1,6 +1,6 @@
-﻿using System;
-using System.Threading.Channels;
+﻿using System.Threading.Channels;
 using System.Threading.Tasks;
+using DiagnosticsClientPlugin.Common;
 using DiagnosticsClientPlugin.Counters.Common;
 using DiagnosticsClientPlugin.Counters.Consuming;
 using DiagnosticsClientPlugin.Counters.Producing;
@@ -13,12 +13,15 @@ namespace DiagnosticsClientPlugin.Counters.Monitoring;
 
 internal sealed class MonitoringSessionEnvelope
 {
+    private readonly CounterMonitoringHandler _handler;
     private readonly Lifetime _lifetime;
     private readonly ExportToProtocolCountersConsumer _consumer;
     private readonly CountersProducer _producer;
 
-    internal MonitoringSessionEnvelope(int pid, CountersProducerConfiguration producerConfiguration, Lifetime lifetime)
+    internal MonitoringSessionEnvelope(int pid, CountersProducerConfiguration producerConfiguration,
+        CounterMonitoringHandler handler, Lifetime lifetime)
     {
+        _handler = handler;
         _lifetime = lifetime;
         Session = new CountersMonitoringSession(pid);
 
@@ -40,7 +43,7 @@ internal sealed class MonitoringSessionEnvelope
 
     internal async Task<Unit> Monitor(int? duration, Lifetime lifetime)
     {
-        var operationLifetime = CreateOperationLifetime(lifetime, duration);
+        var operationLifetime = _lifetime.IntersectWithTimer(lifetime, duration);
 
         operationLifetime.Bracket(
             () => Session.Active.Value = true,
@@ -56,16 +59,8 @@ internal sealed class MonitoringSessionEnvelope
         return Unit.Instance;
     }
 
-    private Lifetime CreateOperationLifetime(in Lifetime operationLifetime, int? duration)
-    {
-        var sessionLifetime = _lifetime.Intersect(operationLifetime);
-        return duration.HasValue
-            ? sessionLifetime.CreateTerminatedAfter(TimeSpan.FromSeconds(duration.Value))
-            : sessionLifetime;
-    }
-
     private void Close()
     {
-        throw new NotImplementedException();
+        _handler.CloseSession(Session.Pid);
     }
 }

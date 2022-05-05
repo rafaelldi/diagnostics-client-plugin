@@ -19,11 +19,13 @@ import kotlin.jvm.JvmStatic
  */
 class DiagnosticsHostModel private constructor(
     val processList: ProcessList,
-    private val _countersCollectionSessions: RdMap<Int, CountersCollectionSession>,
-    private val _countersMonitoringSessions: RdMap<Int, CountersMonitoringSession>,
+    private val _counterCollectionSessions: RdList<Int>,
+    private val _counterMonitoringSessions: RdMap<Int, CountersMonitoringSession>,
+    private val _traceCollectionSessions: RdList<Int>,
     private val _collectDump: RdCall<CollectDumpCommand, DumpCollectionResult>,
     private val _collectCounters: RdCall<CollectCountersCommand, Unit>,
-    private val _monitorCounters: RdCall<MonitorCountersCommand, Unit>
+    private val _monitorCounters: RdCall<MonitorCountersCommand, Unit>,
+    private val _collectTraces: RdCall<CollectTracesCommand, Unit>
 ) : RdExtBase() {
     //companion
     
@@ -32,13 +34,13 @@ class DiagnosticsHostModel private constructor(
         override fun registerSerializersCore(serializers: ISerializers)  {
             serializers.register(ProcessInfo)
             serializers.register(ProcessList)
-            serializers.register(CountersCollectionSession)
             serializers.register(CountersMonitoringSession)
             serializers.register(Counter)
             serializers.register(CollectDumpCommand)
             serializers.register(DumpCollectionResult)
             serializers.register(CollectCountersCommand)
             serializers.register(MonitorCountersCommand)
+            serializers.register(CollectTracesCommand)
             serializers.register(DumpType.marshaller)
             serializers.register(CountersFileFormat.marshaller)
         }
@@ -47,47 +49,55 @@ class DiagnosticsHostModel private constructor(
         
         
         
-        const val serializationHash = 1327875831967689952L
+        const val serializationHash = -6652048788474879899L
         
     }
     override val serializersOwner: ISerializersOwner get() = DiagnosticsHostModel
     override val serializationHash: Long get() = DiagnosticsHostModel.serializationHash
     
     //fields
-    val countersCollectionSessions: IMutableViewableMap<Int, CountersCollectionSession> get() = _countersCollectionSessions
-    val countersMonitoringSessions: IMutableViewableMap<Int, CountersMonitoringSession> get() = _countersMonitoringSessions
+    val counterCollectionSessions: IMutableViewableList<Int> get() = _counterCollectionSessions
+    val counterMonitoringSessions: IMutableViewableMap<Int, CountersMonitoringSession> get() = _counterMonitoringSessions
+    val traceCollectionSessions: IMutableViewableList<Int> get() = _traceCollectionSessions
     val collectDump: IRdCall<CollectDumpCommand, DumpCollectionResult> get() = _collectDump
     val collectCounters: IRdCall<CollectCountersCommand, Unit> get() = _collectCounters
     val monitorCounters: IRdCall<MonitorCountersCommand, Unit> get() = _monitorCounters
+    val collectTraces: IRdCall<CollectTracesCommand, Unit> get() = _collectTraces
     //methods
     //initializer
     init {
-        _countersCollectionSessions.optimizeNested = true
+        _counterCollectionSessions.optimizeNested = true
+        _traceCollectionSessions.optimizeNested = true
     }
     
     init {
-        _countersCollectionSessions.async = true
-        _countersMonitoringSessions.async = true
+        _counterCollectionSessions.async = true
+        _counterMonitoringSessions.async = true
+        _traceCollectionSessions.async = true
     }
     
     init {
         bindableChildren.add("processList" to processList)
-        bindableChildren.add("countersCollectionSessions" to _countersCollectionSessions)
-        bindableChildren.add("countersMonitoringSessions" to _countersMonitoringSessions)
+        bindableChildren.add("counterCollectionSessions" to _counterCollectionSessions)
+        bindableChildren.add("counterMonitoringSessions" to _counterMonitoringSessions)
+        bindableChildren.add("traceCollectionSessions" to _traceCollectionSessions)
         bindableChildren.add("collectDump" to _collectDump)
         bindableChildren.add("collectCounters" to _collectCounters)
         bindableChildren.add("monitorCounters" to _monitorCounters)
+        bindableChildren.add("collectTraces" to _collectTraces)
     }
     
     //secondary constructor
     internal constructor(
     ) : this(
         ProcessList(),
-        RdMap<Int, CountersCollectionSession>(FrameworkMarshallers.Int, CountersCollectionSession),
+        RdList<Int>(FrameworkMarshallers.Int),
         RdMap<Int, CountersMonitoringSession>(FrameworkMarshallers.Int, CountersMonitoringSession),
+        RdList<Int>(FrameworkMarshallers.Int),
         RdCall<CollectDumpCommand, DumpCollectionResult>(CollectDumpCommand, DumpCollectionResult),
         RdCall<CollectCountersCommand, Unit>(CollectCountersCommand, FrameworkMarshallers.Void),
-        RdCall<MonitorCountersCommand, Unit>(MonitorCountersCommand, FrameworkMarshallers.Void)
+        RdCall<MonitorCountersCommand, Unit>(MonitorCountersCommand, FrameworkMarshallers.Void),
+        RdCall<CollectTracesCommand, Unit>(CollectTracesCommand, FrameworkMarshallers.Void)
     )
     
     //equals trait
@@ -97,11 +107,13 @@ class DiagnosticsHostModel private constructor(
         printer.println("DiagnosticsHostModel (")
         printer.indent {
             print("processList = "); processList.print(printer); println()
-            print("countersCollectionSessions = "); _countersCollectionSessions.print(printer); println()
-            print("countersMonitoringSessions = "); _countersMonitoringSessions.print(printer); println()
+            print("counterCollectionSessions = "); _counterCollectionSessions.print(printer); println()
+            print("counterMonitoringSessions = "); _counterMonitoringSessions.print(printer); println()
+            print("traceCollectionSessions = "); _traceCollectionSessions.print(printer); println()
             print("collectDump = "); _collectDump.print(printer); println()
             print("collectCounters = "); _collectCounters.print(printer); println()
             print("monitorCounters = "); _monitorCounters.print(printer); println()
+            print("collectTraces = "); _collectTraces.print(printer); println()
         }
         printer.print(")")
     }
@@ -109,11 +121,13 @@ class DiagnosticsHostModel private constructor(
     override fun deepClone(): DiagnosticsHostModel   {
         return DiagnosticsHostModel(
             processList.deepClonePolymorphic(),
-            _countersCollectionSessions.deepClonePolymorphic(),
-            _countersMonitoringSessions.deepClonePolymorphic(),
+            _counterCollectionSessions.deepClonePolymorphic(),
+            _counterMonitoringSessions.deepClonePolymorphic(),
+            _traceCollectionSessions.deepClonePolymorphic(),
             _collectDump.deepClonePolymorphic(),
             _collectCounters.deepClonePolymorphic(),
-            _monitorCounters.deepClonePolymorphic()
+            _monitorCounters.deepClonePolymorphic(),
+            _collectTraces.deepClonePolymorphic()
         )
     }
     //contexts
@@ -123,7 +137,7 @@ val com.jetbrains.rd.ide.model.Solution.diagnosticsHostModel get() = getOrCreate
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:69]
+ * #### Generated from [DiagnosticsHostModel.kt:65]
  */
 data class CollectCountersCommand (
     val pid: Int,
@@ -210,7 +224,7 @@ data class CollectCountersCommand (
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:52]
+ * #### Generated from [DiagnosticsHostModel.kt:48]
  */
 data class CollectDumpCommand (
     val pid: Int,
@@ -291,7 +305,70 @@ data class CollectDumpCommand (
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:38]
+ * #### Generated from [DiagnosticsHostModel.kt:92]
+ */
+data class CollectTracesCommand (
+    val pid: Int,
+    val filePath: String
+) : IPrintable {
+    //companion
+    
+    companion object : IMarshaller<CollectTracesCommand> {
+        override val _type: KClass<CollectTracesCommand> = CollectTracesCommand::class
+        
+        @Suppress("UNCHECKED_CAST")
+        override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): CollectTracesCommand  {
+            val pid = buffer.readInt()
+            val filePath = buffer.readString()
+            return CollectTracesCommand(pid, filePath)
+        }
+        
+        override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: CollectTracesCommand)  {
+            buffer.writeInt(value.pid)
+            buffer.writeString(value.filePath)
+        }
+        
+        
+    }
+    //fields
+    //methods
+    //initializer
+    //secondary constructor
+    //equals trait
+    override fun equals(other: Any?): Boolean  {
+        if (this === other) return true
+        if (other == null || other::class != this::class) return false
+        
+        other as CollectTracesCommand
+        
+        if (pid != other.pid) return false
+        if (filePath != other.filePath) return false
+        
+        return true
+    }
+    //hash code trait
+    override fun hashCode(): Int  {
+        var __r = 0
+        __r = __r*31 + pid.hashCode()
+        __r = __r*31 + filePath.hashCode()
+        return __r
+    }
+    //pretty print
+    override fun print(printer: PrettyPrinter)  {
+        printer.println("CollectTracesCommand (")
+        printer.indent {
+            print("pid = "); pid.print(printer); println()
+            print("filePath = "); filePath.print(printer); println()
+        }
+        printer.print(")")
+    }
+    //deepClone
+    //contexts
+}
+
+
+/**
+ * #### Generated from [DiagnosticsHostModel.kt:33]
  */
 data class Counter (
     val name: String,
@@ -354,70 +431,7 @@ data class Counter (
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:24]
- */
-data class CountersCollectionSession (
-    val pid: Int,
-    val filePath: String
-) : IPrintable {
-    //companion
-    
-    companion object : IMarshaller<CountersCollectionSession> {
-        override val _type: KClass<CountersCollectionSession> = CountersCollectionSession::class
-        
-        @Suppress("UNCHECKED_CAST")
-        override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): CountersCollectionSession  {
-            val pid = buffer.readInt()
-            val filePath = buffer.readString()
-            return CountersCollectionSession(pid, filePath)
-        }
-        
-        override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: CountersCollectionSession)  {
-            buffer.writeInt(value.pid)
-            buffer.writeString(value.filePath)
-        }
-        
-        
-    }
-    //fields
-    //methods
-    //initializer
-    //secondary constructor
-    //equals trait
-    override fun equals(other: Any?): Boolean  {
-        if (this === other) return true
-        if (other == null || other::class != this::class) return false
-        
-        other as CountersCollectionSession
-        
-        if (pid != other.pid) return false
-        if (filePath != other.filePath) return false
-        
-        return true
-    }
-    //hash code trait
-    override fun hashCode(): Int  {
-        var __r = 0
-        __r = __r*31 + pid.hashCode()
-        __r = __r*31 + filePath.hashCode()
-        return __r
-    }
-    //pretty print
-    override fun print(printer: PrettyPrinter)  {
-        printer.println("CountersCollectionSession (")
-        printer.indent {
-            print("pid = "); pid.print(printer); println()
-            print("filePath = "); filePath.print(printer); println()
-        }
-        printer.print(")")
-    }
-    //deepClone
-    //contexts
-}
-
-
-/**
- * #### Generated from [DiagnosticsHostModel.kt:72]
+ * #### Generated from [DiagnosticsHostModel.kt:68]
  */
 enum class CountersFileFormat {
     Csv, 
@@ -431,7 +445,7 @@ enum class CountersFileFormat {
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:29]
+ * #### Generated from [DiagnosticsHostModel.kt:24]
  */
 class CountersMonitoringSession private constructor(
     val pid: Int,
@@ -533,7 +547,7 @@ class CountersMonitoringSession private constructor(
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:63]
+ * #### Generated from [DiagnosticsHostModel.kt:59]
  */
 data class DumpCollectionResult (
     val filePath: String
@@ -590,7 +604,7 @@ data class DumpCollectionResult (
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:54]
+ * #### Generated from [DiagnosticsHostModel.kt:50]
  */
 enum class DumpType {
     Full, 
@@ -606,7 +620,7 @@ enum class DumpType {
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:85]
+ * #### Generated from [DiagnosticsHostModel.kt:81]
  */
 data class MonitorCountersCommand (
     val pid: Int,

@@ -19,10 +19,10 @@ import java.util.concurrent.ConcurrentHashMap
 @Service
 class CounterMonitoringSessionController(project: Project) : ProtocolSubscribedProjectComponent(project) {
     private val hostModel: DiagnosticsHostModel = project.solution.diagnosticsHostModel
-    private val definitions: ConcurrentHashMap<Int, LifetimeDefinition> = ConcurrentHashMap()
+    private val activeSessions: ConcurrentHashMap<Int, LifetimeDefinition> = ConcurrentHashMap()
 
     init {
-        hostModel.countersMonitoringSessions.view(projectComponentLifetime) { lt, _, session ->
+        hostModel.counterMonitoringSessions.view(projectComponentLifetime) { lt, _, session ->
             viewSession(lt, session)
         }
     }
@@ -41,7 +41,7 @@ class CounterMonitoringSessionController(project: Project) : ProtocolSubscribedP
             .advise(projectComponentLifetime) { result ->
                 when (result) {
                     is RdTaskResult.Success -> {
-                        definitions.remove(pid)
+                        activeSessions.remove(pid)
                         sessionFinished(pid)
                     }
                     is RdTaskResult.Cancelled -> {
@@ -57,7 +57,7 @@ class CounterMonitoringSessionController(project: Project) : ProtocolSubscribedP
     fun startExistingSession(pid: Int, duration: Int?) {
         val sessionDefinition = createDefinitionForSession(pid) ?: return
 
-        val session = hostModel.countersMonitoringSessions[pid] ?: return
+        val session = hostModel.counterMonitoringSessions[pid] ?: return
         val monitorTask = session.monitor.start(sessionDefinition.lifetime, duration)
         sessionStarted(pid)
 
@@ -66,7 +66,7 @@ class CounterMonitoringSessionController(project: Project) : ProtocolSubscribedP
             .advise(projectComponentLifetime) { result ->
                 when (result) {
                     is RdTaskResult.Success -> {
-                        definitions.remove(pid)
+                        activeSessions.remove(pid)
                         sessionFinished(pid)
                     }
                     is RdTaskResult.Cancelled -> {
@@ -80,12 +80,12 @@ class CounterMonitoringSessionController(project: Project) : ProtocolSubscribedP
     }
 
     private fun createDefinitionForSession(pid: Int): LifetimeDefinition? {
-        if (definitions.containsKey(pid)) {
+        if (activeSessions.containsKey(pid)) {
             return null
         }
 
         val sessionDefinition = projectComponentLifetime.createNested()
-        val currentDefinition = definitions.putIfAbsent(pid, sessionDefinition)
+        val currentDefinition = activeSessions.putIfAbsent(pid, sessionDefinition)
         if (currentDefinition != null) {
             return null
         }
@@ -98,7 +98,7 @@ class CounterMonitoringSessionController(project: Project) : ProtocolSubscribedP
     fun stopExistingSession(pid: Int) = stopSessionCore(pid)
 
     private fun stopSessionCore(pid: Int) {
-        val sessionDefinition = definitions.remove(pid) ?: return
+        val sessionDefinition = activeSessions.remove(pid) ?: return
         sessionDefinition.terminate()
     }
 

@@ -12,7 +12,7 @@ using JetBrains.RdBackend.Common.Features;
 namespace DiagnosticsClientPlugin.Counters.Monitoring;
 
 [SolutionComponent]
-internal sealed class MonitorCountersHandler
+internal sealed class CounterMonitoringHandler
 {
     private readonly Lifetime _lifetime;
     private readonly DiagnosticsHostModel _hostModel;
@@ -20,7 +20,7 @@ internal sealed class MonitorCountersHandler
     private readonly ConcurrentDictionary<int, (MonitoringSessionEnvelope Envelope, LifetimeDefinition Definition)>
         _sessions = new();
 
-    public MonitorCountersHandler(ISolution solution, Lifetime lifetime)
+    public CounterMonitoringHandler(ISolution solution, Lifetime lifetime)
     {
         _lifetime = lifetime;
         _hostModel = solution.GetProtocolSolution().GetDiagnosticsHostModel();
@@ -39,13 +39,13 @@ internal sealed class MonitorCountersHandler
             var definition = _lifetime.CreateNested();
             var providers = new CounterProviderCollection(command.Providers);
             var configuration = new CountersProducerConfiguration(command.RefreshInterval, providers);
-            var envelope = new MonitoringSessionEnvelope(command.Pid, configuration, definition.Lifetime);
+            var envelope = new MonitoringSessionEnvelope(command.Pid, configuration, this, definition.Lifetime);
             if (!_sessions.TryAdd(command.Pid, (envelope, definition)))
             {
                 return Unit.Instance;
             }
 
-            _hostModel.CountersMonitoringSessions.Add(definition.Lifetime, command.Pid, envelope.Session);
+            _hostModel.CounterMonitoringSessions.Add(definition.Lifetime, command.Pid, envelope.Session);
 
             await envelope.Monitor(command.Duration, lifetime);
         }
@@ -53,7 +53,7 @@ internal sealed class MonitorCountersHandler
         return Unit.Instance;
     }
 
-    private void Close(int pid)
+    internal void CloseSession(int pid)
     {
         if (_sessions.TryRemove(pid, out var session))
         {

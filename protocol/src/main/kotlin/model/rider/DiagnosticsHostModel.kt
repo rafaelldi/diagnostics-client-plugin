@@ -21,12 +21,7 @@ object DiagnosticsHostModel : Ext(SolutionModel.Solution) {
         source("refresh", void)
     }
 
-    private val CountersCollectionSession = structdef {
-        field("pid", int)
-        field("filePath", string)
-    }
-
-    private val CountersMonitoringSession = classdef("CountersMonitoringSession") {
+    private val CounterMonitoringSession = classdef("CountersMonitoringSession") {
         field("pid", int)
         property("active", bool).async
         map("counters", string, Counter).async
@@ -45,8 +40,9 @@ object DiagnosticsHostModel : Ext(SolutionModel.Solution) {
         setting(Kotlin11Generator.Namespace, "com.github.rafaelldi.diagnosticsclientplugin.generated")
 
         field("processList", ProcessList)
-        map("countersCollectionSessions", int, CountersCollectionSession).async
-        map("countersMonitoringSessions", int, CountersMonitoringSession).async
+        list("counterCollectionSessions", int).async
+        map("counterMonitoringSessions", int, CounterMonitoringSession).async
+        list("traceCollectionSessions", int).async
 
         call("collectDump",
             structdef("CollectDumpCommand") {
@@ -87,6 +83,15 @@ object DiagnosticsHostModel : Ext(SolutionModel.Solution) {
                 field("refreshInterval", int)
                 field("providers", string)
                 field("duration", int.nullable)
+            },
+            void
+        )
+
+        call(
+            "collectTraces",
+            structdef("CollectTracesCommand") {
+                field("pid", int)
+                field("filePath", string)
             },
             void
         )

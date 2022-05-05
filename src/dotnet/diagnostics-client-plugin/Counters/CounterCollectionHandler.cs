@@ -1,25 +1,25 @@
-﻿using System;
-using System.Threading.Channels;
+﻿using System.Threading.Channels;
 using System.Threading.Tasks;
+using DiagnosticsClientPlugin.Common;
 using DiagnosticsClientPlugin.Counters.Common;
 using DiagnosticsClientPlugin.Counters.Consuming;
 using DiagnosticsClientPlugin.Counters.Producing;
 using DiagnosticsClientPlugin.Generated;
-using JetBrains;
 using JetBrains.Core;
 using JetBrains.Lifetimes;
 using JetBrains.ProjectModel;
 using JetBrains.Rd.Tasks;
 using JetBrains.RdBackend.Common.Features;
+using JetBrains.Util;
 
 namespace DiagnosticsClientPlugin.Counters.Collection;
 
 [SolutionComponent]
-internal sealed class CollectCountersHandler
+internal sealed class CounterCollectionHandler
 {
     private readonly DiagnosticsHostModel _hostModel;
 
-    public CollectCountersHandler(ISolution solution)
+    public CounterCollectionHandler(ISolution solution)
     {
         _hostModel = solution.GetProtocolSolution().GetDiagnosticsHostModel();
         _hostModel.CollectCounters.Set(async (lt, command) => await Collect(command, lt));
@@ -27,10 +27,9 @@ internal sealed class CollectCountersHandler
 
     private async Task<Unit> Collect(CollectCountersCommand command, Lifetime lifetime)
     {
-        var sessionLifetime = CreateSessionLifetime(lifetime, command.Duration);
+        var sessionLifetime = lifetime.IntersectWithTimer(command.Duration);
 
-        var session = new CountersCollectionSession(command.Pid, command.FilePath);
-        _hostModel.CountersCollectionSessions.Add(sessionLifetime, command.Pid, session);
+        _hostModel.CounterCollectionSessions.Add(sessionLifetime, command.Pid);
 
         var channel = Channel.CreateBounded<ValueCounter>(new BoundedChannelOptions(100)
         {
@@ -50,11 +49,6 @@ internal sealed class CollectCountersHandler
 
         return Unit.Instance;
     }
-
-    private Lifetime CreateSessionLifetime(in Lifetime sessionLifetime, int? duration) =>
-        duration.HasValue
-            ? sessionLifetime.CreateTerminatedAfter(TimeSpan.FromSeconds(duration.Value))
-            : sessionLifetime;
 
     private AbstractFileCountersConsumer CreateConsumer(
         CollectCountersCommand command,

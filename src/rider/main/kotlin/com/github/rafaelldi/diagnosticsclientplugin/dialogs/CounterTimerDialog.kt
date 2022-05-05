@@ -7,7 +7,7 @@ import com.intellij.ui.dsl.builder.panel
 import javax.swing.JComponent
 
 class CounterTimerDialog(project: Project) : DialogWrapper(project) {
-    private val model: CountersTimerModel = CountersTimerModel(30)
+    private val model: CounterTimerModel = CounterTimerModel(30)
 
     init {
         init()
@@ -22,5 +22,5 @@ class CounterTimerDialog(project: Project) : DialogWrapper(project) {
         }
     }
 
-    fun getModel(): CountersTimerModel = model
+    fun getModel(): CounterTimerModel = model
 }

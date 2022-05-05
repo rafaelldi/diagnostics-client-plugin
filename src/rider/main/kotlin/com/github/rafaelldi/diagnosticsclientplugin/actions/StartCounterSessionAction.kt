@@ -25,7 +25,7 @@ class StartCounterSessionAction : AnAction() {
         } else {
             val pid = tab.getSessionPid()
             val model = project.solution.diagnosticsHostModel
-            val session = model.countersMonitoringSessions[pid]
+            val session = model.counterMonitoringSessions[pid]
             val isActive = session?.active?.valueOrNull ?: false
             event.presentation.isEnabled = !isActive
         }

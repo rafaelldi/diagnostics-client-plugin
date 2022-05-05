@@ -11,18 +11,18 @@ using DumpType = Microsoft.Diagnostics.NETCore.Client.DumpType;
 namespace DiagnosticsClientPlugin.Dumps;
 
 [SolutionComponent]
-internal sealed class CollectDumpHandler
+internal sealed class DumpCollectionHandler
 {
     private readonly ILogger _logger;
 
-    public CollectDumpHandler(ISolution solution, ILogger logger)
+    public DumpCollectionHandler(ISolution solution, ILogger logger)
     {
         _logger = logger;
         var hostModel = solution.GetProtocolSolution().GetDiagnosticsHostModel();
-        hostModel.CollectDump.Set((_, command) => Handle(command));
+        hostModel.CollectDump.Set((_, command) => Collect(command));
     }
 
-    private RdTask<DumpCollectionResult> Handle(CollectDumpCommand command)
+    private RdTask<DumpCollectionResult> Collect(CollectDumpCommand command)
     {
         try
         {
