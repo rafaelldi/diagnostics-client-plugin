@@ -1,18 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Threading.Channels;
 using System.Threading.Tasks;
 using DiagnosticsClientPlugin.Counters.Common;
+using DiagnosticsClientPlugin.EventPipes;
 using JetBrains.Lifetimes;
-using Microsoft.Diagnostics.NETCore.Client;
 using Microsoft.Diagnostics.Tracing;
 
 namespace DiagnosticsClientPlugin.Counters.Producer;
 
 internal sealed class CountersProducer
 {
-    private readonly DiagnosticsClient _client;
+    private readonly EventPipeSessionManager _sessionManager;
     private readonly CountersProducerConfiguration _configuration;
     private readonly ChannelWriter<ValueCounter> _writer;
     private readonly Lifetime _lt;
@@ -23,7 +22,7 @@ internal sealed class CountersProducer
         ChannelWriter<ValueCounter> writer,
         Lifetime lt)
     {
-        _client = new DiagnosticsClient(pid);
+        _sessionManager = new EventPipeSessionManager(pid);
         _configuration = configuration;
         _writer = writer;
         _lt = lt;
@@ -36,7 +35,7 @@ internal sealed class CountersProducer
         var lifetime = _lt.Intersect(lt);
         var tcs = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
 
-        var session = _client.StartEventPipeSession(_configuration.EventPipeProviders, false);
+        var session = _sessionManager.StartSession(_configuration.EventPipeProviders, false);
         lifetime.AddDispose(session);
 
         var source = new EventPipeEventSource(session.EventStream);
@@ -47,7 +46,7 @@ internal sealed class CountersProducer
             () => source.Dynamic.All -= HandleEvent
         );
 
-        lifetime.OnTermination(() => StopSession(session));
+        lifetime.OnTermination(() => EventPipeSessionManager.StopSession(session));
 
         Process(source, tcs, lifetime);
 
@@ -68,26 +67,6 @@ internal sealed class CountersProducer
                 tcs.SetException(e);
             }
         }, lt);
-    }
-
-    private void StopSession(EventPipeSession session)
-    {
-        try
-        {
-            session.Stop();
-        }
-        catch (EndOfStreamException)
-        {
-        }
-        catch (TimeoutException)
-        {
-        }
-        catch (PlatformNotSupportedException)
-        {
-        }
-        catch (ServerNotAvailableException)
-        {
-        }
     }
 
     private void HandleEvent(TraceEvent evt)

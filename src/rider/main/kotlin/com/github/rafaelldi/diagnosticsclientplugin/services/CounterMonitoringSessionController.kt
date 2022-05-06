@@ -45,9 +45,11 @@ class CounterMonitoringSessionController(project: Project) : ProtocolSubscribedP
                         sessionFinished(pid)
                     }
                     is RdTaskResult.Cancelled -> {
+                        activeSessions.remove(pid)
                         sessionFinished(pid)
                     }
                     is RdTaskResult.Fault -> {
+                        activeSessions.remove(pid)
                         sessionFaulted(pid, result.error.reasonMessage)
                     }
                 }

@@ -37,7 +37,7 @@ internal sealed class CounterMonitoringHandler
         else
         {
             var definition = _lifetime.CreateNested();
-            var providers = new CounterProviderCollection(command.Providers);
+            var providers = new CounterProviderCollection(command.Providers, command.RefreshInterval);
             var configuration = new CountersProducerConfiguration(command.RefreshInterval, providers);
             var envelope = new MonitoringSessionEnvelope(command.Pid, configuration, this, definition.Lifetime);
             if (!_sessions.TryAdd(command.Pid, (envelope, definition)))

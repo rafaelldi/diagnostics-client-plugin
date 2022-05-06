@@ -51,9 +51,11 @@ class CounterCollectionSessionController(project: Project) : ProtocolSubscribedP
                         sessionFinished(pid, filePath)
                     }
                     is RdTaskResult.Cancelled -> {
+                        activeSessions.remove(pid)
                         sessionFinished(pid, filePath)
                     }
                     is RdTaskResult.Fault -> {
+                        activeSessions.remove(pid)
                         sessionFaulted(pid, result.error.reasonMessage)
                     }
                 }

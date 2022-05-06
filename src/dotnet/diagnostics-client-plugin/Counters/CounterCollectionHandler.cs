@@ -60,7 +60,7 @@ internal sealed class CounterCollectionHandler
         Channel<ValueCounter> channel,
         in Lifetime lt)
     {
-        var providers = new CounterProviderCollection(command.Providers);
+        var providers = new CounterProviderCollection(command.Providers, command.RefreshInterval);
         var configuration = new CountersProducerConfiguration(command.RefreshInterval, providers);
         return new CountersProducer(command.Pid, configuration, channel.Writer, lt);
     }

@@ -1,26 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
+using DiagnosticsClientPlugin.Counters.EventPipes;
+using Microsoft.Diagnostics.NETCore.Client;
 
 namespace DiagnosticsClientPlugin.Counters.Producer;
 
 internal sealed class CounterProviderCollection
 {
-    private const string SystemRuntimeEventSource = "System.Runtime";
-
     private readonly Dictionary<string, List<string>?> _providers = new();
+    internal EventPipeProvider[] EventPipeProviders { get; }
 
-    internal CounterProviderCollection(string providersString)
+    internal CounterProviderCollection(string providersString, int refreshInterval)
     {
         if (string.IsNullOrEmpty(providersString))
         {
-            _providers.Add(SystemRuntimeEventSource, null);
-            return;
+            _providers.Add(EventPipeProviderFactory.SystemRuntimeProvider, null);
+        }
+        else
+        {
+            ParseProviders(providersString.AsSpan());
         }
 
-        ParseProviders(providersString.AsSpan());
+        EventPipeProviders = EventPipeProviderFactory.CreateCounterProviders(_providers.Keys, refreshInterval);
     }
-
-    internal IReadOnlyCollection<string> ProviderNames => _providers.Keys;
 
     private void ParseProviders(in ReadOnlySpan<char> providersString)
     {

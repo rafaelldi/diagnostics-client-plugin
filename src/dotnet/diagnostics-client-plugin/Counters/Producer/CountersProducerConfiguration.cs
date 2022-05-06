@@ -8,15 +8,11 @@ internal sealed class CountersProducerConfiguration
     {
         RefreshInterval = refreshInterval;
         Providers = providers;
-        EventPipeProviders = EventPipeProviderFactory.CreateCounterProviders(providers.ProviderNames, refreshInterval);
     }
 
     internal int RefreshInterval { get; }
-    internal EventPipeProvider[] EventPipeProviders { get; }
     private CounterProviderCollection Providers { get; }
 
-    internal bool IsCounterEnabled(string provider, string counter)
-    {
-        return Providers.Contains(provider, counter);
-    }
+    internal bool IsCounterEnabled(string provider, string counter) => Providers.Contains(provider, counter);
+    internal EventPipeProvider[] EventPipeProviders => Providers.EventPipeProviders;
 }

@@ -16,7 +16,7 @@ class CollectTracesDialog(private val project: Project) : DialogWrapper(project)
             "trace.nettrace",
             StoppingType.AfterPeriod,
             30,
-            TracingProfile.None
+            TracingProfile.CpuSampling
         )
 
     init {
