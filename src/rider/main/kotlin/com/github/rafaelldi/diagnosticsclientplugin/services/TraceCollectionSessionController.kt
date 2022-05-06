@@ -3,6 +3,7 @@ package com.github.rafaelldi.diagnosticsclientplugin.services
 import com.github.rafaelldi.diagnosticsclientplugin.actions.notification.RevealFileAction
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.CollectTracesModel
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.StoppingType
+import com.github.rafaelldi.diagnosticsclientplugin.dialogs.map
 import com.github.rafaelldi.diagnosticsclientplugin.generated.CollectTracesCommand
 import com.github.rafaelldi.diagnosticsclientplugin.generated.DiagnosticsHostModel
 import com.github.rafaelldi.diagnosticsclientplugin.generated.diagnosticsHostModel
@@ -28,7 +29,12 @@ class TraceCollectionSessionController(project: Project) : ProtocolSubscribedPro
         val filePath = Path(model.path, model.filename).pathString
         val duration = if (model.stoppingType == StoppingType.AfterPeriod) model.duration else null
 
-        val command = CollectTracesCommand(pid, filePath, duration)
+        val command = CollectTracesCommand(
+            pid,
+            filePath,
+            model.profile.map(),
+            duration
+        )
 
         val collectTask = hostModel.collectTraces.start(sessionDefinition.lifetime, command)
         sessionStarted(pid)

@@ -92,6 +92,12 @@ object DiagnosticsHostModel : Ext(SolutionModel.Solution) {
             structdef("CollectTracesCommand") {
                 field("pid", int)
                 field("filePath", string)
+                field("profile", enum("TracingProfile") {
+                    +"None"
+                    +"CpuSampling"
+                    +"GcVerbose"
+                    +"GcCollect"
+                })
                 field("duration", int.nullable)
             },
             void

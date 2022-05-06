@@ -15,7 +15,8 @@ class CollectTracesDialog(private val project: Project) : DialogWrapper(project)
             project.solutionDirectoryPath.toString(),
             "trace.nettrace",
             StoppingType.AfterPeriod,
-            30
+            30,
+            TracingProfile.None
         )
 
     init {
@@ -38,23 +39,31 @@ class CollectTracesDialog(private val project: Project) : DialogWrapper(project)
                 .bindIntValue(model::duration)
                 .enabledIf(periodStoppingType.selected)
         }
-        row("Output filename:") {
-            textField()
-                .validationOnInput {
-                    if (isValidFilename(it.text)) {
-                        return@validationOnInput null
-                    } else {
-                        return@validationOnInput error("Invalid filename")
-                    }
-                }
-                .bindText(model::filename)
+        groupRowsRange("Providers") {
+            row("Profile:") {
+                comboBox(TracingProfile.values().toList())
+                    .bindItem(model::profile.toNullableProperty())
+            }
         }
-        row("Output folder:") {
-            textFieldWithBrowseButton(
-                "Select Path",
-                project,
-                FileChooserDescriptorFactory.createSingleFolderDescriptor()
-            ).bindText(model::path)
+        groupRowsRange("File Settings") {
+            row("Output filename:") {
+                textField()
+                    .validationOnInput {
+                        if (isValidFilename(it.text)) {
+                            return@validationOnInput null
+                        } else {
+                            return@validationOnInput error("Invalid filename")
+                        }
+                    }
+                    .bindText(model::filename)
+            }
+            row("Output folder:") {
+                textFieldWithBrowseButton(
+                    "Select Path",
+                    project,
+                    FileChooserDescriptorFactory.createSingleFolderDescriptor()
+                ).bindText(model::path)
+            }
         }
     }
 

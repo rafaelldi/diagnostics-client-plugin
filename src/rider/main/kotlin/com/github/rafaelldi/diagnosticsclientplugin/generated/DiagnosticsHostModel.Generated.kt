@@ -43,13 +43,14 @@ class DiagnosticsHostModel private constructor(
             serializers.register(CollectTracesCommand)
             serializers.register(DumpType.marshaller)
             serializers.register(CounterFileFormat.marshaller)
+            serializers.register(TracingProfile.marshaller)
         }
         
         
         
         
         
-        const val serializationHash = 5936015768702099124L
+        const val serializationHash = -3379236416932727485L
         
     }
     override val serializersOwner: ISerializersOwner get() = DiagnosticsHostModel
@@ -310,6 +311,7 @@ data class CollectDumpCommand (
 data class CollectTracesCommand (
     val pid: Int,
     val filePath: String,
+    val profile: TracingProfile,
     val duration: Int?
 ) : IPrintable {
     //companion
@@ -321,13 +323,15 @@ data class CollectTracesCommand (
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): CollectTracesCommand  {
             val pid = buffer.readInt()
             val filePath = buffer.readString()
+            val profile = buffer.readEnum<TracingProfile>()
             val duration = buffer.readNullable { buffer.readInt() }
-            return CollectTracesCommand(pid, filePath, duration)
+            return CollectTracesCommand(pid, filePath, profile, duration)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: CollectTracesCommand)  {
             buffer.writeInt(value.pid)
             buffer.writeString(value.filePath)
+            buffer.writeEnum(value.profile)
             buffer.writeNullable(value.duration) { buffer.writeInt(it) }
         }
         
@@ -346,6 +350,7 @@ data class CollectTracesCommand (
         
         if (pid != other.pid) return false
         if (filePath != other.filePath) return false
+        if (profile != other.profile) return false
         if (duration != other.duration) return false
         
         return true
@@ -355,6 +360,7 @@ data class CollectTracesCommand (
         var __r = 0
         __r = __r*31 + pid.hashCode()
         __r = __r*31 + filePath.hashCode()
+        __r = __r*31 + profile.hashCode()
         __r = __r*31 + if (duration != null) duration.hashCode() else 0
         return __r
     }
@@ -364,6 +370,7 @@ data class CollectTracesCommand (
         printer.indent {
             print("pid = "); pid.print(printer); println()
             print("filePath = "); filePath.print(printer); println()
+            print("profile = "); profile.print(printer); println()
             print("duration = "); duration.print(printer); println()
         }
         printer.print(")")
@@ -853,4 +860,20 @@ class ProcessList private constructor(
         )
     }
     //contexts
+}
+
+
+/**
+ * #### Generated from [DiagnosticsHostModel.kt:95]
+ */
+enum class TracingProfile {
+    None, 
+    CpuSampling, 
+    GcVerbose, 
+    GcCollect;
+    
+    companion object {
+        val marshaller = FrameworkMarshallers.enum<TracingProfile>()
+        
+    }
 }

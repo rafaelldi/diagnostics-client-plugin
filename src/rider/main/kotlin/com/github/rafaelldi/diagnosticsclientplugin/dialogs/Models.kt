@@ -26,4 +26,5 @@ data class CollectTracesModel(
     var filename: String,
     var stoppingType: StoppingType,
     var duration: Int,
+    var profile: TracingProfile
 )

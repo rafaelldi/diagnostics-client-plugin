@@ -120,7 +120,7 @@ namespace DiagnosticsClientPlugin.Generated
     
     
     
-    protected override long SerializationHash => 5936015768702099124L;
+    protected override long SerializationHash => -3379236416932727485L;
     
     protected override Action<ISerializers> Register => RegisterDeclaredTypesSerializers;
     public static void RegisterDeclaredTypesSerializers(ISerializers serializers)
@@ -424,6 +424,7 @@ namespace DiagnosticsClientPlugin.Generated
     //public fields
     public int Pid {get; private set;}
     [NotNull] public string FilePath {get; private set;}
+    public TracingProfile Profile {get; private set;}
     [CanBeNull] public int? Duration {get; private set;}
     
     //private fields
@@ -431,6 +432,7 @@ namespace DiagnosticsClientPlugin.Generated
     public CollectTracesCommand(
       int pid,
       [NotNull] string filePath,
+      TracingProfile profile,
       [CanBeNull] int? duration
     )
     {
@@ -438,14 +440,16 @@ namespace DiagnosticsClientPlugin.Generated
       
       Pid = pid;
       FilePath = filePath;
+      Profile = profile;
       Duration = duration;
     }
     //secondary constructor
     //deconstruct trait
-    public void Deconstruct(out int pid, [NotNull] out string filePath, [CanBeNull] out int? duration)
+    public void Deconstruct(out int pid, [NotNull] out string filePath, out TracingProfile profile, [CanBeNull] out int? duration)
     {
       pid = Pid;
       filePath = FilePath;
+      profile = Profile;
       duration = Duration;
     }
     //statics
@@ -454,8 +458,9 @@ namespace DiagnosticsClientPlugin.Generated
     {
       var pid = reader.ReadInt();
       var filePath = reader.ReadString();
+      var profile = (TracingProfile)reader.ReadInt();
       var duration = ReadIntNullable(ctx, reader);
-      var _result = new CollectTracesCommand(pid, filePath, duration);
+      var _result = new CollectTracesCommand(pid, filePath, profile, duration);
       return _result;
     };
     public static CtxReadDelegate<int?> ReadIntNullable = JetBrains.Rd.Impl.Serializers.ReadInt.NullableStruct();
@@ -464,6 +469,7 @@ namespace DiagnosticsClientPlugin.Generated
     {
       writer.Write(value.Pid);
       writer.Write(value.FilePath);
+      writer.Write((int)value.Profile);
       WriteIntNullable(ctx, writer, value.Duration);
     };
     public static  CtxWriteDelegate<int?> WriteIntNullable = JetBrains.Rd.Impl.Serializers.WriteInt.NullableStruct();
@@ -484,7 +490,7 @@ namespace DiagnosticsClientPlugin.Generated
     {
       if (ReferenceEquals(null, other)) return false;
       if (ReferenceEquals(this, other)) return true;
-      return Pid == other.Pid && FilePath == other.FilePath && Equals(Duration, other.Duration);
+      return Pid == other.Pid && FilePath == other.FilePath && Profile == other.Profile && Equals(Duration, other.Duration);
     }
     //hash code trait
     public override int GetHashCode()
@@ -493,6 +499,7 @@ namespace DiagnosticsClientPlugin.Generated
         var hash = 0;
         hash = hash * 31 + Pid.GetHashCode();
         hash = hash * 31 + FilePath.GetHashCode();
+        hash = hash * 31 + (int) Profile;
         hash = hash * 31 + (Duration != null ? Duration.GetHashCode() : 0);
         return hash;
       }
@@ -504,6 +511,7 @@ namespace DiagnosticsClientPlugin.Generated
       using (printer.IndentCookie()) {
         printer.Print("pid = "); Pid.PrintEx(printer); printer.Println();
         printer.Print("filePath = "); FilePath.PrintEx(printer); printer.Println();
+        printer.Print("profile = "); Profile.PrintEx(printer); printer.Println();
         printer.Print("duration = "); Duration.PrintEx(printer); printer.Println();
       }
       printer.Print(")");
@@ -1144,5 +1152,16 @@ namespace DiagnosticsClientPlugin.Generated
       Print(printer);
       return printer.ToString();
     }
+  }
+  
+  
+  /// <summary>
+  /// <p>Generated from: DiagnosticsHostModel.kt:95</p>
+  /// </summary>
+  public enum TracingProfile {
+    None,
+    CpuSampling,
+    GcVerbose,
+    GcCollect
   }
 }
