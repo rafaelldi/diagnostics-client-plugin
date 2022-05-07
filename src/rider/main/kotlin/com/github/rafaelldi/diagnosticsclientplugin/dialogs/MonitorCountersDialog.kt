@@ -1,6 +1,6 @@
 package com.github.rafaelldi.diagnosticsclientplugin.dialogs
 
-import com.github.rafaelldi.diagnosticsclientplugin.utils.isValidProviderList
+import com.github.rafaelldi.diagnosticsclientplugin.utils.isValidCounterProviderList
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.ui.components.JBRadioButton
@@ -38,7 +38,7 @@ class MonitorCountersDialog(project: Project) : DialogWrapper(project) {
         row("Providers:") {
             expandableTextField()
                 .validationOnInput {
-                    if (isValidProviderList(it.text)) {
+                    if (isValidCounterProviderList(it.text)) {
                         return@validationOnInput null
                     } else {
                         return@validationOnInput error("Invalid providers format")

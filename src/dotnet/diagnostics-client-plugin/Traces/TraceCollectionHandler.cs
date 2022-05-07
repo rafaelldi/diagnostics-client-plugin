@@ -8,7 +8,6 @@ using JetBrains.Lifetimes;
 using JetBrains.ProjectModel;
 using JetBrains.Rd.Tasks;
 using JetBrains.RdBackend.Common.Features;
-using JetBrains.Util;
 
 namespace DiagnosticsClientPlugin.Traces;
 
@@ -25,7 +24,7 @@ internal sealed class TraceCollectionHandler
 
     private async Task<Unit> Collect(CollectTracesCommand command, Lifetime lifetime)
     {
-        _hostModel.TraceCollectionSessions.Add(lifetime, command.Pid);
+        _hostModel.TraceCollectionSessions.Add(command.Pid);
 
         var providers = new TraceProviderCollection(command.Profile);
         var sessionManager = new EventPipeSessionManager(command.Pid);
@@ -50,6 +49,8 @@ internal sealed class TraceCollectionHandler
         EventPipeSessionManager.StopSession(session);
 
         await copyTask;
+
+        _hostModel.TraceCollectionSessions.Remove(command.Pid);
 
         return Unit.Instance;
     }

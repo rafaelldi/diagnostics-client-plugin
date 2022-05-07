@@ -1,7 +1,7 @@
 package com.github.rafaelldi.diagnosticsclientplugin.dialogs
 
 import com.github.rafaelldi.diagnosticsclientplugin.utils.isValidFilename
-import com.github.rafaelldi.diagnosticsclientplugin.utils.isValidProviderList
+import com.github.rafaelldi.diagnosticsclientplugin.utils.isValidCounterProviderList
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogWrapper
@@ -49,7 +49,7 @@ class CollectCountersDialog(private val project: Project) : DialogWrapper(projec
         row("Providers:") {
             expandableTextField()
                 .validationOnInput {
-                    if (isValidProviderList(it.text)) {
+                    if (isValidCounterProviderList(it.text)) {
                         return@validationOnInput null
                     } else {
                         return@validationOnInput error("Invalid providers format")
