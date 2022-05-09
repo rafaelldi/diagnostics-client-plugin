@@ -57,7 +57,7 @@
                     class="com.github.rafaelldi.diagnosticsclientplugin.actions.StartCollectingTracesAction"
                     text="Start Collecting Traces"
                     description="Collect traces"
-                    icon="AllIcons.Actions.ListFiles">
+                    icon="DiagnosticsClientIcons.Traces">
             </action>
             <action id="DiagnosticsClient.ToolWindow.Explorer.StopCollectingTraces"
                     class="com.github.rafaelldi.diagnosticsclientplugin.actions.StopCollectingTracesAction"
