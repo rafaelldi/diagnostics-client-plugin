@@ -3,8 +3,10 @@ package com.github.rafaelldi.diagnosticsclientplugin.dialogs
 import com.github.rafaelldi.diagnosticsclientplugin.utils.isValidFilename
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.ui.ComboBox
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.ui.components.JBRadioButton
+import com.intellij.ui.components.fields.ExpandableTextField
 import com.intellij.ui.dsl.builder.*
 import com.jetbrains.rider.projectView.solutionDirectoryPath
 import javax.swing.JComponent
@@ -16,7 +18,8 @@ class CollectTracesDialog(private val project: Project) : DialogWrapper(project)
             "trace.nettrace",
             StoppingType.AfterPeriod,
             30,
-            TracingProfile.CpuSampling
+            TracingProfile.CpuSampling,
+            ""
         )
 
     init {
@@ -27,6 +30,8 @@ class CollectTracesDialog(private val project: Project) : DialogWrapper(project)
 
     override fun createCenterPanel(): JComponent = panel {
         lateinit var periodStoppingType: Cell<JBRadioButton>
+        lateinit var profileComboBox: Cell<ComboBox<TracingProfile>>
+        lateinit var providersTextField: Cell<ExpandableTextField>
 
         buttonsGroup {
             row("Stop collection:") {
@@ -41,8 +46,26 @@ class CollectTracesDialog(private val project: Project) : DialogWrapper(project)
         }
         groupRowsRange("Providers") {
             row("Profile:") {
-                comboBox(TracingProfile.values().toList())
+                profileComboBox = comboBox(TracingProfile.values().toList())
+                    .validationOnApply {
+                        if (it.item == TracingProfile.None && providersTextField.component.text.isNullOrEmpty()) {
+                            return@validationOnApply error("Please select a profile or fill in the providers field")
+                        } else {
+                            return@validationOnApply null
+                        }
+                    }
                     .bindItem(model::profile.toNullableProperty())
+            }
+            row("Providers:") {
+                providersTextField = expandableTextField()
+                    .validationOnApply {
+                        if (it.text.isNullOrEmpty() && profileComboBox.component.item == TracingProfile.None) {
+                            return@validationOnApply error("Please select a profile or fill in the providers field")
+                        } else {
+                            return@validationOnApply null
+                        }
+                    }
+                    .bindText(model::providers)
             }
         }
         groupRowsRange("File Settings") {

@@ -98,6 +98,7 @@ object DiagnosticsHostModel : Ext(SolutionModel.Solution) {
                     +"GcVerbose"
                     +"GcCollect"
                 })
+                field("providers", string)
                 field("duration", int.nullable)
             },
             void

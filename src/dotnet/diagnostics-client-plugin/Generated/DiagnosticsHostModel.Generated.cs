@@ -120,7 +120,7 @@ namespace DiagnosticsClientPlugin.Generated
     
     
     
-    protected override long SerializationHash => -3379236416932727485L;
+    protected override long SerializationHash => 2584320636915264294L;
     
     protected override Action<ISerializers> Register => RegisterDeclaredTypesSerializers;
     public static void RegisterDeclaredTypesSerializers(ISerializers serializers)
@@ -425,6 +425,7 @@ namespace DiagnosticsClientPlugin.Generated
     public int Pid {get; private set;}
     [NotNull] public string FilePath {get; private set;}
     public TracingProfile Profile {get; private set;}
+    [NotNull] public string Providers {get; private set;}
     [CanBeNull] public int? Duration {get; private set;}
     
     //private fields
@@ -433,23 +434,27 @@ namespace DiagnosticsClientPlugin.Generated
       int pid,
       [NotNull] string filePath,
       TracingProfile profile,
+      [NotNull] string providers,
       [CanBeNull] int? duration
     )
     {
       if (filePath == null) throw new ArgumentNullException("filePath");
+      if (providers == null) throw new ArgumentNullException("providers");
       
       Pid = pid;
       FilePath = filePath;
       Profile = profile;
+      Providers = providers;
       Duration = duration;
     }
     //secondary constructor
     //deconstruct trait
-    public void Deconstruct(out int pid, [NotNull] out string filePath, out TracingProfile profile, [CanBeNull] out int? duration)
+    public void Deconstruct(out int pid, [NotNull] out string filePath, out TracingProfile profile, [NotNull] out string providers, [CanBeNull] out int? duration)
     {
       pid = Pid;
       filePath = FilePath;
       profile = Profile;
+      providers = Providers;
       duration = Duration;
     }
     //statics
@@ -459,8 +464,9 @@ namespace DiagnosticsClientPlugin.Generated
       var pid = reader.ReadInt();
       var filePath = reader.ReadString();
       var profile = (TracingProfile)reader.ReadInt();
+      var providers = reader.ReadString();
       var duration = ReadIntNullable(ctx, reader);
-      var _result = new CollectTracesCommand(pid, filePath, profile, duration);
+      var _result = new CollectTracesCommand(pid, filePath, profile, providers, duration);
       return _result;
     };
     public static CtxReadDelegate<int?> ReadIntNullable = JetBrains.Rd.Impl.Serializers.ReadInt.NullableStruct();
@@ -470,6 +476,7 @@ namespace DiagnosticsClientPlugin.Generated
       writer.Write(value.Pid);
       writer.Write(value.FilePath);
       writer.Write((int)value.Profile);
+      writer.Write(value.Providers);
       WriteIntNullable(ctx, writer, value.Duration);
     };
     public static  CtxWriteDelegate<int?> WriteIntNullable = JetBrains.Rd.Impl.Serializers.WriteInt.NullableStruct();
@@ -490,7 +497,7 @@ namespace DiagnosticsClientPlugin.Generated
     {
       if (ReferenceEquals(null, other)) return false;
       if (ReferenceEquals(this, other)) return true;
-      return Pid == other.Pid && FilePath == other.FilePath && Profile == other.Profile && Equals(Duration, other.Duration);
+      return Pid == other.Pid && FilePath == other.FilePath && Profile == other.Profile && Providers == other.Providers && Equals(Duration, other.Duration);
     }
     //hash code trait
     public override int GetHashCode()
@@ -500,6 +507,7 @@ namespace DiagnosticsClientPlugin.Generated
         hash = hash * 31 + Pid.GetHashCode();
         hash = hash * 31 + FilePath.GetHashCode();
         hash = hash * 31 + (int) Profile;
+        hash = hash * 31 + Providers.GetHashCode();
         hash = hash * 31 + (Duration != null ? Duration.GetHashCode() : 0);
         return hash;
       }
@@ -512,6 +520,7 @@ namespace DiagnosticsClientPlugin.Generated
         printer.Print("pid = "); Pid.PrintEx(printer); printer.Println();
         printer.Print("filePath = "); FilePath.PrintEx(printer); printer.Println();
         printer.Print("profile = "); Profile.PrintEx(printer); printer.Println();
+        printer.Print("providers = "); Providers.PrintEx(printer); printer.Println();
         printer.Print("duration = "); Duration.PrintEx(printer); printer.Println();
       }
       printer.Print(")");

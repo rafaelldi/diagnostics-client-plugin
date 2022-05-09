@@ -33,6 +33,7 @@ class TraceCollectionSessionController(project: Project) : ProtocolSubscribedPro
             pid,
             filePath,
             model.profile.map(),
+            model.providers,
             duration
         )
 

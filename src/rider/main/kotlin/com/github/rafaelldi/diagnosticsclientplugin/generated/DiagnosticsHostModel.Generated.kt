@@ -50,7 +50,7 @@ class DiagnosticsHostModel private constructor(
         
         
         
-        const val serializationHash = -3379236416932727485L
+        const val serializationHash = 2584320636915264294L
         
     }
     override val serializersOwner: ISerializersOwner get() = DiagnosticsHostModel
@@ -312,6 +312,7 @@ data class CollectTracesCommand (
     val pid: Int,
     val filePath: String,
     val profile: TracingProfile,
+    val providers: String,
     val duration: Int?
 ) : IPrintable {
     //companion
@@ -324,14 +325,16 @@ data class CollectTracesCommand (
             val pid = buffer.readInt()
             val filePath = buffer.readString()
             val profile = buffer.readEnum<TracingProfile>()
+            val providers = buffer.readString()
             val duration = buffer.readNullable { buffer.readInt() }
-            return CollectTracesCommand(pid, filePath, profile, duration)
+            return CollectTracesCommand(pid, filePath, profile, providers, duration)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: CollectTracesCommand)  {
             buffer.writeInt(value.pid)
             buffer.writeString(value.filePath)
             buffer.writeEnum(value.profile)
+            buffer.writeString(value.providers)
             buffer.writeNullable(value.duration) { buffer.writeInt(it) }
         }
         
@@ -351,6 +354,7 @@ data class CollectTracesCommand (
         if (pid != other.pid) return false
         if (filePath != other.filePath) return false
         if (profile != other.profile) return false
+        if (providers != other.providers) return false
         if (duration != other.duration) return false
         
         return true
@@ -361,6 +365,7 @@ data class CollectTracesCommand (
         __r = __r*31 + pid.hashCode()
         __r = __r*31 + filePath.hashCode()
         __r = __r*31 + profile.hashCode()
+        __r = __r*31 + providers.hashCode()
         __r = __r*31 + if (duration != null) duration.hashCode() else 0
         return __r
     }
@@ -371,6 +376,7 @@ data class CollectTracesCommand (
             print("pid = "); pid.print(printer); println()
             print("filePath = "); filePath.print(printer); println()
             print("profile = "); profile.print(printer); println()
+            print("providers = "); providers.print(printer); println()
             print("duration = "); duration.print(printer); println()
         }
         printer.print(")")

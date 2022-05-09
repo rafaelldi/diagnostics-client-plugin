@@ -49,11 +49,11 @@ internal sealed class CounterProviderCollection
 
             var provider = ParseProvider(providersString.Slice(providerStartIndex, i - providerStartIndex));
             _providers.Add(provider.Provider, provider.Metrics);
+
             providerStartIndex = i + 1;
         }
 
-        var lastProvider =
-            ParseProvider(providersString.Slice(providerStartIndex, providersString.Length - providerStartIndex));
+        var lastProvider = ParseProvider(providersString.Slice(providerStartIndex));
         _providers.Add(lastProvider.Provider, lastProvider.Metrics);
     }
 
@@ -81,7 +81,7 @@ internal sealed class CounterProviderCollection
             counterStartIndex = i + 1;
         }
 
-        counters.Add(counterList.Slice(counterStartIndex, counterList.Length - counterStartIndex).ToString());
+        counters.Add(counterList.Slice(counterStartIndex).ToString());
 
         return (providerName.ToString(), counters);
     }

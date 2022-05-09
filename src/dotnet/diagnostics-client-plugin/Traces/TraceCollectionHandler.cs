@@ -26,7 +26,7 @@ internal sealed class TraceCollectionHandler
     {
         _hostModel.TraceCollectionSessions.Add(command.Pid);
 
-        var providers = new TraceProviderCollection(command.Profile);
+        var providers = new TraceProviderCollection(command.Providers, command.Profile);
         var sessionManager = new EventPipeSessionManager(command.Pid);
         using var session = sessionManager.StartSession(providers.EventPipeProviders, true);
 

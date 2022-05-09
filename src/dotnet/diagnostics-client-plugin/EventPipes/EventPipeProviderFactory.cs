@@ -1,18 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics.Tracing;
 using System.Linq;
-using DiagnosticsClientPlugin.Generated;
+using DiagnosticsClientPlugin.Traces;
 using Microsoft.Diagnostics.NETCore.Client;
-using static Microsoft.Diagnostics.Tracing.Parsers.ClrTraceEventParser;
 
 namespace DiagnosticsClientPlugin.Counters.EventPipes;
 
 internal static class EventPipeProviderFactory
 {
-    public const string SystemRuntimeProvider = "System.Runtime";
-    private const string SampleProfilerProvider = "Microsoft-DotNETCore-SampleProfiler";
-    private const string DotNetRuntimeProvider = "Microsoft-Windows-DotNETRuntime";
+    internal const string SystemRuntimeProvider = "System.Runtime";
+    internal const string SampleProfilerProvider = "Microsoft-DotNETCore-SampleProfiler";
+    internal const string DotNetRuntimeProvider = "Microsoft-Windows-DotNETRuntime";
 
     private const string IntervalArgument = "EventCounterIntervalSec";
 
@@ -51,35 +49,12 @@ internal static class EventPipeProviderFactory
             }
         );
 
-    internal static EventPipeProvider[] CreateProfileProvider(TracingProfile profile) =>
-        profile switch
-        {
-            TracingProfile.None => Array.Empty<EventPipeProvider>(),
-            TracingProfile.CpuSampling => new[]
-            {
-                new EventPipeProvider(SampleProfilerProvider, EventLevel.Informational),
-                new EventPipeProvider(
-                    DotNetRuntimeProvider,
-                    EventLevel.Informational,
-                    (long)Keywords.Default
-                )
-            },
-            TracingProfile.GcVerbose => new[]
-            {
-                new EventPipeProvider(
-                    DotNetRuntimeProvider,
-                    EventLevel.Verbose,
-                    (long)Keywords.GC | (long)Keywords.GCHandle | (long)Keywords.Exception
-                )
-            },
-            TracingProfile.GcCollect => new[]
-            {
-                new EventPipeProvider(
-                    DotNetRuntimeProvider,
-                    EventLevel.Informational,
-                    (long)Keywords.GC
-                )
-            },
-            _ => throw new ArgumentOutOfRangeException(nameof(profile), profile, null)
-        };
+    internal static EventPipeProvider[] CreateTraceProviders(IReadOnlyCollection<TraceProvider> providers) =>
+        providers.Select(it => new EventPipeProvider(
+                it.Name,
+                it.Level,
+                it.Flags,
+                it.Arguments
+            ))
+            .ToArray();
 }
