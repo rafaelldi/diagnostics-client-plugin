@@ -1,0 +1,19 @@
+name: Qodana
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+
+  qodana:
+    runs-on: ubuntu-latest
+    steps:
+
+      # Check out current repository
+      - name: Fetch Sources
+        uses: actions/checkout@v3
+
+      - name: 'Qodana Scan'
+        uses: JetBrains/qodana-action@v5.0.2
