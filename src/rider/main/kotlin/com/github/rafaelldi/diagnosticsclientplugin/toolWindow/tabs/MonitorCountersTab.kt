@@ -8,7 +8,6 @@ import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.components.Counte
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ActionGroup
 import com.intellij.openapi.actionSystem.ActionManager
-import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.SimpleToolWindowPanel
 import com.intellij.ui.components.JBScrollPane
 import com.jetbrains.rd.util.lifetime.Lifetime
@@ -17,7 +16,6 @@ import java.awt.BorderLayout
 import javax.swing.JPanel
 
 class MonitorCountersTab(
-    private val project: Project,
     private val session: CountersMonitoringSession,
     private val tabsManager: DiagnosticsTabsManager,
     lt: Lifetime

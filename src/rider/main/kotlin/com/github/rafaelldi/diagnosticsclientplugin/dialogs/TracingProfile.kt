@@ -1,6 +1,6 @@
 package com.github.rafaelldi.diagnosticsclientplugin.dialogs
 
-enum class TracingProfile(val label: String) {
+enum class TracingProfile(private val label: String) {
     None("none"),
     CpuSampling("cpu-sampling"),
     GcVerbose("gc-verbose"),

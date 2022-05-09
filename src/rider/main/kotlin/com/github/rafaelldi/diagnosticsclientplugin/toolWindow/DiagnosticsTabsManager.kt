@@ -39,7 +39,7 @@ class DiagnosticsTabsManager(project: Project) : ProtocolSubscribedProjectCompon
     fun createCountersTab(lt: Lifetime, session: CountersMonitoringSession) {
         val toolWindow = getToolWindow(project) ?: return
         val contentFactory = ContentFactory.SERVICE.getInstance()
-        val monitorCountersTab = MonitorCountersTab(project, session, this, lt)
+        val monitorCountersTab = MonitorCountersTab(session, this, lt)
         val content = contentFactory.createContent(monitorCountersTab, "Counters for ${session.pid}", true)
         content.icon = DiagnosticsClientIcons.Counters
         content.putUserData(ToolWindow.SHOW_CONTENT_ICON, true)
