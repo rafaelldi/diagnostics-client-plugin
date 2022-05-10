@@ -7,10 +7,11 @@
 <!-- Plugin description -->
 Simplifies the collection of diagnostic artifacts from local processes.
 
-Features:
+**Features:**
 * Monitor or collect `EventCounters`.
 * Collect dumps.
 * Collect traces.
+* More features are coming 😉
 <!-- Plugin description end -->
 
 ## Installation
