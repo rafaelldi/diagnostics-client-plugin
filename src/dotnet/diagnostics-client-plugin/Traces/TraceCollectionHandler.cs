@@ -36,7 +36,7 @@ internal sealed class TraceCollectionHandler
 
         var duration = command.Duration.HasValue
             ? TimeSpan.FromSeconds(command.Duration.Value)
-            : TimeSpan.MaxValue;
+            : TimeSpan.FromMilliseconds(-1);
         try
         {
             await Task.Delay(duration, lifetime);
