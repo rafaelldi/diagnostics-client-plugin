@@ -5,6 +5,6 @@
 ## [Unreleased]
 ### Added
 - Initial scaffold created from [IntelliJ Platform Plugin Template](https://github.com/JetBrains/intellij-platform-plugin-template)
-- Dump collecting action
-- Counters monitoring and collecting actions
-- Traces collecting action
+- Dump collection
+- Counters monitoring and collection
+- Traces collection
