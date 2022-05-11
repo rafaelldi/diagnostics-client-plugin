@@ -18,7 +18,6 @@
 
   <ItemGroup>
     <PackageReference Include="JetBrains.Rider.SDK" Version="$(SdkVersion)" />
-    <PackageReference Include="Microsoft.Diagnostics.NETCore.Client" Version="0.2.320703" />
     <PackageReference Include="Microsoft.Diagnostics.Tracing.TraceEvent" Version="3.0.0" />
     <PackageReference Include="System.Threading.Channels" Version="6.0.0" />
   </ItemGroup>

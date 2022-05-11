@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
@@ -28,11 +29,18 @@ internal sealed class ProcessHandler
         var processInfos = new List<ProcessInfo>(processes.Count);
         foreach (var pid in processes)
         {
-            var process = Process.GetProcessById(pid);
-            var filename = process.MainModule?.FileName;
-            var startTime = process.StartTime.ToString(CultureInfo.CurrentCulture);
-            var pi = new ProcessInfo(process.Id, process.ProcessName, filename, startTime);
-            processInfos.Add(pi);
+            try
+            {
+                var process = Process.GetProcessById(pid);
+                var filename = process.MainModule?.FileName;
+                var startTime = process.StartTime.ToString(CultureInfo.CurrentCulture);
+                var pi = new ProcessInfo(process.Id, process.ProcessName, filename, startTime);
+                processInfos.Add(pi);
+            }
+            catch (ArgumentException)
+            {
+                //The identifier might be expired.
+            }
         }
 
         _model.ProcessList.Items.Clear();
