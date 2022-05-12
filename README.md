@@ -1,8 +1,8 @@
 # diagnostics-client-plugin
 
 ![Build](https://github.com/rafaelldi/diagnostics-client-plugin/workflows/Build/badge.svg)
-[![Version](https://img.shields.io/jetbrains/plugin/v/19141-diagnostics-client.svg?label=plugin&logo=rider)](https://plugins.jetbrains.com/plugin/PLUGIN_ID)
-[![Downloads](https://img.shields.io/jetbrains/plugin/d/19141-diagnostics-client.svg)](https://plugins.jetbrains.com/plugin/PLUGIN_ID)
+[![Version](https://img.shields.io/jetbrains/plugin/v/19141-diagnostics-client.svg?label=plugin&logo=rider)](https://plugins.jetbrains.com/plugin/19141-diagnostics-client)
+[![Downloads](https://img.shields.io/jetbrains/plugin/d/19141-diagnostics-client.svg)](https://plugins.jetbrains.com/plugin/19141-diagnostics-client)
 
 <!-- Plugin description -->
 Simplifies the collection of diagnostic artifacts from local processes.
