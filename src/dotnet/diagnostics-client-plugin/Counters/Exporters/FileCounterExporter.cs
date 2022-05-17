@@ -4,15 +4,16 @@ using System.Threading;
 using System.Threading.Channels;
 using System.Threading.Tasks;
 using DiagnosticsClientPlugin.Counters.Common;
+using DiagnosticsClientPlugin.Generated;
 
 namespace DiagnosticsClientPlugin.Counters.Exporters;
 
-internal abstract class AbstractFileCounterExporter
+internal abstract class FileCounterExporter
 {
     private readonly ChannelReader<ValueCounter> _reader;
     private readonly FileInfo _file;
 
-    protected AbstractFileCounterExporter(string filePath, ChannelReader<ValueCounter> reader)
+    protected FileCounterExporter(string filePath, ChannelReader<ValueCounter> reader)
     {
         _file = CreateFile(filePath);
         _reader = reader;
@@ -74,4 +75,15 @@ internal abstract class AbstractFileCounterExporter
     protected abstract string GetCounterString(in ValueCounter counter);
 
     protected abstract string? GetFileFooter();
+    
+    internal static FileCounterExporter Create(
+        string filePath,
+        CounterFileFormat format,
+        ChannelReader<ValueCounter> reader) =>
+        format switch
+        {
+            CounterFileFormat.Csv => new CsvCounterExporter(filePath, reader),
+            CounterFileFormat.Json => new JsonCounterExporter(filePath, reader),
+            _ => throw new ArgumentOutOfRangeException(nameof(format), format, null)
+        };
 }

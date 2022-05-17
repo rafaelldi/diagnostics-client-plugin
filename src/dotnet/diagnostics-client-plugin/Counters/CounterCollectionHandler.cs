@@ -50,10 +50,10 @@ internal sealed class CounterCollectionHandler
         return Unit.Instance;
     }
 
-    private AbstractFileCounterExporter CreateExporter(
+    private FileCounterExporter CreateExporter(
         CollectCountersCommand command,
         Channel<ValueCounter> channel) =>
-        FileCounterExporterFactory.Create(command.FilePath, command.Format, channel.Reader);
+        FileCounterExporter.Create(command.FilePath, command.Format, channel.Reader);
 
     private CountersProducer CreateProducer(
         CollectCountersCommand command,

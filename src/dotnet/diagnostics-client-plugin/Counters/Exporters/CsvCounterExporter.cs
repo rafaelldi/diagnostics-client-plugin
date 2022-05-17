@@ -5,7 +5,7 @@ using DiagnosticsClientPlugin.Counters.Common;
 
 namespace DiagnosticsClientPlugin.Counters.Exporters;
 
-internal sealed class CsvCounterExporter : AbstractFileCounterExporter
+internal sealed class CsvCounterExporter : FileCounterExporter
 {
     private readonly StringBuilder _stringBuilder = new(9);
 

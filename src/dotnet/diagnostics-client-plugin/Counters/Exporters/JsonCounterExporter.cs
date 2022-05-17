@@ -5,7 +5,7 @@ using DiagnosticsClientPlugin.Counters.Common;
 
 namespace DiagnosticsClientPlugin.Counters.Exporters;
 
-internal sealed class JsonCounterExporter : AbstractFileCounterExporter
+internal sealed class JsonCounterExporter : FileCounterExporter
 {
     private readonly StringBuilder _stringBuilder = new(11);
 
