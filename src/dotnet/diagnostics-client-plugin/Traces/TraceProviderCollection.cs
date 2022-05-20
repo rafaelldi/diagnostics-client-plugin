@@ -31,91 +31,83 @@ internal sealed class TraceProviderCollection
     {
         var providers = new List<TraceProvider>();
 
+        TraceProvider provider;
         var providerStartIndex = 0;
-        for (var i = 0; i < providersString.Length; i++)
+        var remaining = providersString;
+        var delimiterIndex = remaining.IndexOf(',');
+        while (delimiterIndex != -1)
         {
-            if (providersString[i] != ',')
-            {
-                continue;
-            }
-
-            var provider = ParseProvider(providersString.Slice(providerStartIndex, i - providerStartIndex));
+            provider = ParseProvider(remaining.Slice(providerStartIndex, delimiterIndex - providerStartIndex).Trim());
             providers.Add(provider);
-
-            providerStartIndex = i + 1;
+            remaining = remaining.Slice(delimiterIndex + 1);
+            delimiterIndex = remaining.IndexOf(',');
         }
 
-        var lastProvider = ParseProvider(providersString.Slice(providerStartIndex));
-        providers.Add(lastProvider);
+        provider = ParseProvider(remaining.Slice(providerStartIndex).Trim());
+        providers.Add(provider);
 
         return providers;
     }
 
     private TraceProvider ParseProvider(in ReadOnlySpan<char> providerString)
     {
-        var name = string.Empty;
-        var level = EventLevel.Verbose;
-        long flags = -1;
-        Dictionary<string, string>? args = null;
-
-        var step = 0;
-        var currentStart = 0;
-
-        for (var i = 0; i < providerString.Length; i++)
+        var delimiterIndex = providerString.IndexOf(':');
+        if (delimiterIndex == -1)
         {
-            if (providerString[i] != ':' && step < 3)
-            {
-                continue;
-            }
-
-            switch (step)
-            {
-                case 0:
-                    name = providerString.Slice(0, i).ToString();
-                    currentStart = i + 1;
-                    step++;
-                    break;
-                case 1:
-                    flags = ParseProviderFlags(providerString, currentStart, i);
-                    currentStart = i + 1;
-                    step++;
-                    break;
-                case 2:
-                    level = ParseProviderLevel(providerString, currentStart, i);
-                    currentStart = i + 1;
-                    step++;
-                    break;
-            }
-
-            if (step == 3)
-            {
-                args = ParseProviderArgs(providerString.Slice(currentStart));
-                break;
-            }
+            return new TraceProvider(providerString.ToString(), EventLevel.Verbose, -1);
         }
+
+        var name = providerString.Slice(0, delimiterIndex).ToString();
+
+        var remaining = providerString.Slice(delimiterIndex + 1);
+
+        delimiterIndex = remaining.IndexOf(':');
+        var flags = ParseProviderFlags(remaining.Slice(0, delimiterIndex));
+
+        remaining = remaining.Slice(delimiterIndex + 1);
+
+        EventLevel level;
+        delimiterIndex = remaining.IndexOf(':');
+        if (delimiterIndex == -1)
+        {
+            level = ParseProviderLevel(remaining.Slice(0));
+
+            return new TraceProvider(name, level, flags);
+        }
+
+        level = ParseProviderLevel(remaining.Slice(0, delimiterIndex));
+
+        remaining = remaining.Slice(delimiterIndex + 1);
+
+        var args = ParseProviderArgs(remaining);
 
         return new TraceProvider(name, level, flags, args);
     }
 
-    private static long ParseProviderFlags(in ReadOnlySpan<char> providerString, int startIndex, int currentIndex) =>
-        startIndex != currentIndex
-            ? Convert.ToInt64(providerString.Slice(startIndex, currentIndex - startIndex).ToString(), 16)
-            : -1;
-
-    private static EventLevel ParseProviderLevel(in ReadOnlySpan<char> providerString, int startIndex, int currentIndex)
+    private long ParseProviderFlags(in ReadOnlySpan<char> flagsPart)
     {
-        if (startIndex == currentIndex)
+        if (flagsPart.IsEmpty)
+        {
+            return -1;
+        }
+
+        return Convert.ToInt64(flagsPart.ToString(), 16);
+    }
+
+    private EventLevel ParseProviderLevel(in ReadOnlySpan<char> levelPart)
+    {
+        if (levelPart.IsEmpty)
         {
             return EventLevel.Verbose;
         }
 
-        var level = providerString.Slice(startIndex, currentIndex - startIndex).ToString();
-        if (int.TryParse(level, out var levelValue))
+        var levelString = levelPart.ToString();
+        if (int.TryParse(levelString, out var levelValue))
         {
             return levelValue > (int)EventLevel.Verbose ? EventLevel.Verbose : (EventLevel)levelValue;
         }
 
-        return level.ToLower() switch
+        return levelString.ToLower() switch
         {
             "logalways" => EventLevel.LogAlways,
             "critical" => EventLevel.Critical,
@@ -127,8 +119,13 @@ internal sealed class TraceProviderCollection
         };
     }
 
-    private static Dictionary<string, string> ParseProviderArgs(in ReadOnlySpan<char> argsString)
+    private Dictionary<string, string>? ParseProviderArgs(in ReadOnlySpan<char> argsString)
     {
+        if (argsString.IsEmpty)
+        {
+            return null;
+        }
+
         var args = new Dictionary<string, string>();
 
         var insideArgQuote = false;
@@ -146,25 +143,43 @@ internal sealed class TraceProviderCollection
                 continue;
             }
 
+            if (argsString[i] == '\"')
+            {
+                insideArgQuote = true;
+                continue;
+            }
+
             if (argsString[i] != ';')
             {
                 continue;
             }
 
             var arg = ParseArg(argsString.Slice(argStartIndex, i - argStartIndex));
-            args.Add(arg.Key, arg.Value);
+            if (arg.HasValue)
+            {
+                args.Add(arg.Value.Key, arg.Value.Value);
+            }
+
             argStartIndex = i + 1;
         }
 
         var lastArg = ParseArg(argsString.Slice(argStartIndex));
-        args.Add(lastArg.Key, lastArg.Value);
+        if (lastArg.HasValue)
+        {
+            args.Add(lastArg.Value.Key, lastArg.Value.Value);
+        }
 
         return args;
     }
 
-    private static (string Key, string Value) ParseArg(in ReadOnlySpan<char> argString)
+    private (string Key, string Value)? ParseArg(in ReadOnlySpan<char> argString)
     {
         var delimiterIndex = argString.IndexOf('=');
+        if (delimiterIndex == -1)
+        {
+            return null;
+        }
+
         return (
             argString.Slice(0, delimiterIndex).ToString(),
             argString.Slice(delimiterIndex + 1).ToString()
