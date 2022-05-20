@@ -28,6 +28,8 @@ internal sealed class CounterProviderCollection
     {
         var insideCounterList = false;
         var providerStartIndex = 0;
+        (string Provider, List<string>? Metrics)? provider;
+
         for (var i = 0; i < providersString.Length; i++)
         {
             if (providersString[i] == '[')
@@ -47,41 +49,49 @@ internal sealed class CounterProviderCollection
                 continue;
             }
 
-            var provider = ParseProvider(providersString.Slice(providerStartIndex, i - providerStartIndex));
-            _providers.Add(provider.Provider, provider.Metrics);
+            provider = ParseProvider(providersString.Slice(providerStartIndex, i - providerStartIndex).Trim());
+            if (provider.HasValue)
+            {
+                _providers.Add(provider.Value.Provider, provider.Value.Metrics);
+            }
 
             providerStartIndex = i + 1;
         }
 
-        var lastProvider = ParseProvider(providersString.Slice(providerStartIndex));
-        _providers.Add(lastProvider.Provider, lastProvider.Metrics);
+        provider = ParseProvider(providersString.Slice(providerStartIndex).Trim());
+        if (provider.HasValue)
+        {
+            _providers.Add(provider.Value.Provider, provider.Value.Metrics);
+        }
     }
 
-    private static (string Provider, List<string>? Metrics) ParseProvider(in ReadOnlySpan<char> providerString)
+    private static (string Provider, List<string>? Metrics)? ParseProvider(in ReadOnlySpan<char> providerString)
     {
+        if (providerString.IsEmpty)
+        {
+            return null;
+        }
+
         var counterListIndex = providerString.IndexOf('[');
         if (counterListIndex == -1)
         {
             return (providerString.ToString(), null);
         }
 
-        var providerName = providerString.Slice(0, counterListIndex);
+        var providerName = providerString.Slice(0, counterListIndex).Trim();
+        var counters = new List<string>();
+
         var counterListLength = providerString.Length - counterListIndex - 2;
         var counterList = providerString.Slice(counterListIndex + 1, counterListLength);
-        var counters = new List<string>();
-        var counterStartIndex = 0;
-        for (var i = 0; i < counterList.Length; i++)
+        var delimiterIndex = counterList.IndexOf(',');
+        while (delimiterIndex != -1)
         {
-            if (counterList[i] != ',')
-            {
-                continue;
-            }
-
-            counters.Add(counterList.Slice(counterStartIndex, i - counterStartIndex).ToString());
-            counterStartIndex = i + 1;
+            counters.Add(counterList.Slice(0, delimiterIndex).Trim().ToString());
+            counterList = counterList.Slice(delimiterIndex + 1);
+            delimiterIndex = counterList.IndexOf(',');
         }
 
-        counters.Add(counterList.Slice(counterStartIndex).ToString());
+        counters.Add(counterList.Trim().ToString());
 
         return (providerName.ToString(), counters);
     }

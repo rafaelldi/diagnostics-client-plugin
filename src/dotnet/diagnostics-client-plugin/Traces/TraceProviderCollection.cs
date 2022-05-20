@@ -32,18 +32,17 @@ internal sealed class TraceProviderCollection
         var providers = new List<TraceProvider>();
 
         TraceProvider provider;
-        var providerStartIndex = 0;
         var remaining = providersString;
         var delimiterIndex = remaining.IndexOf(',');
         while (delimiterIndex != -1)
         {
-            provider = ParseProvider(remaining.Slice(providerStartIndex, delimiterIndex - providerStartIndex).Trim());
+            provider = ParseProvider(remaining.Slice(0, delimiterIndex).Trim());
             providers.Add(provider);
             remaining = remaining.Slice(delimiterIndex + 1);
             delimiterIndex = remaining.IndexOf(',');
         }
 
-        provider = ParseProvider(remaining.Slice(providerStartIndex).Trim());
+        provider = ParseProvider(remaining.Trim());
         providers.Add(provider);
 
         return providers;
@@ -130,6 +129,7 @@ internal sealed class TraceProviderCollection
 
         var insideArgQuote = false;
         var argStartIndex = 0;
+        (string Key, string Value)? arg;
 
         for (var i = 0; i < argsString.Length; i++)
         {
@@ -154,7 +154,7 @@ internal sealed class TraceProviderCollection
                 continue;
             }
 
-            var arg = ParseArg(argsString.Slice(argStartIndex, i - argStartIndex));
+            arg = ParseArg(argsString.Slice(argStartIndex, i - argStartIndex));
             if (arg.HasValue)
             {
                 args.Add(arg.Value.Key, arg.Value.Value);
@@ -163,10 +163,10 @@ internal sealed class TraceProviderCollection
             argStartIndex = i + 1;
         }
 
-        var lastArg = ParseArg(argsString.Slice(argStartIndex));
-        if (lastArg.HasValue)
+        arg = ParseArg(argsString.Slice(argStartIndex));
+        if (arg.HasValue)
         {
-            args.Add(lastArg.Value.Key, lastArg.Value.Value);
+            args.Add(arg.Value.Key, arg.Value.Value);
         }
 
         return args;
