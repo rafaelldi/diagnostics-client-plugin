@@ -3,6 +3,9 @@
 # diagnostics-client-plugin Changelog
 
 ## [Unreleased]
+### Added
+- Support for 2022.2 version of the platform
+
 ### Fixed
 - Trace provider parsing algorithm
 
