@@ -3,6 +3,8 @@
 # diagnostics-client-plugin Changelog
 
 ## [Unreleased]
+### Fixed
+- Trace provider parsing algorithm
 
 ## [1.0.0]
 ### Added
