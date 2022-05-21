@@ -13,6 +13,9 @@ object DiagnosticsHostModel : Ext(SolutionModel.Solution) {
         field("processName", string)
         field("filename", string.nullable)
         field("startTime", string.nullable)
+        field("commandLine", string.nullable)
+        field("operatingSystem", string.nullable)
+        field("processArchitecture", string.nullable)
     }
 
     private val ProcessList = aggregatedef("ProcessList") {

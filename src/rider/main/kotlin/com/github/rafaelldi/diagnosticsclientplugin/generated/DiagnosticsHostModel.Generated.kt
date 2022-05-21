@@ -50,7 +50,7 @@ class DiagnosticsHostModel private constructor(
         
         
         
-        const val serializationHash = 2584320636915264294L
+        const val serializationHash = -8015686152067059572L
         
     }
     override val serializersOwner: ISerializersOwner get() = DiagnosticsHostModel
@@ -138,7 +138,7 @@ val com.jetbrains.rd.ide.model.Solution.diagnosticsHostModel get() = getOrCreate
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:65]
+ * #### Generated from [DiagnosticsHostModel.kt:68]
  */
 data class CollectCountersCommand (
     val pid: Int,
@@ -225,7 +225,7 @@ data class CollectCountersCommand (
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:48]
+ * #### Generated from [DiagnosticsHostModel.kt:51]
  */
 data class CollectDumpCommand (
     val pid: Int,
@@ -306,7 +306,7 @@ data class CollectDumpCommand (
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:92]
+ * #### Generated from [DiagnosticsHostModel.kt:95]
  */
 data class CollectTracesCommand (
     val pid: Int,
@@ -387,7 +387,7 @@ data class CollectTracesCommand (
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:33]
+ * #### Generated from [DiagnosticsHostModel.kt:36]
  */
 data class Counter (
     val name: String,
@@ -450,7 +450,7 @@ data class Counter (
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:68]
+ * #### Generated from [DiagnosticsHostModel.kt:71]
  */
 enum class CounterFileFormat {
     Csv, 
@@ -464,7 +464,7 @@ enum class CounterFileFormat {
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:24]
+ * #### Generated from [DiagnosticsHostModel.kt:27]
  */
 class CountersMonitoringSession private constructor(
     val pid: Int,
@@ -566,7 +566,7 @@ class CountersMonitoringSession private constructor(
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:59]
+ * #### Generated from [DiagnosticsHostModel.kt:62]
  */
 data class DumpCollectionResult (
     val filePath: String
@@ -623,7 +623,7 @@ data class DumpCollectionResult (
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:50]
+ * #### Generated from [DiagnosticsHostModel.kt:53]
  */
 enum class DumpType {
     Full, 
@@ -639,7 +639,7 @@ enum class DumpType {
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:81]
+ * #### Generated from [DiagnosticsHostModel.kt:84]
  */
 data class MonitorCountersCommand (
     val pid: Int,
@@ -720,7 +720,10 @@ data class ProcessInfo (
     val processId: Int,
     val processName: String,
     val filename: String?,
-    val startTime: String?
+    val startTime: String?,
+    val commandLine: String?,
+    val operatingSystem: String?,
+    val processArchitecture: String?
 ) : IPrintable {
     //companion
     
@@ -733,7 +736,10 @@ data class ProcessInfo (
             val processName = buffer.readString()
             val filename = buffer.readNullable { buffer.readString() }
             val startTime = buffer.readNullable { buffer.readString() }
-            return ProcessInfo(processId, processName, filename, startTime)
+            val commandLine = buffer.readNullable { buffer.readString() }
+            val operatingSystem = buffer.readNullable { buffer.readString() }
+            val processArchitecture = buffer.readNullable { buffer.readString() }
+            return ProcessInfo(processId, processName, filename, startTime, commandLine, operatingSystem, processArchitecture)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: ProcessInfo)  {
@@ -741,6 +747,9 @@ data class ProcessInfo (
             buffer.writeString(value.processName)
             buffer.writeNullable(value.filename) { buffer.writeString(it) }
             buffer.writeNullable(value.startTime) { buffer.writeString(it) }
+            buffer.writeNullable(value.commandLine) { buffer.writeString(it) }
+            buffer.writeNullable(value.operatingSystem) { buffer.writeString(it) }
+            buffer.writeNullable(value.processArchitecture) { buffer.writeString(it) }
         }
         
         
@@ -760,6 +769,9 @@ data class ProcessInfo (
         if (processName != other.processName) return false
         if (filename != other.filename) return false
         if (startTime != other.startTime) return false
+        if (commandLine != other.commandLine) return false
+        if (operatingSystem != other.operatingSystem) return false
+        if (processArchitecture != other.processArchitecture) return false
         
         return true
     }
@@ -770,6 +782,9 @@ data class ProcessInfo (
         __r = __r*31 + processName.hashCode()
         __r = __r*31 + if (filename != null) filename.hashCode() else 0
         __r = __r*31 + if (startTime != null) startTime.hashCode() else 0
+        __r = __r*31 + if (commandLine != null) commandLine.hashCode() else 0
+        __r = __r*31 + if (operatingSystem != null) operatingSystem.hashCode() else 0
+        __r = __r*31 + if (processArchitecture != null) processArchitecture.hashCode() else 0
         return __r
     }
     //pretty print
@@ -780,6 +795,9 @@ data class ProcessInfo (
             print("processName = "); processName.print(printer); println()
             print("filename = "); filename.print(printer); println()
             print("startTime = "); startTime.print(printer); println()
+            print("commandLine = "); commandLine.print(printer); println()
+            print("operatingSystem = "); operatingSystem.print(printer); println()
+            print("processArchitecture = "); processArchitecture.print(printer); println()
         }
         printer.print(")")
     }
@@ -789,7 +807,7 @@ data class ProcessInfo (
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:18]
+ * #### Generated from [DiagnosticsHostModel.kt:21]
  */
 class ProcessList private constructor(
     private val _items: RdList<ProcessInfo>,
@@ -870,7 +888,7 @@ class ProcessList private constructor(
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:95]
+ * #### Generated from [DiagnosticsHostModel.kt:98]
  */
 enum class TracingProfile {
     None, 

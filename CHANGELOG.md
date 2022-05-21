@@ -5,6 +5,7 @@
 ## [Unreleased]
 ### Added
 - Support for 2022.2 version of the platform
+- Additional information about process
 
 ### Fixed
 - Trace provider parsing algorithm

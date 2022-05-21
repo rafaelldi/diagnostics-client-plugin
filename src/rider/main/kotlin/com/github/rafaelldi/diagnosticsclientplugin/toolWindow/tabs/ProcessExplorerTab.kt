@@ -25,7 +25,7 @@ class ProcessExplorerTab(private val processList: ProcessList, lt: Lifetime) :
     init {
         val splitter = OnePixelSplitter(false, SPLITTER_PROPORTION).apply {
             firstComponent = JBScrollPane(processListComponent)
-            secondComponent = processPanelComponent
+            secondComponent = JBScrollPane(processPanelComponent)
         }
 
         setContent(splitter)

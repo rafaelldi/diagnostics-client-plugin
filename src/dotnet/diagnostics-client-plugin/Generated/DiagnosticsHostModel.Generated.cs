@@ -120,7 +120,7 @@ namespace DiagnosticsClientPlugin.Generated
     
     
     
-    protected override long SerializationHash => 2584320636915264294L;
+    protected override long SerializationHash => -8015686152067059572L;
     
     protected override Action<ISerializers> Register => RegisterDeclaredTypesSerializers;
     public static void RegisterDeclaredTypesSerializers(ISerializers serializers)
@@ -170,7 +170,7 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:65</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:68</p>
   /// </summary>
   public sealed class CollectCountersCommand : IPrintable, IEquatable<CollectCountersCommand>
   {
@@ -298,7 +298,7 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:48</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:51</p>
   /// </summary>
   public sealed class CollectDumpCommand : IPrintable, IEquatable<CollectDumpCommand>
   {
@@ -416,7 +416,7 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:92</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:95</p>
   /// </summary>
   public sealed class CollectTracesCommand : IPrintable, IEquatable<CollectTracesCommand>
   {
@@ -536,7 +536,7 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:33</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:36</p>
   /// </summary>
   public sealed class Counter : IPrintable, IEquatable<Counter>
   {
@@ -629,7 +629,7 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:68</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:71</p>
   /// </summary>
   public enum CounterFileFormat {
     Csv,
@@ -638,7 +638,7 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:24</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:27</p>
   /// </summary>
   public sealed class CountersMonitoringSession : RdBindableBase
   {
@@ -753,7 +753,7 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:59</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:62</p>
   /// </summary>
   public sealed class DumpCollectionResult : IPrintable, IEquatable<DumpCollectionResult>
   {
@@ -838,7 +838,7 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:50</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:53</p>
   /// </summary>
   public enum DumpType {
     Full,
@@ -849,7 +849,7 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:81</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:84</p>
   /// </summary>
   public sealed class MonitorCountersCommand : IPrintable, IEquatable<MonitorCountersCommand>
   {
@@ -970,6 +970,9 @@ namespace DiagnosticsClientPlugin.Generated
     [NotNull] public string ProcessName {get; private set;}
     [CanBeNull] public string Filename {get; private set;}
     [CanBeNull] public string StartTime {get; private set;}
+    [CanBeNull] public string CommandLine {get; private set;}
+    [CanBeNull] public string OperatingSystem {get; private set;}
+    [CanBeNull] public string ProcessArchitecture {get; private set;}
     
     //private fields
     //primary constructor
@@ -977,7 +980,10 @@ namespace DiagnosticsClientPlugin.Generated
       int processId,
       [NotNull] string processName,
       [CanBeNull] string filename,
-      [CanBeNull] string startTime
+      [CanBeNull] string startTime,
+      [CanBeNull] string commandLine,
+      [CanBeNull] string operatingSystem,
+      [CanBeNull] string processArchitecture
     )
     {
       if (processName == null) throw new ArgumentNullException("processName");
@@ -986,15 +992,21 @@ namespace DiagnosticsClientPlugin.Generated
       ProcessName = processName;
       Filename = filename;
       StartTime = startTime;
+      CommandLine = commandLine;
+      OperatingSystem = operatingSystem;
+      ProcessArchitecture = processArchitecture;
     }
     //secondary constructor
     //deconstruct trait
-    public void Deconstruct(out int processId, [NotNull] out string processName, [CanBeNull] out string filename, [CanBeNull] out string startTime)
+    public void Deconstruct(out int processId, [NotNull] out string processName, [CanBeNull] out string filename, [CanBeNull] out string startTime, [CanBeNull] out string commandLine, [CanBeNull] out string operatingSystem, [CanBeNull] out string processArchitecture)
     {
       processId = ProcessId;
       processName = ProcessName;
       filename = Filename;
       startTime = StartTime;
+      commandLine = CommandLine;
+      operatingSystem = OperatingSystem;
+      processArchitecture = ProcessArchitecture;
     }
     //statics
     
@@ -1004,7 +1016,10 @@ namespace DiagnosticsClientPlugin.Generated
       var processName = reader.ReadString();
       var filename = ReadStringNullable(ctx, reader);
       var startTime = ReadStringNullable(ctx, reader);
-      var _result = new ProcessInfo(processId, processName, filename, startTime);
+      var commandLine = ReadStringNullable(ctx, reader);
+      var operatingSystem = ReadStringNullable(ctx, reader);
+      var processArchitecture = ReadStringNullable(ctx, reader);
+      var _result = new ProcessInfo(processId, processName, filename, startTime, commandLine, operatingSystem, processArchitecture);
       return _result;
     };
     public static CtxReadDelegate<string> ReadStringNullable = JetBrains.Rd.Impl.Serializers.ReadString.NullableClass();
@@ -1015,6 +1030,9 @@ namespace DiagnosticsClientPlugin.Generated
       writer.Write(value.ProcessName);
       WriteStringNullable(ctx, writer, value.Filename);
       WriteStringNullable(ctx, writer, value.StartTime);
+      WriteStringNullable(ctx, writer, value.CommandLine);
+      WriteStringNullable(ctx, writer, value.OperatingSystem);
+      WriteStringNullable(ctx, writer, value.ProcessArchitecture);
     };
     public static  CtxWriteDelegate<string> WriteStringNullable = JetBrains.Rd.Impl.Serializers.WriteString.NullableClass();
     
@@ -1034,7 +1052,7 @@ namespace DiagnosticsClientPlugin.Generated
     {
       if (ReferenceEquals(null, other)) return false;
       if (ReferenceEquals(this, other)) return true;
-      return ProcessId == other.ProcessId && ProcessName == other.ProcessName && Equals(Filename, other.Filename) && Equals(StartTime, other.StartTime);
+      return ProcessId == other.ProcessId && ProcessName == other.ProcessName && Equals(Filename, other.Filename) && Equals(StartTime, other.StartTime) && Equals(CommandLine, other.CommandLine) && Equals(OperatingSystem, other.OperatingSystem) && Equals(ProcessArchitecture, other.ProcessArchitecture);
     }
     //hash code trait
     public override int GetHashCode()
@@ -1045,6 +1063,9 @@ namespace DiagnosticsClientPlugin.Generated
         hash = hash * 31 + ProcessName.GetHashCode();
         hash = hash * 31 + (Filename != null ? Filename.GetHashCode() : 0);
         hash = hash * 31 + (StartTime != null ? StartTime.GetHashCode() : 0);
+        hash = hash * 31 + (CommandLine != null ? CommandLine.GetHashCode() : 0);
+        hash = hash * 31 + (OperatingSystem != null ? OperatingSystem.GetHashCode() : 0);
+        hash = hash * 31 + (ProcessArchitecture != null ? ProcessArchitecture.GetHashCode() : 0);
         return hash;
       }
     }
@@ -1057,6 +1078,9 @@ namespace DiagnosticsClientPlugin.Generated
         printer.Print("processName = "); ProcessName.PrintEx(printer); printer.Println();
         printer.Print("filename = "); Filename.PrintEx(printer); printer.Println();
         printer.Print("startTime = "); StartTime.PrintEx(printer); printer.Println();
+        printer.Print("commandLine = "); CommandLine.PrintEx(printer); printer.Println();
+        printer.Print("operatingSystem = "); OperatingSystem.PrintEx(printer); printer.Println();
+        printer.Print("processArchitecture = "); ProcessArchitecture.PrintEx(printer); printer.Println();
       }
       printer.Print(")");
     }
@@ -1071,7 +1095,7 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:18</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:21</p>
   /// </summary>
   public sealed class ProcessList : RdBindableBase
   {
@@ -1165,7 +1189,7 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:95</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:98</p>
   /// </summary>
   public enum TracingProfile {
     None,

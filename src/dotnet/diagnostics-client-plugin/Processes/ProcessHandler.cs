@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
+using DiagnosticsClientPlugin.Common;
 using DiagnosticsClientPlugin.Generated;
 using JetBrains.Lifetimes;
 using JetBrains.ProjectModel;
@@ -32,9 +33,20 @@ internal sealed class ProcessHandler
             try
             {
                 var process = Process.GetProcessById(pid);
+                var client = new DiagnosticsClient(pid);
+                var additionalProcessInfo = client.GetProcessInfo();
                 var filename = process.MainModule?.FileName;
                 var startTime = process.StartTime.ToString(CultureInfo.CurrentCulture);
-                var pi = new ProcessInfo(process.Id, process.ProcessName, filename, startTime);
+
+                var pi = new ProcessInfo(
+                    process.Id, 
+                    process.ProcessName, 
+                    filename, 
+                    startTime,
+                    additionalProcessInfo.CommandLine,
+                    additionalProcessInfo.OperatingSystem,
+                    additionalProcessInfo.ProcessArchitecture);
+
                 processInfos.Add(pi);
             }
             catch (ArgumentException)
