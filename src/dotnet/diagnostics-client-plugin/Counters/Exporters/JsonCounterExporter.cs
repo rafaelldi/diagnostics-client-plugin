@@ -7,7 +7,7 @@ namespace DiagnosticsClientPlugin.Counters.Exporters;
 
 internal sealed class JsonCounterExporter : FileCounterExporter
 {
-    private readonly StringBuilder _stringBuilder = new(11);
+    private readonly StringBuilder _stringBuilder = new();
 
     internal JsonCounterExporter(string filePath, ChannelReader<ValueCounter> reader)
         : base(filePath, reader)

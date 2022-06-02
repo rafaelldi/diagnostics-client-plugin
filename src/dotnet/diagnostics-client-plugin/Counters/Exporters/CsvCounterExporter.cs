@@ -7,7 +7,7 @@ namespace DiagnosticsClientPlugin.Counters.Exporters;
 
 internal sealed class CsvCounterExporter : FileCounterExporter
 {
-    private readonly StringBuilder _stringBuilder = new(9);
+    private readonly StringBuilder _stringBuilder = new();
 
     public CsvCounterExporter(string filePath, ChannelReader<ValueCounter> reader)
         : base(filePath, reader)
