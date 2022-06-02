@@ -19,7 +19,7 @@ class CollectCountersDialog(private val project: Project) : DialogWrapper(projec
             1,
             StoppingType.AfterPeriod,
             30,
-            ""
+            "System.Runtime"
         )
 
     init {
@@ -55,7 +55,6 @@ class CollectCountersDialog(private val project: Project) : DialogWrapper(projec
                         return@validationOnInput error("Invalid providers format")
                     }
                 }
-                .comment("Leave empty for default")
                 .bindText(model::providers)
         }
         groupRowsRange("File Settings") {

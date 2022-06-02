@@ -9,7 +9,7 @@ import javax.swing.JComponent
 
 class MonitorCountersDialog(project: Project) : DialogWrapper(project) {
     private val model: MonitorCountersModel =
-        MonitorCountersModel(1, StoppingType.AfterPeriod, 30, "")
+        MonitorCountersModel(1, StoppingType.AfterPeriod, 30, "System.Runtime")
 
     init {
         init()
@@ -44,7 +44,6 @@ class MonitorCountersDialog(project: Project) : DialogWrapper(project) {
                         return@validationOnInput error("Invalid providers format")
                     }
                 }
-                .comment("Leave empty for default")
                 .bindText(model::providers)
         }
     }
