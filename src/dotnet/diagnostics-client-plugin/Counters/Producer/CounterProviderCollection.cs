@@ -79,21 +79,46 @@ internal sealed class CounterProviderCollection
         }
 
         var providerName = providerString.Slice(0, counterListIndex).Trim();
-        var counters = new List<string>();
 
         var counterListLength = providerString.Length - counterListIndex - 2;
-        var counterList = providerString.Slice(counterListIndex + 1, counterListLength);
+        var counterList = providerString.Slice(counterListIndex + 1, counterListLength).Trim();
+        if (counterList.IsEmpty)
+        {
+            return (providerName.ToString(), null);
+        }
+
+        var counters = ParseCounterList(counterList);
+
+        return (providerName.ToString(), counters);
+    }
+
+    private static List<string>? ParseCounterList(in ReadOnlySpan<char> counterListString)
+    {
+        var counters = new List<string>();
+
+        ReadOnlySpan<char> counter;
+        var counterList = counterListString;
         var delimiterIndex = counterList.IndexOf(',');
+
         while (delimiterIndex != -1)
         {
-            counters.Add(counterList.Slice(0, delimiterIndex).Trim().ToString());
+            counter = counterList.Slice(0, delimiterIndex).Trim();
+            if (!counter.IsEmpty)
+            {
+                counters.Add(counter.ToString());
+            }
+
             counterList = counterList.Slice(delimiterIndex + 1);
             delimiterIndex = counterList.IndexOf(',');
         }
 
-        counters.Add(counterList.Trim().ToString());
+        counter = counterList.Trim();
+        if (!counter.IsEmpty)
+        {
+            counters.Add(counter.ToString());
+        }
 
-        return (providerName.ToString(), counters);
+        return counters.Count != 0 ? counters : null;
     }
 
     internal bool Contains(string provider, string counter)
