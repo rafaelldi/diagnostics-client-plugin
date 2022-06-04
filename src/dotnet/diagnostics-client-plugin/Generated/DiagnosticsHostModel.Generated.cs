@@ -120,7 +120,7 @@ namespace DiagnosticsClientPlugin.Generated
     
     
     
-    protected override long SerializationHash => -8015686152067059572L;
+    protected override long SerializationHash => 2853661296216877490L;
     
     protected override Action<ISerializers> Register => RegisterDeclaredTypesSerializers;
     public static void RegisterDeclaredTypesSerializers(ISerializers serializers)
@@ -181,6 +181,9 @@ namespace DiagnosticsClientPlugin.Generated
     public CounterFileFormat Format {get; private set;}
     public int RefreshInterval {get; private set;}
     [NotNull] public string Providers {get; private set;}
+    [CanBeNull] public string Metrics {get; private set;}
+    public int MaxTimeSeries {get; private set;}
+    public int MaxHistograms {get; private set;}
     [CanBeNull] public int? Duration {get; private set;}
     
     //private fields
@@ -191,6 +194,9 @@ namespace DiagnosticsClientPlugin.Generated
       CounterFileFormat format,
       int refreshInterval,
       [NotNull] string providers,
+      [CanBeNull] string metrics,
+      int maxTimeSeries,
+      int maxHistograms,
       [CanBeNull] int? duration
     )
     {
@@ -202,17 +208,23 @@ namespace DiagnosticsClientPlugin.Generated
       Format = format;
       RefreshInterval = refreshInterval;
       Providers = providers;
+      Metrics = metrics;
+      MaxTimeSeries = maxTimeSeries;
+      MaxHistograms = maxHistograms;
       Duration = duration;
     }
     //secondary constructor
     //deconstruct trait
-    public void Deconstruct(out int pid, [NotNull] out string filePath, out CounterFileFormat format, out int refreshInterval, [NotNull] out string providers, [CanBeNull] out int? duration)
+    public void Deconstruct(out int pid, [NotNull] out string filePath, out CounterFileFormat format, out int refreshInterval, [NotNull] out string providers, [CanBeNull] out string metrics, out int maxTimeSeries, out int maxHistograms, [CanBeNull] out int? duration)
     {
       pid = Pid;
       filePath = FilePath;
       format = Format;
       refreshInterval = RefreshInterval;
       providers = Providers;
+      metrics = Metrics;
+      maxTimeSeries = MaxTimeSeries;
+      maxHistograms = MaxHistograms;
       duration = Duration;
     }
     //statics
@@ -224,10 +236,14 @@ namespace DiagnosticsClientPlugin.Generated
       var format = (CounterFileFormat)reader.ReadInt();
       var refreshInterval = reader.ReadInt();
       var providers = reader.ReadString();
+      var metrics = ReadStringNullable(ctx, reader);
+      var maxTimeSeries = reader.ReadInt();
+      var maxHistograms = reader.ReadInt();
       var duration = ReadIntNullable(ctx, reader);
-      var _result = new CollectCountersCommand(pid, filePath, format, refreshInterval, providers, duration);
+      var _result = new CollectCountersCommand(pid, filePath, format, refreshInterval, providers, metrics, maxTimeSeries, maxHistograms, duration);
       return _result;
     };
+    public static CtxReadDelegate<string> ReadStringNullable = JetBrains.Rd.Impl.Serializers.ReadString.NullableClass();
     public static CtxReadDelegate<int?> ReadIntNullable = JetBrains.Rd.Impl.Serializers.ReadInt.NullableStruct();
     
     public static CtxWriteDelegate<CollectCountersCommand> Write = (ctx, writer, value) => 
@@ -237,8 +253,12 @@ namespace DiagnosticsClientPlugin.Generated
       writer.Write((int)value.Format);
       writer.Write(value.RefreshInterval);
       writer.Write(value.Providers);
+      WriteStringNullable(ctx, writer, value.Metrics);
+      writer.Write(value.MaxTimeSeries);
+      writer.Write(value.MaxHistograms);
       WriteIntNullable(ctx, writer, value.Duration);
     };
+    public static  CtxWriteDelegate<string> WriteStringNullable = JetBrains.Rd.Impl.Serializers.WriteString.NullableClass();
     public static  CtxWriteDelegate<int?> WriteIntNullable = JetBrains.Rd.Impl.Serializers.WriteInt.NullableStruct();
     
     //constants
@@ -257,7 +277,7 @@ namespace DiagnosticsClientPlugin.Generated
     {
       if (ReferenceEquals(null, other)) return false;
       if (ReferenceEquals(this, other)) return true;
-      return Pid == other.Pid && FilePath == other.FilePath && Format == other.Format && RefreshInterval == other.RefreshInterval && Providers == other.Providers && Equals(Duration, other.Duration);
+      return Pid == other.Pid && FilePath == other.FilePath && Format == other.Format && RefreshInterval == other.RefreshInterval && Providers == other.Providers && Equals(Metrics, other.Metrics) && MaxTimeSeries == other.MaxTimeSeries && MaxHistograms == other.MaxHistograms && Equals(Duration, other.Duration);
     }
     //hash code trait
     public override int GetHashCode()
@@ -269,6 +289,9 @@ namespace DiagnosticsClientPlugin.Generated
         hash = hash * 31 + (int) Format;
         hash = hash * 31 + RefreshInterval.GetHashCode();
         hash = hash * 31 + Providers.GetHashCode();
+        hash = hash * 31 + (Metrics != null ? Metrics.GetHashCode() : 0);
+        hash = hash * 31 + MaxTimeSeries.GetHashCode();
+        hash = hash * 31 + MaxHistograms.GetHashCode();
         hash = hash * 31 + (Duration != null ? Duration.GetHashCode() : 0);
         return hash;
       }
@@ -283,6 +306,9 @@ namespace DiagnosticsClientPlugin.Generated
         printer.Print("format = "); Format.PrintEx(printer); printer.Println();
         printer.Print("refreshInterval = "); RefreshInterval.PrintEx(printer); printer.Println();
         printer.Print("providers = "); Providers.PrintEx(printer); printer.Println();
+        printer.Print("metrics = "); Metrics.PrintEx(printer); printer.Println();
+        printer.Print("maxTimeSeries = "); MaxTimeSeries.PrintEx(printer); printer.Println();
+        printer.Print("maxHistograms = "); MaxHistograms.PrintEx(printer); printer.Println();
         printer.Print("duration = "); Duration.PrintEx(printer); printer.Println();
       }
       printer.Print(")");
@@ -416,7 +442,7 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:95</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:101</p>
   /// </summary>
   public sealed class CollectTracesCommand : IPrintable, IEquatable<CollectTracesCommand>
   {
@@ -849,7 +875,7 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:84</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:87</p>
   /// </summary>
   public sealed class MonitorCountersCommand : IPrintable, IEquatable<MonitorCountersCommand>
   {
@@ -858,6 +884,9 @@ namespace DiagnosticsClientPlugin.Generated
     public int Pid {get; private set;}
     public int RefreshInterval {get; private set;}
     [NotNull] public string Providers {get; private set;}
+    [CanBeNull] public string Metrics {get; private set;}
+    public int MaxTimeSeries {get; private set;}
+    public int MaxHistograms {get; private set;}
     [CanBeNull] public int? Duration {get; private set;}
     
     //private fields
@@ -866,6 +895,9 @@ namespace DiagnosticsClientPlugin.Generated
       int pid,
       int refreshInterval,
       [NotNull] string providers,
+      [CanBeNull] string metrics,
+      int maxTimeSeries,
+      int maxHistograms,
       [CanBeNull] int? duration
     )
     {
@@ -874,15 +906,21 @@ namespace DiagnosticsClientPlugin.Generated
       Pid = pid;
       RefreshInterval = refreshInterval;
       Providers = providers;
+      Metrics = metrics;
+      MaxTimeSeries = maxTimeSeries;
+      MaxHistograms = maxHistograms;
       Duration = duration;
     }
     //secondary constructor
     //deconstruct trait
-    public void Deconstruct(out int pid, out int refreshInterval, [NotNull] out string providers, [CanBeNull] out int? duration)
+    public void Deconstruct(out int pid, out int refreshInterval, [NotNull] out string providers, [CanBeNull] out string metrics, out int maxTimeSeries, out int maxHistograms, [CanBeNull] out int? duration)
     {
       pid = Pid;
       refreshInterval = RefreshInterval;
       providers = Providers;
+      metrics = Metrics;
+      maxTimeSeries = MaxTimeSeries;
+      maxHistograms = MaxHistograms;
       duration = Duration;
     }
     //statics
@@ -892,10 +930,14 @@ namespace DiagnosticsClientPlugin.Generated
       var pid = reader.ReadInt();
       var refreshInterval = reader.ReadInt();
       var providers = reader.ReadString();
+      var metrics = ReadStringNullable(ctx, reader);
+      var maxTimeSeries = reader.ReadInt();
+      var maxHistograms = reader.ReadInt();
       var duration = ReadIntNullable(ctx, reader);
-      var _result = new MonitorCountersCommand(pid, refreshInterval, providers, duration);
+      var _result = new MonitorCountersCommand(pid, refreshInterval, providers, metrics, maxTimeSeries, maxHistograms, duration);
       return _result;
     };
+    public static CtxReadDelegate<string> ReadStringNullable = JetBrains.Rd.Impl.Serializers.ReadString.NullableClass();
     public static CtxReadDelegate<int?> ReadIntNullable = JetBrains.Rd.Impl.Serializers.ReadInt.NullableStruct();
     
     public static CtxWriteDelegate<MonitorCountersCommand> Write = (ctx, writer, value) => 
@@ -903,8 +945,12 @@ namespace DiagnosticsClientPlugin.Generated
       writer.Write(value.Pid);
       writer.Write(value.RefreshInterval);
       writer.Write(value.Providers);
+      WriteStringNullable(ctx, writer, value.Metrics);
+      writer.Write(value.MaxTimeSeries);
+      writer.Write(value.MaxHistograms);
       WriteIntNullable(ctx, writer, value.Duration);
     };
+    public static  CtxWriteDelegate<string> WriteStringNullable = JetBrains.Rd.Impl.Serializers.WriteString.NullableClass();
     public static  CtxWriteDelegate<int?> WriteIntNullable = JetBrains.Rd.Impl.Serializers.WriteInt.NullableStruct();
     
     //constants
@@ -923,7 +969,7 @@ namespace DiagnosticsClientPlugin.Generated
     {
       if (ReferenceEquals(null, other)) return false;
       if (ReferenceEquals(this, other)) return true;
-      return Pid == other.Pid && RefreshInterval == other.RefreshInterval && Providers == other.Providers && Equals(Duration, other.Duration);
+      return Pid == other.Pid && RefreshInterval == other.RefreshInterval && Providers == other.Providers && Equals(Metrics, other.Metrics) && MaxTimeSeries == other.MaxTimeSeries && MaxHistograms == other.MaxHistograms && Equals(Duration, other.Duration);
     }
     //hash code trait
     public override int GetHashCode()
@@ -933,6 +979,9 @@ namespace DiagnosticsClientPlugin.Generated
         hash = hash * 31 + Pid.GetHashCode();
         hash = hash * 31 + RefreshInterval.GetHashCode();
         hash = hash * 31 + Providers.GetHashCode();
+        hash = hash * 31 + (Metrics != null ? Metrics.GetHashCode() : 0);
+        hash = hash * 31 + MaxTimeSeries.GetHashCode();
+        hash = hash * 31 + MaxHistograms.GetHashCode();
         hash = hash * 31 + (Duration != null ? Duration.GetHashCode() : 0);
         return hash;
       }
@@ -945,6 +994,9 @@ namespace DiagnosticsClientPlugin.Generated
         printer.Print("pid = "); Pid.PrintEx(printer); printer.Println();
         printer.Print("refreshInterval = "); RefreshInterval.PrintEx(printer); printer.Println();
         printer.Print("providers = "); Providers.PrintEx(printer); printer.Println();
+        printer.Print("metrics = "); Metrics.PrintEx(printer); printer.Println();
+        printer.Print("maxTimeSeries = "); MaxTimeSeries.PrintEx(printer); printer.Println();
+        printer.Print("maxHistograms = "); MaxHistograms.PrintEx(printer); printer.Println();
         printer.Print("duration = "); Duration.PrintEx(printer); printer.Println();
       }
       printer.Print(")");
@@ -1189,7 +1241,7 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:98</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:104</p>
   /// </summary>
   public enum TracingProfile {
     None,

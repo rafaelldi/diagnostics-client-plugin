@@ -9,7 +9,19 @@ fun isValidFilename(filename: String): Boolean = filenameRegex.matches(filename)
 // System.Runtime[cpu-usage,working-set]
 // System.Net.Http[http11-connections-current-total,http20-connections-current-total]
 // System.Runtime[cpu-usage,working-set],Microsoft.AspNetCore.Hosting
+// System.Runtime[cpu-usage,working-set],Microsoft.AspNetCore.Hosting[total-requests]
 private const val COUNTER_PROVIDERS_PATTERN =
     "^(?:[\\w\\-.]+(?:\\[[\\w-]+(?:,[\\w-]+)*])?(?:,[\\w\\-.]+(?:\\[[\\w-]+(?:,[\\w-]+)*])?)*)?\$"
 private val counterProvidersRegex = Regex(COUNTER_PROVIDERS_PATTERN)
 fun isValidCounterProviderList(providers: String): Boolean = counterProvidersRegex.matches(providers)
+
+// Valid metrics:
+// OpenTelemetry.Instrumentation.Runtime
+// OpenTelemetry.Instrumentation.Runtime[process.cpu.count]
+// OpenTelemetry.Instrumentation.Runtime[process.cpu.count,process.runtime.dotnet.gen_0-gc.count]
+// OpenTelemetry.Instrumentation.Runtime[process.cpu.count],OpenTelemetry.Instrumentation.AspNetCore
+// OpenTelemetry.Instrumentation.Runtime[process.cpu.count],OpenTelemetry.Instrumentation.AspNetCore[http.server.duration]
+private const val METRIC_LIST_PATTERN =
+    "^[\\w\\-.]+(?:\\[[\\w-.]+(?:,[\\w-.]+)*])?(?:,[\\w\\-.]+(?:\\[[\\w-.]+(?:,[\\w-.]+)*])?)*\$"
+private val metricListRegex = Regex(METRIC_LIST_PATTERN)
+fun isValidMetricList(providers: String): Boolean = metricListRegex.matches(providers)

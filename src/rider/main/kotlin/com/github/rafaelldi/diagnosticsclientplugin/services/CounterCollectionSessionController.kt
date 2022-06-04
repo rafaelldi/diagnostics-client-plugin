@@ -30,12 +30,16 @@ class CounterCollectionSessionController(project: Project) : ProtocolSubscribedP
 
         val filePath = calculateFilePath(model)
         val duration = if (model.stoppingType == StoppingType.AfterPeriod) model.duration else null
+        val metrics = model.metrics.ifEmpty { null }
         val command = CollectCountersCommand(
             pid,
             filePath,
             model.format.map(),
             model.interval,
             model.providers,
+            metrics,
+            model.maxTimeSeries,
+            model.maxHistograms,
             duration
         )
 
@@ -50,10 +54,12 @@ class CounterCollectionSessionController(project: Project) : ProtocolSubscribedP
                         activeSessions.remove(pid)
                         sessionFinished(pid, filePath)
                     }
+
                     is RdTaskResult.Cancelled -> {
                         activeSessions.remove(pid)
                         sessionFinished(pid, filePath)
                     }
+
                     is RdTaskResult.Fault -> {
                         activeSessions.remove(pid)
                         sessionFaulted(pid, result.error.reasonMessage)
@@ -84,6 +90,7 @@ class CounterCollectionSessionController(project: Project) : ProtocolSubscribedP
                 else
                     "${model.filename}.csv"
             }
+
             CounterFileFormat.Json -> {
                 if (model.filename.endsWith(".json"))
                     model.filename

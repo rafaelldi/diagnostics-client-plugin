@@ -50,7 +50,7 @@ class DiagnosticsHostModel private constructor(
         
         
         
-        const val serializationHash = -8015686152067059572L
+        const val serializationHash = 2853661296216877490L
         
     }
     override val serializersOwner: ISerializersOwner get() = DiagnosticsHostModel
@@ -146,6 +146,9 @@ data class CollectCountersCommand (
     val format: CounterFileFormat,
     val refreshInterval: Int,
     val providers: String,
+    val metrics: String?,
+    val maxTimeSeries: Int,
+    val maxHistograms: Int,
     val duration: Int?
 ) : IPrintable {
     //companion
@@ -160,8 +163,11 @@ data class CollectCountersCommand (
             val format = buffer.readEnum<CounterFileFormat>()
             val refreshInterval = buffer.readInt()
             val providers = buffer.readString()
+            val metrics = buffer.readNullable { buffer.readString() }
+            val maxTimeSeries = buffer.readInt()
+            val maxHistograms = buffer.readInt()
             val duration = buffer.readNullable { buffer.readInt() }
-            return CollectCountersCommand(pid, filePath, format, refreshInterval, providers, duration)
+            return CollectCountersCommand(pid, filePath, format, refreshInterval, providers, metrics, maxTimeSeries, maxHistograms, duration)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: CollectCountersCommand)  {
@@ -170,6 +176,9 @@ data class CollectCountersCommand (
             buffer.writeEnum(value.format)
             buffer.writeInt(value.refreshInterval)
             buffer.writeString(value.providers)
+            buffer.writeNullable(value.metrics) { buffer.writeString(it) }
+            buffer.writeInt(value.maxTimeSeries)
+            buffer.writeInt(value.maxHistograms)
             buffer.writeNullable(value.duration) { buffer.writeInt(it) }
         }
         
@@ -191,6 +200,9 @@ data class CollectCountersCommand (
         if (format != other.format) return false
         if (refreshInterval != other.refreshInterval) return false
         if (providers != other.providers) return false
+        if (metrics != other.metrics) return false
+        if (maxTimeSeries != other.maxTimeSeries) return false
+        if (maxHistograms != other.maxHistograms) return false
         if (duration != other.duration) return false
         
         return true
@@ -203,6 +215,9 @@ data class CollectCountersCommand (
         __r = __r*31 + format.hashCode()
         __r = __r*31 + refreshInterval.hashCode()
         __r = __r*31 + providers.hashCode()
+        __r = __r*31 + if (metrics != null) metrics.hashCode() else 0
+        __r = __r*31 + maxTimeSeries.hashCode()
+        __r = __r*31 + maxHistograms.hashCode()
         __r = __r*31 + if (duration != null) duration.hashCode() else 0
         return __r
     }
@@ -215,6 +230,9 @@ data class CollectCountersCommand (
             print("format = "); format.print(printer); println()
             print("refreshInterval = "); refreshInterval.print(printer); println()
             print("providers = "); providers.print(printer); println()
+            print("metrics = "); metrics.print(printer); println()
+            print("maxTimeSeries = "); maxTimeSeries.print(printer); println()
+            print("maxHistograms = "); maxHistograms.print(printer); println()
             print("duration = "); duration.print(printer); println()
         }
         printer.print(")")
@@ -306,7 +324,7 @@ data class CollectDumpCommand (
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:95]
+ * #### Generated from [DiagnosticsHostModel.kt:101]
  */
 data class CollectTracesCommand (
     val pid: Int,
@@ -639,12 +657,15 @@ enum class DumpType {
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:84]
+ * #### Generated from [DiagnosticsHostModel.kt:87]
  */
 data class MonitorCountersCommand (
     val pid: Int,
     val refreshInterval: Int,
     val providers: String,
+    val metrics: String?,
+    val maxTimeSeries: Int,
+    val maxHistograms: Int,
     val duration: Int?
 ) : IPrintable {
     //companion
@@ -657,14 +678,20 @@ data class MonitorCountersCommand (
             val pid = buffer.readInt()
             val refreshInterval = buffer.readInt()
             val providers = buffer.readString()
+            val metrics = buffer.readNullable { buffer.readString() }
+            val maxTimeSeries = buffer.readInt()
+            val maxHistograms = buffer.readInt()
             val duration = buffer.readNullable { buffer.readInt() }
-            return MonitorCountersCommand(pid, refreshInterval, providers, duration)
+            return MonitorCountersCommand(pid, refreshInterval, providers, metrics, maxTimeSeries, maxHistograms, duration)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: MonitorCountersCommand)  {
             buffer.writeInt(value.pid)
             buffer.writeInt(value.refreshInterval)
             buffer.writeString(value.providers)
+            buffer.writeNullable(value.metrics) { buffer.writeString(it) }
+            buffer.writeInt(value.maxTimeSeries)
+            buffer.writeInt(value.maxHistograms)
             buffer.writeNullable(value.duration) { buffer.writeInt(it) }
         }
         
@@ -684,6 +711,9 @@ data class MonitorCountersCommand (
         if (pid != other.pid) return false
         if (refreshInterval != other.refreshInterval) return false
         if (providers != other.providers) return false
+        if (metrics != other.metrics) return false
+        if (maxTimeSeries != other.maxTimeSeries) return false
+        if (maxHistograms != other.maxHistograms) return false
         if (duration != other.duration) return false
         
         return true
@@ -694,6 +724,9 @@ data class MonitorCountersCommand (
         __r = __r*31 + pid.hashCode()
         __r = __r*31 + refreshInterval.hashCode()
         __r = __r*31 + providers.hashCode()
+        __r = __r*31 + if (metrics != null) metrics.hashCode() else 0
+        __r = __r*31 + maxTimeSeries.hashCode()
+        __r = __r*31 + maxHistograms.hashCode()
         __r = __r*31 + if (duration != null) duration.hashCode() else 0
         return __r
     }
@@ -704,6 +737,9 @@ data class MonitorCountersCommand (
             print("pid = "); pid.print(printer); println()
             print("refreshInterval = "); refreshInterval.print(printer); println()
             print("providers = "); providers.print(printer); println()
+            print("metrics = "); metrics.print(printer); println()
+            print("maxTimeSeries = "); maxTimeSeries.print(printer); println()
+            print("maxHistograms = "); maxHistograms.print(printer); println()
             print("duration = "); duration.print(printer); println()
         }
         printer.print(")")
@@ -888,7 +924,7 @@ class ProcessList private constructor(
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:98]
+ * #### Generated from [DiagnosticsHostModel.kt:104]
  */
 enum class TracingProfile {
     None, 

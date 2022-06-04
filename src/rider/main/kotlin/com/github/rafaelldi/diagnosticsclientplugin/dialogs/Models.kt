@@ -6,7 +6,10 @@ data class MonitorCountersModel(
     var interval: Int,
     var stoppingType: StoppingType,
     var duration: Int,
-    var providers: String
+    var providers: String,
+    var metrics: String,
+    var maxTimeSeries: Int,
+    var maxHistograms : Int
 )
 
 data class CollectCountersModel(
@@ -16,7 +19,10 @@ data class CollectCountersModel(
     var interval: Int,
     var stoppingType: StoppingType,
     var duration: Int,
-    var providers: String
+    var providers: String,
+    var metrics: String,
+    var maxTimeSeries: Int,
+    var maxHistograms : Int
 )
 
 data class CounterTimerModel(var duration: Int)

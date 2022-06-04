@@ -31,7 +31,16 @@ class CounterMonitoringSessionController(project: Project) : ProtocolSubscribedP
         val sessionDefinition = createDefinitionForSession(pid) ?: return
 
         val duration = if (model.stoppingType == StoppingType.AfterPeriod) model.duration else null
-        val command = MonitorCountersCommand(pid, model.interval, model.providers, duration)
+        val metrics = model.metrics.ifEmpty { null }
+        val command = MonitorCountersCommand(
+            pid,
+            model.interval,
+            model.providers,
+            metrics,
+            model.maxTimeSeries,
+            model.maxHistograms,
+            duration
+        )
 
         val monitorTask = hostModel.monitorCounters.start(sessionDefinition.lifetime, command)
         sessionStarted(pid)
@@ -44,10 +53,12 @@ class CounterMonitoringSessionController(project: Project) : ProtocolSubscribedP
                         activeSessions.remove(pid)
                         sessionFinished(pid)
                     }
+
                     is RdTaskResult.Cancelled -> {
                         activeSessions.remove(pid)
                         sessionFinished(pid)
                     }
+
                     is RdTaskResult.Fault -> {
                         activeSessions.remove(pid)
                         sessionFaulted(pid, result.error.reasonMessage)
@@ -71,9 +82,11 @@ class CounterMonitoringSessionController(project: Project) : ProtocolSubscribedP
                         activeSessions.remove(pid)
                         sessionFinished(pid)
                     }
+
                     is RdTaskResult.Cancelled -> {
                         sessionFinished(pid)
                     }
+
                     is RdTaskResult.Fault -> {
                         sessionFaulted(pid, result.error.reasonMessage)
                     }

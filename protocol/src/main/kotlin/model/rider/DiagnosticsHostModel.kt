@@ -74,6 +74,9 @@ object DiagnosticsHostModel : Ext(SolutionModel.Solution) {
                 })
                 field("refreshInterval", int)
                 field("providers", string)
+                field("metrics", string.nullable)
+                field("maxTimeSeries", int)
+                field("maxHistograms", int)
                 field("duration", int.nullable)
             },
             void
@@ -85,6 +88,9 @@ object DiagnosticsHostModel : Ext(SolutionModel.Solution) {
                 field("pid", int)
                 field("refreshInterval", int)
                 field("providers", string)
+                field("metrics", string.nullable)
+                field("maxTimeSeries", int)
+                field("maxHistograms", int)
                 field("duration", int.nullable)
             },
             void
