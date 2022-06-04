@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using Microsoft.Diagnostics.NETCore.Client;
 
@@ -13,7 +14,7 @@ internal sealed class EventPipeSessionManager
         _client = new DiagnosticsClient(pid);
     }
 
-    internal EventPipeSession StartSession(EventPipeProvider[] providers, bool requestRundown)
+    internal EventPipeSession StartSession(IReadOnlyCollection<EventPipeProvider> providers, bool requestRundown)
     {
         return _client.StartEventPipeSession(providers, requestRundown);
     }

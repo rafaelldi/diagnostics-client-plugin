@@ -9,16 +9,16 @@ using Microsoft.Diagnostics.Tracing;
 
 namespace DiagnosticsClientPlugin.Counters.Producer;
 
-internal sealed class CountersProducer
+internal sealed class CounterProducer
 {
     private readonly EventPipeSessionManager _sessionManager;
-    private readonly CountersProducerConfiguration _configuration;
+    private readonly CounterProducerConfiguration _configuration;
     private readonly ChannelWriter<ValueCounter> _writer;
     private readonly Lifetime _lt;
 
-    internal CountersProducer(
+    internal CounterProducer(
         int pid,
-        CountersProducerConfiguration configuration,
+        CounterProducerConfiguration configuration,
         ChannelWriter<ValueCounter> writer,
         Lifetime lt)
     {

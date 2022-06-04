@@ -7,6 +7,7 @@ using JetBrains.Util;
 using Microsoft.Diagnostics.NETCore.Client;
 using static DiagnosticsClientPlugin.Counters.EventPipes.EventPipeProviderFactory;
 using static Microsoft.Diagnostics.Tracing.Parsers.ClrTraceEventParser;
+using static DiagnosticsClientPlugin.Common.Providers;
 
 namespace DiagnosticsClientPlugin.Traces;
 

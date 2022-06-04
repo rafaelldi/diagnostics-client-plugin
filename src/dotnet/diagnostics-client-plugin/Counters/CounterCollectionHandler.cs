@@ -1,4 +1,5 @@
-﻿using System.Threading.Channels;
+﻿using System;
+using System.Threading.Channels;
 using System.Threading.Tasks;
 using DiagnosticsClientPlugin.Common;
 using DiagnosticsClientPlugin.Counters.Common;
@@ -55,13 +56,19 @@ internal sealed class CounterCollectionHandler
         Channel<ValueCounter> channel) =>
         FileCounterExporter.Create(command.FilePath, command.Format, channel.Reader);
 
-    private CountersProducer CreateProducer(
+    private CounterProducer CreateProducer(
         CollectCountersCommand command,
         Channel<ValueCounter> channel,
         in Lifetime lt)
     {
-        var providers = new CounterProviderCollection(command.Providers, command.RefreshInterval);
-        var configuration = new CountersProducerConfiguration(command.RefreshInterval, providers);
-        return new CountersProducer(command.Pid, configuration, channel.Writer, lt);
+        var configuration = new CounterProducerConfiguration(
+            Guid.NewGuid().ToString(),
+            command.Providers,
+            command.Metrics,
+            command.RefreshInterval,
+            command.MaxTimeSeries,
+            command.MaxHistograms
+        );
+        return new CounterProducer(command.Pid, configuration, channel.Writer, lt);
     }
 }

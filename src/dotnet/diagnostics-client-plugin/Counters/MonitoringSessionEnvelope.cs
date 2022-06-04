@@ -16,9 +16,9 @@ internal sealed class MonitoringSessionEnvelope
     private readonly CounterMonitoringHandler _handler;
     private readonly Lifetime _lifetime;
     private readonly ProtocolCounterExporter _exporter;
-    private readonly CountersProducer _producer;
+    private readonly CounterProducer _producer;
 
-    internal MonitoringSessionEnvelope(int pid, CountersProducerConfiguration producerConfiguration,
+    internal MonitoringSessionEnvelope(int pid, CounterProducerConfiguration producerConfiguration,
         CounterMonitoringHandler handler, Lifetime lifetime)
     {
         _handler = handler;
@@ -33,7 +33,7 @@ internal sealed class MonitoringSessionEnvelope
         });
 
         _exporter = new ProtocolCounterExporter(Session, channel.Reader);
-        _producer = new CountersProducer(pid, producerConfiguration, channel.Writer, lifetime);
+        _producer = new CounterProducer(pid, producerConfiguration, channel.Writer, lifetime);
 
         Session.Monitor.Set(async (lt, duration) => await Monitor(duration, lt));
         Session.Close.Advise(lifetime, _ => Close());

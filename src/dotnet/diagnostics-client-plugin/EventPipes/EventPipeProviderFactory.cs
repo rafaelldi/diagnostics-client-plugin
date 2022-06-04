@@ -3,16 +3,18 @@ using System.Diagnostics.Tracing;
 using System.Linq;
 using DiagnosticsClientPlugin.Traces;
 using Microsoft.Diagnostics.NETCore.Client;
+using static DiagnosticsClientPlugin.Common.Providers;
 
 namespace DiagnosticsClientPlugin.Counters.EventPipes;
 
 internal static class EventPipeProviderFactory
 {
-    internal const string SystemRuntimeProvider = "System.Runtime";
-    internal const string SampleProfilerProvider = "Microsoft-DotNETCore-SampleProfiler";
-    internal const string DotNetRuntimeProvider = "Microsoft-Windows-DotNETRuntime";
-
     private const string IntervalArgument = "EventCounterIntervalSec";
+    private const string SessionIdArgument = "SessionId";
+    private const string MetricsArgument = "Metrics";
+    private const string RefreshIntervalArgument = "RefreshInterval";
+    private const string MaxTimeSeriesArgument = "MaxTimeSeries";
+    private const string MaxHistogramsArgument = "MaxHistograms";
 
     internal static EventPipeProvider[] CreateCounterProviders(IReadOnlyCollection<string> providers, int interval)
     {
@@ -21,31 +23,32 @@ internal static class EventPipeProviderFactory
             [IntervalArgument] = interval.ToString()
         };
 
-        return providers.Select(it => CreateCounterProvider(it, providerArguments)).ToArray();
-    }
-
-    private static EventPipeProvider CreateCounterProvider(
-        string provider,
-        Dictionary<string, string> arguments) =>
-        new(
-            provider,
+        return providers.Select(it => new EventPipeProvider(
+            it,
             EventLevel.Informational,
             (long)EventKeywords.None,
-            arguments
-        );
+            providerArguments
+        )).ToArray();
+    }
 
-    private static EventPipeProvider CreateMetricsProvider(int interval) =>
+    internal static EventPipeProvider CreateMetricProvider(
+        string sessionId,
+        string metrics,
+        int interval,
+        int maxTimeSeries,
+        int maxHistograms
+    ) =>
         new(
-            "System.Diagnostics.Metrics",
+            SystemDiagnosticsMetricsProvider,
             EventLevel.Informational,
             2L,
             new Dictionary<string, string>
             {
-                ["SessionId"] = "",
-                ["Metrics"] = "",
-                ["RefreshInterval"] = interval.ToString(),
-                ["MaxTimeSeries"] = 1000.ToString(),
-                ["MaxHistograms"] = 10.ToString()
+                [SessionIdArgument] = sessionId,
+                [MetricsArgument] = metrics,
+                [RefreshIntervalArgument] = interval.ToString(),
+                [MaxTimeSeriesArgument] = maxTimeSeries.ToString(),
+                [MaxHistogramsArgument] = maxHistograms.ToString()
             }
         );
 

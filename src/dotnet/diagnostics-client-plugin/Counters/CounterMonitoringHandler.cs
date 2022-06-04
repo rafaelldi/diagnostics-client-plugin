@@ -1,4 +1,5 @@
-﻿using System.Collections.Concurrent;
+﻿using System;
+using System.Collections.Concurrent;
 using System.Threading.Tasks;
 using DiagnosticsClientPlugin.Counters.Producer;
 using DiagnosticsClientPlugin.Generated;
@@ -37,8 +38,14 @@ internal sealed class CounterMonitoringHandler
         else
         {
             var definition = _lifetime.CreateNested();
-            var providers = new CounterProviderCollection(command.Providers, command.RefreshInterval);
-            var configuration = new CountersProducerConfiguration(command.RefreshInterval, providers);
+            var configuration = new CounterProducerConfiguration(
+                Guid.NewGuid().ToString(),
+                command.Providers,
+                command.Metrics,
+                command.RefreshInterval,
+                command.MaxTimeSeries,
+                command.MaxHistograms
+            );
             var envelope = new MonitoringSessionEnvelope(command.Pid, configuration, this, definition.Lifetime);
             if (!_sessions.TryAdd(command.Pid, (envelope, definition)))
             {
