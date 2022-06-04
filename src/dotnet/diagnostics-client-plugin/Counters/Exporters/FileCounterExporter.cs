@@ -11,25 +11,12 @@ namespace DiagnosticsClientPlugin.Counters.Exporters;
 internal abstract class FileCounterExporter
 {
     private readonly ChannelReader<ValueCounter> _reader;
-    private readonly FileInfo _file;
+    private readonly string _filePath;
 
     protected FileCounterExporter(string filePath, ChannelReader<ValueCounter> reader)
     {
-        _file = CreateFile(filePath);
+        _filePath = filePath;
         _reader = reader;
-    }
-
-    private static FileInfo CreateFile(string filePath)
-    {
-        var file = new FileInfo(filePath);
-        if (file.Exists)
-        {
-            file.Delete();
-        }
-
-        using var stream = file.Create();
-        stream.Close();
-        return file;
     }
 
     internal async Task ConsumeAsync(CancellationToken ct)
@@ -39,7 +26,7 @@ internal abstract class FileCounterExporter
             return;
         }
 
-        using var streamWriter = _file.AppendText();
+        using var streamWriter = File.CreateText(_filePath);
 
         var header = GetFileHeader();
         if (header != null)
