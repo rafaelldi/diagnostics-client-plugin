@@ -30,11 +30,13 @@ internal sealed class JsonCounterExporter : FileCounterExporter
             .Append(@""",""provider"":""")
             .Append(counter.ProviderName)
             .Append(@""",""counter"":""")
-            .Append(counter.Name)
+            .Append(counter.DisplayName)
             .Append(@""",""value"":""")
             .Append(counter.Value.ToString(CultureInfo.InvariantCulture))
             .Append(@""",""type"":""")
             .Append(counter.Type.ToValue())
+            .Append(@""",""tags"":""")
+            .Append(counter.Tags)
             .Append(@"""}");
 
         return _stringBuilder.ToString();

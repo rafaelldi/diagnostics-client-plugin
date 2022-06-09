@@ -120,7 +120,7 @@ namespace DiagnosticsClientPlugin.Generated
     
     
     
-    protected override long SerializationHash => 2853661296216877490L;
+    protected override long SerializationHash => 8310467154631391918L;
     
     protected override Action<ISerializers> Register => RegisterDeclaredTypesSerializers;
     public static void RegisterDeclaredTypesSerializers(ISerializers serializers)
@@ -170,7 +170,7 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:68</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:69</p>
   /// </summary>
   public sealed class CollectCountersCommand : IPrintable, IEquatable<CollectCountersCommand>
   {
@@ -324,7 +324,7 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:51</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:52</p>
   /// </summary>
   public sealed class CollectDumpCommand : IPrintable, IEquatable<CollectDumpCommand>
   {
@@ -442,7 +442,7 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:101</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:102</p>
   /// </summary>
   public sealed class CollectTracesCommand : IPrintable, IEquatable<CollectTracesCommand>
   {
@@ -569,25 +569,29 @@ namespace DiagnosticsClientPlugin.Generated
     //fields
     //public fields
     [NotNull] public string Name {get; private set;}
+    [CanBeNull] public string Tags {get; private set;}
     public double Value {get; private set;}
     
     //private fields
     //primary constructor
     public Counter(
       [NotNull] string name,
+      [CanBeNull] string tags,
       double value
     )
     {
       if (name == null) throw new ArgumentNullException("name");
       
       Name = name;
+      Tags = tags;
       Value = value;
     }
     //secondary constructor
     //deconstruct trait
-    public void Deconstruct([NotNull] out string name, out double value)
+    public void Deconstruct([NotNull] out string name, [CanBeNull] out string tags, out double value)
     {
       name = Name;
+      tags = Tags;
       value = Value;
     }
     //statics
@@ -595,16 +599,20 @@ namespace DiagnosticsClientPlugin.Generated
     public static CtxReadDelegate<Counter> Read = (ctx, reader) => 
     {
       var name = reader.ReadString();
+      var tags = ReadStringNullable(ctx, reader);
       var value = reader.ReadDouble();
-      var _result = new Counter(name, value);
+      var _result = new Counter(name, tags, value);
       return _result;
     };
+    public static CtxReadDelegate<string> ReadStringNullable = JetBrains.Rd.Impl.Serializers.ReadString.NullableClass();
     
     public static CtxWriteDelegate<Counter> Write = (ctx, writer, value) => 
     {
       writer.Write(value.Name);
+      WriteStringNullable(ctx, writer, value.Tags);
       writer.Write(value.Value);
     };
+    public static  CtxWriteDelegate<string> WriteStringNullable = JetBrains.Rd.Impl.Serializers.WriteString.NullableClass();
     
     //constants
     
@@ -622,7 +630,7 @@ namespace DiagnosticsClientPlugin.Generated
     {
       if (ReferenceEquals(null, other)) return false;
       if (ReferenceEquals(this, other)) return true;
-      return Name == other.Name && Value == other.Value;
+      return Name == other.Name && Equals(Tags, other.Tags) && Value == other.Value;
     }
     //hash code trait
     public override int GetHashCode()
@@ -630,6 +638,7 @@ namespace DiagnosticsClientPlugin.Generated
       unchecked {
         var hash = 0;
         hash = hash * 31 + Name.GetHashCode();
+        hash = hash * 31 + (Tags != null ? Tags.GetHashCode() : 0);
         hash = hash * 31 + Value.GetHashCode();
         return hash;
       }
@@ -640,6 +649,7 @@ namespace DiagnosticsClientPlugin.Generated
       printer.Println("Counter (");
       using (printer.IndentCookie()) {
         printer.Print("name = "); Name.PrintEx(printer); printer.Println();
+        printer.Print("tags = "); Tags.PrintEx(printer); printer.Println();
         printer.Print("value = "); Value.PrintEx(printer); printer.Println();
       }
       printer.Print(")");
@@ -655,7 +665,7 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:71</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:72</p>
   /// </summary>
   public enum CounterFileFormat {
     Csv,
@@ -779,7 +789,7 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:62</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:63</p>
   /// </summary>
   public sealed class DumpCollectionResult : IPrintable, IEquatable<DumpCollectionResult>
   {
@@ -864,7 +874,7 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:53</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:54</p>
   /// </summary>
   public enum DumpType {
     Full,
@@ -875,7 +885,7 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:87</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:88</p>
   /// </summary>
   public sealed class MonitorCountersCommand : IPrintable, IEquatable<MonitorCountersCommand>
   {
@@ -1241,7 +1251,7 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:104</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:105</p>
   /// </summary>
   public enum TracingProfile {
     None,

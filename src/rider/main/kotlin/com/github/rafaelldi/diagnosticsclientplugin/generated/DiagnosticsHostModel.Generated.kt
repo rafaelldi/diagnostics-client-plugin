@@ -50,7 +50,7 @@ class DiagnosticsHostModel private constructor(
         
         
         
-        const val serializationHash = 2853661296216877490L
+        const val serializationHash = 8310467154631391918L
         
     }
     override val serializersOwner: ISerializersOwner get() = DiagnosticsHostModel
@@ -138,7 +138,7 @@ val com.jetbrains.rd.ide.model.Solution.diagnosticsHostModel get() = getOrCreate
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:68]
+ * #### Generated from [DiagnosticsHostModel.kt:69]
  */
 data class CollectCountersCommand (
     val pid: Int,
@@ -243,7 +243,7 @@ data class CollectCountersCommand (
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:51]
+ * #### Generated from [DiagnosticsHostModel.kt:52]
  */
 data class CollectDumpCommand (
     val pid: Int,
@@ -324,7 +324,7 @@ data class CollectDumpCommand (
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:101]
+ * #### Generated from [DiagnosticsHostModel.kt:102]
  */
 data class CollectTracesCommand (
     val pid: Int,
@@ -409,6 +409,7 @@ data class CollectTracesCommand (
  */
 data class Counter (
     val name: String,
+    val tags: String?,
     val value: Double
 ) : IPrintable {
     //companion
@@ -419,12 +420,14 @@ data class Counter (
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): Counter  {
             val name = buffer.readString()
+            val tags = buffer.readNullable { buffer.readString() }
             val value = buffer.readDouble()
-            return Counter(name, value)
+            return Counter(name, tags, value)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: Counter)  {
             buffer.writeString(value.name)
+            buffer.writeNullable(value.tags) { buffer.writeString(it) }
             buffer.writeDouble(value.value)
         }
         
@@ -442,6 +445,7 @@ data class Counter (
         other as Counter
         
         if (name != other.name) return false
+        if (tags != other.tags) return false
         if (value != other.value) return false
         
         return true
@@ -450,6 +454,7 @@ data class Counter (
     override fun hashCode(): Int  {
         var __r = 0
         __r = __r*31 + name.hashCode()
+        __r = __r*31 + if (tags != null) tags.hashCode() else 0
         __r = __r*31 + value.hashCode()
         return __r
     }
@@ -458,6 +463,7 @@ data class Counter (
         printer.println("Counter (")
         printer.indent {
             print("name = "); name.print(printer); println()
+            print("tags = "); tags.print(printer); println()
             print("value = "); value.print(printer); println()
         }
         printer.print(")")
@@ -468,7 +474,7 @@ data class Counter (
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:71]
+ * #### Generated from [DiagnosticsHostModel.kt:72]
  */
 enum class CounterFileFormat {
     Csv, 
@@ -584,7 +590,7 @@ class CountersMonitoringSession private constructor(
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:62]
+ * #### Generated from [DiagnosticsHostModel.kt:63]
  */
 data class DumpCollectionResult (
     val filePath: String
@@ -641,7 +647,7 @@ data class DumpCollectionResult (
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:53]
+ * #### Generated from [DiagnosticsHostModel.kt:54]
  */
 enum class DumpType {
     Full, 
@@ -657,7 +663,7 @@ enum class DumpType {
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:87]
+ * #### Generated from [DiagnosticsHostModel.kt:88]
  */
 data class MonitorCountersCommand (
     val pid: Int,
@@ -924,7 +930,7 @@ class ProcessList private constructor(
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:104]
+ * #### Generated from [DiagnosticsHostModel.kt:105]
  */
 enum class TracingProfile {
     None, 

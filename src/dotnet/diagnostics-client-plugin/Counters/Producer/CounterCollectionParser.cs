@@ -5,9 +5,14 @@ namespace DiagnosticsClientPlugin.Counters.Producer;
 
 internal static class CounterCollectionParser
 {
-    internal static Dictionary<string, List<string>?> Parse(in ReadOnlySpan<char> collectionString)
+    internal static Dictionary<string, List<string>?> Parse(ReadOnlySpan<char> collectionString)
     {
         var result = new Dictionary<string, List<string>?>();
+
+        if (collectionString.IsEmpty)
+        {
+            return result;
+        }
 
         var insideInternalList = false;
         var itemStartIndex = 0;
@@ -50,7 +55,7 @@ internal static class CounterCollectionParser
         return result;
     }
     
-    private static (string Key, List<string>? Collection)? ParseItem(in ReadOnlySpan<char> itemString)
+    private static (string Key, List<string>? Collection)? ParseItem(ReadOnlySpan<char> itemString)
     {
         if (itemString.IsEmpty)
         {
@@ -77,7 +82,7 @@ internal static class CounterCollectionParser
         return (key.ToString(), counters);
     }
 
-    private static List<string>? ParseItemCollection(in ReadOnlySpan<char> itemCollectionString)
+    private static List<string>? ParseItemCollection(ReadOnlySpan<char> itemCollectionString)
     {
         var collection = new List<string>();
 

@@ -28,7 +28,7 @@ internal sealed class TraceProviderCollection
         EventPipeProviders = CreateTraceProviders(providers);
     }
 
-    private List<TraceProvider> ParseProviders(in ReadOnlySpan<char> providersString)
+    private List<TraceProvider> ParseProviders(ReadOnlySpan<char> providersString)
     {
         var providers = new List<TraceProvider>();
 
@@ -49,7 +49,7 @@ internal sealed class TraceProviderCollection
         return providers;
     }
 
-    private TraceProvider ParseProvider(in ReadOnlySpan<char> providerString)
+    private TraceProvider ParseProvider(ReadOnlySpan<char> providerString)
     {
         var delimiterIndex = providerString.IndexOf(':');
         if (delimiterIndex == -1)
@@ -84,7 +84,7 @@ internal sealed class TraceProviderCollection
         return new TraceProvider(name, level, flags, args);
     }
 
-    private long ParseProviderFlags(in ReadOnlySpan<char> flagsPart)
+    private long ParseProviderFlags(ReadOnlySpan<char> flagsPart)
     {
         if (flagsPart.IsEmpty)
         {
@@ -94,7 +94,7 @@ internal sealed class TraceProviderCollection
         return Convert.ToInt64(flagsPart.ToString(), 16);
     }
 
-    private EventLevel ParseProviderLevel(in ReadOnlySpan<char> levelPart)
+    private EventLevel ParseProviderLevel(ReadOnlySpan<char> levelPart)
     {
         if (levelPart.IsEmpty)
         {
@@ -119,7 +119,7 @@ internal sealed class TraceProviderCollection
         };
     }
 
-    private Dictionary<string, string>? ParseProviderArgs(in ReadOnlySpan<char> argsString)
+    private Dictionary<string, string>? ParseProviderArgs(ReadOnlySpan<char> argsString)
     {
         if (argsString.IsEmpty)
         {
@@ -173,7 +173,7 @@ internal sealed class TraceProviderCollection
         return args;
     }
 
-    private (string Key, string Value)? ParseArg(in ReadOnlySpan<char> argString)
+    private (string Key, string Value)? ParseArg(ReadOnlySpan<char> argString)
     {
         var delimiterIndex = argString.IndexOf('=');
         if (delimiterIndex == -1)

@@ -8,19 +8,17 @@ internal sealed class CounterProviderCollection
 {
     private readonly Dictionary<string, List<string>?> _counterProviders;
 
+    internal CounterProviderCollection()
+    {
+        _counterProviders = new Dictionary<string, List<string>?>
+        {
+            [SystemRuntimeProvider] = null
+        };
+    }
+
     internal CounterProviderCollection(string counterProviderCollectionString)
     {
-        if (string.IsNullOrEmpty(counterProviderCollectionString))
-        {
-            _counterProviders = new Dictionary<string, List<string>?>
-            {
-                [SystemRuntimeProvider] = null
-            };
-        }
-        else
-        {
-            _counterProviders = CounterCollectionParser.Parse(counterProviderCollectionString.AsSpan());
-        }
+        _counterProviders = CounterCollectionParser.Parse(counterProviderCollectionString.AsSpan());
     }
 
     internal IReadOnlyCollection<string> Providers() => _counterProviders.Keys;

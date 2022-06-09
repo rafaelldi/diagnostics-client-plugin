@@ -14,7 +14,7 @@ internal sealed class CsvCounterExporter : FileCounterExporter
     {
     }
 
-    protected override string GetFileHeader() => "Timestamp,Provider,Counter,Value,Type";
+    protected override string GetFileHeader() => "Timestamp,Provider,Counter,Value,Type,Tags";
 
     protected override string GetCounterString(in ValueCounter counter)
     {
@@ -28,11 +28,13 @@ internal sealed class CsvCounterExporter : FileCounterExporter
             .Append(",")
             .Append(counter.ProviderName)
             .Append(",")
-            .Append(counter.Name)
+            .Append(counter.DisplayName)
             .Append(",")
             .Append(counter.Value.ToString(CultureInfo.InvariantCulture))
             .Append(",")
-            .Append(counter.Type.ToValue());
+            .Append(counter.Type.ToValue())
+            .Append(",")
+            .Append(counter.Tags?.Replace(',',';'));
 
         return _stringBuilder.ToString();
     }

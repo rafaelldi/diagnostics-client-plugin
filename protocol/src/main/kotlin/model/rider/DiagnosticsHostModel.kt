@@ -35,6 +35,7 @@ object DiagnosticsHostModel : Ext(SolutionModel.Solution) {
 
     private val Counter = structdef {
         field("name", string)
+        field("tags", string.nullable)
         field("value", double)
     }
 

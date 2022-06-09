@@ -40,6 +40,7 @@ internal sealed class ProtocolCounterExporter
 
     private void HandleCounter(in ValueCounter counter)
     {
-        _session.Counters[counter.Name] = new Counter(counter.Name, counter.Value);
+        var key = string.IsNullOrEmpty(counter.Tags) ? counter.Name : $"{counter.Name}-{counter.Tags}";
+        _session.Counters[key] = new Counter(counter.DisplayName, counter.Tags, counter.Value);
     }
 }

@@ -59,7 +59,7 @@ internal sealed class CounterCollectionHandler
     private CounterProducer CreateProducer(
         CollectCountersCommand command,
         Channel<ValueCounter> channel,
-        in Lifetime lt)
+        Lifetime lt)
     {
         var configuration = new CounterProducerConfiguration(
             Guid.NewGuid().ToString(),

@@ -10,7 +10,7 @@ internal static class LifetimeExtensions
             ? lifetime.CreateTerminatedAfter(TimeSpan.FromSeconds(seconds.Value))
             : lifetime;
 
-    internal static Lifetime IntersectWithTimer(this Lifetime lifetime, in Lifetime other, int? seconds)
+    internal static Lifetime IntersectWithTimer(this Lifetime lifetime, Lifetime other, int? seconds)
     {
         var intersected = lifetime.Intersect(other);
         return seconds.HasValue
