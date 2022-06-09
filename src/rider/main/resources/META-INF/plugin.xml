@@ -11,6 +11,7 @@
         <toolWindow id="Diagnostics Client" anchor="bottom" icon="DiagnosticsClientIcons.ToolWindow"
                     canCloseContents="true"
                     factoryClass="com.github.rafaelldi.diagnosticsclientplugin.toolWindow.DiagnosticsToolWindowFactory"/>
+        <webHelpProvider implementation="com.github.rafaelldi.diagnosticsclientplugin.DiagnosticsClientHelpProvider" />
 
         <notificationGroup id="Diagnostics Client" displayType="BALLOON"/>
     </extensions>
@@ -70,6 +71,9 @@
                     text="Memory Dump"
                     description="Collect memory dump"
                     icon="AllIcons.Actions.Dump">
+            </action>
+            <action id="DiagnosticsClient.ToolWindow.Explorer.Help"
+                    class="com.github.rafaelldi.diagnosticsclientplugin.actions.DiagnosticsClientHelpAction">
             </action>
         </group>
         <group id="DiagnosticsClient.ToolWindow.CountersSession">
