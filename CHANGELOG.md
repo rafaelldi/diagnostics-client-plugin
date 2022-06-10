@@ -7,7 +7,7 @@
 - Support for 2022.2 version of the platform
 - Additional information about process
 - Collect and monitor System.Diagnostics.Metrics with counters
-- Help action
+- Help actions
 
 ### Fixed
 - Trace provider parsing algorithm

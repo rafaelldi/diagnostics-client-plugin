@@ -91,4 +91,6 @@ class CollectTracesDialog(private val project: Project) : DialogWrapper(project)
     }
 
     fun getModel(): CollectTracesModel = model
+
+    override fun getHelpId(): String = "com.github.rafaelldi.diagnosticsclientplugin.traces"
 }

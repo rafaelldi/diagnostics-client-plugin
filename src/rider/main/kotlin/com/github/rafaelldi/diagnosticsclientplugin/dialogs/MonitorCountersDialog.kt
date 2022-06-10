@@ -89,4 +89,6 @@ class MonitorCountersDialog(project: Project) : DialogWrapper(project) {
     }
 
     fun getModel(): MonitorCountersModel = model
+
+    override fun getHelpId(): String = "com.github.rafaelldi.diagnosticsclientplugin.counters"
 }

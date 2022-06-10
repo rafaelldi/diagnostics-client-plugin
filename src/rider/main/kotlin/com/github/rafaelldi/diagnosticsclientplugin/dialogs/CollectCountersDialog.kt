@@ -122,4 +122,6 @@ class CollectCountersDialog(private val project: Project) : DialogWrapper(projec
     }
 
     fun getModel(): CollectCountersModel = model
+
+    override fun getHelpId(): String = "com.github.rafaelldi.diagnosticsclientplugin.counters"
 }
