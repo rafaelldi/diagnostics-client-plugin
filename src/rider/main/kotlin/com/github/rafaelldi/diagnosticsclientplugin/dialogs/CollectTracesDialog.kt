@@ -58,6 +58,7 @@ class CollectTracesDialog(private val project: Project) : DialogWrapper(project)
             }
             row("Providers:") {
                 providersTextField = expandableTextField()
+                    .columns(COLUMNS_MEDIUM)
                     .validationOnApply {
                         if (it.text.isNullOrEmpty() && profileComboBox.component.item == TracingProfile.None) {
                             return@validationOnApply error("Please select a profile or fill in the providers field")
