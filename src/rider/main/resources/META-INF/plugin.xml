@@ -72,6 +72,7 @@
                     description="Collect memory dump"
                     icon="AllIcons.Actions.Dump">
             </action>
+            <separator/>
             <action id="DiagnosticsClient.ToolWindow.Explorer.Help"
                     class="com.github.rafaelldi.diagnosticsclientplugin.actions.DiagnosticsClientHelpAction">
             </action>

@@ -9,6 +9,9 @@
 - Collect and monitor System.Diagnostics.Metrics with counters
 - Help actions
 
+### Changed
+- Default name for trace and dump files
+
 ### Fixed
 - Trace provider parsing algorithm
 

@@ -62,7 +62,7 @@ class CollectDumpDialog(private val project: Project) : DialogWrapper(project) {
         val formatter = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss")
         val formatted = current.format(formatter)
         return if (SystemInfo.isWindows) {
-            "${formatted}.dmp"
+            "dump_${formatted}.dmp"
         } else {
             "core_${formatted}"
         }
