@@ -3,6 +3,8 @@
 # diagnostics-client-plugin Changelog
 
 ## [Unreleased]
+
+## [1.1.0]
 ### Added
 - Support for 2022.2 version of the platform
 - Additional information about process
