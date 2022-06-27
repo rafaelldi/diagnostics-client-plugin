@@ -9,7 +9,7 @@ data class MonitorCountersModel(
     var providers: String,
     var metrics: String,
     var maxTimeSeries: Int,
-    var maxHistograms : Int
+    var maxHistograms: Int
 )
 
 data class CollectCountersModel(
@@ -22,10 +22,10 @@ data class CollectCountersModel(
     var providers: String,
     var metrics: String,
     var maxTimeSeries: Int,
-    var maxHistograms : Int
+    var maxHistograms: Int
 )
 
-data class CounterTimerModel(var duration: Int)
+data class MonitorGcModel(var stoppingType: StoppingType, var duration: Int)
 
 data class CollectTracesModel(
     var path: String,
@@ -35,3 +35,5 @@ data class CollectTracesModel(
     var profile: TracingProfile,
     var providers: String
 )
+
+data class MonitoringTimerModel(var duration: Int)

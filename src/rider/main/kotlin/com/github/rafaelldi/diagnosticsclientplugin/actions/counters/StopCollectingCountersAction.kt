@@ -1,4 +1,4 @@
-package com.github.rafaelldi.diagnosticsclientplugin.actions
+package com.github.rafaelldi.diagnosticsclientplugin.actions.counters
 
 import com.github.rafaelldi.diagnosticsclientplugin.generated.diagnosticsHostModel
 import com.github.rafaelldi.diagnosticsclientplugin.services.CounterCollectionSessionController

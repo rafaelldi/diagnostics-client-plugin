@@ -5,42 +5,39 @@ using DiagnosticsClientPlugin.Counters.Common;
 
 namespace DiagnosticsClientPlugin.Counters.Exporters;
 
-internal sealed class JsonCounterExporter : FileCounterExporter
+internal sealed class CounterCsvExporter : FileCounterExporter
 {
     private readonly StringBuilder _stringBuilder = new();
 
-    internal JsonCounterExporter(string filePath, ChannelReader<ValueCounter> reader)
+    public CounterCsvExporter(string filePath, ChannelReader<ValueCounter> reader)
         : base(filePath, reader)
     {
     }
 
-    protected override string GetFileHeader() => @"{""Events"":[";
+    protected override string GetFileHeader() => "Timestamp,Provider,Counter,Value,Type,Tags";
 
     protected override string GetCounterString(in ValueCounter counter)
     {
         if (_stringBuilder.Length > 0)
         {
             _stringBuilder.Clear();
-            _stringBuilder.Append(",");
         }
 
         _stringBuilder
-            .Append(@"{""timestamp"":""")
             .Append(counter.TimeStamp.ToString(CultureInfo.CurrentCulture))
-            .Append(@""",""provider"":""")
+            .Append(",")
             .Append(counter.ProviderName)
-            .Append(@""",""counter"":""")
+            .Append(",")
             .Append(counter.DisplayName)
-            .Append(@""",""value"":""")
+            .Append(",")
             .Append(counter.Value.ToString(CultureInfo.InvariantCulture))
-            .Append(@""",""type"":""")
+            .Append(",")
             .Append(counter.Type.ToValue())
-            .Append(@""",""tags"":""")
-            .Append(counter.Tags)
-            .Append(@"""}");
+            .Append(",")
+            .Append(counter.Tags?.Replace(',',';'));
 
         return _stringBuilder.ToString();
     }
 
-    protected override string GetFileFooter() => "]}";
+    protected override string? GetFileFooter() => null;
 }

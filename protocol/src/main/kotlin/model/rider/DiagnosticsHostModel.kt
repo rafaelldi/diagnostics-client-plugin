@@ -28,7 +28,14 @@ object DiagnosticsHostModel : Ext(SolutionModel.Solution) {
         field("pid", int)
         property("active", bool).async
         map("counters", string, Counter).async
+        call("monitor", int.nullable, void)
+        source("close", void).async
+    }
 
+    private val GcMonitoringSession = classdef("GcMonitoringSession") {
+        field("pid", int)
+        property("active", bool).async
+        source("gcHappened", GcEvent).async
         call("monitor", int.nullable, void)
         source("close", void).async
     }
@@ -39,6 +46,11 @@ object DiagnosticsHostModel : Ext(SolutionModel.Solution) {
         field("value", double)
     }
 
+    private val GcEvent = structdef {
+        field("number", int)
+        field("generation", int)
+    }
+
     init {
         setting(CSharp50Generator.Namespace, "DiagnosticsClientPlugin.Generated")
         setting(Kotlin11Generator.Namespace, "com.github.rafaelldi.diagnosticsclientplugin.generated")
@@ -46,6 +58,7 @@ object DiagnosticsHostModel : Ext(SolutionModel.Solution) {
         field("processList", ProcessList)
         list("counterCollectionSessions", int).async
         map("counterMonitoringSessions", int, CounterMonitoringSession).async
+        map("gcMonitoringSessions", int, GcMonitoringSession).async
         list("traceCollectionSessions", int).async
 
         call("collectDump",
@@ -92,6 +105,15 @@ object DiagnosticsHostModel : Ext(SolutionModel.Solution) {
                 field("metrics", string.nullable)
                 field("maxTimeSeries", int)
                 field("maxHistograms", int)
+                field("duration", int.nullable)
+            },
+            void
+        )
+
+        call(
+            "monitorGc",
+            structdef("MonitorGcCommand") {
+                field("pid", int)
                 field("duration", int.nullable)
             },
             void

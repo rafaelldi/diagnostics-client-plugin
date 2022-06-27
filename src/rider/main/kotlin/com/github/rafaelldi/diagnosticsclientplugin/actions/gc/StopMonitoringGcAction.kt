@@ -1,17 +1,17 @@
-package com.github.rafaelldi.diagnosticsclientplugin.actions
+package com.github.rafaelldi.diagnosticsclientplugin.actions.gc
 
 import com.github.rafaelldi.diagnosticsclientplugin.generated.diagnosticsHostModel
-import com.github.rafaelldi.diagnosticsclientplugin.services.TraceCollectionSessionController
+import com.github.rafaelldi.diagnosticsclientplugin.services.GcMonitoringSessionController
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.components.service
 import com.jetbrains.rider.projectView.solution
 
-class StopCollectingTracesAction : AnAction() {
+class StopMonitoringGcAction : AnAction() {
     override fun actionPerformed(event: AnActionEvent) {
         val project = event.project ?: return
         val pid = project.solution.diagnosticsHostModel.processList.selected.value ?: return
-        val controller = project.service<TraceCollectionSessionController>()
+        val controller = project.service<GcMonitoringSessionController>()
         controller.stopSession(pid)
     }
 
@@ -25,7 +25,9 @@ class StopCollectingTracesAction : AnAction() {
             if (selected == null) {
                 event.presentation.isEnabledAndVisible = false
             } else {
-                event.presentation.isEnabledAndVisible = model.traceCollectionSessions.contains(selected)
+                val session = model.gcMonitoringSessions[selected]
+                val isActive = session?.active?.valueOrNull ?: false
+                event.presentation.isEnabledAndVisible = isActive
             }
         }
     }

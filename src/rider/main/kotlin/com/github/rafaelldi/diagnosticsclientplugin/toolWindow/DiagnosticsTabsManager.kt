@@ -1,10 +1,13 @@
 package com.github.rafaelldi.diagnosticsclientplugin.toolWindow
 
 import com.github.rafaelldi.diagnosticsclientplugin.generated.CountersMonitoringSession
+import com.github.rafaelldi.diagnosticsclientplugin.generated.GcMonitoringSession
 import com.github.rafaelldi.diagnosticsclientplugin.generated.diagnosticsHostModel
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.MonitorCountersTab
+import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.MonitorGcTab
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.ProcessExplorerTab
 import com.intellij.execution.runners.ExecutionUtil
+import com.intellij.icons.AllIcons
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.wm.ToolWindow
@@ -26,6 +29,7 @@ class DiagnosticsTabsManager(project: Project) : ProtocolSubscribedProjectCompon
     }
 
     private val countersTabContents: MutableMap<Int, Content> = mutableMapOf()
+    private val gcTabContents: MutableMap<Int, Content> = mutableMapOf()
 
     fun createExplorerTab(toolWindow: ToolWindow) {
         val contentFactory = ContentFactory.SERVICE.getInstance()
@@ -50,6 +54,20 @@ class DiagnosticsTabsManager(project: Project) : ProtocolSubscribedProjectCompon
         )
     }
 
+    fun createGcTab(lt: Lifetime, session: GcMonitoringSession) {
+        val toolWindow = getToolWindow(project) ?: return
+        val contentFactory = ContentFactory.SERVICE.getInstance()
+        val monitorGcTab = MonitorGcTab(session, this, lt)
+        val content = contentFactory.createContent(monitorGcTab, "GC for ${session.pid}", true)
+        content.icon = AllIcons.Actions.GC
+        content.putUserData(ToolWindow.SHOW_CONTENT_ICON, true)
+        gcTabContents.put(lt, session.pid, content)
+        lt.bracket(
+            { toolWindow.contentManager.addContent(content) },
+            { toolWindow.contentManager.removeContent(content, true) }
+        )
+    }
+
     fun activateCountersSessionTab(pid: Int) {
         val toolWindow = getToolWindow(project) ?: return
         val content = countersTabContents[pid] ?: return
@@ -60,5 +78,17 @@ class DiagnosticsTabsManager(project: Project) : ProtocolSubscribedProjectCompon
     fun deactivateCountersSessionTab(pid: Int) {
         val content = countersTabContents[pid] ?: return
         content.icon = DiagnosticsClientIcons.Counters
+    }
+
+    fun activateGcSessionTab(pid: Int) {
+        val toolWindow = getToolWindow(project) ?: return
+        val content = gcTabContents[pid] ?: return
+        content.icon = ExecutionUtil.getLiveIndicator(AllIcons.Actions.GC)
+        toolWindow.contentManager.setSelectedContent(content, true, true)
+    }
+
+    fun deactivateGcSessionTab(pid: Int) {
+        val content = gcTabContents[pid] ?: return
+        content.icon = AllIcons.Actions.GC
     }
 }

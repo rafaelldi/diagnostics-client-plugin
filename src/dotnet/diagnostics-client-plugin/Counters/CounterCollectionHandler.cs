@@ -23,10 +23,10 @@ internal sealed class CounterCollectionHandler
     public CounterCollectionHandler(ISolution solution)
     {
         _hostModel = solution.GetProtocolSolution().GetDiagnosticsHostModel();
-        _hostModel.CollectCounters.Set(async (lt, command) => await Collect(command, lt));
+        _hostModel.CollectCounters.Set(async (lt, command) => await CollectAsync(command, lt));
     }
 
-    private async Task<Unit> Collect(CollectCountersCommand command, Lifetime lifetime)
+    private async Task<Unit> CollectAsync(CollectCountersCommand command, Lifetime lifetime)
     {
         var sessionLifetime = lifetime.IntersectWithTimer(command.Duration);
 
