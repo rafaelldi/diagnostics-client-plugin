@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.Tracing;
+﻿using System;
+using System.Diagnostics.Tracing;
 using System.Threading.Channels;
 using System.Threading.Tasks;
 using DiagnosticsClientPlugin.Common;
@@ -9,6 +10,7 @@ using Microsoft.Diagnostics.Tracing;
 using Microsoft.Diagnostics.Tracing.Analysis;
 using Microsoft.Diagnostics.Tracing.Analysis.GC;
 using Microsoft.Diagnostics.Tracing.Parsers;
+using Microsoft.Diagnostics.Tracing.Parsers.Clr;
 
 namespace DiagnosticsClientPlugin.Gc;
 
@@ -71,7 +73,28 @@ internal sealed class GcEventProducer
 
         var gcEvent = new ValueGcEvent(
             gc.Number,
-            gc.Generation
+            gc.GCGenerationName.ToString(),
+            gc.Reason.ToValue(),
+            Math.Round(gc.PauseDurationMSec, 3),
+            Math.Round(gc.HeapSizePeakMB, 3),
+            Math.Round(gc.HeapSizeAfterMB, 3),
+            Math.Round(gc.RatioPeakAfter, 2),
+            Math.Round(gc.PromotedMB, 3),
+            Math.Round(gc.AllocedSinceLastGCMB, 3),
+            Math.Round(gc.AllocRateMBSec, 2),
+            Math.Round(gc.GenSizeAfterMB(Gens.Gen0), 3),
+            Math.Round(gc.GenFragmentationPercent(Gens.Gen0), 3),
+            Math.Round(gc.SurvivalPercent(Gens.Gen0), 2),
+            Math.Round(gc.GenSizeAfterMB(Gens.Gen1), 3),
+            Math.Round(gc.GenFragmentationPercent(Gens.Gen1), 3),
+            Math.Round(gc.SurvivalPercent(Gens.Gen1), 2),
+            Math.Round(gc.GenSizeAfterMB(Gens.Gen2), 3),
+            Math.Round(gc.GenFragmentationPercent(Gens.Gen2), 3),
+            Math.Round(gc.SurvivalPercent(Gens.Gen2), 2),
+            Math.Round(gc.GenSizeAfterMB(Gens.GenLargeObj), 3),
+            Math.Round(gc.GenFragmentationPercent(Gens.GenLargeObj), 3),
+            Math.Round(gc.SurvivalPercent(Gens.GenLargeObj), 2),
+            gc.HeapStats.PinnedObjectCount
         );
 
         _writer.TryWrite(gcEvent);

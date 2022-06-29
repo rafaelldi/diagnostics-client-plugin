@@ -55,7 +55,7 @@ class DiagnosticsHostModel private constructor(
         
         
         
-        const val serializationHash = 985785031952265066L
+        const val serializationHash = 8137138892082459006L
         
     }
     override val serializersOwner: ISerializersOwner get() = DiagnosticsHostModel
@@ -154,7 +154,7 @@ val com.jetbrains.rd.ide.model.Solution.diagnosticsHostModel get() = getOrCreate
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:82]
+ * #### Generated from [DiagnosticsHostModel.kt:103]
  */
 data class CollectCountersCommand (
     val pid: Int,
@@ -259,7 +259,7 @@ data class CollectCountersCommand (
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:65]
+ * #### Generated from [DiagnosticsHostModel.kt:86]
  */
 data class CollectDumpCommand (
     val pid: Int,
@@ -340,7 +340,7 @@ data class CollectDumpCommand (
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:124]
+ * #### Generated from [DiagnosticsHostModel.kt:145]
  */
 data class CollectTracesCommand (
     val pid: Int,
@@ -490,7 +490,7 @@ data class Counter (
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:85]
+ * #### Generated from [DiagnosticsHostModel.kt:106]
  */
 enum class CounterFileFormat {
     Csv, 
@@ -606,7 +606,7 @@ class CountersMonitoringSession private constructor(
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:76]
+ * #### Generated from [DiagnosticsHostModel.kt:97]
  */
 data class DumpCollectionResult (
     val filePath: String
@@ -663,7 +663,7 @@ data class DumpCollectionResult (
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:67]
+ * #### Generated from [DiagnosticsHostModel.kt:88]
  */
 enum class DumpType {
     Full, 
@@ -683,7 +683,28 @@ enum class DumpType {
  */
 data class GcEvent (
     val number: Int,
-    val generation: Int
+    val generation: String,
+    val reason: String,
+    val pauseDuration: Double,
+    val peak: Double,
+    val after: Double,
+    val ratio: Double,
+    val promoted: Double,
+    val allocated: Double,
+    val allocationRate: Double,
+    val sizeGen0: Double,
+    val fragmentationGen0: Double,
+    val survivalGen0: Double,
+    val sizeGen1: Double,
+    val fragmentationGen1: Double,
+    val survivalGen1: Double,
+    val sizeGen2: Double,
+    val fragmentationGen2: Double,
+    val survivalGen2: Double,
+    val sizeLoh: Double,
+    val fragmentationLoh: Double,
+    val survivalLoh: Double,
+    val pinnedObjects: Int
 ) : IPrintable {
     //companion
     
@@ -693,13 +714,55 @@ data class GcEvent (
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): GcEvent  {
             val number = buffer.readInt()
-            val generation = buffer.readInt()
-            return GcEvent(number, generation)
+            val generation = buffer.readString()
+            val reason = buffer.readString()
+            val pauseDuration = buffer.readDouble()
+            val peak = buffer.readDouble()
+            val after = buffer.readDouble()
+            val ratio = buffer.readDouble()
+            val promoted = buffer.readDouble()
+            val allocated = buffer.readDouble()
+            val allocationRate = buffer.readDouble()
+            val sizeGen0 = buffer.readDouble()
+            val fragmentationGen0 = buffer.readDouble()
+            val survivalGen0 = buffer.readDouble()
+            val sizeGen1 = buffer.readDouble()
+            val fragmentationGen1 = buffer.readDouble()
+            val survivalGen1 = buffer.readDouble()
+            val sizeGen2 = buffer.readDouble()
+            val fragmentationGen2 = buffer.readDouble()
+            val survivalGen2 = buffer.readDouble()
+            val sizeLoh = buffer.readDouble()
+            val fragmentationLoh = buffer.readDouble()
+            val survivalLoh = buffer.readDouble()
+            val pinnedObjects = buffer.readInt()
+            return GcEvent(number, generation, reason, pauseDuration, peak, after, ratio, promoted, allocated, allocationRate, sizeGen0, fragmentationGen0, survivalGen0, sizeGen1, fragmentationGen1, survivalGen1, sizeGen2, fragmentationGen2, survivalGen2, sizeLoh, fragmentationLoh, survivalLoh, pinnedObjects)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: GcEvent)  {
             buffer.writeInt(value.number)
-            buffer.writeInt(value.generation)
+            buffer.writeString(value.generation)
+            buffer.writeString(value.reason)
+            buffer.writeDouble(value.pauseDuration)
+            buffer.writeDouble(value.peak)
+            buffer.writeDouble(value.after)
+            buffer.writeDouble(value.ratio)
+            buffer.writeDouble(value.promoted)
+            buffer.writeDouble(value.allocated)
+            buffer.writeDouble(value.allocationRate)
+            buffer.writeDouble(value.sizeGen0)
+            buffer.writeDouble(value.fragmentationGen0)
+            buffer.writeDouble(value.survivalGen0)
+            buffer.writeDouble(value.sizeGen1)
+            buffer.writeDouble(value.fragmentationGen1)
+            buffer.writeDouble(value.survivalGen1)
+            buffer.writeDouble(value.sizeGen2)
+            buffer.writeDouble(value.fragmentationGen2)
+            buffer.writeDouble(value.survivalGen2)
+            buffer.writeDouble(value.sizeLoh)
+            buffer.writeDouble(value.fragmentationLoh)
+            buffer.writeDouble(value.survivalLoh)
+            buffer.writeInt(value.pinnedObjects)
         }
         
         
@@ -717,6 +780,27 @@ data class GcEvent (
         
         if (number != other.number) return false
         if (generation != other.generation) return false
+        if (reason != other.reason) return false
+        if (pauseDuration != other.pauseDuration) return false
+        if (peak != other.peak) return false
+        if (after != other.after) return false
+        if (ratio != other.ratio) return false
+        if (promoted != other.promoted) return false
+        if (allocated != other.allocated) return false
+        if (allocationRate != other.allocationRate) return false
+        if (sizeGen0 != other.sizeGen0) return false
+        if (fragmentationGen0 != other.fragmentationGen0) return false
+        if (survivalGen0 != other.survivalGen0) return false
+        if (sizeGen1 != other.sizeGen1) return false
+        if (fragmentationGen1 != other.fragmentationGen1) return false
+        if (survivalGen1 != other.survivalGen1) return false
+        if (sizeGen2 != other.sizeGen2) return false
+        if (fragmentationGen2 != other.fragmentationGen2) return false
+        if (survivalGen2 != other.survivalGen2) return false
+        if (sizeLoh != other.sizeLoh) return false
+        if (fragmentationLoh != other.fragmentationLoh) return false
+        if (survivalLoh != other.survivalLoh) return false
+        if (pinnedObjects != other.pinnedObjects) return false
         
         return true
     }
@@ -725,6 +809,27 @@ data class GcEvent (
         var __r = 0
         __r = __r*31 + number.hashCode()
         __r = __r*31 + generation.hashCode()
+        __r = __r*31 + reason.hashCode()
+        __r = __r*31 + pauseDuration.hashCode()
+        __r = __r*31 + peak.hashCode()
+        __r = __r*31 + after.hashCode()
+        __r = __r*31 + ratio.hashCode()
+        __r = __r*31 + promoted.hashCode()
+        __r = __r*31 + allocated.hashCode()
+        __r = __r*31 + allocationRate.hashCode()
+        __r = __r*31 + sizeGen0.hashCode()
+        __r = __r*31 + fragmentationGen0.hashCode()
+        __r = __r*31 + survivalGen0.hashCode()
+        __r = __r*31 + sizeGen1.hashCode()
+        __r = __r*31 + fragmentationGen1.hashCode()
+        __r = __r*31 + survivalGen1.hashCode()
+        __r = __r*31 + sizeGen2.hashCode()
+        __r = __r*31 + fragmentationGen2.hashCode()
+        __r = __r*31 + survivalGen2.hashCode()
+        __r = __r*31 + sizeLoh.hashCode()
+        __r = __r*31 + fragmentationLoh.hashCode()
+        __r = __r*31 + survivalLoh.hashCode()
+        __r = __r*31 + pinnedObjects.hashCode()
         return __r
     }
     //pretty print
@@ -733,6 +838,27 @@ data class GcEvent (
         printer.indent {
             print("number = "); number.print(printer); println()
             print("generation = "); generation.print(printer); println()
+            print("reason = "); reason.print(printer); println()
+            print("pauseDuration = "); pauseDuration.print(printer); println()
+            print("peak = "); peak.print(printer); println()
+            print("after = "); after.print(printer); println()
+            print("ratio = "); ratio.print(printer); println()
+            print("promoted = "); promoted.print(printer); println()
+            print("allocated = "); allocated.print(printer); println()
+            print("allocationRate = "); allocationRate.print(printer); println()
+            print("sizeGen0 = "); sizeGen0.print(printer); println()
+            print("fragmentationGen0 = "); fragmentationGen0.print(printer); println()
+            print("survivalGen0 = "); survivalGen0.print(printer); println()
+            print("sizeGen1 = "); sizeGen1.print(printer); println()
+            print("fragmentationGen1 = "); fragmentationGen1.print(printer); println()
+            print("survivalGen1 = "); survivalGen1.print(printer); println()
+            print("sizeGen2 = "); sizeGen2.print(printer); println()
+            print("fragmentationGen2 = "); fragmentationGen2.print(printer); println()
+            print("survivalGen2 = "); survivalGen2.print(printer); println()
+            print("sizeLoh = "); sizeLoh.print(printer); println()
+            print("fragmentationLoh = "); fragmentationLoh.print(printer); println()
+            print("survivalLoh = "); survivalLoh.print(printer); println()
+            print("pinnedObjects = "); pinnedObjects.print(printer); println()
         }
         printer.print(")")
     }
@@ -843,7 +969,7 @@ class GcMonitoringSession private constructor(
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:101]
+ * #### Generated from [DiagnosticsHostModel.kt:122]
  */
 data class MonitorCountersCommand (
     val pid: Int,
@@ -936,7 +1062,7 @@ data class MonitorCountersCommand (
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:115]
+ * #### Generated from [DiagnosticsHostModel.kt:136]
  */
 data class MonitorGcCommand (
     val pid: Int,
@@ -1173,7 +1299,7 @@ class ProcessList private constructor(
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:127]
+ * #### Generated from [DiagnosticsHostModel.kt:148]
  */
 enum class TracingProfile {
     None, 

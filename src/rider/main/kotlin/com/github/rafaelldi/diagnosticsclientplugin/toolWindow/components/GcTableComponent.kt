@@ -7,14 +7,56 @@ import javax.swing.table.DefaultTableModel
 class GcTableComponent : JBTable() {
     companion object {
         private const val NUMBER_COLUMN_TITLE = "Number"
-        private const val GENERATION_COLUMN_TITLE = "Generation"
+        private const val GENERATION_COLUMN_TITLE = "Gen"
+        private const val REASON_COLUMN_TITLE = "Trigger Reason"
+        private const val PAUSE_COLUMN_TITLE = "Pause MSec"
+        private const val PEAK_COLUMN_TITLE = "Peak MB"
+        private const val AFTER_COLUMN_TITLE = "After MB"
+        private const val RATIO_COLUMN_TITLE = "Ratio"
+        private const val PROMOTED_COLUMN_TITLE = "Promoted MB"
+        private const val ALLOCATED_COLUMN_TITLE = "Allocated MB"
+        private const val ALLOCATION_RATE_COLUMN_TITLE = "Allocation Rate"
+        private const val GEN0_COLUMN_TITLE = "Gen0 MB"
+        private const val GEN0_FRAGMENTATION_COLUMN_TITLE = "Gen0 Fragmentation %"
+        private const val GEN0_SURVIVAL_COLUMN_TITLE = "Gen0 Survival Rate %"
+        private const val GEN1_COLUMN_TITLE = "Gen1 MB"
+        private const val GEN1_FRAGMENTATION_COLUMN_TITLE = "Gen1 Fragmentation %"
+        private const val GEN1_SURVIVAL_COLUMN_TITLE = "Gen1 Survival Rate %l"
+        private const val GEN2_COLUMN_TITLE = "Gen2 MB"
+        private const val GEN2_FRAGMENTATION_COLUMN_TITLE = "Gen2 Fragmentation %"
+        private const val GEN2_SURVIVAL_COLUMN_TITLE = "Gen2 Survival Rate %"
+        private const val LOH_COLUMN_TITLE = "LOH MB"
+        private const val LOH_FRAGMENTATION_COLUMN_TITLE = "LOH Fragmentation %"
+        private const val LOH_SURVIVAL_COLUMN_TITLE = "LOH Survival Rate %"
+        private const val PINNED_OBJECTS_COLUMN_TITLE = "Pinned Objects"
     }
 
     private val tableModel: DefaultTableModel =
         DefaultTableModel(
             arrayOf(
                 NUMBER_COLUMN_TITLE,
-                GENERATION_COLUMN_TITLE
+                GENERATION_COLUMN_TITLE,
+                REASON_COLUMN_TITLE,
+                PAUSE_COLUMN_TITLE,
+                PEAK_COLUMN_TITLE,
+                AFTER_COLUMN_TITLE,
+                RATIO_COLUMN_TITLE,
+                PROMOTED_COLUMN_TITLE,
+                ALLOCATED_COLUMN_TITLE,
+                ALLOCATION_RATE_COLUMN_TITLE,
+                GEN0_COLUMN_TITLE,
+                GEN0_FRAGMENTATION_COLUMN_TITLE,
+                GEN0_SURVIVAL_COLUMN_TITLE,
+                GEN1_COLUMN_TITLE,
+                GEN1_FRAGMENTATION_COLUMN_TITLE,
+                GEN1_SURVIVAL_COLUMN_TITLE,
+                GEN2_COLUMN_TITLE,
+                GEN2_FRAGMENTATION_COLUMN_TITLE,
+                GEN2_SURVIVAL_COLUMN_TITLE,
+                LOH_COLUMN_TITLE,
+                LOH_FRAGMENTATION_COLUMN_TITLE,
+                LOH_SURVIVAL_COLUMN_TITLE,
+                PINNED_OBJECTS_COLUMN_TITLE
             ), 0
         )
 
@@ -25,6 +67,32 @@ class GcTableComponent : JBTable() {
     override fun isCellEditable(row: Int, column: Int): Boolean = false
 
     fun add(gcEvent: GcEvent) {
-        tableModel.addRow(arrayOf(gcEvent.number, gcEvent.generation))
+        tableModel.addRow(
+            arrayOf(
+                gcEvent.number,
+                gcEvent.generation,
+                gcEvent.reason,
+                gcEvent.pauseDuration,
+                gcEvent.peak,
+                gcEvent.after,
+                gcEvent.ratio,
+                gcEvent.promoted,
+                gcEvent.allocated,
+                gcEvent.allocationRate,
+                gcEvent.sizeGen0,
+                gcEvent.fragmentationGen0,
+                gcEvent.survivalGen0,
+                gcEvent.sizeGen1,
+                gcEvent.fragmentationGen1,
+                gcEvent.survivalGen1,
+                gcEvent.sizeGen2,
+                gcEvent.fragmentationGen2,
+                gcEvent.survivalGen2,
+                gcEvent.sizeLoh,
+                gcEvent.fragmentationLoh,
+                gcEvent.survivalLoh,
+                gcEvent.pinnedObjects
+            )
+        )
     }
 }
