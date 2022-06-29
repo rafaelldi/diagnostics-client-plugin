@@ -61,7 +61,7 @@ class GcMonitoringSessionController(project: Project) : ProtocolSubscribedProjec
     fun startExistingSession(pid: Int, duration: Int?) {
         val sessionDefinition = createDefinitionForSession(pid) ?: return
 
-        val session = hostModel.counterMonitoringSessions[pid] ?: return
+        val session = hostModel.gcMonitoringSessions[pid] ?: return
         val monitorTask = session.monitor.start(sessionDefinition.lifetime, duration)
         sessionStarted(pid)
 
