@@ -1,6 +1,7 @@
 package com.github.rafaelldi.diagnosticsclientplugin.services
 
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.MonitorGcModel
+import com.github.rafaelldi.diagnosticsclientplugin.dialogs.MonitoringTimerModel
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.StoppingType
 import com.github.rafaelldi.diagnosticsclientplugin.generated.*
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.DiagnosticsTabsManager
@@ -58,10 +59,11 @@ class GcMonitoringSessionController(project: Project) : ProtocolSubscribedProjec
             }
     }
 
-    fun startExistingSession(pid: Int, duration: Int?) {
+    fun startExistingSession(pid: Int, model: MonitoringTimerModel) {
         val sessionDefinition = createDefinitionForSession(pid) ?: return
 
         val session = hostModel.gcMonitoringSessions[pid] ?: return
+        val duration = if (model.stoppingType == StoppingType.AfterPeriod) model.duration else null
         val monitorTask = session.monitor.start(sessionDefinition.lifetime, duration)
         sessionStarted(pid)
 

@@ -36,4 +36,4 @@ data class CollectTracesModel(
     var providers: String
 )
 
-data class MonitoringTimerModel(var duration: Int)
+data class MonitoringTimerModel(var stoppingType: StoppingType, var duration: Int)

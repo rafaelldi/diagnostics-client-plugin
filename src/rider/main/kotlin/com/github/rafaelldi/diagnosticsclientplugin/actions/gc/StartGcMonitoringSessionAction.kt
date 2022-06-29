@@ -1,5 +1,6 @@
 package com.github.rafaelldi.diagnosticsclientplugin.actions.gc
 
+import com.github.rafaelldi.diagnosticsclientplugin.dialogs.MonitoringTimerDialog
 import com.github.rafaelldi.diagnosticsclientplugin.generated.diagnosticsHostModel
 import com.github.rafaelldi.diagnosticsclientplugin.services.GcMonitoringSessionController
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.DiagnosticsClientDataKeys
@@ -12,9 +13,13 @@ class StartGcMonitoringSessionAction : AnAction() {
     override fun actionPerformed(event: AnActionEvent) {
         val project = event.project ?: return
         val tab = event.getData(DiagnosticsClientDataKeys.MONITOR_GC_TAB) ?: return
-        val pid = tab.getSessionPid()
-        val controller = project.service<GcMonitoringSessionController>()
-        controller.startExistingSession(pid, null)
+        val dialog = MonitoringTimerDialog(project)
+        if (dialog.showAndGet()) {
+            val model = dialog.getModel()
+            val pid = tab.getSessionPid()
+            val controller = project.service<GcMonitoringSessionController>()
+            controller.startExistingSession(pid, model)
+        }
     }
 
     override fun update(event: AnActionEvent) {

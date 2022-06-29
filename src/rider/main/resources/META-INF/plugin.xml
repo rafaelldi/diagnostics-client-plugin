@@ -101,12 +101,6 @@
                     description="Start counters monitoring session"
                     icon="AllIcons.Actions.Execute">
             </action>
-            <action id="DiagnosticsClient.ToolWindow.CountersSession.StartWithTimer"
-                    class="com.github.rafaelldi.diagnosticsclientplugin.actions.counters.StartCounterMonitoringSessionWithTimerAction"
-                    text="Start Counters Monitoring Session With Timer"
-                    description="Start counters monitoring session with timer"
-                    icon="AllIcons.Actions.Profile">
-            </action>
             <action id="DiagnosticsClient.ToolWindow.CountersSession.Stop"
                     class="com.github.rafaelldi.diagnosticsclientplugin.actions.counters.StopCounterMonitoringSessionAction"
                     text="Stop Counters Monitoring Session"
@@ -120,12 +114,6 @@
                     text="Start GC Monitoring Session"
                     description="Start GC monitoring session"
                     icon="AllIcons.Actions.Execute">
-            </action>
-            <action id="DiagnosticsClient.ToolWindow.GcSession.StartWithTimer"
-                    class="com.github.rafaelldi.diagnosticsclientplugin.actions.gc.StartGcMonitoringSessionWithTimerAction"
-                    text="Start GC Monitoring Session With Timer"
-                    description="Start GC monitoring session with timer"
-                    icon="AllIcons.Actions.Profile">
             </action>
             <action id="DiagnosticsClient.ToolWindow.GcSession.Stop"
                     class="com.github.rafaelldi.diagnosticsclientplugin.actions.gc.StopGcMonitoringSessionAction"
