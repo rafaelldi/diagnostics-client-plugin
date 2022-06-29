@@ -3,6 +3,8 @@
 # diagnostics-client-plugin Changelog
 
 ## [Unreleased]
+### Added
+- GC monitor
 
 ## [1.1.0]
 ### Added
