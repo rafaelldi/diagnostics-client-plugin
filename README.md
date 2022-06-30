@@ -9,6 +9,7 @@ Simplifies the collection of diagnostic artifacts from local processes.
 
 **Features:**
 * Monitor or collect `EventCounters`.
+* Monitor GC.
 * Collect dumps.
 * Collect traces.
 * More features are coming 😉
