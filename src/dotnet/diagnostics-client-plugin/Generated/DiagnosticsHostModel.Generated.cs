@@ -135,7 +135,7 @@ namespace DiagnosticsClientPlugin.Generated
     
     
     
-    protected override long SerializationHash => 8137138892082459006L;
+    protected override long SerializationHash => -5945151236422429220L;
     
     protected override Action<ISerializers> Register => RegisterDeclaredTypesSerializers;
     public static void RegisterDeclaredTypesSerializers(ISerializers serializers)
@@ -187,7 +187,7 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:103</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:95</p>
   /// </summary>
   public sealed class CollectCountersCommand : IPrintable, IEquatable<CollectCountersCommand>
   {
@@ -341,7 +341,7 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:86</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:78</p>
   /// </summary>
   public sealed class CollectDumpCommand : IPrintable, IEquatable<CollectDumpCommand>
   {
@@ -459,7 +459,7 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:145</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:137</p>
   /// </summary>
   public sealed class CollectTracesCommand : IPrintable, IEquatable<CollectTracesCommand>
   {
@@ -682,7 +682,7 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:106</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:98</p>
   /// </summary>
   public enum CounterFileFormat {
     Csv,
@@ -806,7 +806,7 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:97</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:89</p>
   /// </summary>
   public sealed class DumpCollectionResult : IPrintable, IEquatable<DumpCollectionResult>
   {
@@ -891,7 +891,7 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:88</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:80</p>
   /// </summary>
   public enum DumpType {
     Full,
@@ -919,17 +919,9 @@ namespace DiagnosticsClientPlugin.Generated
     public double Allocated {get; private set;}
     public double AllocationRate {get; private set;}
     public double SizeGen0 {get; private set;}
-    public double FragmentationGen0 {get; private set;}
-    public double SurvivalGen0 {get; private set;}
     public double SizeGen1 {get; private set;}
-    public double FragmentationGen1 {get; private set;}
-    public double SurvivalGen1 {get; private set;}
     public double SizeGen2 {get; private set;}
-    public double FragmentationGen2 {get; private set;}
-    public double SurvivalGen2 {get; private set;}
     public double SizeLoh {get; private set;}
-    public double FragmentationLoh {get; private set;}
-    public double SurvivalLoh {get; private set;}
     public int PinnedObjects {get; private set;}
     
     //private fields
@@ -946,17 +938,9 @@ namespace DiagnosticsClientPlugin.Generated
       double allocated,
       double allocationRate,
       double sizeGen0,
-      double fragmentationGen0,
-      double survivalGen0,
       double sizeGen1,
-      double fragmentationGen1,
-      double survivalGen1,
       double sizeGen2,
-      double fragmentationGen2,
-      double survivalGen2,
       double sizeLoh,
-      double fragmentationLoh,
-      double survivalLoh,
       int pinnedObjects
     )
     {
@@ -974,22 +958,14 @@ namespace DiagnosticsClientPlugin.Generated
       Allocated = allocated;
       AllocationRate = allocationRate;
       SizeGen0 = sizeGen0;
-      FragmentationGen0 = fragmentationGen0;
-      SurvivalGen0 = survivalGen0;
       SizeGen1 = sizeGen1;
-      FragmentationGen1 = fragmentationGen1;
-      SurvivalGen1 = survivalGen1;
       SizeGen2 = sizeGen2;
-      FragmentationGen2 = fragmentationGen2;
-      SurvivalGen2 = survivalGen2;
       SizeLoh = sizeLoh;
-      FragmentationLoh = fragmentationLoh;
-      SurvivalLoh = survivalLoh;
       PinnedObjects = pinnedObjects;
     }
     //secondary constructor
     //deconstruct trait
-    public void Deconstruct(out int number, [NotNull] out string generation, [NotNull] out string reason, out double pauseDuration, out double peak, out double after, out double ratio, out double promoted, out double allocated, out double allocationRate, out double sizeGen0, out double fragmentationGen0, out double survivalGen0, out double sizeGen1, out double fragmentationGen1, out double survivalGen1, out double sizeGen2, out double fragmentationGen2, out double survivalGen2, out double sizeLoh, out double fragmentationLoh, out double survivalLoh, out int pinnedObjects)
+    public void Deconstruct(out int number, [NotNull] out string generation, [NotNull] out string reason, out double pauseDuration, out double peak, out double after, out double ratio, out double promoted, out double allocated, out double allocationRate, out double sizeGen0, out double sizeGen1, out double sizeGen2, out double sizeLoh, out int pinnedObjects)
     {
       number = Number;
       generation = Generation;
@@ -1002,17 +978,9 @@ namespace DiagnosticsClientPlugin.Generated
       allocated = Allocated;
       allocationRate = AllocationRate;
       sizeGen0 = SizeGen0;
-      fragmentationGen0 = FragmentationGen0;
-      survivalGen0 = SurvivalGen0;
       sizeGen1 = SizeGen1;
-      fragmentationGen1 = FragmentationGen1;
-      survivalGen1 = SurvivalGen1;
       sizeGen2 = SizeGen2;
-      fragmentationGen2 = FragmentationGen2;
-      survivalGen2 = SurvivalGen2;
       sizeLoh = SizeLoh;
-      fragmentationLoh = FragmentationLoh;
-      survivalLoh = SurvivalLoh;
       pinnedObjects = PinnedObjects;
     }
     //statics
@@ -1030,19 +998,11 @@ namespace DiagnosticsClientPlugin.Generated
       var allocated = reader.ReadDouble();
       var allocationRate = reader.ReadDouble();
       var sizeGen0 = reader.ReadDouble();
-      var fragmentationGen0 = reader.ReadDouble();
-      var survivalGen0 = reader.ReadDouble();
       var sizeGen1 = reader.ReadDouble();
-      var fragmentationGen1 = reader.ReadDouble();
-      var survivalGen1 = reader.ReadDouble();
       var sizeGen2 = reader.ReadDouble();
-      var fragmentationGen2 = reader.ReadDouble();
-      var survivalGen2 = reader.ReadDouble();
       var sizeLoh = reader.ReadDouble();
-      var fragmentationLoh = reader.ReadDouble();
-      var survivalLoh = reader.ReadDouble();
       var pinnedObjects = reader.ReadInt();
-      var _result = new GcEvent(number, generation, reason, pauseDuration, peak, after, ratio, promoted, allocated, allocationRate, sizeGen0, fragmentationGen0, survivalGen0, sizeGen1, fragmentationGen1, survivalGen1, sizeGen2, fragmentationGen2, survivalGen2, sizeLoh, fragmentationLoh, survivalLoh, pinnedObjects);
+      var _result = new GcEvent(number, generation, reason, pauseDuration, peak, after, ratio, promoted, allocated, allocationRate, sizeGen0, sizeGen1, sizeGen2, sizeLoh, pinnedObjects);
       return _result;
     };
     
@@ -1059,17 +1019,9 @@ namespace DiagnosticsClientPlugin.Generated
       writer.Write(value.Allocated);
       writer.Write(value.AllocationRate);
       writer.Write(value.SizeGen0);
-      writer.Write(value.FragmentationGen0);
-      writer.Write(value.SurvivalGen0);
       writer.Write(value.SizeGen1);
-      writer.Write(value.FragmentationGen1);
-      writer.Write(value.SurvivalGen1);
       writer.Write(value.SizeGen2);
-      writer.Write(value.FragmentationGen2);
-      writer.Write(value.SurvivalGen2);
       writer.Write(value.SizeLoh);
-      writer.Write(value.FragmentationLoh);
-      writer.Write(value.SurvivalLoh);
       writer.Write(value.PinnedObjects);
     };
     
@@ -1089,7 +1041,7 @@ namespace DiagnosticsClientPlugin.Generated
     {
       if (ReferenceEquals(null, other)) return false;
       if (ReferenceEquals(this, other)) return true;
-      return Number == other.Number && Generation == other.Generation && Reason == other.Reason && PauseDuration == other.PauseDuration && Peak == other.Peak && After == other.After && Ratio == other.Ratio && Promoted == other.Promoted && Allocated == other.Allocated && AllocationRate == other.AllocationRate && SizeGen0 == other.SizeGen0 && FragmentationGen0 == other.FragmentationGen0 && SurvivalGen0 == other.SurvivalGen0 && SizeGen1 == other.SizeGen1 && FragmentationGen1 == other.FragmentationGen1 && SurvivalGen1 == other.SurvivalGen1 && SizeGen2 == other.SizeGen2 && FragmentationGen2 == other.FragmentationGen2 && SurvivalGen2 == other.SurvivalGen2 && SizeLoh == other.SizeLoh && FragmentationLoh == other.FragmentationLoh && SurvivalLoh == other.SurvivalLoh && PinnedObjects == other.PinnedObjects;
+      return Number == other.Number && Generation == other.Generation && Reason == other.Reason && PauseDuration == other.PauseDuration && Peak == other.Peak && After == other.After && Ratio == other.Ratio && Promoted == other.Promoted && Allocated == other.Allocated && AllocationRate == other.AllocationRate && SizeGen0 == other.SizeGen0 && SizeGen1 == other.SizeGen1 && SizeGen2 == other.SizeGen2 && SizeLoh == other.SizeLoh && PinnedObjects == other.PinnedObjects;
     }
     //hash code trait
     public override int GetHashCode()
@@ -1107,17 +1059,9 @@ namespace DiagnosticsClientPlugin.Generated
         hash = hash * 31 + Allocated.GetHashCode();
         hash = hash * 31 + AllocationRate.GetHashCode();
         hash = hash * 31 + SizeGen0.GetHashCode();
-        hash = hash * 31 + FragmentationGen0.GetHashCode();
-        hash = hash * 31 + SurvivalGen0.GetHashCode();
         hash = hash * 31 + SizeGen1.GetHashCode();
-        hash = hash * 31 + FragmentationGen1.GetHashCode();
-        hash = hash * 31 + SurvivalGen1.GetHashCode();
         hash = hash * 31 + SizeGen2.GetHashCode();
-        hash = hash * 31 + FragmentationGen2.GetHashCode();
-        hash = hash * 31 + SurvivalGen2.GetHashCode();
         hash = hash * 31 + SizeLoh.GetHashCode();
-        hash = hash * 31 + FragmentationLoh.GetHashCode();
-        hash = hash * 31 + SurvivalLoh.GetHashCode();
         hash = hash * 31 + PinnedObjects.GetHashCode();
         return hash;
       }
@@ -1138,17 +1082,9 @@ namespace DiagnosticsClientPlugin.Generated
         printer.Print("allocated = "); Allocated.PrintEx(printer); printer.Println();
         printer.Print("allocationRate = "); AllocationRate.PrintEx(printer); printer.Println();
         printer.Print("sizeGen0 = "); SizeGen0.PrintEx(printer); printer.Println();
-        printer.Print("fragmentationGen0 = "); FragmentationGen0.PrintEx(printer); printer.Println();
-        printer.Print("survivalGen0 = "); SurvivalGen0.PrintEx(printer); printer.Println();
         printer.Print("sizeGen1 = "); SizeGen1.PrintEx(printer); printer.Println();
-        printer.Print("fragmentationGen1 = "); FragmentationGen1.PrintEx(printer); printer.Println();
-        printer.Print("survivalGen1 = "); SurvivalGen1.PrintEx(printer); printer.Println();
         printer.Print("sizeGen2 = "); SizeGen2.PrintEx(printer); printer.Println();
-        printer.Print("fragmentationGen2 = "); FragmentationGen2.PrintEx(printer); printer.Println();
-        printer.Print("survivalGen2 = "); SurvivalGen2.PrintEx(printer); printer.Println();
         printer.Print("sizeLoh = "); SizeLoh.PrintEx(printer); printer.Println();
-        printer.Print("fragmentationLoh = "); FragmentationLoh.PrintEx(printer); printer.Println();
-        printer.Print("survivalLoh = "); SurvivalLoh.PrintEx(printer); printer.Println();
         printer.Print("pinnedObjects = "); PinnedObjects.PrintEx(printer); printer.Println();
       }
       printer.Print(")");
@@ -1278,7 +1214,7 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:122</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:114</p>
   /// </summary>
   public sealed class MonitorCountersCommand : IPrintable, IEquatable<MonitorCountersCommand>
   {
@@ -1415,7 +1351,7 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:136</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:128</p>
   /// </summary>
   public sealed class MonitorGcCommand : IPrintable, IEquatable<MonitorGcCommand>
   {
@@ -1737,7 +1673,7 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:148</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:140</p>
   /// </summary>
   public enum TracingProfile {
     None,

@@ -85,15 +85,19 @@ internal sealed class GcEventProducer
             Math.Round(gc.GenSizeAfterMB(Gens.Gen0), 3),
             Math.Round(gc.GenFragmentationPercent(Gens.Gen0), 3),
             Math.Round(gc.SurvivalPercent(Gens.Gen0), 2),
+            Math.Round(gc.GenBudgetMB(Gens.Gen0), 2),
             Math.Round(gc.GenSizeAfterMB(Gens.Gen1), 3),
             Math.Round(gc.GenFragmentationPercent(Gens.Gen1), 3),
             Math.Round(gc.SurvivalPercent(Gens.Gen1), 2),
+            Math.Round(gc.GenBudgetMB(Gens.Gen1), 2),
             Math.Round(gc.GenSizeAfterMB(Gens.Gen2), 3),
             Math.Round(gc.GenFragmentationPercent(Gens.Gen2), 3),
             Math.Round(gc.SurvivalPercent(Gens.Gen2), 2),
+            Math.Round(gc.GenBudgetMB(Gens.Gen2), 2),
             Math.Round(gc.GenSizeAfterMB(Gens.GenLargeObj), 3),
             Math.Round(gc.GenFragmentationPercent(Gens.GenLargeObj), 3),
             Math.Round(gc.SurvivalPercent(Gens.GenLargeObj), 2),
+            Math.Round(gc.GenBudgetMB(Gens.GenLargeObj), 2),
             gc.HeapStats.PinnedObjectCount
         );
 

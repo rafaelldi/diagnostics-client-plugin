@@ -17,17 +17,9 @@ class GcTableComponent : JBTable() {
         private const val ALLOCATED_COLUMN_TITLE = "Allocated MB"
         private const val ALLOCATION_RATE_COLUMN_TITLE = "Allocation Rate"
         private const val GEN0_COLUMN_TITLE = "Gen0 MB"
-        private const val GEN0_FRAGMENTATION_COLUMN_TITLE = "Gen0 Fragmentation %"
-        private const val GEN0_SURVIVAL_COLUMN_TITLE = "Gen0 Survival Rate %"
         private const val GEN1_COLUMN_TITLE = "Gen1 MB"
-        private const val GEN1_FRAGMENTATION_COLUMN_TITLE = "Gen1 Fragmentation %"
-        private const val GEN1_SURVIVAL_COLUMN_TITLE = "Gen1 Survival Rate %l"
         private const val GEN2_COLUMN_TITLE = "Gen2 MB"
-        private const val GEN2_FRAGMENTATION_COLUMN_TITLE = "Gen2 Fragmentation %"
-        private const val GEN2_SURVIVAL_COLUMN_TITLE = "Gen2 Survival Rate %"
         private const val LOH_COLUMN_TITLE = "LOH MB"
-        private const val LOH_FRAGMENTATION_COLUMN_TITLE = "LOH Fragmentation %"
-        private const val LOH_SURVIVAL_COLUMN_TITLE = "LOH Survival Rate %"
         private const val PINNED_OBJECTS_COLUMN_TITLE = "Pinned Objects"
     }
 
@@ -45,17 +37,9 @@ class GcTableComponent : JBTable() {
                 ALLOCATED_COLUMN_TITLE,
                 ALLOCATION_RATE_COLUMN_TITLE,
                 GEN0_COLUMN_TITLE,
-                GEN0_FRAGMENTATION_COLUMN_TITLE,
-                GEN0_SURVIVAL_COLUMN_TITLE,
                 GEN1_COLUMN_TITLE,
-                GEN1_FRAGMENTATION_COLUMN_TITLE,
-                GEN1_SURVIVAL_COLUMN_TITLE,
                 GEN2_COLUMN_TITLE,
-                GEN2_FRAGMENTATION_COLUMN_TITLE,
-                GEN2_SURVIVAL_COLUMN_TITLE,
                 LOH_COLUMN_TITLE,
-                LOH_FRAGMENTATION_COLUMN_TITLE,
-                LOH_SURVIVAL_COLUMN_TITLE,
                 PINNED_OBJECTS_COLUMN_TITLE
             ), 0
         )
@@ -80,17 +64,9 @@ class GcTableComponent : JBTable() {
                 gcEvent.allocated,
                 gcEvent.allocationRate,
                 gcEvent.sizeGen0,
-                gcEvent.fragmentationGen0,
-                gcEvent.survivalGen0,
                 gcEvent.sizeGen1,
-                gcEvent.fragmentationGen1,
-                gcEvent.survivalGen1,
                 gcEvent.sizeGen2,
-                gcEvent.fragmentationGen2,
-                gcEvent.survivalGen2,
                 gcEvent.sizeLoh,
-                gcEvent.fragmentationLoh,
-                gcEvent.survivalLoh,
                 gcEvent.pinnedObjects
             )
         )

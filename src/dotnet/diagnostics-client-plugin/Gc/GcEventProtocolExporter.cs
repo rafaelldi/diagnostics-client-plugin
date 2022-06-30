@@ -37,17 +37,9 @@ internal sealed class GcEventProtocolExporter
                         gcEvent.Allocated,
                         gcEvent.AllocationRate,
                         gcEvent.SizeGen0,
-                        gcEvent.FragmentationGen0,
-                        gcEvent.SurvivalGen0,
                         gcEvent.SizeGen1,
-                        gcEvent.FragmentationGen1,
-                        gcEvent.SurvivalGen1,
                         gcEvent.SizeGen2,
-                        gcEvent.FragmentationGen2,
-                        gcEvent.SurvivalGen2,
                         gcEvent.SizeLoh,
-                        gcEvent.FragmentationLoh,
-                        gcEvent.SurvivalLoh,
                         gcEvent.PinnedObjects
                     ));
                 }

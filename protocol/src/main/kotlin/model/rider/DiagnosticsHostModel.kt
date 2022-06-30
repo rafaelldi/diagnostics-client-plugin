@@ -58,17 +58,9 @@ object DiagnosticsHostModel : Ext(SolutionModel.Solution) {
         field("allocated", double)
         field("allocationRate", double)
         field("sizeGen0", double)
-        field("fragmentationGen0", double)
-        field("survivalGen0", double)
         field("sizeGen1", double)
-        field("fragmentationGen1", double)
-        field("survivalGen1", double)
         field("sizeGen2", double)
-        field("fragmentationGen2", double)
-        field("survivalGen2", double)
         field("sizeLoh", double)
-        field("fragmentationLoh", double)
-        field("survivalLoh", double)
         field("pinnedObjects", int)
     }
 
