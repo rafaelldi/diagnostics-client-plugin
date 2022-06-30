@@ -36,7 +36,7 @@ class MonitorCountersDialog(project: Project) : DialogWrapper(project) {
                 .bindIntValue(model::interval)
         }
         buttonsGroup {
-            row("Stop collection:") {
+            row("Stop monitoring:") {
                 periodStoppingType = radioButton(StoppingType.AfterPeriod.label, StoppingType.AfterPeriod)
                 radioButton(StoppingType.Manually.label, StoppingType.Manually)
             }

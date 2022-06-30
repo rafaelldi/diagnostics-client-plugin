@@ -1,21 +1,21 @@
-package com.github.rafaelldi.diagnosticsclientplugin.actions
+package com.github.rafaelldi.diagnosticsclientplugin.actions.traces
 
-import com.github.rafaelldi.diagnosticsclientplugin.dialogs.CollectCountersDialog
+import com.github.rafaelldi.diagnosticsclientplugin.dialogs.CollectTracesDialog
 import com.github.rafaelldi.diagnosticsclientplugin.generated.diagnosticsHostModel
-import com.github.rafaelldi.diagnosticsclientplugin.services.CounterCollectionSessionController
+import com.github.rafaelldi.diagnosticsclientplugin.services.TraceCollectionSessionController
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.components.service
 import com.jetbrains.rider.projectView.solution
 
-class StartCollectingCountersAction : AnAction() {
+class StartCollectingTracesAction : AnAction() {
     override fun actionPerformed(event: AnActionEvent) {
         val project = event.project ?: return
         val pid = project.solution.diagnosticsHostModel.processList.selected.value ?: return
-        val dialog = CollectCountersDialog(project)
+        val dialog = CollectTracesDialog(project)
         if (dialog.showAndGet()) {
             val model = dialog.getModel()
-            val controller = project.service<CounterCollectionSessionController>()
+            val controller = project.service<TraceCollectionSessionController>()
             controller.startSession(pid, model)
         }
     }
@@ -30,7 +30,7 @@ class StartCollectingCountersAction : AnAction() {
             if (selected == null) {
                 event.presentation.isEnabled = false
             } else {
-                event.presentation.isEnabledAndVisible = !model.counterCollectionSessions.contains(selected)
+                event.presentation.isEnabledAndVisible = !model.traceCollectionSessions.contains(selected)
             }
         }
     }

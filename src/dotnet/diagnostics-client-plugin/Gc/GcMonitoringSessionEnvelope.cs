@@ -1,55 +1,51 @@
 ﻿using System.Threading.Channels;
 using System.Threading.Tasks;
 using DiagnosticsClientPlugin.Common;
-using DiagnosticsClientPlugin.Counters.Common;
-using DiagnosticsClientPlugin.Counters.Exporters;
-using DiagnosticsClientPlugin.Counters.Producer;
 using DiagnosticsClientPlugin.Generated;
 using JetBrains.Core;
 using JetBrains.Lifetimes;
 using JetBrains.Rd.Tasks;
 
-namespace DiagnosticsClientPlugin.Counters.Monitoring;
+namespace DiagnosticsClientPlugin.Gc;
 
-internal sealed class MonitoringSessionEnvelope
+internal sealed class GcMonitoringSessionEnvelope
 {
-    private readonly CounterMonitoringHandler _handler;
+    private readonly GcMonitoringHandler _handler;
     private readonly Lifetime _lifetime;
-    private readonly ProtocolCounterExporter _exporter;
-    private readonly CounterProducer _producer;
+    private readonly GcEventProducer _producer;
+    private readonly GcEventProtocolExporter _exporter;
 
-    internal MonitoringSessionEnvelope(int pid, CounterProducerConfiguration producerConfiguration,
-        CounterMonitoringHandler handler, Lifetime lifetime)
+    internal GcMonitoringSessionEnvelope(int pid, GcMonitoringHandler handler, Lifetime lifetime)
     {
         _handler = handler;
         _lifetime = lifetime;
-        Session = new CountersMonitoringSession(pid);
-
-        var channel = Channel.CreateBounded<ValueCounter>(new BoundedChannelOptions(100)
+        Session = new GcMonitoringSession(pid);
+        
+        var channel = Channel.CreateBounded<ValueGcEvent>(new BoundedChannelOptions(100)
         {
             SingleReader = true,
             SingleWriter = true,
             FullMode = BoundedChannelFullMode.DropOldest
         });
 
-        _exporter = new ProtocolCounterExporter(Session, channel.Reader);
-        _producer = new CounterProducer(pid, producerConfiguration, channel.Writer, lifetime);
+        _producer = new GcEventProducer(pid, channel.Writer, _lifetime);
+        _exporter = new GcEventProtocolExporter(Session, channel.Reader);
 
-        Session.Monitor.Set(async (lt, duration) => await Monitor(duration, lt));
+        Session.Monitor.Set(async (lt, duration) => await MonitorAsync(duration, lt));
         Session.Close.Advise(lifetime, _ => Close());
     }
+    
+    internal GcMonitoringSession Session { get; }
 
-    internal CountersMonitoringSession Session { get; }
-
-    internal async Task<Unit> Monitor(int? duration, Lifetime lifetime)
+    internal async Task<Unit> MonitorAsync(int? duration, Lifetime lifetime)
     {
         var operationLifetime = _lifetime.IntersectWithTimer(lifetime, duration);
-
+        
         operationLifetime.Bracket(
             () => Session.Active.Value = true,
             () => Session.Active.Value = false
         );
-
+        
         var exporterTask = _exporter.ConsumeAsync(operationLifetime);
         var producerTask = _producer.Produce(operationLifetime);
 

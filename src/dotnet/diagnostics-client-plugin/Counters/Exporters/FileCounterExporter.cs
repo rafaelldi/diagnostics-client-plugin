@@ -69,8 +69,8 @@ internal abstract class FileCounterExporter
         ChannelReader<ValueCounter> reader) =>
         format switch
         {
-            CounterFileFormat.Csv => new CsvCounterExporter(filePath, reader),
-            CounterFileFormat.Json => new JsonCounterExporter(filePath, reader),
+            CounterFileFormat.Csv => new CounterCsvExporter(filePath, reader),
+            CounterFileFormat.Json => new CounterJsonExporter(filePath, reader),
             _ => throw new ArgumentOutOfRangeException(nameof(format), format, null)
         };
 }

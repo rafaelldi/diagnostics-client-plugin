@@ -7,14 +7,12 @@ using DiagnosticsClientPlugin.Generated;
 
 namespace DiagnosticsClientPlugin.Counters.Exporters;
 
-internal sealed class ProtocolCounterExporter
+internal sealed class CounterProtocolExporter
 {
     private readonly CountersMonitoringSession _session;
     private readonly ChannelReader<ValueCounter> _reader;
 
-    internal ProtocolCounterExporter(
-        CountersMonitoringSession session,
-        ChannelReader<ValueCounter> reader )
+    internal CounterProtocolExporter(CountersMonitoringSession session, ChannelReader<ValueCounter> reader)
     {
         _session = session;
         _reader = reader;
@@ -28,7 +26,8 @@ internal sealed class ProtocolCounterExporter
             {
                 if (_reader.TryRead(out var counter))
                 {
-                    HandleCounter(in counter);
+                    var key = string.IsNullOrEmpty(counter.Tags) ? counter.Name : $"{counter.Name}-{counter.Tags}";
+                    _session.Counters[key] = new Counter(counter.DisplayName, counter.Tags, counter.Value);
                 }
             }
         }
@@ -36,11 +35,5 @@ internal sealed class ProtocolCounterExporter
         {
             //do nothing
         }
-    }
-
-    private void HandleCounter(in ValueCounter counter)
-    {
-        var key = string.IsNullOrEmpty(counter.Tags) ? counter.Name : $"{counter.Name}-{counter.Tags}";
-        _session.Counters[key] = new Counter(counter.DisplayName, counter.Tags, counter.Value);
     }
 }

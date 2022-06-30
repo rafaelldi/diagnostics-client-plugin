@@ -20,10 +20,10 @@ internal sealed class TraceCollectionHandler
     public TraceCollectionHandler(ISolution solution)
     {
         _hostModel = solution.GetProtocolSolution().GetDiagnosticsHostModel();
-        _hostModel.CollectTraces.Set(async (lt, command) => await Collect(command, lt));
+        _hostModel.CollectTraces.Set(async (lt, command) => await CollectAsync(command, lt));
     }
 
-    private async Task<Unit> Collect(CollectTracesCommand command, Lifetime lifetime)
+    private async Task<Unit> CollectAsync(CollectTracesCommand command, Lifetime lifetime)
     {
         _hostModel.TraceCollectionSessions.Add(lifetime, command.Pid);
 

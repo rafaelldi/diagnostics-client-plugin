@@ -1,6 +1,6 @@
 package com.github.rafaelldi.diagnosticsclientplugin.services
 
-import com.github.rafaelldi.diagnosticsclientplugin.dialogs.MonitorCountersModel
+import com.github.rafaelldi.diagnosticsclientplugin.dialogs.MonitorGcModel
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.MonitoringTimerModel
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.StoppingType
 import com.github.rafaelldi.diagnosticsclientplugin.generated.*
@@ -18,32 +18,23 @@ import com.jetbrains.rider.projectView.solution
 import java.util.concurrent.ConcurrentHashMap
 
 @Service
-class CounterMonitoringSessionController(project: Project) : ProtocolSubscribedProjectComponent(project) {
+class GcMonitoringSessionController(project: Project) : ProtocolSubscribedProjectComponent(project) {
     private val hostModel: DiagnosticsHostModel = project.solution.diagnosticsHostModel
     private val activeSessions: ConcurrentHashMap<Int, LifetimeDefinition> = ConcurrentHashMap()
 
     init {
-        hostModel.counterMonitoringSessions.view(projectComponentLifetime) { lt, _, session ->
+        hostModel.gcMonitoringSessions.view(projectComponentLifetime) { lt, _, session ->
             viewSession(lt, session)
         }
     }
 
-    fun startSession(pid: Int, model: MonitorCountersModel) {
+    fun startSession(pid: Int, model: MonitorGcModel) {
         val sessionDefinition = createDefinitionForSession(pid) ?: return
 
         val duration = if (model.stoppingType == StoppingType.AfterPeriod) model.duration else null
-        val metrics = model.metrics.ifEmpty { null }
-        val command = MonitorCountersCommand(
-            pid,
-            model.interval,
-            model.providers,
-            metrics,
-            model.maxTimeSeries,
-            model.maxHistograms,
-            duration
-        )
+        val command = MonitorGcCommand(pid, duration)
 
-        val monitorTask = hostModel.monitorCounters.start(sessionDefinition.lifetime, command)
+        val monitorTask = hostModel.monitorGc.start(sessionDefinition.lifetime, command)
         sessionStarted(pid)
 
         monitorTask
@@ -71,7 +62,7 @@ class CounterMonitoringSessionController(project: Project) : ProtocolSubscribedP
     fun startExistingSession(pid: Int, model: MonitoringTimerModel) {
         val sessionDefinition = createDefinitionForSession(pid) ?: return
 
-        val session = hostModel.counterMonitoringSessions[pid] ?: return
+        val session = hostModel.gcMonitoringSessions[pid] ?: return
         val duration = if (model.stoppingType == StoppingType.AfterPeriod) model.duration else null
         val monitorTask = session.monitor.start(sessionDefinition.lifetime, duration)
         sessionStarted(pid)
@@ -119,14 +110,14 @@ class CounterMonitoringSessionController(project: Project) : ProtocolSubscribedP
         sessionDefinition.terminate()
     }
 
-    private fun viewSession(lt: Lifetime, session: CountersMonitoringSession) {
+    private fun viewSession(lt: Lifetime, session: GcMonitoringSession) {
         val tabsManager = project.service<DiagnosticsTabsManager>()
-        tabsManager.createCountersTab(lt, session)
+        tabsManager.createGcTab(lt, session)
     }
 
     private fun sessionStarted(pid: Int) = Notification(
         "Diagnostics Client",
-        "Counters monitoring started",
+        "GC monitoring started",
         "Session for process $pid started",
         NotificationType.INFORMATION
     )
@@ -134,7 +125,7 @@ class CounterMonitoringSessionController(project: Project) : ProtocolSubscribedP
 
     private fun sessionFinished(pid: Int) = Notification(
         "Diagnostics Client",
-        "Counters monitoring finished",
+        "GC monitoring finished",
         "Session for process $pid finished",
         NotificationType.INFORMATION
     )
@@ -142,7 +133,7 @@ class CounterMonitoringSessionController(project: Project) : ProtocolSubscribedP
 
     private fun sessionFaulted(pid: Int, message: String) = Notification(
         "Diagnostics Client",
-        "Counters monitoring for $pid faulted",
+        "GC monitoring for $pid faulted",
         message,
         NotificationType.ERROR
     )

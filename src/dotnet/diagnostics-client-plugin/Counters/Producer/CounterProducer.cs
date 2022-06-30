@@ -12,6 +12,7 @@ namespace DiagnosticsClientPlugin.Counters.Producer;
 
 internal sealed class CounterProducer
 {
+    private readonly int _pid;
     private readonly EventPipeSessionManager _sessionManager;
     private readonly CounterProducerConfiguration _configuration;
     private readonly ChannelWriter<ValueCounter> _writer;
@@ -23,6 +24,7 @@ internal sealed class CounterProducer
         ChannelWriter<ValueCounter> writer,
         Lifetime lt)
     {
+        _pid = pid;
         _sessionManager = new EventPipeSessionManager(pid);
         _configuration = configuration;
         _writer = writer;
@@ -34,7 +36,6 @@ internal sealed class CounterProducer
     internal Task Produce(Lifetime lt)
     {
         var lifetime = _lt.Intersect(lt);
-        var tcs = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
 
         var session = _sessionManager.StartSession(_configuration.EventPipeProviders, false);
         lifetime.AddDispose(session);
@@ -49,29 +50,16 @@ internal sealed class CounterProducer
 
         lifetime.OnTermination(() => EventPipeSessionManager.StopSession(session));
 
-        Process(source, tcs, lifetime);
-
-        return tcs.Task;
-    }
-
-    private static void Process(EventPipeEventSource source, TaskCompletionSource<bool> tcs, Lifetime lt)
-    {
-        Task.Run(() =>
-        {
-            try
-            {
-                source.Process();
-                tcs.SetResult(true);
-            }
-            catch (Exception e)
-            {
-                tcs.SetException(e);
-            }
-        }, lt);
+        return Task.Run(() => source.Process(), lifetime);
     }
 
     private void HandleEvent(TraceEvent evt)
     {
+        if (evt.ProcessID != _pid)
+        {
+            return;
+        }
+
         if (evt.ProviderName is Providers.SystemDiagnosticsMetricsProvider)
         {
             if (evt.EventName is "CounterRateValuePublished")
@@ -111,10 +99,7 @@ internal sealed class CounterProducer
         var unit = (string)evt.PayloadValue(4);
         var tags = (string)evt.PayloadValue(5);
         var counter = MapToRateCounter(evt.TimeStamp, instrumentName, unit, meterName, rate, tags);
-        if (!_writer.TryWrite(counter))
-        {
-            //todo: log it
-        }
+        _writer.TryWrite(counter);
     }
 
     private void HandleGaugeEvent(TraceEvent evt)
@@ -135,10 +120,7 @@ internal sealed class CounterProducer
         var unit = (string)evt.PayloadValue(4);
         var tags = (string)evt.PayloadValue(5);
         var counter = MapToMetricCounter(evt.TimeStamp, instrumentName, unit, meterName, lastValue, tags);
-        if (!_writer.TryWrite(counter))
-        {
-            //todo: log it
-        }
+        _writer.TryWrite(counter);
     }
 
     private void HandleHistogramEvent(TraceEvent evt)
@@ -158,26 +140,18 @@ internal sealed class CounterProducer
 
         var counter = MapToMetricCounter(evt.TimeStamp, instrumentName, unit, meterName, quantileValues.Value50,
             CombineTagsAndQuantiles(tags, "Percentile=50"));
-        WriteCounter(counter);
+        _writer.TryWrite(counter);
 
         counter = MapToMetricCounter(evt.TimeStamp, instrumentName, unit, meterName, quantileValues.Value95,
             CombineTagsAndQuantiles(tags, "Percentile=95"));
-        WriteCounter(counter);
+        _writer.TryWrite(counter);
 
         counter = MapToMetricCounter(evt.TimeStamp, instrumentName, unit, meterName, quantileValues.Value99,
             CombineTagsAndQuantiles(tags, "Percentile=99"));
-        WriteCounter(counter);
+        _writer.TryWrite(counter);
 
         string CombineTagsAndQuantiles(string tagString, string quantileString) =>
             string.IsNullOrEmpty(tagString) ? quantileString : $"{tagString},{quantileString}";
-
-        void WriteCounter(in ValueCounter valueCounter)
-        {
-            if (!_writer.TryWrite(valueCounter))
-            {
-                //todo: log it
-            }
-        }
     }
 
     private Quantiles ParseQuantiles(ReadOnlySpan<char> quantiles)
@@ -215,10 +189,7 @@ internal sealed class CounterProducer
         }
 
         var counter = MapCounterEvent(evt.ProviderName, name, evt.TimeStamp, payloadFields);
-        if (!_writer.TryWrite(counter))
-        {
-            //todo: log it
-        }
+        _writer.TryWrite(counter);
     }
 
     private ValueCounter MapCounterEvent(string providerName, string name, DateTime timeStamp,
