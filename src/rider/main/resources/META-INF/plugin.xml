@@ -89,6 +89,12 @@
                     description="Collect memory dump"
                     icon="AllIcons.Actions.Dump">
             </action>
+            <action id="DiagnosticsClient.ToolWindow.Explorer.CollectStackTrace"
+                    class="com.github.rafaelldi.diagnosticsclientplugin.actions.CollectStackTraceAction"
+                    text="Stack Trace"
+                    description="Collect stack trace"
+                    icon="RiderIcons.Stacktrace.Stacktrace">
+            </action>
             <separator/>
             <action id="DiagnosticsClient.ToolWindow.Explorer.Help"
                     class="com.github.rafaelldi.diagnosticsclientplugin.actions.DiagnosticsClientHelpAction">
