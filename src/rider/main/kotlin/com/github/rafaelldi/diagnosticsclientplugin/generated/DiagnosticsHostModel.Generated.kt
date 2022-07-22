@@ -27,7 +27,8 @@ class DiagnosticsHostModel private constructor(
     private val _collectCounters: RdCall<CollectCountersCommand, Unit>,
     private val _monitorCounters: RdCall<MonitorCountersCommand, Unit>,
     private val _monitorGc: RdCall<MonitorGcCommand, Unit>,
-    private val _collectTraces: RdCall<CollectTracesCommand, Unit>
+    private val _collectTraces: RdCall<CollectTracesCommand, Unit>,
+    private val _collectStackTrace: RdCall<CollectStackTraceCommand, String>
 ) : RdExtBase() {
     //companion
     
@@ -46,6 +47,7 @@ class DiagnosticsHostModel private constructor(
             serializers.register(MonitorCountersCommand)
             serializers.register(MonitorGcCommand)
             serializers.register(CollectTracesCommand)
+            serializers.register(CollectStackTraceCommand)
             serializers.register(DumpType.marshaller)
             serializers.register(CounterFileFormat.marshaller)
             serializers.register(TracingProfile.marshaller)
@@ -55,7 +57,7 @@ class DiagnosticsHostModel private constructor(
         
         
         
-        const val serializationHash = -5945151236422429220L
+        const val serializationHash = 8500144562311201123L
         
     }
     override val serializersOwner: ISerializersOwner get() = DiagnosticsHostModel
@@ -71,6 +73,7 @@ class DiagnosticsHostModel private constructor(
     val monitorCounters: IRdCall<MonitorCountersCommand, Unit> get() = _monitorCounters
     val monitorGc: IRdCall<MonitorGcCommand, Unit> get() = _monitorGc
     val collectTraces: IRdCall<CollectTracesCommand, Unit> get() = _collectTraces
+    val collectStackTrace: IRdCall<CollectStackTraceCommand, String> get() = _collectStackTrace
     //methods
     //initializer
     init {
@@ -96,6 +99,7 @@ class DiagnosticsHostModel private constructor(
         bindableChildren.add("monitorCounters" to _monitorCounters)
         bindableChildren.add("monitorGc" to _monitorGc)
         bindableChildren.add("collectTraces" to _collectTraces)
+        bindableChildren.add("collectStackTrace" to _collectStackTrace)
     }
     
     //secondary constructor
@@ -110,7 +114,8 @@ class DiagnosticsHostModel private constructor(
         RdCall<CollectCountersCommand, Unit>(CollectCountersCommand, FrameworkMarshallers.Void),
         RdCall<MonitorCountersCommand, Unit>(MonitorCountersCommand, FrameworkMarshallers.Void),
         RdCall<MonitorGcCommand, Unit>(MonitorGcCommand, FrameworkMarshallers.Void),
-        RdCall<CollectTracesCommand, Unit>(CollectTracesCommand, FrameworkMarshallers.Void)
+        RdCall<CollectTracesCommand, Unit>(CollectTracesCommand, FrameworkMarshallers.Void),
+        RdCall<CollectStackTraceCommand, String>(CollectStackTraceCommand, FrameworkMarshallers.String)
     )
     
     //equals trait
@@ -129,6 +134,7 @@ class DiagnosticsHostModel private constructor(
             print("monitorCounters = "); _monitorCounters.print(printer); println()
             print("monitorGc = "); _monitorGc.print(printer); println()
             print("collectTraces = "); _collectTraces.print(printer); println()
+            print("collectStackTrace = "); _collectStackTrace.print(printer); println()
         }
         printer.print(")")
     }
@@ -144,7 +150,8 @@ class DiagnosticsHostModel private constructor(
             _collectCounters.deepClonePolymorphic(),
             _monitorCounters.deepClonePolymorphic(),
             _monitorGc.deepClonePolymorphic(),
-            _collectTraces.deepClonePolymorphic()
+            _collectTraces.deepClonePolymorphic(),
+            _collectStackTrace.deepClonePolymorphic()
         )
     }
     //contexts
@@ -331,6 +338,63 @@ data class CollectDumpCommand (
             print("outFolder = "); outFolder.print(printer); println()
             print("filename = "); filename.print(printer); println()
             print("diag = "); diag.print(printer); println()
+        }
+        printer.print(")")
+    }
+    //deepClone
+    //contexts
+}
+
+
+/**
+ * #### Generated from [DiagnosticsHostModel.kt:153]
+ */
+data class CollectStackTraceCommand (
+    val pid: Int
+) : IPrintable {
+    //companion
+    
+    companion object : IMarshaller<CollectStackTraceCommand> {
+        override val _type: KClass<CollectStackTraceCommand> = CollectStackTraceCommand::class
+        
+        @Suppress("UNCHECKED_CAST")
+        override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): CollectStackTraceCommand  {
+            val pid = buffer.readInt()
+            return CollectStackTraceCommand(pid)
+        }
+        
+        override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: CollectStackTraceCommand)  {
+            buffer.writeInt(value.pid)
+        }
+        
+        
+    }
+    //fields
+    //methods
+    //initializer
+    //secondary constructor
+    //equals trait
+    override fun equals(other: Any?): Boolean  {
+        if (this === other) return true
+        if (other == null || other::class != this::class) return false
+        
+        other as CollectStackTraceCommand
+        
+        if (pid != other.pid) return false
+        
+        return true
+    }
+    //hash code trait
+    override fun hashCode(): Int  {
+        var __r = 0
+        __r = __r*31 + pid.hashCode()
+        return __r
+    }
+    //pretty print
+    override fun print(printer: PrettyPrinter)  {
+        printer.println("CollectStackTraceCommand (")
+        printer.indent {
+            print("pid = "); pid.print(printer); println()
         }
         printer.print(")")
     }

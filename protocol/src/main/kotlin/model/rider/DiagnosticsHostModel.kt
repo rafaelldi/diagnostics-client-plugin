@@ -148,5 +148,12 @@ object DiagnosticsHostModel : Ext(SolutionModel.Solution) {
             },
             void
         )
+
+        call("collectStackTrace",
+            structdef("CollectStackTraceCommand") {
+                field("pid", int)
+            },
+            string
+        )
     }
 }
