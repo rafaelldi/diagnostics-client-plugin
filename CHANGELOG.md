@@ -3,6 +3,8 @@
 # diagnostics-client-plugin Changelog
 
 ## [Unreleased]
+
+## [1.2.0]
 ### Added
 - GC monitor
 - Collect stack traces action
