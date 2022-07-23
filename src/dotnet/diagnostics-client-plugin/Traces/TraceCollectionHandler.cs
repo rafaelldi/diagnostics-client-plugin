@@ -29,7 +29,7 @@ internal sealed class TraceCollectionHandler
 
         var providers = new TraceProviderCollection(command.Providers, command.Profile);
         var sessionManager = new EventPipeSessionManager(command.Pid);
-        using var session = sessionManager.StartSession(providers.EventPipeProviders, true);
+        using var session = sessionManager.StartSession(providers.EventPipeProviders);
 
         using var fileStream = new FileStream(command.FilePath, FileMode.Create, FileAccess.Write);
 

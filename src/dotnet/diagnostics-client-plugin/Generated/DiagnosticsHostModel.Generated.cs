@@ -52,6 +52,7 @@ namespace DiagnosticsClientPlugin.Generated
     [NotNull] public IRdEndpoint<MonitorCountersCommand, Unit> MonitorCounters => _MonitorCounters;
     [NotNull] public IRdEndpoint<MonitorGcCommand, Unit> MonitorGc => _MonitorGc;
     [NotNull] public IRdEndpoint<CollectTracesCommand, Unit> CollectTraces => _CollectTraces;
+    [NotNull] public IRdEndpoint<CollectStackTraceCommand, string> CollectStackTrace => _CollectStackTrace;
     
     //private fields
     [NotNull] private readonly RdList<int> _CounterCollectionSessions;
@@ -63,6 +64,7 @@ namespace DiagnosticsClientPlugin.Generated
     [NotNull] private readonly RdCall<MonitorCountersCommand, Unit> _MonitorCounters;
     [NotNull] private readonly RdCall<MonitorGcCommand, Unit> _MonitorGc;
     [NotNull] private readonly RdCall<CollectTracesCommand, Unit> _CollectTraces;
+    [NotNull] private readonly RdCall<CollectStackTraceCommand, string> _CollectStackTrace;
     
     //primary constructor
     private DiagnosticsHostModel(
@@ -75,7 +77,8 @@ namespace DiagnosticsClientPlugin.Generated
       [NotNull] RdCall<CollectCountersCommand, Unit> collectCounters,
       [NotNull] RdCall<MonitorCountersCommand, Unit> monitorCounters,
       [NotNull] RdCall<MonitorGcCommand, Unit> monitorGc,
-      [NotNull] RdCall<CollectTracesCommand, Unit> collectTraces
+      [NotNull] RdCall<CollectTracesCommand, Unit> collectTraces,
+      [NotNull] RdCall<CollectStackTraceCommand, string> collectStackTrace
     )
     {
       if (processList == null) throw new ArgumentNullException("processList");
@@ -88,6 +91,7 @@ namespace DiagnosticsClientPlugin.Generated
       if (monitorCounters == null) throw new ArgumentNullException("monitorCounters");
       if (monitorGc == null) throw new ArgumentNullException("monitorGc");
       if (collectTraces == null) throw new ArgumentNullException("collectTraces");
+      if (collectStackTrace == null) throw new ArgumentNullException("collectStackTrace");
       
       ProcessList = processList;
       _CounterCollectionSessions = counterCollectionSessions;
@@ -99,6 +103,7 @@ namespace DiagnosticsClientPlugin.Generated
       _MonitorCounters = monitorCounters;
       _MonitorGc = monitorGc;
       _CollectTraces = collectTraces;
+      _CollectStackTrace = collectStackTrace;
       _CounterCollectionSessions.OptimizeNested = true;
       _TraceCollectionSessions.OptimizeNested = true;
       _CounterCollectionSessions.Async = true;
@@ -115,6 +120,7 @@ namespace DiagnosticsClientPlugin.Generated
       BindableChildren.Add(new KeyValuePair<string, object>("monitorCounters", _MonitorCounters));
       BindableChildren.Add(new KeyValuePair<string, object>("monitorGc", _MonitorGc));
       BindableChildren.Add(new KeyValuePair<string, object>("collectTraces", _CollectTraces));
+      BindableChildren.Add(new KeyValuePair<string, object>("collectStackTrace", _CollectStackTrace));
     }
     //secondary constructor
     internal DiagnosticsHostModel (
@@ -128,14 +134,15 @@ namespace DiagnosticsClientPlugin.Generated
       new RdCall<CollectCountersCommand, Unit>(CollectCountersCommand.Read, CollectCountersCommand.Write, JetBrains.Rd.Impl.Serializers.ReadVoid, JetBrains.Rd.Impl.Serializers.WriteVoid),
       new RdCall<MonitorCountersCommand, Unit>(MonitorCountersCommand.Read, MonitorCountersCommand.Write, JetBrains.Rd.Impl.Serializers.ReadVoid, JetBrains.Rd.Impl.Serializers.WriteVoid),
       new RdCall<MonitorGcCommand, Unit>(MonitorGcCommand.Read, MonitorGcCommand.Write, JetBrains.Rd.Impl.Serializers.ReadVoid, JetBrains.Rd.Impl.Serializers.WriteVoid),
-      new RdCall<CollectTracesCommand, Unit>(CollectTracesCommand.Read, CollectTracesCommand.Write, JetBrains.Rd.Impl.Serializers.ReadVoid, JetBrains.Rd.Impl.Serializers.WriteVoid)
+      new RdCall<CollectTracesCommand, Unit>(CollectTracesCommand.Read, CollectTracesCommand.Write, JetBrains.Rd.Impl.Serializers.ReadVoid, JetBrains.Rd.Impl.Serializers.WriteVoid),
+      new RdCall<CollectStackTraceCommand, string>(CollectStackTraceCommand.Read, CollectStackTraceCommand.Write, JetBrains.Rd.Impl.Serializers.ReadString, JetBrains.Rd.Impl.Serializers.WriteString)
     ) {}
     //deconstruct trait
     //statics
     
     
     
-    protected override long SerializationHash => -5945151236422429220L;
+    protected override long SerializationHash => 8500144562311201123L;
     
     protected override Action<ISerializers> Register => RegisterDeclaredTypesSerializers;
     public static void RegisterDeclaredTypesSerializers(ISerializers serializers)
@@ -166,6 +173,7 @@ namespace DiagnosticsClientPlugin.Generated
         printer.Print("monitorCounters = "); _MonitorCounters.PrintEx(printer); printer.Println();
         printer.Print("monitorGc = "); _MonitorGc.PrintEx(printer); printer.Println();
         printer.Print("collectTraces = "); _CollectTraces.PrintEx(printer); printer.Println();
+        printer.Print("collectStackTrace = "); _CollectStackTrace.PrintEx(printer); printer.Println();
       }
       printer.Print(")");
     }
@@ -445,6 +453,89 @@ namespace DiagnosticsClientPlugin.Generated
         printer.Print("outFolder = "); OutFolder.PrintEx(printer); printer.Println();
         printer.Print("filename = "); Filename.PrintEx(printer); printer.Println();
         printer.Print("diag = "); Diag.PrintEx(printer); printer.Println();
+      }
+      printer.Print(")");
+    }
+    //toString
+    public override string ToString()
+    {
+      var printer = new SingleLinePrettyPrinter();
+      Print(printer);
+      return printer.ToString();
+    }
+  }
+  
+  
+  /// <summary>
+  /// <p>Generated from: DiagnosticsHostModel.kt:153</p>
+  /// </summary>
+  public sealed class CollectStackTraceCommand : IPrintable, IEquatable<CollectStackTraceCommand>
+  {
+    //fields
+    //public fields
+    public int Pid {get; private set;}
+    
+    //private fields
+    //primary constructor
+    public CollectStackTraceCommand(
+      int pid
+    )
+    {
+      Pid = pid;
+    }
+    //secondary constructor
+    //deconstruct trait
+    public void Deconstruct(out int pid)
+    {
+      pid = Pid;
+    }
+    //statics
+    
+    public static CtxReadDelegate<CollectStackTraceCommand> Read = (ctx, reader) => 
+    {
+      var pid = reader.ReadInt();
+      var _result = new CollectStackTraceCommand(pid);
+      return _result;
+    };
+    
+    public static CtxWriteDelegate<CollectStackTraceCommand> Write = (ctx, writer, value) => 
+    {
+      writer.Write(value.Pid);
+    };
+    
+    //constants
+    
+    //custom body
+    //methods
+    //equals trait
+    public override bool Equals(object obj)
+    {
+      if (ReferenceEquals(null, obj)) return false;
+      if (ReferenceEquals(this, obj)) return true;
+      if (obj.GetType() != GetType()) return false;
+      return Equals((CollectStackTraceCommand) obj);
+    }
+    public bool Equals(CollectStackTraceCommand other)
+    {
+      if (ReferenceEquals(null, other)) return false;
+      if (ReferenceEquals(this, other)) return true;
+      return Pid == other.Pid;
+    }
+    //hash code trait
+    public override int GetHashCode()
+    {
+      unchecked {
+        var hash = 0;
+        hash = hash * 31 + Pid.GetHashCode();
+        return hash;
+      }
+    }
+    //pretty print
+    public void Print(PrettyPrinter printer)
+    {
+      printer.Println("CollectStackTraceCommand (");
+      using (printer.IndentCookie()) {
+        printer.Print("pid = "); Pid.PrintEx(printer); printer.Println();
       }
       printer.Print(")");
     }
