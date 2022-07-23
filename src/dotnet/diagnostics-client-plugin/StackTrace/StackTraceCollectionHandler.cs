@@ -4,7 +4,9 @@ using System.Diagnostics.Tracing;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
+using DiagnosticsClientPlugin.EventPipes;
 using DiagnosticsClientPlugin.Generated;
+using JetBrains.Lifetimes;
 using JetBrains.ProjectModel;
 using JetBrains.Rd.Tasks;
 using JetBrains.RdBackend.Common.Features;
@@ -23,39 +25,67 @@ internal sealed class StackTraceCollectionHandler
     public StackTraceCollectionHandler(ISolution solution)
     {
         var hostModel = solution.GetProtocolSolution().GetDiagnosticsHostModel();
-        hostModel.CollectStackTrace.Set(async (lt, command) => await Collect(command));
+        hostModel.CollectStackTrace.Set(async (lt, command) => await CollectAsync(command, lt));
     }
 
-    private async Task<string> Collect(CollectStackTraceCommand command)
+    private async Task<string> CollectAsync(CollectStackTraceCommand command, Lifetime lifetime)
     {
         var sessionFilename = $"{Path.GetRandomFileName()}.nettrace";
         var sessionFilePath = Path.Combine(Path.GetTempPath(), sessionFilename);
+        lifetime.OnTermination(() =>
+        {
+            if (File.Exists(sessionFilePath))
+            {
+                File.Delete(sessionFilePath);
+            }
+        });
+        await CollectTracesAsync(command, sessionFilePath, lifetime);
 
-        await CollectTraces(command, sessionFilePath);
-        return ParseSessionFile(sessionFilePath);
+        var traceLogFilePath = TraceLog.CreateFromEventPipeDataFile(sessionFilePath);
+        lifetime.OnTermination(() =>
+        {
+            if (File.Exists(traceLogFilePath))
+            {
+                File.Delete(traceLogFilePath);
+            }
+        });
+        var stackTraces = ParseSessionFile(traceLogFilePath);
+        return stackTraces;
     }
 
-    private async Task CollectTraces(CollectStackTraceCommand command, string sessionFilePath)
+    private async Task CollectTracesAsync(CollectStackTraceCommand command, string sessionFilePath, Lifetime lifetime)
     {
-        var client = new DiagnosticsClient(command.Pid);
         var providers = new EventPipeProvider[]
         {
             new(SampleProfilerProvider, EventLevel.Informational)
         };
-        using var session = client.StartEventPipeSession(providers);
+        var sessionManager = new EventPipeSessionManager(command.Pid);
+        using var session = sessionManager.StartSession(providers);
+
         using var fileStream = new FileStream(sessionFilePath, FileMode.Create, FileAccess.Write);
 
-        var copyTask = session.EventStream.CopyToAsync(fileStream);
-        await Task.Delay(TimeSpan.FromMilliseconds(10));
-        session.Stop();
+        var copyTask = session.EventStream.CopyToAsync(fileStream, 81920);
+
+        try
+        {
+            await Task.Delay(TimeSpan.FromMilliseconds(10), lifetime);
+        }
+        catch (OperationCanceledException)
+        {
+            //do nothing
+        }
+
+        EventPipeSessionManager.StopSession(session);
+
         await copyTask;
     }
 
-    private string ParseSessionFile(string sessionFilePath)
+    private string ParseSessionFile(string traceLogFilePath)
     {
-        var traceLogFilePath = TraceLog.CreateFromEventPipeDataFile(sessionFilePath);
         using var symbolReader = new SymbolReader(TextWriter.Null)
-            { SymbolPath = SymbolPath.MicrosoftSymbolServerPath };
+        {
+            SymbolPath = SymbolPath.MicrosoftSymbolServerPath
+        };
         using var traceLog = new TraceLog(traceLogFilePath);
         var stackSource = new MutableTraceEventStackSource(traceLog)
         {
@@ -101,7 +131,7 @@ internal sealed class StackTraceCollectionHandler
             var frameName = stackSource.GetFrameName(stackSource.GetFrameIndex(stackIndex), false);
             while (!frameName.StartsWith("Thread"))
             {
-                sb.AppendLine($"  {frameName}".Replace("UNMANAGED_CODE_TIME", "[Native Frames]"));
+                sb.AppendLine(frameName != "UNMANAGED_CODE_TIME" ? $"    {frameName}" : "    [Native Frames]");
                 stackIndex = stackSource.GetCallerIndex(stackIndex);
                 frameName = stackSource.GetFrameName(stackSource.GetFrameIndex(stackIndex), false);
             }
