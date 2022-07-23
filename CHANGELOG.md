@@ -5,6 +5,7 @@
 ## [Unreleased]
 ### Added
 - GC monitor
+- Collect stack traces action
 
 ## [1.1.0]
 ### Added
