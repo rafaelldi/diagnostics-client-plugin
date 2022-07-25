@@ -31,7 +31,7 @@ class ProcessExplorerTab(private val processList: ProcessList, lt: Lifetime) :
         setContent(splitter)
         initActionToolbar()
 
-        lt.bracket(
+        lt.bracketIfAlive(
             { processListComponent.addListSelectionListener(this) },
             { processListComponent.removeListSelectionListener(this) }
         )

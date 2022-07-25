@@ -32,7 +32,7 @@ class DiagnosticsTabsManager(project: Project) : ProtocolSubscribedProjectCompon
     private val gcTabContents: MutableMap<Int, Content> = mutableMapOf()
 
     fun createExplorerTab(toolWindow: ToolWindow) {
-        val contentFactory = ContentFactory.SERVICE.getInstance()
+        val contentFactory = ContentFactory.getInstance()
         val processExplorerTab =
             ProcessExplorerTab(project.solution.diagnosticsHostModel.processList, projectComponentLifetime)
         val content = contentFactory.createContent(processExplorerTab, "Explorer", true)
@@ -42,13 +42,13 @@ class DiagnosticsTabsManager(project: Project) : ProtocolSubscribedProjectCompon
 
     fun createCountersTab(lt: Lifetime, session: CountersMonitoringSession) {
         val toolWindow = getToolWindow(project) ?: return
-        val contentFactory = ContentFactory.SERVICE.getInstance()
+        val contentFactory = ContentFactory.getInstance()
         val monitorCountersTab = MonitorCountersTab(session, this, lt)
         val content = contentFactory.createContent(monitorCountersTab, "Counters for ${session.pid}", true)
         content.icon = DiagnosticsClientIcons.Counters
         content.putUserData(ToolWindow.SHOW_CONTENT_ICON, true)
         countersTabContents.put(lt, session.pid, content)
-        lt.bracket(
+        lt.bracketIfAlive(
             { toolWindow.contentManager.addContent(content) },
             { toolWindow.contentManager.removeContent(content, true) }
         )
@@ -56,13 +56,13 @@ class DiagnosticsTabsManager(project: Project) : ProtocolSubscribedProjectCompon
 
     fun createGcTab(lt: Lifetime, session: GcMonitoringSession) {
         val toolWindow = getToolWindow(project) ?: return
-        val contentFactory = ContentFactory.SERVICE.getInstance()
+        val contentFactory = ContentFactory.getInstance()
         val monitorGcTab = MonitorGcTab(session, this, lt)
         val content = contentFactory.createContent(monitorGcTab, "GC for ${session.pid}", true)
         content.icon = AllIcons.Actions.GC
         content.putUserData(ToolWindow.SHOW_CONTENT_ICON, true)
         gcTabContents.put(lt, session.pid, content)
-        lt.bracket(
+        lt.bracketIfAlive(
             { toolWindow.contentManager.addContent(content) },
             { toolWindow.contentManager.removeContent(content, true) }
         )
