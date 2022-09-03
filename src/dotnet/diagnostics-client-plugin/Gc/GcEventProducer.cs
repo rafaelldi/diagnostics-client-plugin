@@ -1,15 +1,13 @@
 ﻿using System;
-using System.Diagnostics.Tracing;
 using System.Threading.Channels;
 using System.Threading.Tasks;
-using DiagnosticsClientPlugin.Common;
+using DiagnosticsClientPlugin.Counters.EventPipes;
 using DiagnosticsClientPlugin.EventPipes;
 using JetBrains.Lifetimes;
 using Microsoft.Diagnostics.NETCore.Client;
 using Microsoft.Diagnostics.Tracing;
 using Microsoft.Diagnostics.Tracing.Analysis;
 using Microsoft.Diagnostics.Tracing.Analysis.GC;
-using Microsoft.Diagnostics.Tracing.Parsers;
 using Microsoft.Diagnostics.Tracing.Parsers.Clr;
 
 namespace DiagnosticsClientPlugin.Gc;
@@ -30,13 +28,7 @@ internal sealed class GcEventProducer
         _pid = pid;
         _sessionManager = new EventPipeSessionManager(pid);
         _writer = writer;
-        _providers = new[]
-        {
-            new EventPipeProvider(
-                Providers.DotNetRuntimeProvider,
-                EventLevel.Informational,
-                (long)ClrTraceEventParser.Keywords.GC)
-        };
+        _providers = new[] { EventPipeProviderFactory.CreateGcProvider() };
         _lt = lt;
 
         _lt.OnTermination(() => _writer.Complete());

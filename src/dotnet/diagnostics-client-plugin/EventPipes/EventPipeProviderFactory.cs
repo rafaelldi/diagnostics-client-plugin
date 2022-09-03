@@ -3,6 +3,7 @@ using System.Diagnostics.Tracing;
 using System.Linq;
 using DiagnosticsClientPlugin.Traces;
 using Microsoft.Diagnostics.NETCore.Client;
+using Microsoft.Diagnostics.Tracing.Parsers;
 using static DiagnosticsClientPlugin.Common.Providers;
 
 namespace DiagnosticsClientPlugin.Counters.EventPipes;
@@ -60,4 +61,10 @@ internal static class EventPipeProviderFactory
                 it.Arguments
             ))
             .ToArray();
+
+    internal static EventPipeProvider CreateGcProvider() => new(
+        DotNetRuntimeProvider,
+        EventLevel.Informational,
+        (long)ClrTraceEventParser.Keywords.GC
+    );
 }
