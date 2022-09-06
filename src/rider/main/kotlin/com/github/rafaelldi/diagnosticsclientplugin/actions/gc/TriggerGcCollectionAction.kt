@@ -5,6 +5,8 @@ import com.github.rafaelldi.diagnosticsclientplugin.services.TriggerGcCollection
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.components.service
+import com.intellij.openapi.rd.util.launchOnUi
+import com.jetbrains.rd.platform.util.lifetime
 import com.jetbrains.rider.projectView.solution
 
 class TriggerGcCollectionAction : AnAction() {
@@ -12,7 +14,9 @@ class TriggerGcCollectionAction : AnAction() {
         val project = event.project ?: return
         val pid = project.solution.diagnosticsHostModel.processList.selected.value ?: return
         val controller = project.service<TriggerGcCollectionController>()
-        controller.triggerGc(pid)
+        project.lifetime.launchOnUi {
+            controller.triggerGc(pid)
+        }
     }
 
     override fun update(event: AnActionEvent) {

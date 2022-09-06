@@ -5,6 +5,8 @@ import com.github.rafaelldi.diagnosticsclientplugin.services.StackTraceCollectio
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.components.service
+import com.intellij.openapi.rd.util.launchOnUi
+import com.jetbrains.rd.platform.util.lifetime
 import com.jetbrains.rider.projectView.solution
 import com.jetbrains.rider.stacktrace.RiderStacktraceUtil
 
@@ -13,8 +15,10 @@ class CollectStackTraceAction : AnAction() {
         val project = event.project ?: return
         val pid = project.solution.diagnosticsHostModel.processList.selected.value ?: return
         val controller = project.service<StackTraceCollectionController>()
-        val stackTrace = controller.collectStackTrace(pid) ?: return
-        RiderStacktraceUtil.addAnalyzeExceptionTab(project, stackTrace, "Stack Trace for $pid")
+        project.lifetime.launchOnUi {
+            val stackTrace = controller.collectStackTrace(pid)
+            RiderStacktraceUtil.addAnalyzeExceptionTab(project, stackTrace, "Stack Trace for $pid")
+        }
     }
 
     override fun update(event: AnActionEvent) {
