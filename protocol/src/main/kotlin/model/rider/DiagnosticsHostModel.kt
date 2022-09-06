@@ -132,6 +132,8 @@ object DiagnosticsHostModel : Ext(SolutionModel.Solution) {
             void
         )
 
+        call("triggerGc", structdef("TriggerGcCommand") { field("pid", int) }, void)
+
         call(
             "collectTraces",
             structdef("CollectTracesCommand") {
@@ -149,7 +151,8 @@ object DiagnosticsHostModel : Ext(SolutionModel.Solution) {
             void
         )
 
-        call("collectStackTrace",
+        call(
+            "collectStackTrace",
             structdef("CollectStackTraceCommand") {
                 field("pid", int)
             },

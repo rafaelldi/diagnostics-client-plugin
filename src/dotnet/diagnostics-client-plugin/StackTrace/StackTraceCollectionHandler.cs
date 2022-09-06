@@ -1,21 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.Tracing;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
+using DiagnosticsClientPlugin.Counters.EventPipes;
 using DiagnosticsClientPlugin.EventPipes;
 using DiagnosticsClientPlugin.Generated;
 using JetBrains.Lifetimes;
 using JetBrains.ProjectModel;
 using JetBrains.Rd.Tasks;
 using JetBrains.RdBackend.Common.Features;
-using Microsoft.Diagnostics.NETCore.Client;
 using Microsoft.Diagnostics.Symbols;
 using Microsoft.Diagnostics.Tracing;
 using Microsoft.Diagnostics.Tracing.Etlx;
 using Microsoft.Diagnostics.Tracing.Stacks;
-using static DiagnosticsClientPlugin.Common.Providers;
 
 namespace DiagnosticsClientPlugin.StackTrace;
 
@@ -55,10 +53,7 @@ internal sealed class StackTraceCollectionHandler
 
     private async Task CollectTracesAsync(CollectStackTraceCommand command, string sessionFilePath, Lifetime lifetime)
     {
-        var providers = new EventPipeProvider[]
-        {
-            new(SampleProfilerProvider, EventLevel.Informational)
-        };
+        var providers = new[] { EventPipeProviderFactory.CreateSampleProvider() };
         var sessionManager = new EventPipeSessionManager(command.Pid);
         using var session = sessionManager.StartSession(providers);
 

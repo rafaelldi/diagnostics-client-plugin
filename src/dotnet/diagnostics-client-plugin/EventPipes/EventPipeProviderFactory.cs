@@ -62,9 +62,20 @@ internal static class EventPipeProviderFactory
             ))
             .ToArray();
 
+    internal static EventPipeProvider CreateSampleProvider() => new(
+        SampleProfilerProvider,
+        EventLevel.Informational
+    );
+
     internal static EventPipeProvider CreateGcProvider() => new(
         DotNetRuntimeProvider,
         EventLevel.Informational,
         (long)ClrTraceEventParser.Keywords.GC
+    );
+
+    internal static EventPipeProvider CreateGcHeapCollect() => new(
+        DotNetRuntimeProvider,
+        EventLevel.Informational,
+        (long)ClrTraceEventParser.Keywords.GCHeapCollect
     );
 }

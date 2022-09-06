@@ -70,6 +70,12 @@
                         description="Stop monitoring GC"
                         icon="AllIcons.Actions.Suspend">
                 </action>
+                <action id="DiagnosticsClient.ToolWindow.Explorer.TriggerGcCollection"
+                        class="com.github.rafaelldi.diagnosticsclientplugin.actions.gc.TriggerGcCollectionAction"
+                        text="Trigger GC"
+                        description="Trigger GC"
+                        icon="AllIcons.Actions.Lightning">
+                </action>
             </group>
             <action id="DiagnosticsClient.ToolWindow.Explorer.StartCollectingTraces"
                     class="com.github.rafaelldi.diagnosticsclientplugin.actions.traces.StartCollectingTracesAction"
@@ -126,6 +132,12 @@
                     text="Stop GC Monitoring Session"
                     description="Stop counters monitoring session"
                     icon="AllIcons.Actions.Suspend">
+            </action>
+            <action id="DiagnosticsClient.ToolWindow.GcSession.TriggerCollection"
+                    class="com.github.rafaelldi.diagnosticsclientplugin.actions.gc.TriggerGcCollectionSessionAction"
+                    text="Trigger GC"
+                    description="Trigger GC"
+                    icon="AllIcons.Actions.Lightning">
             </action>
         </group>
     </actions>
