@@ -51,6 +51,7 @@ namespace DiagnosticsClientPlugin.Generated
     [NotNull] public IRdEndpoint<CollectCountersCommand, Unit> CollectCounters => _CollectCounters;
     [NotNull] public IRdEndpoint<MonitorCountersCommand, Unit> MonitorCounters => _MonitorCounters;
     [NotNull] public IRdEndpoint<MonitorGcCommand, Unit> MonitorGc => _MonitorGc;
+    [NotNull] public IRdEndpoint<TriggerGcCommand, Unit> TriggerGc => _TriggerGc;
     [NotNull] public IRdEndpoint<CollectTracesCommand, Unit> CollectTraces => _CollectTraces;
     [NotNull] public IRdEndpoint<CollectStackTraceCommand, string> CollectStackTrace => _CollectStackTrace;
     
@@ -63,6 +64,7 @@ namespace DiagnosticsClientPlugin.Generated
     [NotNull] private readonly RdCall<CollectCountersCommand, Unit> _CollectCounters;
     [NotNull] private readonly RdCall<MonitorCountersCommand, Unit> _MonitorCounters;
     [NotNull] private readonly RdCall<MonitorGcCommand, Unit> _MonitorGc;
+    [NotNull] private readonly RdCall<TriggerGcCommand, Unit> _TriggerGc;
     [NotNull] private readonly RdCall<CollectTracesCommand, Unit> _CollectTraces;
     [NotNull] private readonly RdCall<CollectStackTraceCommand, string> _CollectStackTrace;
     
@@ -77,6 +79,7 @@ namespace DiagnosticsClientPlugin.Generated
       [NotNull] RdCall<CollectCountersCommand, Unit> collectCounters,
       [NotNull] RdCall<MonitorCountersCommand, Unit> monitorCounters,
       [NotNull] RdCall<MonitorGcCommand, Unit> monitorGc,
+      [NotNull] RdCall<TriggerGcCommand, Unit> triggerGc,
       [NotNull] RdCall<CollectTracesCommand, Unit> collectTraces,
       [NotNull] RdCall<CollectStackTraceCommand, string> collectStackTrace
     )
@@ -90,6 +93,7 @@ namespace DiagnosticsClientPlugin.Generated
       if (collectCounters == null) throw new ArgumentNullException("collectCounters");
       if (monitorCounters == null) throw new ArgumentNullException("monitorCounters");
       if (monitorGc == null) throw new ArgumentNullException("monitorGc");
+      if (triggerGc == null) throw new ArgumentNullException("triggerGc");
       if (collectTraces == null) throw new ArgumentNullException("collectTraces");
       if (collectStackTrace == null) throw new ArgumentNullException("collectStackTrace");
       
@@ -102,6 +106,7 @@ namespace DiagnosticsClientPlugin.Generated
       _CollectCounters = collectCounters;
       _MonitorCounters = monitorCounters;
       _MonitorGc = monitorGc;
+      _TriggerGc = triggerGc;
       _CollectTraces = collectTraces;
       _CollectStackTrace = collectStackTrace;
       _CounterCollectionSessions.OptimizeNested = true;
@@ -119,6 +124,7 @@ namespace DiagnosticsClientPlugin.Generated
       BindableChildren.Add(new KeyValuePair<string, object>("collectCounters", _CollectCounters));
       BindableChildren.Add(new KeyValuePair<string, object>("monitorCounters", _MonitorCounters));
       BindableChildren.Add(new KeyValuePair<string, object>("monitorGc", _MonitorGc));
+      BindableChildren.Add(new KeyValuePair<string, object>("triggerGc", _TriggerGc));
       BindableChildren.Add(new KeyValuePair<string, object>("collectTraces", _CollectTraces));
       BindableChildren.Add(new KeyValuePair<string, object>("collectStackTrace", _CollectStackTrace));
     }
@@ -134,6 +140,7 @@ namespace DiagnosticsClientPlugin.Generated
       new RdCall<CollectCountersCommand, Unit>(CollectCountersCommand.Read, CollectCountersCommand.Write, JetBrains.Rd.Impl.Serializers.ReadVoid, JetBrains.Rd.Impl.Serializers.WriteVoid),
       new RdCall<MonitorCountersCommand, Unit>(MonitorCountersCommand.Read, MonitorCountersCommand.Write, JetBrains.Rd.Impl.Serializers.ReadVoid, JetBrains.Rd.Impl.Serializers.WriteVoid),
       new RdCall<MonitorGcCommand, Unit>(MonitorGcCommand.Read, MonitorGcCommand.Write, JetBrains.Rd.Impl.Serializers.ReadVoid, JetBrains.Rd.Impl.Serializers.WriteVoid),
+      new RdCall<TriggerGcCommand, Unit>(TriggerGcCommand.Read, TriggerGcCommand.Write, JetBrains.Rd.Impl.Serializers.ReadVoid, JetBrains.Rd.Impl.Serializers.WriteVoid),
       new RdCall<CollectTracesCommand, Unit>(CollectTracesCommand.Read, CollectTracesCommand.Write, JetBrains.Rd.Impl.Serializers.ReadVoid, JetBrains.Rd.Impl.Serializers.WriteVoid),
       new RdCall<CollectStackTraceCommand, string>(CollectStackTraceCommand.Read, CollectStackTraceCommand.Write, JetBrains.Rd.Impl.Serializers.ReadString, JetBrains.Rd.Impl.Serializers.WriteString)
     ) {}
@@ -142,7 +149,7 @@ namespace DiagnosticsClientPlugin.Generated
     
     
     
-    protected override long SerializationHash => 8500144562311201123L;
+    protected override long SerializationHash => -2904463492346860294L;
     
     protected override Action<ISerializers> Register => RegisterDeclaredTypesSerializers;
     public static void RegisterDeclaredTypesSerializers(ISerializers serializers)
@@ -172,6 +179,7 @@ namespace DiagnosticsClientPlugin.Generated
         printer.Print("collectCounters = "); _CollectCounters.PrintEx(printer); printer.Println();
         printer.Print("monitorCounters = "); _MonitorCounters.PrintEx(printer); printer.Println();
         printer.Print("monitorGc = "); _MonitorGc.PrintEx(printer); printer.Println();
+        printer.Print("triggerGc = "); _TriggerGc.PrintEx(printer); printer.Println();
         printer.Print("collectTraces = "); _CollectTraces.PrintEx(printer); printer.Println();
         printer.Print("collectStackTrace = "); _CollectStackTrace.PrintEx(printer); printer.Println();
       }
@@ -467,7 +475,7 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:153</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:156</p>
   /// </summary>
   public sealed class CollectStackTraceCommand : IPrintable, IEquatable<CollectStackTraceCommand>
   {
@@ -550,7 +558,7 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:137</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:139</p>
   /// </summary>
   public sealed class CollectTracesCommand : IPrintable, IEquatable<CollectTracesCommand>
   {
@@ -1764,12 +1772,95 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:140</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:142</p>
   /// </summary>
   public enum TracingProfile {
     None,
     CpuSampling,
     GcVerbose,
     GcCollect
+  }
+  
+  
+  /// <summary>
+  /// <p>Generated from: DiagnosticsHostModel.kt:135</p>
+  /// </summary>
+  public sealed class TriggerGcCommand : IPrintable, IEquatable<TriggerGcCommand>
+  {
+    //fields
+    //public fields
+    public int Pid {get; private set;}
+    
+    //private fields
+    //primary constructor
+    public TriggerGcCommand(
+      int pid
+    )
+    {
+      Pid = pid;
+    }
+    //secondary constructor
+    //deconstruct trait
+    public void Deconstruct(out int pid)
+    {
+      pid = Pid;
+    }
+    //statics
+    
+    public static CtxReadDelegate<TriggerGcCommand> Read = (ctx, reader) => 
+    {
+      var pid = reader.ReadInt();
+      var _result = new TriggerGcCommand(pid);
+      return _result;
+    };
+    
+    public static CtxWriteDelegate<TriggerGcCommand> Write = (ctx, writer, value) => 
+    {
+      writer.Write(value.Pid);
+    };
+    
+    //constants
+    
+    //custom body
+    //methods
+    //equals trait
+    public override bool Equals(object obj)
+    {
+      if (ReferenceEquals(null, obj)) return false;
+      if (ReferenceEquals(this, obj)) return true;
+      if (obj.GetType() != GetType()) return false;
+      return Equals((TriggerGcCommand) obj);
+    }
+    public bool Equals(TriggerGcCommand other)
+    {
+      if (ReferenceEquals(null, other)) return false;
+      if (ReferenceEquals(this, other)) return true;
+      return Pid == other.Pid;
+    }
+    //hash code trait
+    public override int GetHashCode()
+    {
+      unchecked {
+        var hash = 0;
+        hash = hash * 31 + Pid.GetHashCode();
+        return hash;
+      }
+    }
+    //pretty print
+    public void Print(PrettyPrinter printer)
+    {
+      printer.Println("TriggerGcCommand (");
+      using (printer.IndentCookie()) {
+        printer.Print("pid = "); Pid.PrintEx(printer); printer.Println();
+      }
+      printer.Print(")");
+    }
+    //toString
+    public override string ToString()
+    {
+      var printer = new SingleLinePrettyPrinter();
+      Print(printer);
+      return printer.ToString();
+    }
   }
 }

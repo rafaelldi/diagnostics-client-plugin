@@ -27,6 +27,7 @@ class DiagnosticsHostModel private constructor(
     private val _collectCounters: RdCall<CollectCountersCommand, Unit>,
     private val _monitorCounters: RdCall<MonitorCountersCommand, Unit>,
     private val _monitorGc: RdCall<MonitorGcCommand, Unit>,
+    private val _triggerGc: RdCall<TriggerGcCommand, Unit>,
     private val _collectTraces: RdCall<CollectTracesCommand, Unit>,
     private val _collectStackTrace: RdCall<CollectStackTraceCommand, String>
 ) : RdExtBase() {
@@ -46,6 +47,7 @@ class DiagnosticsHostModel private constructor(
             serializers.register(CollectCountersCommand)
             serializers.register(MonitorCountersCommand)
             serializers.register(MonitorGcCommand)
+            serializers.register(TriggerGcCommand)
             serializers.register(CollectTracesCommand)
             serializers.register(CollectStackTraceCommand)
             serializers.register(DumpType.marshaller)
@@ -57,7 +59,7 @@ class DiagnosticsHostModel private constructor(
         
         
         
-        const val serializationHash = 8500144562311201123L
+        const val serializationHash = -2904463492346860294L
         
     }
     override val serializersOwner: ISerializersOwner get() = DiagnosticsHostModel
@@ -72,6 +74,7 @@ class DiagnosticsHostModel private constructor(
     val collectCounters: IRdCall<CollectCountersCommand, Unit> get() = _collectCounters
     val monitorCounters: IRdCall<MonitorCountersCommand, Unit> get() = _monitorCounters
     val monitorGc: IRdCall<MonitorGcCommand, Unit> get() = _monitorGc
+    val triggerGc: IRdCall<TriggerGcCommand, Unit> get() = _triggerGc
     val collectTraces: IRdCall<CollectTracesCommand, Unit> get() = _collectTraces
     val collectStackTrace: IRdCall<CollectStackTraceCommand, String> get() = _collectStackTrace
     //methods
@@ -98,6 +101,7 @@ class DiagnosticsHostModel private constructor(
         bindableChildren.add("collectCounters" to _collectCounters)
         bindableChildren.add("monitorCounters" to _monitorCounters)
         bindableChildren.add("monitorGc" to _monitorGc)
+        bindableChildren.add("triggerGc" to _triggerGc)
         bindableChildren.add("collectTraces" to _collectTraces)
         bindableChildren.add("collectStackTrace" to _collectStackTrace)
     }
@@ -114,6 +118,7 @@ class DiagnosticsHostModel private constructor(
         RdCall<CollectCountersCommand, Unit>(CollectCountersCommand, FrameworkMarshallers.Void),
         RdCall<MonitorCountersCommand, Unit>(MonitorCountersCommand, FrameworkMarshallers.Void),
         RdCall<MonitorGcCommand, Unit>(MonitorGcCommand, FrameworkMarshallers.Void),
+        RdCall<TriggerGcCommand, Unit>(TriggerGcCommand, FrameworkMarshallers.Void),
         RdCall<CollectTracesCommand, Unit>(CollectTracesCommand, FrameworkMarshallers.Void),
         RdCall<CollectStackTraceCommand, String>(CollectStackTraceCommand, FrameworkMarshallers.String)
     )
@@ -133,6 +138,7 @@ class DiagnosticsHostModel private constructor(
             print("collectCounters = "); _collectCounters.print(printer); println()
             print("monitorCounters = "); _monitorCounters.print(printer); println()
             print("monitorGc = "); _monitorGc.print(printer); println()
+            print("triggerGc = "); _triggerGc.print(printer); println()
             print("collectTraces = "); _collectTraces.print(printer); println()
             print("collectStackTrace = "); _collectStackTrace.print(printer); println()
         }
@@ -150,6 +156,7 @@ class DiagnosticsHostModel private constructor(
             _collectCounters.deepClonePolymorphic(),
             _monitorCounters.deepClonePolymorphic(),
             _monitorGc.deepClonePolymorphic(),
+            _triggerGc.deepClonePolymorphic(),
             _collectTraces.deepClonePolymorphic(),
             _collectStackTrace.deepClonePolymorphic()
         )
@@ -347,7 +354,7 @@ data class CollectDumpCommand (
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:153]
+ * #### Generated from [DiagnosticsHostModel.kt:156]
  */
 data class CollectStackTraceCommand (
     val pid: Int
@@ -404,7 +411,7 @@ data class CollectStackTraceCommand (
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:137]
+ * #### Generated from [DiagnosticsHostModel.kt:139]
  */
 data class CollectTracesCommand (
     val pid: Int,
@@ -1315,7 +1322,7 @@ class ProcessList private constructor(
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:140]
+ * #### Generated from [DiagnosticsHostModel.kt:142]
  */
 enum class TracingProfile {
     None, 
@@ -1327,4 +1334,61 @@ enum class TracingProfile {
         val marshaller = FrameworkMarshallers.enum<TracingProfile>()
         
     }
+}
+
+
+/**
+ * #### Generated from [DiagnosticsHostModel.kt:135]
+ */
+data class TriggerGcCommand (
+    val pid: Int
+) : IPrintable {
+    //companion
+    
+    companion object : IMarshaller<TriggerGcCommand> {
+        override val _type: KClass<TriggerGcCommand> = TriggerGcCommand::class
+        
+        @Suppress("UNCHECKED_CAST")
+        override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): TriggerGcCommand  {
+            val pid = buffer.readInt()
+            return TriggerGcCommand(pid)
+        }
+        
+        override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: TriggerGcCommand)  {
+            buffer.writeInt(value.pid)
+        }
+        
+        
+    }
+    //fields
+    //methods
+    //initializer
+    //secondary constructor
+    //equals trait
+    override fun equals(other: Any?): Boolean  {
+        if (this === other) return true
+        if (other == null || other::class != this::class) return false
+        
+        other as TriggerGcCommand
+        
+        if (pid != other.pid) return false
+        
+        return true
+    }
+    //hash code trait
+    override fun hashCode(): Int  {
+        var __r = 0
+        __r = __r*31 + pid.hashCode()
+        return __r
+    }
+    //pretty print
+    override fun print(printer: PrettyPrinter)  {
+        printer.println("TriggerGcCommand (")
+        printer.indent {
+            print("pid = "); pid.print(printer); println()
+        }
+        printer.print(")")
+    }
+    //deepClone
+    //contexts
 }

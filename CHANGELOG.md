@@ -3,6 +3,8 @@
 # diagnostics-client-plugin Changelog
 
 ## [Unreleased]
+### Added
+- Collect GC action
 
 ## [1.2.0]
 ### Added
