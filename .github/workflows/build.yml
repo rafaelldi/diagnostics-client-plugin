@@ -87,6 +87,10 @@ jobs:
           name: tests-result
           path: ${{ github.workspace }}/build/reports/tests
 
+      # Run .NET tests
+      - name: Run .NET Tests
+        run: dotnet test
+
       # Cache Plugin Verifier IDEs
       - name: Setup Plugin Verifier IDEs Cache
         uses: actions/cache@v3
