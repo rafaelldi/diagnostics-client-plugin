@@ -1,5 +1,6 @@
 package com.github.rafaelldi.diagnosticsclientplugin.dialogs
 
+import com.github.rafaelldi.diagnosticsclientplugin.services.CountersSettings
 import com.github.rafaelldi.diagnosticsclientplugin.utils.isValidCounterProviderList
 import com.github.rafaelldi.diagnosticsclientplugin.utils.isValidMetricList
 import com.intellij.openapi.project.Project
@@ -10,16 +11,7 @@ import com.intellij.ui.dsl.builder.*
 import javax.swing.JComponent
 
 class MonitorCountersDialog(project: Project) : DialogWrapper(project) {
-    private val model: MonitorCountersModel =
-        MonitorCountersModel(
-            1,
-            StoppingType.AfterPeriod,
-            30,
-            "System.Runtime",
-            "",
-            1000,
-            10
-        )
+    private val model = CountersSettings.getInstance(project).getMonitorModel()
 
     init {
         init()

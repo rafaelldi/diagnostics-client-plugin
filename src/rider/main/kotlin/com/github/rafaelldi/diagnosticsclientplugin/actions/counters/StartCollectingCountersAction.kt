@@ -3,6 +3,7 @@ package com.github.rafaelldi.diagnosticsclientplugin.actions.counters
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.CollectCountersDialog
 import com.github.rafaelldi.diagnosticsclientplugin.generated.diagnosticsHostModel
 import com.github.rafaelldi.diagnosticsclientplugin.services.CounterCollectionSessionController
+import com.github.rafaelldi.diagnosticsclientplugin.services.CountersSettings
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.components.service
@@ -15,6 +16,7 @@ class StartCollectingCountersAction : AnAction() {
         val dialog = CollectCountersDialog(project)
         if (dialog.showAndGet()) {
             val model = dialog.getModel()
+            CountersSettings.getInstance(project).update(model)
             val controller = project.service<CounterCollectionSessionController>()
             controller.startSession(pid, model)
         }

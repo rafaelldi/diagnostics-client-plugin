@@ -5,6 +5,7 @@
 ## [Unreleased]
 ### Added
 - Collect GC action
+- Persist dialog field values
 
 ## [1.2.0]
 ### Added

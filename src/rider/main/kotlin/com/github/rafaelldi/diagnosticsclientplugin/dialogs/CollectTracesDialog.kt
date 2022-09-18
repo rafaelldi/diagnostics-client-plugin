@@ -1,5 +1,6 @@
 package com.github.rafaelldi.diagnosticsclientplugin.dialogs
 
+import com.github.rafaelldi.diagnosticsclientplugin.services.TracesSettings
 import com.github.rafaelldi.diagnosticsclientplugin.utils.isValidFilename
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
 import com.intellij.openapi.project.Project
@@ -8,21 +9,10 @@ import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.ui.components.JBRadioButton
 import com.intellij.ui.components.fields.ExpandableTextField
 import com.intellij.ui.dsl.builder.*
-import com.jetbrains.rider.projectView.solutionDirectoryPath
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 import javax.swing.JComponent
 
 class CollectTracesDialog(private val project: Project) : DialogWrapper(project) {
-    private val model: CollectTracesModel =
-        CollectTracesModel(
-            project.solutionDirectoryPath.toString(),
-            getDefaultFilename(),
-            StoppingType.AfterPeriod,
-            30,
-            TracingProfile.CpuSampling,
-            ""
-        )
+    private val model = TracesSettings.getInstance(project).getModel()
 
     init {
         init()
@@ -96,11 +86,4 @@ class CollectTracesDialog(private val project: Project) : DialogWrapper(project)
     fun getModel(): CollectTracesModel = model
 
     override fun getHelpId(): String = "com.github.rafaelldi.diagnosticsclientplugin.traces"
-
-    private fun getDefaultFilename(): String {
-        val current = LocalDateTime.now()
-        val formatter = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss")
-        val formatted = current.format(formatter)
-        return "trace_${formatted}.nettrace"
-    }
 }

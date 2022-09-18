@@ -1,5 +1,6 @@
 package com.github.rafaelldi.diagnosticsclientplugin.dialogs
 
+import com.github.rafaelldi.diagnosticsclientplugin.services.GcSettings
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.ui.components.JBRadioButton
@@ -7,7 +8,7 @@ import com.intellij.ui.dsl.builder.*
 import javax.swing.JComponent
 
 class MonitorGcDialog(project: Project) : DialogWrapper(project) {
-    private val model: MonitorGcModel = MonitorGcModel(StoppingType.AfterPeriod, 30)
+    private val model = GcSettings.getInstance(project).getModel()
 
     init {
         init()
