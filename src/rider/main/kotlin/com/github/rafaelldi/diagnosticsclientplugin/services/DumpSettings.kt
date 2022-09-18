@@ -12,7 +12,7 @@ import java.time.format.DateTimeFormatter
 @Service
 @State(name = "DumpSettings", storages = [(Storage("diagnostics-client.xml"))])
 class DumpSettings(project: Project) :
-    SimplePersistentStateComponent<DumpSettingsState>(
+    SimplePersistentStateComponent<DumpSettings.DumpSettingsState>(
         DumpSettingsState(
             project.solutionDirectoryPath.toString(),
             getDefaultFilename()
@@ -49,11 +49,11 @@ class DumpSettings(project: Project) :
             diag = model.diag
         }
     }
-}
 
-class DumpSettingsState(solutionPath: String, defaultFilename: String) : BaseState() {
-    var path by string(solutionPath)
-    var filename by string(defaultFilename)
-    var type by enum(DumpType.Full)
-    var diag by property(false)
+    class DumpSettingsState(solutionPath: String, defaultFilename: String) : BaseState() {
+        var path by string(solutionPath)
+        var filename by string(defaultFilename)
+        var type by enum(DumpType.Full)
+        var diag by property(false)
+    }
 }

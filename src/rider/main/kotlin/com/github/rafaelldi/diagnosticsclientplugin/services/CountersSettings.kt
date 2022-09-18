@@ -11,7 +11,7 @@ import com.jetbrains.rider.projectView.solutionDirectoryPath
 @Service
 @State(name = "CountersSettings", storages = [(Storage("diagnostics-client.xml"))])
 class CountersSettings(project: Project) :
-    SimplePersistentStateComponent<CountersSettingsState>(CountersSettingsState(project.solutionDirectoryPath.toString())) {
+    SimplePersistentStateComponent<CountersSettings.CountersSettingsState>(CountersSettingsState(project.solutionDirectoryPath.toString())) {
     companion object {
         @JvmStatic
         fun getInstance(project: Project): CountersSettings = project.service()
@@ -66,17 +66,17 @@ class CountersSettings(project: Project) :
             maxHistograms = model.maxHistograms
         }
     }
-}
 
-class CountersSettingsState(solutionPath: String) : BaseState() {
-    var path by string(solutionPath)
-    var filename by string("counters")
-    var format by enum(CounterFileFormat.Csv)
-    var interval by property(1)
-    var stoppingType by enum(StoppingType.AfterPeriod)
-    var duration by property(30)
-    var providers by string("System.Runtime")
-    var metrics by string("")
-    var maxTimeSeries by property(1000)
-    var maxHistograms by property(10)
+    class CountersSettingsState(solutionPath: String) : BaseState() {
+        var path by string(solutionPath)
+        var filename by string("counters")
+        var format by enum(CounterFileFormat.Csv)
+        var interval by property(1)
+        var stoppingType by enum(StoppingType.AfterPeriod)
+        var duration by property(30)
+        var providers by string("System.Runtime")
+        var metrics by string("")
+        var maxTimeSeries by property(1000)
+        var maxHistograms by property(10)
+    }
 }

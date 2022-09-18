@@ -12,7 +12,7 @@ import java.time.format.DateTimeFormatter
 @Service
 @State(name = "TracesSettings", storages = [(Storage("diagnostics-client.xml"))])
 class TracesSettings(project: Project) :
-    SimplePersistentStateComponent<TracesSettingsState>(
+    SimplePersistentStateComponent<TracesSettings.TracesSettingsState>(
         TracesSettingsState(
             project.solutionDirectoryPath.toString(),
             getDefaultFilename()
@@ -49,13 +49,13 @@ class TracesSettings(project: Project) :
             providers = model.providers
         }
     }
-}
 
-class TracesSettingsState(solutionPath: String, defaultFilename: String) : BaseState() {
-    var path by string(solutionPath)
-    var filename by string(defaultFilename)
-    var stoppingType by enum(StoppingType.AfterPeriod)
-    var duration by property(30)
-    var profile by enum(TracingProfile.CpuSampling)
-    var providers by string("")
+    class TracesSettingsState(solutionPath: String, defaultFilename: String) : BaseState() {
+        var path by string(solutionPath)
+        var filename by string(defaultFilename)
+        var stoppingType by enum(StoppingType.AfterPeriod)
+        var duration by property(30)
+        var profile by enum(TracingProfile.CpuSampling)
+        var providers by string("")
+    }
 }

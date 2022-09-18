@@ -7,7 +7,7 @@ import com.intellij.openapi.project.Project
 
 @Service
 @State(name = "GcSettings", storages = [(Storage("diagnostics-client.xml"))])
-class GcSettings(project: Project) : SimplePersistentStateComponent<GcSettingsState>(GcSettingsState()) {
+class GcSettings(project: Project) : SimplePersistentStateComponent<GcSettings.GcSettingsState>(GcSettingsState()) {
     companion object {
         @JvmStatic
         fun getInstance(project: Project): GcSettings = project.service()
@@ -21,9 +21,9 @@ class GcSettings(project: Project) : SimplePersistentStateComponent<GcSettingsSt
             duration = model.duration
         }
     }
-}
 
-class GcSettingsState : BaseState() {
-    var stoppingType by enum(StoppingType.AfterPeriod)
-    var duration by property(30)
+    class GcSettingsState : BaseState() {
+        var stoppingType by enum(StoppingType.AfterPeriod)
+        var duration by property(30)
+    }
 }
