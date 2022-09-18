@@ -19,6 +19,11 @@ import java.util.concurrent.ConcurrentHashMap
 
 @Service
 class CounterMonitoringSessionController(project: Project) : ProtocolSubscribedProjectComponent(project) {
+    companion object {
+        @JvmStatic
+        fun getInstance(project: Project): CounterMonitoringSessionController = project.service()
+    }
+
     private val hostModel: DiagnosticsHostModel = project.solution.diagnosticsHostModel
     private val activeSessions: ConcurrentHashMap<Int, LifetimeDefinition> = ConcurrentHashMap()
 

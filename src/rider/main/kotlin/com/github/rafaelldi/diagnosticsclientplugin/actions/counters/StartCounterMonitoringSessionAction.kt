@@ -6,7 +6,6 @@ import com.github.rafaelldi.diagnosticsclientplugin.services.CounterMonitoringSe
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.DiagnosticsClientDataKeys
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.components.service
 import com.jetbrains.rider.projectView.solution
 
 class StartCounterMonitoringSessionAction : AnAction() {
@@ -17,8 +16,7 @@ class StartCounterMonitoringSessionAction : AnAction() {
         if (dialog.showAndGet()) {
             val model = dialog.getModel()
             val pid = tab.getSessionPid()
-            val controller = project.service<CounterMonitoringSessionController>()
-            controller.startExistingSession(pid, model)
+            CounterMonitoringSessionController.getInstance(project).startExistingSession(pid, model)
         }
     }
 

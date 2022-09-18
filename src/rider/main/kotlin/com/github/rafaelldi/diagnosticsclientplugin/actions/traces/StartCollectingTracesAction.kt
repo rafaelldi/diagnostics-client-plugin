@@ -17,8 +17,7 @@ class StartCollectingTracesAction : AnAction() {
         if (dialog.showAndGet()) {
             val model = dialog.getModel()
             TracesSettings.getInstance(project).update(model)
-            val controller = project.service<TraceCollectionSessionController>()
-            controller.startSession(pid, model)
+            TraceCollectionSessionController.getInstance(project).startSession(pid, model)
         }
     }
 

@@ -6,7 +6,6 @@ import com.github.rafaelldi.diagnosticsclientplugin.services.GcMonitoringSession
 import com.github.rafaelldi.diagnosticsclientplugin.services.GcSettings
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.components.service
 import com.jetbrains.rider.projectView.solution
 
 class StartMonitoringGcAction : AnAction() {
@@ -17,8 +16,7 @@ class StartMonitoringGcAction : AnAction() {
         if (dialog.showAndGet()) {
             val model = dialog.getModel()
             GcSettings.getInstance(project).update(model)
-            val controller = project.service<GcMonitoringSessionController>()
-            controller.startSession(pid, model)
+            GcMonitoringSessionController.getInstance(project).startSession(pid, model)
         }
     }
 

@@ -6,7 +6,6 @@ import com.github.rafaelldi.diagnosticsclientplugin.services.DumpCollectionContr
 import com.github.rafaelldi.diagnosticsclientplugin.services.DumpSettings
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.components.service
 import com.intellij.openapi.rd.util.launchOnUi
 import com.jetbrains.rd.platform.util.lifetime
 import com.jetbrains.rider.projectView.solution
@@ -19,9 +18,8 @@ class CollectDumpAction : AnAction() {
         if (dialog.showAndGet()) {
             val model = dialog.getModel()
             DumpSettings.getInstance(project).update(model)
-            val controller = project.service<DumpCollectionController>()
             project.lifetime.launchOnUi {
-                controller.collectDump(pid, model)
+                DumpCollectionController.getInstance(project).collectDump(pid, model)
             }
         }
     }

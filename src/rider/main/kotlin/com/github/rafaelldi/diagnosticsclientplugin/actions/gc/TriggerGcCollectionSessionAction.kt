@@ -5,7 +5,6 @@ import com.github.rafaelldi.diagnosticsclientplugin.services.TriggerGcCollection
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.DiagnosticsClientDataKeys
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.components.service
 import com.intellij.openapi.rd.util.launchOnUi
 import com.jetbrains.rd.platform.util.lifetime
 import com.jetbrains.rider.projectView.solution
@@ -15,9 +14,8 @@ class TriggerGcCollectionSessionAction : AnAction() {
         val project = event.project ?: return
         val tab = event.getData(DiagnosticsClientDataKeys.MONITOR_GC_TAB) ?: return
         val pid = tab.getSessionPid()
-        val controller = project.service<TriggerGcCollectionController>()
         project.lifetime.launchOnUi {
-            controller.triggerGc(pid)
+            TriggerGcCollectionController.getInstance(project).triggerGc(pid)
         }
     }
 

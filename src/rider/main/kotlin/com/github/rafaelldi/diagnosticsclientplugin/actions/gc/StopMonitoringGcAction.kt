@@ -4,15 +4,13 @@ import com.github.rafaelldi.diagnosticsclientplugin.generated.diagnosticsHostMod
 import com.github.rafaelldi.diagnosticsclientplugin.services.GcMonitoringSessionController
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.components.service
 import com.jetbrains.rider.projectView.solution
 
 class StopMonitoringGcAction : AnAction() {
     override fun actionPerformed(event: AnActionEvent) {
         val project = event.project ?: return
         val pid = project.solution.diagnosticsHostModel.processList.selected.value ?: return
-        val controller = project.service<GcMonitoringSessionController>()
-        controller.stopSession(pid)
+        GcMonitoringSessionController.getInstance(project).stopSession(pid)
     }
 
     override fun update(event: AnActionEvent) {

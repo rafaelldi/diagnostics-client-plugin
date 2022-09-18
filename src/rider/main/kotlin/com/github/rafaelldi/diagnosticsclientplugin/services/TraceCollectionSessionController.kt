@@ -10,6 +10,7 @@ import com.github.rafaelldi.diagnosticsclientplugin.generated.diagnosticsHostMod
 import com.intellij.notification.Notification
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.components.Service
+import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.jetbrains.rd.framework.RdTaskResult
 import com.jetbrains.rd.platform.util.idea.ProtocolSubscribedProjectComponent
@@ -21,6 +22,11 @@ import kotlin.io.path.pathString
 
 @Service
 class TraceCollectionSessionController(project: Project) : ProtocolSubscribedProjectComponent(project) {
+    companion object {
+        @JvmStatic
+        fun getInstance(project: Project): TraceCollectionSessionController = project.service()
+    }
+
     private val hostModel: DiagnosticsHostModel = project.solution.diagnosticsHostModel
     private val activeSessions: ConcurrentHashMap<Int, LifetimeDefinition> = ConcurrentHashMap()
 

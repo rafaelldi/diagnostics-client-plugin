@@ -1,3 +1,5 @@
+@file:Suppress("UnstableApiUsage")
+
 package com.github.rafaelldi.diagnosticsclientplugin.services
 
 import com.github.rafaelldi.diagnosticsclientplugin.actions.notification.RevealFileAction
@@ -9,6 +11,7 @@ import com.github.rafaelldi.diagnosticsclientplugin.generated.diagnosticsHostMod
 import com.intellij.notification.Notification
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.components.Service
+import com.intellij.openapi.components.service
 import com.intellij.openapi.progress.withBackgroundProgressIndicator
 import com.intellij.openapi.project.Project
 import com.jetbrains.rd.platform.util.idea.ProtocolSubscribedProjectComponent
@@ -16,6 +19,11 @@ import com.jetbrains.rider.projectView.solution
 
 @Service
 class DumpCollectionController(project: Project) : ProtocolSubscribedProjectComponent(project) {
+    companion object {
+        @JvmStatic
+        fun getInstance(project: Project): DumpCollectionController = project.service()
+    }
+
     private val hostModel: DiagnosticsHostModel = project.solution.diagnosticsHostModel
 
     suspend fun collectDump(pid: Int, model: CollectDumpModel) {

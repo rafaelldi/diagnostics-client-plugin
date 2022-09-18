@@ -5,7 +5,6 @@ import com.github.rafaelldi.diagnosticsclientplugin.services.GcMonitoringSession
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.DiagnosticsClientDataKeys
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.components.service
 import com.jetbrains.rider.projectView.solution
 
 class StopGcMonitoringSessionAction : AnAction() {
@@ -13,8 +12,7 @@ class StopGcMonitoringSessionAction : AnAction() {
         val project = event.project ?: return
         val tab = event.getData(DiagnosticsClientDataKeys.MONITOR_GC_TAB) ?: return
         val pid = tab.getSessionPid()
-        val controller = project.service<GcMonitoringSessionController>()
-        controller.stopExistingSession(pid)
+        GcMonitoringSessionController.getInstance(project).stopExistingSession(pid)
     }
 
     override fun update(event: AnActionEvent) {

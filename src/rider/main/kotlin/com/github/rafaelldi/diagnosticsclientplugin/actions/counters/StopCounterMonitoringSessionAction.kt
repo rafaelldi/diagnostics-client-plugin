@@ -5,7 +5,6 @@ import com.github.rafaelldi.diagnosticsclientplugin.services.CounterMonitoringSe
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.DiagnosticsClientDataKeys
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.components.service
 import com.jetbrains.rider.projectView.solution
 
 class StopCounterMonitoringSessionAction : AnAction() {
@@ -13,8 +12,7 @@ class StopCounterMonitoringSessionAction : AnAction() {
         val project = event.project ?: return
         val tab = event.getData(DiagnosticsClientDataKeys.MONITOR_COUNTERS_TAB) ?: return
         val pid = tab.getSessionPid()
-        val controller = project.service<CounterMonitoringSessionController>()
-        controller.stopExistingSession(pid)
+        CounterMonitoringSessionController.getInstance(project).stopExistingSession(pid)
     }
 
     override fun update(event: AnActionEvent) {

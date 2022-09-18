@@ -9,6 +9,7 @@ import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.ProcessExplo
 import com.intellij.execution.runners.ExecutionUtil
 import com.intellij.icons.AllIcons
 import com.intellij.openapi.components.Service
+import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.wm.ToolWindow
 import com.intellij.openapi.wm.ToolWindowManager
@@ -24,6 +25,10 @@ import icons.DiagnosticsClientIcons
 class DiagnosticsTabsManager(project: Project) : ProtocolSubscribedProjectComponent(project) {
     companion object {
         private const val DIAGNOSTICS_CLIENT_TOOL_WINDOW = "Diagnostics Client"
+
+        @JvmStatic
+        fun getInstance(project: Project): DiagnosticsTabsManager = project.service()
+
         fun getToolWindow(project: Project): ToolWindow? =
             ToolWindowManager.getInstance(project).getToolWindow(DIAGNOSTICS_CLIENT_TOOL_WINDOW)
     }
