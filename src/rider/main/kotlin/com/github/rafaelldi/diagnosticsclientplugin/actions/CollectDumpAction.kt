@@ -3,6 +3,7 @@ package com.github.rafaelldi.diagnosticsclientplugin.actions
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.CollectDumpDialog
 import com.github.rafaelldi.diagnosticsclientplugin.generated.diagnosticsHostModel
 import com.github.rafaelldi.diagnosticsclientplugin.services.DumpCollectionController
+import com.github.rafaelldi.diagnosticsclientplugin.services.DumpSettings
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.components.service
@@ -17,6 +18,7 @@ class CollectDumpAction : AnAction() {
         val dialog = CollectDumpDialog(project)
         if (dialog.showAndGet()) {
             val model = dialog.getModel()
+            DumpSettings.getInstance(project).update(model)
             val controller = project.service<DumpCollectionController>()
             project.lifetime.launchOnUi {
                 controller.collectDump(pid, model)

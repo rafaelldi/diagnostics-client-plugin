@@ -1,24 +1,15 @@
 package com.github.rafaelldi.diagnosticsclientplugin.dialogs
 
+import com.github.rafaelldi.diagnosticsclientplugin.services.DumpSettings
 import com.github.rafaelldi.diagnosticsclientplugin.utils.isValidFilename
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogWrapper
-import com.intellij.openapi.util.SystemInfo
 import com.intellij.ui.dsl.builder.*
-import com.jetbrains.rider.projectView.solutionDirectoryPath
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 import javax.swing.JComponent
 
 class CollectDumpDialog(private val project: Project) : DialogWrapper(project) {
-    private val model: CollectDumpModel =
-        CollectDumpModel(
-            DumpType.Full,
-            project.solutionDirectoryPath.toString(),
-            getDefaultFilename(),
-            false
-        )
+    private val model = DumpSettings.getInstance(project).getModel()
 
     init {
         init()
@@ -56,15 +47,4 @@ class CollectDumpDialog(private val project: Project) : DialogWrapper(project) {
     }
 
     fun getModel(): CollectDumpModel = model
-
-    private fun getDefaultFilename(): String {
-        val current = LocalDateTime.now()
-        val formatter = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss")
-        val formatted = current.format(formatter)
-        return if (SystemInfo.isWindows) {
-            "dump_${formatted}.dmp"
-        } else {
-            "core_${formatted}"
-        }
-    }
 }

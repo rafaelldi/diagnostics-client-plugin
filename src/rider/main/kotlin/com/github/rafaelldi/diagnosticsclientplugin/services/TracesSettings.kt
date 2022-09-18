@@ -30,7 +30,7 @@ class TracesSettings(project: Project) :
         }
     }
 
-    fun getCollectTracesModel() = CollectTracesModel(
+    fun getModel() = CollectTracesModel(
         state.path ?: "",
         state.filename ?: "",
         state.stoppingType,

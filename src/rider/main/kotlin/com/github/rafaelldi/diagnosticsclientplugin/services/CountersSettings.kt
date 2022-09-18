@@ -17,7 +17,7 @@ class CountersSettings(project: Project) :
         fun getInstance(project: Project): CountersSettings = project.service()
     }
 
-    fun getCollectCountersModel() = CollectCountersModel(
+    fun getCollectModel() = CollectCountersModel(
         state.path ?: "",
         state.filename ?: "",
         state.format,
@@ -30,7 +30,7 @@ class CountersSettings(project: Project) :
         state.maxHistograms
     )
 
-    fun getMonitorCountersModel() = MonitorCountersModel(
+    fun getMonitorModel() = MonitorCountersModel(
         state.interval,
         state.stoppingType,
         state.duration,

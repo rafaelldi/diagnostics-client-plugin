@@ -13,7 +13,7 @@ import com.intellij.ui.dsl.builder.*
 import javax.swing.JComponent
 
 class CollectCountersDialog(private val project: Project) : DialogWrapper(project) {
-    private val model = CountersSettings.getInstance(project).getCollectCountersModel()
+    private val model = CountersSettings.getInstance(project).getCollectModel()
 
     init {
         init()

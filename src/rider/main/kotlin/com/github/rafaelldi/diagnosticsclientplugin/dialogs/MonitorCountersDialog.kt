@@ -11,7 +11,7 @@ import com.intellij.ui.dsl.builder.*
 import javax.swing.JComponent
 
 class MonitorCountersDialog(project: Project) : DialogWrapper(project) {
-    private val model = CountersSettings.getInstance(project).getMonitorCountersModel()
+    private val model = CountersSettings.getInstance(project).getMonitorModel()
 
     init {
         init()

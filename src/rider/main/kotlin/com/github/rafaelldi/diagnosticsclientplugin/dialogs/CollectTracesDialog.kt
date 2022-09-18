@@ -12,7 +12,7 @@ import com.intellij.ui.dsl.builder.*
 import javax.swing.JComponent
 
 class CollectTracesDialog(private val project: Project) : DialogWrapper(project) {
-    private val model = TracesSettings.getInstance(project).getCollectTracesModel()
+    private val model = TracesSettings.getInstance(project).getModel()
 
     init {
         init()
