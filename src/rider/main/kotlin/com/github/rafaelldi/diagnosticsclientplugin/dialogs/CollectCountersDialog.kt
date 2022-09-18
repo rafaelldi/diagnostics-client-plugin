@@ -1,7 +1,8 @@
 package com.github.rafaelldi.diagnosticsclientplugin.dialogs
 
-import com.github.rafaelldi.diagnosticsclientplugin.utils.isValidFilename
+import com.github.rafaelldi.diagnosticsclientplugin.services.CountersSettings
 import com.github.rafaelldi.diagnosticsclientplugin.utils.isValidCounterProviderList
+import com.github.rafaelldi.diagnosticsclientplugin.utils.isValidFilename
 import com.github.rafaelldi.diagnosticsclientplugin.utils.isValidMetricList
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
 import com.intellij.openapi.project.Project
@@ -9,23 +10,10 @@ import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.components.JBRadioButton
 import com.intellij.ui.dsl.builder.*
-import com.jetbrains.rider.projectView.solutionDirectoryPath
 import javax.swing.JComponent
 
 class CollectCountersDialog(private val project: Project) : DialogWrapper(project) {
-    private val model: CollectCountersModel =
-        CollectCountersModel(
-            project.solutionDirectoryPath.toString(),
-            "counters",
-            CounterFileFormat.Csv,
-            1,
-            StoppingType.AfterPeriod,
-            30,
-            "System.Runtime",
-            "",
-            1000,
-            10
-        )
+    private val model = CountersSettings.getInstance(project).getCollectCountersModel()
 
     init {
         init()
