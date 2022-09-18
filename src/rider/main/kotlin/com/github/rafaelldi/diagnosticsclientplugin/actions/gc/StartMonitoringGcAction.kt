@@ -3,6 +3,7 @@ package com.github.rafaelldi.diagnosticsclientplugin.actions.gc
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.MonitorGcDialog
 import com.github.rafaelldi.diagnosticsclientplugin.generated.diagnosticsHostModel
 import com.github.rafaelldi.diagnosticsclientplugin.services.GcMonitoringSessionController
+import com.github.rafaelldi.diagnosticsclientplugin.services.GcSettings
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.components.service
@@ -15,6 +16,7 @@ class StartMonitoringGcAction : AnAction() {
         val dialog = MonitorGcDialog(project)
         if (dialog.showAndGet()) {
             val model = dialog.getModel()
+            GcSettings.getInstance(project).update(model)
             val controller = project.service<GcMonitoringSessionController>()
             controller.startSession(pid, model)
         }
