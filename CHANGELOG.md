@@ -6,6 +6,7 @@
 ### Added
 - Collect GC action
 - Persist dialog field values
+- Compatibility with Rider 2022.3
 
 ## [1.2.0]
 ### Added
