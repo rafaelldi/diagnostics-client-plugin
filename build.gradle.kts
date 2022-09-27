@@ -143,8 +143,7 @@ tasks {
             "$outputFolder/${dotNetPluginId}.dll",
             "$outputFolder/${dotNetPluginId}.pdb",
             "$outputFolder/Microsoft.Diagnostics.Tracing.TraceEvent.dll",
-            "$outputFolder/Microsoft.Diagnostics.FastSerialization.dll",
-            "$outputFolder/System.Threading.Channels.dll"
+            "$outputFolder/Microsoft.Diagnostics.FastSerialization.dll"
         )
 
         for (f in dllFiles) {

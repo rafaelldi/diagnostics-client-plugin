@@ -50,7 +50,7 @@ class DumpSettings(project: Project) :
         }
     }
 
-    class DumpSettingsState(solutionPath: String, defaultFilename: String) : BaseState() {
+    class DumpSettingsState(solutionPath: String?, defaultFilename: String?) : BaseState() {
         var path by string(solutionPath)
         var filename by string(defaultFilename)
         var type by enum(DumpType.Full)

@@ -50,7 +50,7 @@ class TracesSettings(project: Project) :
         }
     }
 
-    class TracesSettingsState(solutionPath: String, defaultFilename: String) : BaseState() {
+    class TracesSettingsState(solutionPath: String?, defaultFilename: String?) : BaseState() {
         var path by string(solutionPath)
         var filename by string(defaultFilename)
         var stoppingType by enum(StoppingType.AfterPeriod)

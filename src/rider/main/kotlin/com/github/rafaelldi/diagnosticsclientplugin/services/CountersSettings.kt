@@ -67,7 +67,7 @@ class CountersSettings(project: Project) :
         }
     }
 
-    class CountersSettingsState(solutionPath: String) : BaseState() {
+    class CountersSettingsState(solutionPath: String?) : BaseState() {
         var path by string(solutionPath)
         var filename by string("counters")
         var format by enum(CounterFileFormat.Csv)
