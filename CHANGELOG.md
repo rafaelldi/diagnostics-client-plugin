@@ -3,6 +3,8 @@
 # diagnostics-client-plugin Changelog
 
 ## [Unreleased]
+
+## [2022.3.0]
 ### Added
 - Collect GC action
 - Persist dialog field values
