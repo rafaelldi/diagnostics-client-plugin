@@ -51,7 +51,7 @@ jobs:
 
       # Setup .NET 6 environment for the next steps
       - name: Setup .NET
-        uses: actions/setup-dotnet@v2
+        uses: actions/setup-dotnet@v3
         with:
           dotnet-version: '6.x'
 
