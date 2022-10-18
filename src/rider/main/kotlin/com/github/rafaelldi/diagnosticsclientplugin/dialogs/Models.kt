@@ -25,7 +25,14 @@ data class CollectCountersModel(
     var maxHistograms: Int
 )
 
-data class MonitorGcModel(var stoppingType: StoppingType, var duration: Int)
+data class MonitorGcEventsModel(var stoppingType: StoppingType, var duration: Int)
+
+data class CollectGcEventsModel(
+    var path: String,
+    var filename: String,
+    var stoppingType: StoppingType,
+    var duration: Int
+)
 
 data class CollectTracesModel(
     var path: String,

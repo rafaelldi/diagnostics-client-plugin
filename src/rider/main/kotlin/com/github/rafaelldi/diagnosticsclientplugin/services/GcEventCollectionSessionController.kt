@@ -1,10 +1,11 @@
 package com.github.rafaelldi.diagnosticsclientplugin.services
 
-import com.github.rafaelldi.diagnosticsclientplugin.dialogs.MonitorGcModel
-import com.github.rafaelldi.diagnosticsclientplugin.dialogs.MonitoringTimerModel
+import com.github.rafaelldi.diagnosticsclientplugin.actions.notification.OpenFileAction
+import com.github.rafaelldi.diagnosticsclientplugin.dialogs.CollectGcEventsModel
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.StoppingType
-import com.github.rafaelldi.diagnosticsclientplugin.generated.*
-import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.DiagnosticsTabsManager
+import com.github.rafaelldi.diagnosticsclientplugin.generated.CollectGcEventsCommand
+import com.github.rafaelldi.diagnosticsclientplugin.generated.DiagnosticsHostModel
+import com.github.rafaelldi.diagnosticsclientplugin.generated.diagnosticsHostModel
 import com.intellij.notification.Notification
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.components.Service
@@ -12,80 +13,48 @@ import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.jetbrains.rd.framework.RdTaskResult
 import com.jetbrains.rd.platform.util.idea.ProtocolSubscribedProjectComponent
-import com.jetbrains.rd.util.lifetime.Lifetime
 import com.jetbrains.rd.util.lifetime.LifetimeDefinition
 import com.jetbrains.rider.projectView.solution
 import java.util.concurrent.ConcurrentHashMap
+import kotlin.io.path.Path
+import kotlin.io.path.pathString
 
 @Service
-class GcMonitoringSessionController(project: Project) : ProtocolSubscribedProjectComponent(project) {
+class GcEventCollectionSessionController(project: Project) : ProtocolSubscribedProjectComponent(project) {
     companion object {
         @JvmStatic
-        fun getInstance(project: Project): GcMonitoringSessionController = project.service()
+        fun getInstance(project: Project): GcEventCollectionSessionController = project.service()
     }
 
     private val hostModel: DiagnosticsHostModel = project.solution.diagnosticsHostModel
     private val activeSessions: ConcurrentHashMap<Int, LifetimeDefinition> = ConcurrentHashMap()
 
-    init {
-        hostModel.gcMonitoringSessions.view(projectComponentLifetime) { lt, _, session ->
-            viewSession(lt, session)
-        }
-    }
-
-    fun startSession(pid: Int, model: MonitorGcModel) {
+    fun startSession(pid: Int, model: CollectGcEventsModel) {
         val sessionDefinition = createDefinitionForSession(pid) ?: return
 
+        val filePath = Path(model.path, "${model.filename}.csv").pathString
         val duration = if (model.stoppingType == StoppingType.AfterPeriod) model.duration else null
-        val command = MonitorGcCommand(pid, duration)
+        val command = CollectGcEventsCommand(pid, filePath, duration)
 
-        val monitorTask = hostModel.monitorGc.start(sessionDefinition.lifetime, command)
+        val collectTask = hostModel.collectGcEvents.start(sessionDefinition.lifetime, command)
         sessionStarted(pid)
 
-        monitorTask
+        collectTask
             .result
             .advise(projectComponentLifetime) { result ->
                 when (result) {
                     is RdTaskResult.Success -> {
                         activeSessions.remove(pid)
-                        sessionFinished(pid)
+                        sessionFinished(pid, filePath)
                     }
 
                     is RdTaskResult.Cancelled -> {
                         activeSessions.remove(pid)
-                        sessionFinished(pid)
+                        sessionFinished(pid, filePath)
                     }
 
                     is RdTaskResult.Fault -> {
                         activeSessions.remove(pid)
-                        sessionFaulted(pid, result.error.reasonMessage)
-                    }
-                }
-            }
-    }
-
-    fun startExistingSession(pid: Int, model: MonitoringTimerModel) {
-        val sessionDefinition = createDefinitionForSession(pid) ?: return
-
-        val session = hostModel.gcMonitoringSessions[pid] ?: return
-        val duration = if (model.stoppingType == StoppingType.AfterPeriod) model.duration else null
-        val monitorTask = session.monitor.start(sessionDefinition.lifetime, duration)
-        sessionStarted(pid)
-
-        monitorTask
-            .result
-            .advise(projectComponentLifetime) { result ->
-                when (result) {
-                    is RdTaskResult.Success -> {
-                        activeSessions.remove(pid)
-                        sessionFinished(pid)
-                    }
-
-                    is RdTaskResult.Cancelled -> {
-                        sessionFinished(pid)
-                    }
-
-                    is RdTaskResult.Fault -> {
                         sessionFaulted(pid, result.error.reasonMessage)
                     }
                 }
@@ -106,39 +75,31 @@ class GcMonitoringSessionController(project: Project) : ProtocolSubscribedProjec
         return sessionDefinition
     }
 
-    fun stopSession(pid: Int) = stopSessionCore(pid)
-
-    fun stopExistingSession(pid: Int) = stopSessionCore(pid)
-
-    private fun stopSessionCore(pid: Int) {
+    fun stopSession(pid: Int) {
         val sessionDefinition = activeSessions.remove(pid) ?: return
         sessionDefinition.terminate()
     }
 
-    private fun viewSession(lt: Lifetime, session: GcMonitoringSession) {
-        val tabsManager = project.service<DiagnosticsTabsManager>()
-        tabsManager.createGcTab(lt, session)
-    }
-
     private fun sessionStarted(pid: Int) = Notification(
         "Diagnostics Client",
-        "GC monitoring started",
+        "GC events collection started",
         "Session for process $pid started",
         NotificationType.INFORMATION
     )
         .notify(project)
 
-    private fun sessionFinished(pid: Int) = Notification(
+    private fun sessionFinished(pid: Int, filePath: String) = Notification(
         "Diagnostics Client",
-        "GC monitoring finished",
+        "GC events collection finished",
         "Session for process $pid finished",
         NotificationType.INFORMATION
     )
+        .addAction(OpenFileAction(filePath))
         .notify(project)
 
     private fun sessionFaulted(pid: Int, message: String) = Notification(
         "Diagnostics Client",
-        "GC monitoring for $pid faulted",
+        "GC events collection for $pid faulted",
         message,
         NotificationType.ERROR
     )

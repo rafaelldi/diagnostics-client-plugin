@@ -1,16 +1,16 @@
 package com.github.rafaelldi.diagnosticsclientplugin.actions.gc
 
 import com.github.rafaelldi.diagnosticsclientplugin.generated.diagnosticsHostModel
-import com.github.rafaelldi.diagnosticsclientplugin.services.GcMonitoringSessionController
+import com.github.rafaelldi.diagnosticsclientplugin.services.GcEventCollectionSessionController
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.jetbrains.rider.projectView.solution
 
-class StopMonitoringGcAction : AnAction() {
+class StopCollectingGcEventsAction : AnAction() {
     override fun actionPerformed(event: AnActionEvent) {
         val project = event.project ?: return
         val pid = project.solution.diagnosticsHostModel.processList.selected.value ?: return
-        GcMonitoringSessionController.getInstance(project).stopSession(pid)
+        GcEventCollectionSessionController.getInstance(project).stopSession(pid)
     }
 
     override fun update(event: AnActionEvent) {
@@ -23,9 +23,7 @@ class StopMonitoringGcAction : AnAction() {
             if (selected == null) {
                 event.presentation.isEnabledAndVisible = false
             } else {
-                val session = model.gcMonitoringSessions[selected]
-                val isActive = session?.active?.valueOrNull ?: false
-                event.presentation.isEnabledAndVisible = isActive
+                event.presentation.isEnabledAndVisible = model.gcEventsCollectionSessions.contains(selected)
             }
         }
     }

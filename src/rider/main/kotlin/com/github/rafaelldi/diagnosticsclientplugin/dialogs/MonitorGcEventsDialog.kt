@@ -1,18 +1,18 @@
 package com.github.rafaelldi.diagnosticsclientplugin.dialogs
 
-import com.github.rafaelldi.diagnosticsclientplugin.services.GcSettings
+import com.github.rafaelldi.diagnosticsclientplugin.services.GcEventsSettings
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.ui.components.JBRadioButton
 import com.intellij.ui.dsl.builder.*
 import javax.swing.JComponent
 
-class MonitorGcDialog(project: Project) : DialogWrapper(project) {
-    private val model = GcSettings.getInstance(project).getModel()
+class MonitorGcEventsDialog(project: Project) : DialogWrapper(project) {
+    private val model = GcEventsSettings.getInstance(project).getMonitorModel()
 
     init {
         init()
-        title = "Monitor GC"
+        title = "Monitor GC Events"
         setOKButtonText("Start")
     }
 
@@ -32,5 +32,5 @@ class MonitorGcDialog(project: Project) : DialogWrapper(project) {
         }
     }
 
-    fun getModel(): MonitorGcModel = model
+    fun getModel(): MonitorGcEventsModel = model
 }

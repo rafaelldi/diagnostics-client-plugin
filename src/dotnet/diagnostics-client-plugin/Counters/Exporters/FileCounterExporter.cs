@@ -10,8 +10,8 @@ namespace DiagnosticsClientPlugin.Counters.Exporters;
 
 internal abstract class FileCounterExporter
 {
-    private readonly ChannelReader<ValueCounter> _reader;
     private readonly string _filePath;
+    private readonly ChannelReader<ValueCounter> _reader;
 
     protected FileCounterExporter(string filePath, ChannelReader<ValueCounter> reader)
     {

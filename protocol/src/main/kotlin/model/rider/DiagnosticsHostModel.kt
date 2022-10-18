@@ -32,7 +32,7 @@ object DiagnosticsHostModel : Ext(SolutionModel.Solution) {
         source("close", void).async
     }
 
-    private val GcMonitoringSession = classdef("GcMonitoringSession") {
+    private val GcEventsMonitoringSession = classdef("GcEventsMonitoringSession") {
         field("pid", int)
         property("active", bool).async
         source("gcHappened", GcEvent).async
@@ -71,7 +71,8 @@ object DiagnosticsHostModel : Ext(SolutionModel.Solution) {
         field("processList", ProcessList)
         list("counterCollectionSessions", int).async
         map("counterMonitoringSessions", int, CounterMonitoringSession).async
-        map("gcMonitoringSessions", int, GcMonitoringSession).async
+        list("gcEventsCollectionSessions", int).async
+        map("gcEventsMonitoringSessions", int, GcEventsMonitoringSession).async
         list("traceCollectionSessions", int).async
 
         call("collectDump",
@@ -124,8 +125,18 @@ object DiagnosticsHostModel : Ext(SolutionModel.Solution) {
         )
 
         call(
-            "monitorGc",
-            structdef("MonitorGcCommand") {
+            "collectGcEvents",
+            structdef("CollectGcEventsCommand") {
+                field("pid", int)
+                field("filePath", string)
+                field("duration", int.nullable)
+            },
+            void
+        )
+
+        call(
+            "monitorGcEvents",
+            structdef("MonitorGcEventsCommand") {
                 field("pid", int)
                 field("duration", int.nullable)
             },

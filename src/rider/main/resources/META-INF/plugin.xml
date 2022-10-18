@@ -58,16 +58,28 @@
                    icon="AllIcons.Actions.GC"
                    text="GC"
                    popup="true">
-                <action id="DiagnosticsClient.ToolWindow.Explorer.StartMonitoringGc"
-                        class="com.github.rafaelldi.diagnosticsclientplugin.actions.gc.StartMonitoringGcAction"
-                        text="Monitor GC"
-                        description="Start monitoring GC"
+                <action id="DiagnosticsClient.ToolWindow.Explorer.StartMonitoringGcEvents"
+                        class="com.github.rafaelldi.diagnosticsclientplugin.actions.gc.StartMonitoringGcEventsAction"
+                        text="Monitor GC Events"
+                        description="Start monitoring GC events"
                         icon="AllIcons.Actions.Show">
                 </action>
-                <action id="DiagnosticsClient.ToolWindow.Explorer.StopMonitoringGc"
-                        class="com.github.rafaelldi.diagnosticsclientplugin.actions.gc.StopMonitoringGcAction"
-                        text="Stop Monitoring GC"
-                        description="Stop monitoring GC"
+                <action id="DiagnosticsClient.ToolWindow.Explorer.StopMonitoringGcEvents"
+                        class="com.github.rafaelldi.diagnosticsclientplugin.actions.gc.StopMonitoringGcEventsAction"
+                        text="Stop Monitoring GC Events"
+                        description="Stop monitoring GC events"
+                        icon="AllIcons.Actions.Suspend">
+                </action>
+                <action id="DiagnosticsClient.ToolWindow.Explorer.StartCollectingGcEvents"
+                        class="com.github.rafaelldi.diagnosticsclientplugin.actions.gc.StartCollectingGcEventsAction"
+                        text="Collect GC Events"
+                        description="Collect GC events and save them to a file"
+                        icon="AllIcons.Actions.MenuSaveall">
+                </action>
+                <action id="DiagnosticsClient.ToolWindow.Explorer.StopCollectingGcEvents"
+                        class="com.github.rafaelldi.diagnosticsclientplugin.actions.gc.StopCollectingGcEventsAction"
+                        text="Stop Collecting GC Events"
+                        description="Stop collecting GC events"
                         icon="AllIcons.Actions.Suspend">
                 </action>
                 <action id="DiagnosticsClient.ToolWindow.Explorer.TriggerGcCollection"
@@ -122,13 +134,13 @@
         </group>
         <group id="DiagnosticsClient.ToolWindow.GcSession">
             <action id="DiagnosticsClient.ToolWindow.GcSession.Start"
-                    class="com.github.rafaelldi.diagnosticsclientplugin.actions.gc.StartGcMonitoringSessionAction"
+                    class="com.github.rafaelldi.diagnosticsclientplugin.actions.gc.StartGcEventMonitoringSessionAction"
                     text="Start GC Monitoring Session"
                     description="Start GC monitoring session"
                     icon="AllIcons.Actions.Execute">
             </action>
             <action id="DiagnosticsClient.ToolWindow.GcSession.Stop"
-                    class="com.github.rafaelldi.diagnosticsclientplugin.actions.gc.StopGcMonitoringSessionAction"
+                    class="com.github.rafaelldi.diagnosticsclientplugin.actions.gc.StopGcEventMonitoringSessionAction"
                     text="Stop GC Monitoring Session"
                     description="Stop counters monitoring session"
                     icon="AllIcons.Actions.Suspend">
