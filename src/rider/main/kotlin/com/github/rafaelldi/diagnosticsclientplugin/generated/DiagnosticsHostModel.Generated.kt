@@ -21,12 +21,14 @@ class DiagnosticsHostModel private constructor(
     val processList: ProcessList,
     private val _counterCollectionSessions: RdList<Int>,
     private val _counterMonitoringSessions: RdMap<Int, CountersMonitoringSession>,
-    private val _gcMonitoringSessions: RdMap<Int, GcMonitoringSession>,
+    private val _gcEventsCollectionSessions: RdList<Int>,
+    private val _gcEventsMonitoringSessions: RdMap<Int, GcEventsMonitoringSession>,
     private val _traceCollectionSessions: RdList<Int>,
     private val _collectDump: RdCall<CollectDumpCommand, DumpCollectionResult>,
     private val _collectCounters: RdCall<CollectCountersCommand, Unit>,
     private val _monitorCounters: RdCall<MonitorCountersCommand, Unit>,
-    private val _monitorGc: RdCall<MonitorGcCommand, Unit>,
+    private val _collectGcEvents: RdCall<CollectGcEventsCommand, Unit>,
+    private val _monitorGcEvents: RdCall<MonitorGcEventsCommand, Unit>,
     private val _triggerGc: RdCall<TriggerGcCommand, Unit>,
     private val _collectTraces: RdCall<CollectTracesCommand, Unit>,
     private val _collectStackTrace: RdCall<CollectStackTraceCommand, String>
@@ -39,14 +41,15 @@ class DiagnosticsHostModel private constructor(
             serializers.register(ProcessInfo)
             serializers.register(ProcessList)
             serializers.register(CountersMonitoringSession)
-            serializers.register(GcMonitoringSession)
+            serializers.register(GcEventsMonitoringSession)
             serializers.register(Counter)
             serializers.register(GcEvent)
             serializers.register(CollectDumpCommand)
             serializers.register(DumpCollectionResult)
             serializers.register(CollectCountersCommand)
             serializers.register(MonitorCountersCommand)
-            serializers.register(MonitorGcCommand)
+            serializers.register(CollectGcEventsCommand)
+            serializers.register(MonitorGcEventsCommand)
             serializers.register(TriggerGcCommand)
             serializers.register(CollectTracesCommand)
             serializers.register(CollectStackTraceCommand)
@@ -59,7 +62,7 @@ class DiagnosticsHostModel private constructor(
         
         
         
-        const val serializationHash = -2904463492346860294L
+        const val serializationHash = -2845443098648593692L
         
     }
     override val serializersOwner: ISerializersOwner get() = DiagnosticsHostModel
@@ -68,12 +71,14 @@ class DiagnosticsHostModel private constructor(
     //fields
     val counterCollectionSessions: IMutableViewableList<Int> get() = _counterCollectionSessions
     val counterMonitoringSessions: IMutableViewableMap<Int, CountersMonitoringSession> get() = _counterMonitoringSessions
-    val gcMonitoringSessions: IMutableViewableMap<Int, GcMonitoringSession> get() = _gcMonitoringSessions
+    val gcEventsCollectionSessions: IMutableViewableList<Int> get() = _gcEventsCollectionSessions
+    val gcEventsMonitoringSessions: IMutableViewableMap<Int, GcEventsMonitoringSession> get() = _gcEventsMonitoringSessions
     val traceCollectionSessions: IMutableViewableList<Int> get() = _traceCollectionSessions
     val collectDump: IRdCall<CollectDumpCommand, DumpCollectionResult> get() = _collectDump
     val collectCounters: IRdCall<CollectCountersCommand, Unit> get() = _collectCounters
     val monitorCounters: IRdCall<MonitorCountersCommand, Unit> get() = _monitorCounters
-    val monitorGc: IRdCall<MonitorGcCommand, Unit> get() = _monitorGc
+    val collectGcEvents: IRdCall<CollectGcEventsCommand, Unit> get() = _collectGcEvents
+    val monitorGcEvents: IRdCall<MonitorGcEventsCommand, Unit> get() = _monitorGcEvents
     val triggerGc: IRdCall<TriggerGcCommand, Unit> get() = _triggerGc
     val collectTraces: IRdCall<CollectTracesCommand, Unit> get() = _collectTraces
     val collectStackTrace: IRdCall<CollectStackTraceCommand, String> get() = _collectStackTrace
@@ -81,13 +86,15 @@ class DiagnosticsHostModel private constructor(
     //initializer
     init {
         _counterCollectionSessions.optimizeNested = true
+        _gcEventsCollectionSessions.optimizeNested = true
         _traceCollectionSessions.optimizeNested = true
     }
     
     init {
         _counterCollectionSessions.async = true
         _counterMonitoringSessions.async = true
-        _gcMonitoringSessions.async = true
+        _gcEventsCollectionSessions.async = true
+        _gcEventsMonitoringSessions.async = true
         _traceCollectionSessions.async = true
     }
     
@@ -95,12 +102,14 @@ class DiagnosticsHostModel private constructor(
         bindableChildren.add("processList" to processList)
         bindableChildren.add("counterCollectionSessions" to _counterCollectionSessions)
         bindableChildren.add("counterMonitoringSessions" to _counterMonitoringSessions)
-        bindableChildren.add("gcMonitoringSessions" to _gcMonitoringSessions)
+        bindableChildren.add("gcEventsCollectionSessions" to _gcEventsCollectionSessions)
+        bindableChildren.add("gcEventsMonitoringSessions" to _gcEventsMonitoringSessions)
         bindableChildren.add("traceCollectionSessions" to _traceCollectionSessions)
         bindableChildren.add("collectDump" to _collectDump)
         bindableChildren.add("collectCounters" to _collectCounters)
         bindableChildren.add("monitorCounters" to _monitorCounters)
-        bindableChildren.add("monitorGc" to _monitorGc)
+        bindableChildren.add("collectGcEvents" to _collectGcEvents)
+        bindableChildren.add("monitorGcEvents" to _monitorGcEvents)
         bindableChildren.add("triggerGc" to _triggerGc)
         bindableChildren.add("collectTraces" to _collectTraces)
         bindableChildren.add("collectStackTrace" to _collectStackTrace)
@@ -112,12 +121,14 @@ class DiagnosticsHostModel private constructor(
         ProcessList(),
         RdList<Int>(FrameworkMarshallers.Int),
         RdMap<Int, CountersMonitoringSession>(FrameworkMarshallers.Int, CountersMonitoringSession),
-        RdMap<Int, GcMonitoringSession>(FrameworkMarshallers.Int, GcMonitoringSession),
+        RdList<Int>(FrameworkMarshallers.Int),
+        RdMap<Int, GcEventsMonitoringSession>(FrameworkMarshallers.Int, GcEventsMonitoringSession),
         RdList<Int>(FrameworkMarshallers.Int),
         RdCall<CollectDumpCommand, DumpCollectionResult>(CollectDumpCommand, DumpCollectionResult),
         RdCall<CollectCountersCommand, Unit>(CollectCountersCommand, FrameworkMarshallers.Void),
         RdCall<MonitorCountersCommand, Unit>(MonitorCountersCommand, FrameworkMarshallers.Void),
-        RdCall<MonitorGcCommand, Unit>(MonitorGcCommand, FrameworkMarshallers.Void),
+        RdCall<CollectGcEventsCommand, Unit>(CollectGcEventsCommand, FrameworkMarshallers.Void),
+        RdCall<MonitorGcEventsCommand, Unit>(MonitorGcEventsCommand, FrameworkMarshallers.Void),
         RdCall<TriggerGcCommand, Unit>(TriggerGcCommand, FrameworkMarshallers.Void),
         RdCall<CollectTracesCommand, Unit>(CollectTracesCommand, FrameworkMarshallers.Void),
         RdCall<CollectStackTraceCommand, String>(CollectStackTraceCommand, FrameworkMarshallers.String)
@@ -132,12 +143,14 @@ class DiagnosticsHostModel private constructor(
             print("processList = "); processList.print(printer); println()
             print("counterCollectionSessions = "); _counterCollectionSessions.print(printer); println()
             print("counterMonitoringSessions = "); _counterMonitoringSessions.print(printer); println()
-            print("gcMonitoringSessions = "); _gcMonitoringSessions.print(printer); println()
+            print("gcEventsCollectionSessions = "); _gcEventsCollectionSessions.print(printer); println()
+            print("gcEventsMonitoringSessions = "); _gcEventsMonitoringSessions.print(printer); println()
             print("traceCollectionSessions = "); _traceCollectionSessions.print(printer); println()
             print("collectDump = "); _collectDump.print(printer); println()
             print("collectCounters = "); _collectCounters.print(printer); println()
             print("monitorCounters = "); _monitorCounters.print(printer); println()
-            print("monitorGc = "); _monitorGc.print(printer); println()
+            print("collectGcEvents = "); _collectGcEvents.print(printer); println()
+            print("monitorGcEvents = "); _monitorGcEvents.print(printer); println()
             print("triggerGc = "); _triggerGc.print(printer); println()
             print("collectTraces = "); _collectTraces.print(printer); println()
             print("collectStackTrace = "); _collectStackTrace.print(printer); println()
@@ -150,12 +163,14 @@ class DiagnosticsHostModel private constructor(
             processList.deepClonePolymorphic(),
             _counterCollectionSessions.deepClonePolymorphic(),
             _counterMonitoringSessions.deepClonePolymorphic(),
-            _gcMonitoringSessions.deepClonePolymorphic(),
+            _gcEventsCollectionSessions.deepClonePolymorphic(),
+            _gcEventsMonitoringSessions.deepClonePolymorphic(),
             _traceCollectionSessions.deepClonePolymorphic(),
             _collectDump.deepClonePolymorphic(),
             _collectCounters.deepClonePolymorphic(),
             _monitorCounters.deepClonePolymorphic(),
-            _monitorGc.deepClonePolymorphic(),
+            _collectGcEvents.deepClonePolymorphic(),
+            _monitorGcEvents.deepClonePolymorphic(),
             _triggerGc.deepClonePolymorphic(),
             _collectTraces.deepClonePolymorphic(),
             _collectStackTrace.deepClonePolymorphic()
@@ -168,7 +183,7 @@ val com.jetbrains.rd.ide.model.Solution.diagnosticsHostModel get() = getOrCreate
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:95]
+ * #### Generated from [DiagnosticsHostModel.kt:96]
  */
 data class CollectCountersCommand (
     val pid: Int,
@@ -273,7 +288,7 @@ data class CollectCountersCommand (
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:78]
+ * #### Generated from [DiagnosticsHostModel.kt:79]
  */
 data class CollectDumpCommand (
     val pid: Int,
@@ -354,7 +369,76 @@ data class CollectDumpCommand (
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:156]
+ * #### Generated from [DiagnosticsHostModel.kt:129]
+ */
+data class CollectGcEventsCommand (
+    val pid: Int,
+    val filePath: String,
+    val duration: Int?
+) : IPrintable {
+    //companion
+    
+    companion object : IMarshaller<CollectGcEventsCommand> {
+        override val _type: KClass<CollectGcEventsCommand> = CollectGcEventsCommand::class
+        
+        @Suppress("UNCHECKED_CAST")
+        override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): CollectGcEventsCommand  {
+            val pid = buffer.readInt()
+            val filePath = buffer.readString()
+            val duration = buffer.readNullable { buffer.readInt() }
+            return CollectGcEventsCommand(pid, filePath, duration)
+        }
+        
+        override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: CollectGcEventsCommand)  {
+            buffer.writeInt(value.pid)
+            buffer.writeString(value.filePath)
+            buffer.writeNullable(value.duration) { buffer.writeInt(it) }
+        }
+        
+        
+    }
+    //fields
+    //methods
+    //initializer
+    //secondary constructor
+    //equals trait
+    override fun equals(other: Any?): Boolean  {
+        if (this === other) return true
+        if (other == null || other::class != this::class) return false
+        
+        other as CollectGcEventsCommand
+        
+        if (pid != other.pid) return false
+        if (filePath != other.filePath) return false
+        if (duration != other.duration) return false
+        
+        return true
+    }
+    //hash code trait
+    override fun hashCode(): Int  {
+        var __r = 0
+        __r = __r*31 + pid.hashCode()
+        __r = __r*31 + filePath.hashCode()
+        __r = __r*31 + if (duration != null) duration.hashCode() else 0
+        return __r
+    }
+    //pretty print
+    override fun print(printer: PrettyPrinter)  {
+        printer.println("CollectGcEventsCommand (")
+        printer.indent {
+            print("pid = "); pid.print(printer); println()
+            print("filePath = "); filePath.print(printer); println()
+            print("duration = "); duration.print(printer); println()
+        }
+        printer.print(")")
+    }
+    //deepClone
+    //contexts
+}
+
+
+/**
+ * #### Generated from [DiagnosticsHostModel.kt:167]
  */
 data class CollectStackTraceCommand (
     val pid: Int
@@ -411,7 +495,7 @@ data class CollectStackTraceCommand (
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:139]
+ * #### Generated from [DiagnosticsHostModel.kt:150]
  */
 data class CollectTracesCommand (
     val pid: Int,
@@ -561,7 +645,7 @@ data class Counter (
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:98]
+ * #### Generated from [DiagnosticsHostModel.kt:99]
  */
 enum class CounterFileFormat {
     Csv, 
@@ -677,7 +761,7 @@ class CountersMonitoringSession private constructor(
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:89]
+ * #### Generated from [DiagnosticsHostModel.kt:90]
  */
 data class DumpCollectionResult (
     val filePath: String
@@ -734,7 +818,7 @@ data class DumpCollectionResult (
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:80]
+ * #### Generated from [DiagnosticsHostModel.kt:81]
  */
 enum class DumpType {
     Full, 
@@ -893,7 +977,7 @@ data class GcEvent (
 /**
  * #### Generated from [DiagnosticsHostModel.kt:35]
  */
-class GcMonitoringSession private constructor(
+class GcEventsMonitoringSession private constructor(
     val pid: Int,
     private val _active: RdOptionalProperty<Boolean>,
     private val _gcHappened: RdSignal<GcEvent>,
@@ -902,21 +986,21 @@ class GcMonitoringSession private constructor(
 ) : RdBindableBase() {
     //companion
     
-    companion object : IMarshaller<GcMonitoringSession> {
-        override val _type: KClass<GcMonitoringSession> = GcMonitoringSession::class
+    companion object : IMarshaller<GcEventsMonitoringSession> {
+        override val _type: KClass<GcEventsMonitoringSession> = GcEventsMonitoringSession::class
         
         @Suppress("UNCHECKED_CAST")
-        override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): GcMonitoringSession  {
+        override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): GcEventsMonitoringSession  {
             val _id = RdId.read(buffer)
             val pid = buffer.readInt()
             val _active = RdOptionalProperty.read(ctx, buffer, FrameworkMarshallers.Bool)
             val _gcHappened = RdSignal.read(ctx, buffer, GcEvent)
             val _monitor = RdCall.read(ctx, buffer, __IntNullableSerializer, FrameworkMarshallers.Void)
             val _close = RdSignal.read(ctx, buffer, FrameworkMarshallers.Void)
-            return GcMonitoringSession(pid, _active, _gcHappened, _monitor, _close).withId(_id)
+            return GcEventsMonitoringSession(pid, _active, _gcHappened, _monitor, _close).withId(_id)
         }
         
-        override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: GcMonitoringSession)  {
+        override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: GcEventsMonitoringSession)  {
             value.rdid.write(buffer)
             buffer.writeInt(value.pid)
             RdOptionalProperty.write(ctx, buffer, value._active)
@@ -967,7 +1051,7 @@ class GcMonitoringSession private constructor(
     //hash code trait
     //pretty print
     override fun print(printer: PrettyPrinter)  {
-        printer.println("GcMonitoringSession (")
+        printer.println("GcEventsMonitoringSession (")
         printer.indent {
             print("pid = "); pid.print(printer); println()
             print("active = "); _active.print(printer); println()
@@ -978,8 +1062,8 @@ class GcMonitoringSession private constructor(
         printer.print(")")
     }
     //deepClone
-    override fun deepClone(): GcMonitoringSession   {
-        return GcMonitoringSession(
+    override fun deepClone(): GcEventsMonitoringSession   {
+        return GcEventsMonitoringSession(
             pid,
             _active.deepClonePolymorphic(),
             _gcHappened.deepClonePolymorphic(),
@@ -992,7 +1076,7 @@ class GcMonitoringSession private constructor(
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:114]
+ * #### Generated from [DiagnosticsHostModel.kt:115]
  */
 data class MonitorCountersCommand (
     val pid: Int,
@@ -1085,25 +1169,25 @@ data class MonitorCountersCommand (
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:128]
+ * #### Generated from [DiagnosticsHostModel.kt:139]
  */
-data class MonitorGcCommand (
+data class MonitorGcEventsCommand (
     val pid: Int,
     val duration: Int?
 ) : IPrintable {
     //companion
     
-    companion object : IMarshaller<MonitorGcCommand> {
-        override val _type: KClass<MonitorGcCommand> = MonitorGcCommand::class
+    companion object : IMarshaller<MonitorGcEventsCommand> {
+        override val _type: KClass<MonitorGcEventsCommand> = MonitorGcEventsCommand::class
         
         @Suppress("UNCHECKED_CAST")
-        override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): MonitorGcCommand  {
+        override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): MonitorGcEventsCommand  {
             val pid = buffer.readInt()
             val duration = buffer.readNullable { buffer.readInt() }
-            return MonitorGcCommand(pid, duration)
+            return MonitorGcEventsCommand(pid, duration)
         }
         
-        override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: MonitorGcCommand)  {
+        override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: MonitorGcEventsCommand)  {
             buffer.writeInt(value.pid)
             buffer.writeNullable(value.duration) { buffer.writeInt(it) }
         }
@@ -1119,7 +1203,7 @@ data class MonitorGcCommand (
         if (this === other) return true
         if (other == null || other::class != this::class) return false
         
-        other as MonitorGcCommand
+        other as MonitorGcEventsCommand
         
         if (pid != other.pid) return false
         if (duration != other.duration) return false
@@ -1135,7 +1219,7 @@ data class MonitorGcCommand (
     }
     //pretty print
     override fun print(printer: PrettyPrinter)  {
-        printer.println("MonitorGcCommand (")
+        printer.println("MonitorGcEventsCommand (")
         printer.indent {
             print("pid = "); pid.print(printer); println()
             print("duration = "); duration.print(printer); println()
@@ -1322,7 +1406,7 @@ class ProcessList private constructor(
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:142]
+ * #### Generated from [DiagnosticsHostModel.kt:153]
  */
 enum class TracingProfile {
     None, 
@@ -1338,7 +1422,7 @@ enum class TracingProfile {
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:135]
+ * #### Generated from [DiagnosticsHostModel.kt:146]
  */
 data class TriggerGcCommand (
     val pid: Int

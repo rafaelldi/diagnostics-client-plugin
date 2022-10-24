@@ -2,13 +2,13 @@ package com.github.rafaelldi.diagnosticsclientplugin.actions.gc
 
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.MonitoringTimerDialog
 import com.github.rafaelldi.diagnosticsclientplugin.generated.diagnosticsHostModel
-import com.github.rafaelldi.diagnosticsclientplugin.services.GcMonitoringSessionController
+import com.github.rafaelldi.diagnosticsclientplugin.services.GcEventMonitoringSessionController
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.DiagnosticsClientDataKeys
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.jetbrains.rider.projectView.solution
 
-class StartGcMonitoringSessionAction : AnAction() {
+class StartGcEventMonitoringSessionAction : AnAction() {
     override fun actionPerformed(event: AnActionEvent) {
         val project = event.project ?: return
         val tab = event.getData(DiagnosticsClientDataKeys.MONITOR_GC_TAB) ?: return
@@ -16,7 +16,7 @@ class StartGcMonitoringSessionAction : AnAction() {
         if (dialog.showAndGet()) {
             val model = dialog.getModel()
             val pid = tab.getSessionPid()
-            GcMonitoringSessionController.getInstance(project).startExistingSession(pid, model)
+            GcEventMonitoringSessionController.getInstance(project).startExistingSession(pid, model)
         }
     }
 
@@ -28,7 +28,7 @@ class StartGcMonitoringSessionAction : AnAction() {
         } else {
             val pid = tab.getSessionPid()
             val model = project.solution.diagnosticsHostModel
-            val session = model.gcMonitoringSessions[pid]
+            val session = model.gcEventsMonitoringSessions[pid]
             val isActive = session?.active?.valueOrNull ?: false
             event.presentation.isEnabled = !isActive
         }

@@ -1,7 +1,7 @@
 package com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs
 
 import com.github.rafaelldi.diagnosticsclientplugin.generated.GcEvent
-import com.github.rafaelldi.diagnosticsclientplugin.generated.GcMonitoringSession
+import com.github.rafaelldi.diagnosticsclientplugin.generated.GcEventsMonitoringSession
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.DiagnosticsClientDataKeys
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.DiagnosticsTabsManager
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.components.GcTableComponent
@@ -15,7 +15,7 @@ import java.awt.BorderLayout
 import javax.swing.JPanel
 
 class MonitorGcTab(
-    private val session: GcMonitoringSession,
+    private val session: GcEventsMonitoringSession,
     private val tabsManager: DiagnosticsTabsManager,
     lt: Lifetime
 ) : SimpleToolWindowPanel(false), Disposable {

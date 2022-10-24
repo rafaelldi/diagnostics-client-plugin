@@ -1,7 +1,7 @@
 package com.github.rafaelldi.diagnosticsclientplugin.toolWindow
 
 import com.github.rafaelldi.diagnosticsclientplugin.generated.CountersMonitoringSession
-import com.github.rafaelldi.diagnosticsclientplugin.generated.GcMonitoringSession
+import com.github.rafaelldi.diagnosticsclientplugin.generated.GcEventsMonitoringSession
 import com.github.rafaelldi.diagnosticsclientplugin.generated.diagnosticsHostModel
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.MonitorCountersTab
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.MonitorGcTab
@@ -59,7 +59,7 @@ class DiagnosticsTabsManager(project: Project) : ProtocolSubscribedProjectCompon
         )
     }
 
-    fun createGcTab(lt: Lifetime, session: GcMonitoringSession) {
+    fun createGcTab(lt: Lifetime, session: GcEventsMonitoringSession) {
         val toolWindow = getToolWindow(project) ?: return
         val contentFactory = ContentFactory.getInstance()
         val monitorGcTab = MonitorGcTab(session, this, lt)

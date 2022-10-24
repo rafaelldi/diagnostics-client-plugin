@@ -11,7 +11,7 @@ using JetBrains.RdBackend.Common.Features;
 namespace DiagnosticsClientPlugin.Gc;
 
 [SolutionComponent]
-internal sealed class GcMonitoringHandler
+internal sealed class GcEventsMonitoringHandler
 {
     private readonly Lifetime _lifetime;
     private readonly DiagnosticsHostModel _hostModel;
@@ -19,15 +19,15 @@ internal sealed class GcMonitoringHandler
     private readonly ConcurrentDictionary<int, (GcMonitoringSessionEnvelope Envelope, LifetimeDefinition Definition)>
         _sessions = new();
 
-    public GcMonitoringHandler(ISolution solution, Lifetime lifetime)
+    public GcEventsMonitoringHandler(ISolution solution, Lifetime lifetime)
     {
         _lifetime = lifetime;
         _hostModel = solution.GetProtocolSolution().GetDiagnosticsHostModel();
 
-        _hostModel.MonitorGc.Set(async (lt, command) => await MonitorAsync(command, lt));
+        _hostModel.MonitorGcEvents.Set(async (lt, command) => await MonitorAsync(command, lt));
     }
 
-    private async Task<Unit> MonitorAsync(MonitorGcCommand command, Lifetime lifetime)
+    private async Task<Unit> MonitorAsync(MonitorGcEventsCommand command, Lifetime lifetime)
     {
         if (_sessions.TryGetValue(command.Pid, out var session))
         {
@@ -42,7 +42,7 @@ internal sealed class GcMonitoringHandler
                 return Unit.Instance;
             }
 
-            _hostModel.GcMonitoringSessions.Add(definition.Lifetime, command.Pid, envelope.Session);
+            _hostModel.GcEventsMonitoringSessions.Add(definition.Lifetime, command.Pid, envelope.Session);
 
             await envelope.MonitorAsync(command.Duration, lifetime);
         }

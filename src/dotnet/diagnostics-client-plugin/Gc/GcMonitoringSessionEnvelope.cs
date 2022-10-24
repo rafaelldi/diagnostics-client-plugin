@@ -10,16 +10,16 @@ namespace DiagnosticsClientPlugin.Gc;
 
 internal sealed class GcMonitoringSessionEnvelope
 {
-    private readonly GcMonitoringHandler _handler;
+    private readonly GcEventsMonitoringHandler _handler;
     private readonly Lifetime _lifetime;
     private readonly GcEventProducer _producer;
     private readonly GcEventProtocolExporter _exporter;
 
-    internal GcMonitoringSessionEnvelope(int pid, GcMonitoringHandler handler, Lifetime lifetime)
+    internal GcMonitoringSessionEnvelope(int pid, GcEventsMonitoringHandler handler, Lifetime lifetime)
     {
         _handler = handler;
         _lifetime = lifetime;
-        Session = new GcMonitoringSession(pid);
+        Session = new GcEventsMonitoringSession(pid);
         
         var channel = Channel.CreateBounded<ValueGcEvent>(new BoundedChannelOptions(100)
         {
@@ -35,7 +35,7 @@ internal sealed class GcMonitoringSessionEnvelope
         Session.Close.Advise(lifetime, _ => Close());
     }
     
-    internal GcMonitoringSession Session { get; }
+    internal GcEventsMonitoringSession Session { get; }
 
     internal async Task<Unit> MonitorAsync(int? duration, Lifetime lifetime)
     {

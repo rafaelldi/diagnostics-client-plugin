@@ -1,22 +1,22 @@
 package com.github.rafaelldi.diagnosticsclientplugin.actions.gc
 
-import com.github.rafaelldi.diagnosticsclientplugin.dialogs.MonitorGcDialog
+import com.github.rafaelldi.diagnosticsclientplugin.dialogs.MonitorGcEventsDialog
 import com.github.rafaelldi.diagnosticsclientplugin.generated.diagnosticsHostModel
-import com.github.rafaelldi.diagnosticsclientplugin.services.GcMonitoringSessionController
-import com.github.rafaelldi.diagnosticsclientplugin.services.GcSettings
+import com.github.rafaelldi.diagnosticsclientplugin.services.GcEventMonitoringSessionController
+import com.github.rafaelldi.diagnosticsclientplugin.services.GcEventsSettings
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.jetbrains.rider.projectView.solution
 
-class StartMonitoringGcAction : AnAction() {
+class StartMonitoringGcEventsAction : AnAction() {
     override fun actionPerformed(event: AnActionEvent) {
         val project = event.project ?: return
         val pid = project.solution.diagnosticsHostModel.processList.selected.value ?: return
-        val dialog = MonitorGcDialog(project)
+        val dialog = MonitorGcEventsDialog(project)
         if (dialog.showAndGet()) {
             val model = dialog.getModel()
-            GcSettings.getInstance(project).update(model)
-            GcMonitoringSessionController.getInstance(project).startSession(pid, model)
+            GcEventsSettings.getInstance(project).update(model)
+            GcEventMonitoringSessionController.getInstance(project).startSession(pid, model)
         }
     }
 
@@ -30,7 +30,7 @@ class StartMonitoringGcAction : AnAction() {
             if (selected == null) {
                 event.presentation.isEnabled = false
             } else {
-                val session = model.gcMonitoringSessions[selected]
+                val session = model.gcEventsMonitoringSessions[selected]
                 val isActive = session?.active?.valueOrNull ?: false
                 event.presentation.isEnabledAndVisible = !isActive
             }
