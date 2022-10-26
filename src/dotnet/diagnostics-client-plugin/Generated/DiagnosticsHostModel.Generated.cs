@@ -122,7 +122,7 @@ namespace DiagnosticsClientPlugin.Generated
     
     
     
-    protected override long SerializationHash => 3780503103546088433L;
+    protected override long SerializationHash => 4454907719965074765L;
     
     protected override Action<ISerializers> Register => RegisterDeclaredTypesSerializers;
     public static void RegisterDeclaredTypesSerializers(ISerializers serializers)
@@ -173,7 +173,7 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:115</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:127</p>
   /// </summary>
   public sealed class CollectDumpCommand : IPrintable, IEquatable<CollectDumpCommand>
   {
@@ -291,7 +291,7 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:132</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:144</p>
   /// </summary>
   public sealed class CollectStackTraceCommand : IPrintable, IEquatable<CollectStackTraceCommand>
   {
@@ -734,7 +734,7 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:126</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:138</p>
   /// </summary>
   public sealed class DumpCollectionResult : IPrintable, IEquatable<DumpCollectionResult>
   {
@@ -819,7 +819,7 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:117</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:129</p>
   /// </summary>
   public enum DumpType {
     Full,
@@ -1193,6 +1193,21 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
+  /// <p>Generated from: DiagnosticsHostModel.kt:100</p>
+  /// </summary>
+  public enum PredefinedProvider {
+    Http,
+    AspNet,
+    EF,
+    Exceptions,
+    Threads,
+    Contentions,
+    Tasks,
+    Loader
+  }
+  
+  
+  /// <summary>
   /// <p>Generated from: DiagnosticsHostModel.kt:11</p>
   /// </summary>
   public sealed class ProcessInfo : IPrintable, IEquatable<ProcessInfo>
@@ -1417,6 +1432,7 @@ namespace DiagnosticsClientPlugin.Generated
     [NotNull] public string FilePath {get; private set;}
     public TracingProfile Profile {get; private set;}
     [NotNull] public string Providers {get; private set;}
+    [NotNull] public List<PredefinedProvider> PredefinedProviders {get; private set;}
     [CanBeNull] public int? Duration {get; private set;}
     
     //private fields
@@ -1425,15 +1441,18 @@ namespace DiagnosticsClientPlugin.Generated
       [NotNull] string filePath,
       TracingProfile profile,
       [NotNull] string providers,
+      [NotNull] List<PredefinedProvider> predefinedProviders,
       [CanBeNull] int? duration
     )
     {
       if (filePath == null) throw new ArgumentNullException("filePath");
       if (providers == null) throw new ArgumentNullException("providers");
+      if (predefinedProviders == null) throw new ArgumentNullException("predefinedProviders");
       
       FilePath = filePath;
       Profile = profile;
       Providers = providers;
+      PredefinedProviders = predefinedProviders;
       Duration = duration;
     }
     //secondary constructor
@@ -1446,10 +1465,12 @@ namespace DiagnosticsClientPlugin.Generated
       var filePath = reader.ReadString();
       var profile = (TracingProfile)reader.ReadInt();
       var providers = reader.ReadString();
+      var predefinedProviders = ReadPredefinedProviderList(ctx, reader);
       var duration = ReadIntNullable(ctx, reader);
-      var _result = new TraceCollectionSession(filePath, profile, providers, duration).WithId(_id);
+      var _result = new TraceCollectionSession(filePath, profile, providers, predefinedProviders, duration).WithId(_id);
       return _result;
     };
+    public static CtxReadDelegate<List<PredefinedProvider>> ReadPredefinedProviderList = new CtxReadDelegate<PredefinedProvider>(JetBrains.Rd.Impl.Serializers.ReadEnum<PredefinedProvider>).List();
     public static CtxReadDelegate<int?> ReadIntNullable = JetBrains.Rd.Impl.Serializers.ReadInt.NullableStruct();
     
     public static CtxWriteDelegate<TraceCollectionSession> Write = (ctx, writer, value) => 
@@ -1458,8 +1479,10 @@ namespace DiagnosticsClientPlugin.Generated
       writer.Write(value.FilePath);
       writer.Write((int)value.Profile);
       writer.Write(value.Providers);
+      WritePredefinedProviderList(ctx, writer, value.PredefinedProviders);
       WriteIntNullable(ctx, writer, value.Duration);
     };
+    public static  CtxWriteDelegate<List<PredefinedProvider>> WritePredefinedProviderList = new CtxWriteDelegate<PredefinedProvider>(JetBrains.Rd.Impl.Serializers.WriteEnum<PredefinedProvider>).List();
     public static  CtxWriteDelegate<int?> WriteIntNullable = JetBrains.Rd.Impl.Serializers.WriteInt.NullableStruct();
     
     //constants
@@ -1476,6 +1499,7 @@ namespace DiagnosticsClientPlugin.Generated
         printer.Print("filePath = "); FilePath.PrintEx(printer); printer.Println();
         printer.Print("profile = "); Profile.PrintEx(printer); printer.Println();
         printer.Print("providers = "); Providers.PrintEx(printer); printer.Println();
+        printer.Print("predefinedProviders = "); PredefinedProviders.PrintEx(printer); printer.Println();
         printer.Print("duration = "); Duration.PrintEx(printer); printer.Println();
       }
       printer.Print(")");

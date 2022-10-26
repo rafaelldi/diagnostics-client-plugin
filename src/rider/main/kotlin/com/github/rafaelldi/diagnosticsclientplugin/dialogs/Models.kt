@@ -40,7 +40,15 @@ data class CollectTracesModel(
     var stoppingType: StoppingType,
     var duration: Int,
     var profile: TracingProfile,
-    var providers: String
+    var providers: String,
+    var http: Boolean,
+    var aspNet: Boolean,
+    var ef: Boolean,
+    var exceptions: Boolean,
+    var threads: Boolean,
+    var contentions: Boolean,
+    var tasks: Boolean,
+    var loader: Boolean,
 )
 
 data class MonitoringTimerModel(var stoppingType: StoppingType, var duration: Int)

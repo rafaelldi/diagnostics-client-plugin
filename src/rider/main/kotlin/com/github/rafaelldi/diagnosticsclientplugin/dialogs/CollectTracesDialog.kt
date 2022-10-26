@@ -61,6 +61,32 @@ class CollectTracesDialog(private val project: Project) : DialogWrapper(project)
                     .bindText(model::providers)
             }
         }
+        collapsibleGroup("Predefined Providers") {
+            row {
+                checkBox("Http")
+                    .bindSelected(model::http)
+                @Suppress("DialogTitleCapitalization")
+                checkBox("ASP.NET Core")
+                    .bindSelected(model::aspNet)
+                @Suppress("DialogTitleCapitalization")
+                checkBox("EF Core")
+                    .bindSelected(model::ef)
+            }.layout(RowLayout.PARENT_GRID)
+            row {
+                checkBox("Exceptions")
+                    .bindSelected(model::exceptions)
+                checkBox("Threads")
+                    .bindSelected(model::threads)
+                checkBox("Contentions")
+                    .bindSelected(model::contentions)
+            }.layout(RowLayout.PARENT_GRID)
+            row {
+                checkBox("Tasks")
+                    .bindSelected(model::tasks)
+                checkBox("Loader")
+                    .bindSelected(model::loader)
+            }.layout(RowLayout.PARENT_GRID)
+        }
         group("File Settings") {
             row("Output filename:") {
                 textField()

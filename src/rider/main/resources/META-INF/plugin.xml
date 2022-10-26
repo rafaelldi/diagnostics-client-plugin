@@ -17,8 +17,9 @@
     </extensions>
 
     <projectListeners>
-        <listener class="com.github.rafaelldi.diagnosticsclientplugin.services.counters.CounterMonitoringSessionController"
-                  topic="com.github.rafaelldi.diagnosticsclientplugin.services.counters.CounterSessionListener"/>
+        <listener
+                class="com.github.rafaelldi.diagnosticsclientplugin.services.counters.CounterMonitoringSessionController"
+                topic="com.github.rafaelldi.diagnosticsclientplugin.services.counters.CounterSessionListener"/>
         <listener class="com.github.rafaelldi.diagnosticsclientplugin.services.gc.GcEventMonitoringSessionController"
                   topic="com.github.rafaelldi.diagnosticsclientplugin.services.gc.GcEventSessionListener"/>
     </projectListeners>
@@ -96,18 +97,23 @@
                         icon="AllIcons.Actions.Lightning">
                 </action>
             </group>
-            <action id="DiagnosticsClient.ToolWindow.Explorer.StartCollectingTraces"
-                    class="com.github.rafaelldi.diagnosticsclientplugin.actions.traces.StartCollectingTracesAction"
-                    text="Collect Traces"
-                    description="Start collecting traces"
-                    icon="DiagnosticsClientIcons.Traces">
-            </action>
-            <action id="DiagnosticsClient.ToolWindow.Explorer.StopCollectingTraces"
-                    class="com.github.rafaelldi.diagnosticsclientplugin.actions.traces.StopCollectingTracesAction"
-                    text="Stop Collecting Traces"
-                    description="Stop collecting traces"
-                    icon="AllIcons.Actions.Suspend">
-            </action>
+            <group id="DiagnosticsClient.ToolWindow.Explorer.Traces"
+                   icon="DiagnosticsClientIcons.Traces"
+                   text="Traces"
+                   popup="true">
+                <action id="DiagnosticsClient.ToolWindow.Explorer.StartCollectingTraces"
+                        class="com.github.rafaelldi.diagnosticsclientplugin.actions.traces.StartCollectingTracesAction"
+                        text="Collect Traces"
+                        description="Start collecting traces"
+                        icon="AllIcons.Actions.MenuSaveall">
+                </action>
+                <action id="DiagnosticsClient.ToolWindow.Explorer.StopCollectingTraces"
+                        class="com.github.rafaelldi.diagnosticsclientplugin.actions.traces.StopCollectingTracesAction"
+                        text="Stop Collecting Traces"
+                        description="Stop collecting traces"
+                        icon="AllIcons.Actions.Suspend">
+                </action>
+            </group>
             <action id="DiagnosticsClient.ToolWindow.Explorer.CollectDump"
                     class="com.github.rafaelldi.diagnosticsclientplugin.actions.CollectDumpAction"
                     text="Memory Dump"

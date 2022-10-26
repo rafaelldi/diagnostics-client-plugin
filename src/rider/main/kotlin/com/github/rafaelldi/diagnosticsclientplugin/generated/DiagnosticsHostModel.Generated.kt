@@ -42,6 +42,7 @@ class DiagnosticsHostModel private constructor(
             serializers.register(GcEventMonitoringSession)
             serializers.register(GcEvent)
             serializers.register(TraceCollectionSession)
+            serializers.register(PredefinedProvider.marshaller)
             serializers.register(CollectDumpCommand)
             serializers.register(DumpCollectionResult)
             serializers.register(CollectStackTraceCommand)
@@ -54,7 +55,7 @@ class DiagnosticsHostModel private constructor(
         
         
         
-        const val serializationHash = 3780503103546088433L
+        const val serializationHash = 4454907719965074765L
         
     }
     override val serializersOwner: ISerializersOwner get() = DiagnosticsHostModel
@@ -136,7 +137,7 @@ val com.jetbrains.rd.ide.model.Solution.diagnosticsHostModel get() = getOrCreate
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:115]
+ * #### Generated from [DiagnosticsHostModel.kt:127]
  */
 data class CollectDumpCommand (
     val pid: Int,
@@ -217,7 +218,7 @@ data class CollectDumpCommand (
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:132]
+ * #### Generated from [DiagnosticsHostModel.kt:144]
  */
 data class CollectStackTraceCommand (
     val pid: Int
@@ -562,7 +563,7 @@ class CounterMonitoringSession private constructor(
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:126]
+ * #### Generated from [DiagnosticsHostModel.kt:138]
  */
 data class DumpCollectionResult (
     val filePath: String
@@ -619,7 +620,7 @@ data class DumpCollectionResult (
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:117]
+ * #### Generated from [DiagnosticsHostModel.kt:129]
  */
 enum class DumpType {
     Full, 
@@ -915,6 +916,26 @@ class GcEventMonitoringSession private constructor(
 
 
 /**
+ * #### Generated from [DiagnosticsHostModel.kt:100]
+ */
+enum class PredefinedProvider {
+    Http, 
+    AspNet, 
+    EF, 
+    Exceptions, 
+    Threads, 
+    Contentions, 
+    Tasks, 
+    Loader;
+    
+    companion object {
+        val marshaller = FrameworkMarshallers.enum<PredefinedProvider>()
+        
+    }
+}
+
+
+/**
  * #### Generated from [DiagnosticsHostModel.kt:11]
  */
 data class ProcessInfo (
@@ -1085,6 +1106,7 @@ class TraceCollectionSession (
     val filePath: String,
     val profile: TracingProfile,
     val providers: String,
+    val predefinedProviders: List<PredefinedProvider>,
     val duration: Int?
 ) : RdBindableBase() {
     //companion
@@ -1098,8 +1120,9 @@ class TraceCollectionSession (
             val filePath = buffer.readString()
             val profile = buffer.readEnum<TracingProfile>()
             val providers = buffer.readString()
+            val predefinedProviders = buffer.readList { buffer.readEnum<PredefinedProvider>() }
             val duration = buffer.readNullable { buffer.readInt() }
-            return TraceCollectionSession(filePath, profile, providers, duration).withId(_id)
+            return TraceCollectionSession(filePath, profile, providers, predefinedProviders, duration).withId(_id)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: TraceCollectionSession)  {
@@ -1107,6 +1130,7 @@ class TraceCollectionSession (
             buffer.writeString(value.filePath)
             buffer.writeEnum(value.profile)
             buffer.writeString(value.providers)
+            buffer.writeList(value.predefinedProviders) { v -> buffer.writeEnum(v) }
             buffer.writeNullable(value.duration) { buffer.writeInt(it) }
         }
         
@@ -1125,6 +1149,7 @@ class TraceCollectionSession (
             print("filePath = "); filePath.print(printer); println()
             print("profile = "); profile.print(printer); println()
             print("providers = "); providers.print(printer); println()
+            print("predefinedProviders = "); predefinedProviders.print(printer); println()
             print("duration = "); duration.print(printer); println()
         }
         printer.print(")")
@@ -1135,6 +1160,7 @@ class TraceCollectionSession (
             filePath,
             profile,
             providers,
+            predefinedProviders,
             duration
         )
     }

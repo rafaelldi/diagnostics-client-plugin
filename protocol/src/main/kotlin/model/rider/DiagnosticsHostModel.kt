@@ -93,7 +93,19 @@ object DiagnosticsHostModel : Ext(SolutionModel.Solution) {
             +"GcCollect"
         })
         field("providers", string)
+        field("predefinedProviders", immutableList(PredefinedProvider))
         field("duration", int.nullable)
+    }
+
+    private val PredefinedProvider = enum("PredefinedProvider") {
+        +"Http"
+        +"AspNet"
+        +"EF"
+        +"Exceptions"
+        +"Threads"
+        +"Contentions"
+        +"Tasks"
+        +"Loader"
     }
 
     init {
