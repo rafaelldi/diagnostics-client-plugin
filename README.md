@@ -8,10 +8,10 @@
 Simplifies the collection of diagnostic artifacts from local processes.
 
 **Features:**
-* Monitor or collect `EventCounters`.
-* Monitor GC.
-* Collect dumps.
+* Monitor or collect `EventCounters` and OpenTelemetry metrics.
+* Monitor or collect GC events.
 * Collect traces.
+* Collect dumps.
 * More features are coming 😉
 <!-- Plugin description end -->
 
