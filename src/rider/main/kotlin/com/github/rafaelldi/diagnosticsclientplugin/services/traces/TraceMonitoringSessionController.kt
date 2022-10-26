@@ -1,9 +1,10 @@
-package com.github.rafaelldi.diagnosticsclientplugin.services.gc
+package com.github.rafaelldi.diagnosticsclientplugin.services.traces
 
-import com.github.rafaelldi.diagnosticsclientplugin.dialogs.MonitorGcEventsModel
+import com.github.rafaelldi.diagnosticsclientplugin.dialogs.MonitorTracesModel
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.StoppingType
 import com.github.rafaelldi.diagnosticsclientplugin.generated.DiagnosticsHostModel
-import com.github.rafaelldi.diagnosticsclientplugin.generated.GcEventMonitoringSession
+import com.github.rafaelldi.diagnosticsclientplugin.generated.PredefinedProvider
+import com.github.rafaelldi.diagnosticsclientplugin.generated.TraceMonitoringSession
 import com.github.rafaelldi.diagnosticsclientplugin.generated.diagnosticsHostModel
 import com.intellij.notification.Notification
 import com.intellij.notification.NotificationType
@@ -20,44 +21,68 @@ import kotlinx.coroutines.Dispatchers
 import java.time.Duration
 
 @Service
-class GcEventMonitoringSessionController(project: Project) :
-    ProtocolSubscribedProjectComponent(project), GcEventSessionListener {
+class TraceMonitoringSessionController(project: Project) :
+    ProtocolSubscribedProjectComponent(project), TraceSessionListener {
     companion object {
-        fun getInstance(project: Project): GcEventMonitoringSessionController = project.service()
+        fun getInstance(project: Project): TraceMonitoringSessionController = project.service()
     }
 
     private val hostModel: DiagnosticsHostModel = project.solution.diagnosticsHostModel
 
     init {
-        hostModel.gcEventMonitoringSessions.view(projectComponentLifetime) { lt, pid, session ->
+        hostModel.traceMonitoringSessions.view(projectComponentLifetime) { lt, pid, session ->
             viewSession(pid, session, lt)
         }
     }
 
-    fun startSession(pid: Int, model: MonitorGcEventsModel) {
-        if (!hostModel.gcEventMonitoringSessions.contains(pid)) {
-            createNewSession(pid)
+    fun startSession(pid: Int, model: MonitorTracesModel) {
+        if (!hostModel.traceMonitoringSessions.contains(pid)) {
+            createNewSession(pid, model)
         }
 
         startExistingSession(pid, model.stoppingType, model.duration)
     }
 
-    private fun createNewSession(pid: Int) {
-        if (hostModel.gcEventMonitoringSessions.contains(pid)) {
+    private fun createNewSession(pid: Int, model: MonitorTracesModel) {
+        if (hostModel.traceMonitoringSessions.contains(pid)) {
             return
         }
 
-        val session = GcEventMonitoringSession()
+        val providers = getPredefinedProviders(model)
+        val session = TraceMonitoringSession(providers)
 
         try {
-            hostModel.gcEventMonitoringSessions.addUnique(projectComponentLifetime, pid, session)
+            hostModel.traceMonitoringSessions.addUnique(projectComponentLifetime, pid, session)
         } catch (e: IllegalArgumentException) {
             // do nothing
         }
     }
 
+    private fun getPredefinedProviders(model: MonitorTracesModel): List<PredefinedProvider> {
+        val providers = mutableListOf<PredefinedProvider>()
+
+        if (model.http)
+            providers.add(PredefinedProvider.Http)
+        if (model.aspNet)
+            providers.add(PredefinedProvider.AspNet)
+        if (model.ef)
+            providers.add(PredefinedProvider.EF)
+        if (model.exceptions)
+            providers.add(PredefinedProvider.Exceptions)
+        if (model.threads)
+            providers.add(PredefinedProvider.Threads)
+        if (model.contentions)
+            providers.add(PredefinedProvider.Contentions)
+        if (model.tasks)
+            providers.add(PredefinedProvider.Tasks)
+        if (model.loader)
+            providers.add(PredefinedProvider.Loader)
+
+        return providers
+    }
+
     fun startExistingSession(pid: Int, stoppingType: StoppingType, duration: Int) {
-        val session = hostModel.gcEventMonitoringSessions[pid]
+        val session = hostModel.traceMonitoringSessions[pid]
         if (session == null) {
             sessionNotFound(pid)
             return
@@ -77,7 +102,7 @@ class GcEventMonitoringSessionController(project: Project) :
     }
 
     fun stopSession(pid: Int) {
-        val session = hostModel.gcEventMonitoringSessions[pid]
+        val session = hostModel.traceMonitoringSessions[pid]
         if (session == null) {
             sessionNotFound(pid)
             return
@@ -89,14 +114,14 @@ class GcEventMonitoringSessionController(project: Project) :
     }
 
     override fun sessionClosed(pid: Int) {
-        hostModel.gcEventMonitoringSessions.remove(pid)
+        hostModel.traceMonitoringSessions.remove(pid)
     }
 
-    private fun viewSession(pid: Int, session: GcEventMonitoringSession, lifetime: Lifetime) {
+    private fun viewSession(pid: Int, session: TraceMonitoringSession, lifetime: Lifetime) {
         session.active.whenTrue(lifetime) { lt -> viewActiveStatus(pid, session, lt) }
     }
 
-    private fun viewActiveStatus(pid: Int, session: GcEventMonitoringSession, lifetime: Lifetime) {
+    private fun viewActiveStatus(pid: Int, session: TraceMonitoringSession, lifetime: Lifetime) {
         val duration = session.duration.value
         if (duration != null) {
             val timerLifetime =
@@ -116,7 +141,7 @@ class GcEventMonitoringSessionController(project: Project) :
 
     private fun sessionStarted(pid: Int) = Notification(
         "Diagnostics Client",
-        "GC monitoring started",
+        "Trace monitoring started",
         "Session for process $pid started",
         NotificationType.INFORMATION
     )
@@ -124,7 +149,7 @@ class GcEventMonitoringSessionController(project: Project) :
 
     private fun sessionFinished(pid: Int) = Notification(
         "Diagnostics Client",
-        "GC monitoring finished",
+        "Trace monitoring finished",
         "Session for process $pid finished",
         NotificationType.INFORMATION
     )
@@ -132,7 +157,7 @@ class GcEventMonitoringSessionController(project: Project) :
 
     private fun sessionNotFound(pid: Int) = Notification(
         "Diagnostics Client",
-        "GC events monitoring session for $pid not found",
+        "Trace events monitoring session for $pid not found",
         "",
         NotificationType.ERROR
     )

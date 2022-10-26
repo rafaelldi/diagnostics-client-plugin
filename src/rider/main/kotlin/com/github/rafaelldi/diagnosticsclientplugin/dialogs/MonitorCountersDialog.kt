@@ -1,6 +1,6 @@
 package com.github.rafaelldi.diagnosticsclientplugin.dialogs
 
-import com.github.rafaelldi.diagnosticsclientplugin.services.counters.CountersSettings
+import com.github.rafaelldi.diagnosticsclientplugin.services.counters.CounterSettings
 import com.github.rafaelldi.diagnosticsclientplugin.utils.isValidCounterProviderList
 import com.github.rafaelldi.diagnosticsclientplugin.utils.isValidMetricList
 import com.intellij.openapi.project.Project
@@ -11,7 +11,7 @@ import com.intellij.ui.dsl.builder.*
 import javax.swing.JComponent
 
 class MonitorCountersDialog(project: Project) : DialogWrapper(project) {
-    private val model = CountersSettings.getInstance(project).getMonitorModel()
+    private val model = CounterSettings.getInstance(project).getMonitorModel()
 
     init {
         init()

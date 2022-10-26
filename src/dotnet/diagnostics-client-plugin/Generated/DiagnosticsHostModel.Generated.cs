@@ -49,6 +49,7 @@ namespace DiagnosticsClientPlugin.Generated
     [NotNull] public IViewableMap<int, GcEventMonitoringSession> GcEventMonitoringSessions => _GcEventMonitoringSessions;
     [NotNull] public ISource<int> TriggerGc => _TriggerGc;
     [NotNull] public IViewableMap<int, TraceCollectionSession> TraceCollectionSessions => _TraceCollectionSessions;
+    [NotNull] public IViewableMap<int, TraceMonitoringSession> TraceMonitoringSessions => _TraceMonitoringSessions;
     [NotNull] public IRdEndpoint<CollectDumpCommand, DumpCollectionResult> CollectDump => _CollectDump;
     [NotNull] public IRdEndpoint<CollectStackTraceCommand, string> CollectStackTrace => _CollectStackTrace;
     
@@ -59,6 +60,7 @@ namespace DiagnosticsClientPlugin.Generated
     [NotNull] private readonly RdMap<int, GcEventMonitoringSession> _GcEventMonitoringSessions;
     [NotNull] private readonly RdSignal<int> _TriggerGc;
     [NotNull] private readonly RdMap<int, TraceCollectionSession> _TraceCollectionSessions;
+    [NotNull] private readonly RdMap<int, TraceMonitoringSession> _TraceMonitoringSessions;
     [NotNull] private readonly RdCall<CollectDumpCommand, DumpCollectionResult> _CollectDump;
     [NotNull] private readonly RdCall<CollectStackTraceCommand, string> _CollectStackTrace;
     
@@ -71,6 +73,7 @@ namespace DiagnosticsClientPlugin.Generated
       [NotNull] RdMap<int, GcEventMonitoringSession> gcEventMonitoringSessions,
       [NotNull] RdSignal<int> triggerGc,
       [NotNull] RdMap<int, TraceCollectionSession> traceCollectionSessions,
+      [NotNull] RdMap<int, TraceMonitoringSession> traceMonitoringSessions,
       [NotNull] RdCall<CollectDumpCommand, DumpCollectionResult> collectDump,
       [NotNull] RdCall<CollectStackTraceCommand, string> collectStackTrace
     )
@@ -82,6 +85,7 @@ namespace DiagnosticsClientPlugin.Generated
       if (gcEventMonitoringSessions == null) throw new ArgumentNullException("gcEventMonitoringSessions");
       if (triggerGc == null) throw new ArgumentNullException("triggerGc");
       if (traceCollectionSessions == null) throw new ArgumentNullException("traceCollectionSessions");
+      if (traceMonitoringSessions == null) throw new ArgumentNullException("traceMonitoringSessions");
       if (collectDump == null) throw new ArgumentNullException("collectDump");
       if (collectStackTrace == null) throw new ArgumentNullException("collectStackTrace");
       
@@ -92,6 +96,7 @@ namespace DiagnosticsClientPlugin.Generated
       _GcEventMonitoringSessions = gcEventMonitoringSessions;
       _TriggerGc = triggerGc;
       _TraceCollectionSessions = traceCollectionSessions;
+      _TraceMonitoringSessions = traceMonitoringSessions;
       _CollectDump = collectDump;
       _CollectStackTrace = collectStackTrace;
       BindableChildren.Add(new KeyValuePair<string, object>("processList", ProcessList));
@@ -101,6 +106,7 @@ namespace DiagnosticsClientPlugin.Generated
       BindableChildren.Add(new KeyValuePair<string, object>("gcEventMonitoringSessions", _GcEventMonitoringSessions));
       BindableChildren.Add(new KeyValuePair<string, object>("triggerGc", _TriggerGc));
       BindableChildren.Add(new KeyValuePair<string, object>("traceCollectionSessions", _TraceCollectionSessions));
+      BindableChildren.Add(new KeyValuePair<string, object>("traceMonitoringSessions", _TraceMonitoringSessions));
       BindableChildren.Add(new KeyValuePair<string, object>("collectDump", _CollectDump));
       BindableChildren.Add(new KeyValuePair<string, object>("collectStackTrace", _CollectStackTrace));
     }
@@ -114,6 +120,7 @@ namespace DiagnosticsClientPlugin.Generated
       new RdMap<int, GcEventMonitoringSession>(JetBrains.Rd.Impl.Serializers.ReadInt, JetBrains.Rd.Impl.Serializers.WriteInt, GcEventMonitoringSession.Read, GcEventMonitoringSession.Write),
       new RdSignal<int>(JetBrains.Rd.Impl.Serializers.ReadInt, JetBrains.Rd.Impl.Serializers.WriteInt),
       new RdMap<int, TraceCollectionSession>(JetBrains.Rd.Impl.Serializers.ReadInt, JetBrains.Rd.Impl.Serializers.WriteInt, TraceCollectionSession.Read, TraceCollectionSession.Write),
+      new RdMap<int, TraceMonitoringSession>(JetBrains.Rd.Impl.Serializers.ReadInt, JetBrains.Rd.Impl.Serializers.WriteInt, TraceMonitoringSession.Read, TraceMonitoringSession.Write),
       new RdCall<CollectDumpCommand, DumpCollectionResult>(CollectDumpCommand.Read, CollectDumpCommand.Write, DumpCollectionResult.Read, DumpCollectionResult.Write),
       new RdCall<CollectStackTraceCommand, string>(CollectStackTraceCommand.Read, CollectStackTraceCommand.Write, JetBrains.Rd.Impl.Serializers.ReadString, JetBrains.Rd.Impl.Serializers.WriteString)
     ) {}
@@ -122,7 +129,7 @@ namespace DiagnosticsClientPlugin.Generated
     
     
     
-    protected override long SerializationHash => 4454907719965074765L;
+    protected override long SerializationHash => -5026178112067600123L;
     
     protected override Action<ISerializers> Register => RegisterDeclaredTypesSerializers;
     public static void RegisterDeclaredTypesSerializers(ISerializers serializers)
@@ -150,6 +157,7 @@ namespace DiagnosticsClientPlugin.Generated
         printer.Print("gcEventMonitoringSessions = "); _GcEventMonitoringSessions.PrintEx(printer); printer.Println();
         printer.Print("triggerGc = "); _TriggerGc.PrintEx(printer); printer.Println();
         printer.Print("traceCollectionSessions = "); _TraceCollectionSessions.PrintEx(printer); printer.Println();
+        printer.Print("traceMonitoringSessions = "); _TraceMonitoringSessions.PrintEx(printer); printer.Println();
         printer.Print("collectDump = "); _CollectDump.PrintEx(printer); printer.Println();
         printer.Print("collectStackTrace = "); _CollectStackTrace.PrintEx(printer); printer.Println();
       }
@@ -173,7 +181,7 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:127</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:142</p>
   /// </summary>
   public sealed class CollectDumpCommand : IPrintable, IEquatable<CollectDumpCommand>
   {
@@ -291,7 +299,7 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:144</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:159</p>
   /// </summary>
   public sealed class CollectStackTraceCommand : IPrintable, IEquatable<CollectStackTraceCommand>
   {
@@ -734,7 +742,7 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:138</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:153</p>
   /// </summary>
   public sealed class DumpCollectionResult : IPrintable, IEquatable<DumpCollectionResult>
   {
@@ -819,7 +827,7 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:129</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:144</p>
   /// </summary>
   public enum DumpType {
     Full,
@@ -1193,7 +1201,7 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:100</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:107</p>
   /// </summary>
   public enum PredefinedProvider {
     Http,
@@ -1423,6 +1431,116 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
+  /// <p>Generated from: DiagnosticsHostModel.kt:118</p>
+  /// </summary>
+  public sealed class Trace : IPrintable, IEquatable<Trace>
+  {
+    //fields
+    //public fields
+    [NotNull] public string EventName {get; private set;}
+    public PredefinedProvider Provider {get; private set;}
+    public DateTime TimeStamp {get; private set;}
+    [NotNull] public string Content {get; private set;}
+    
+    //private fields
+    //primary constructor
+    public Trace(
+      [NotNull] string eventName,
+      PredefinedProvider provider,
+      DateTime timeStamp,
+      [NotNull] string content
+    )
+    {
+      if (eventName == null) throw new ArgumentNullException("eventName");
+      if (content == null) throw new ArgumentNullException("content");
+      
+      EventName = eventName;
+      Provider = provider;
+      TimeStamp = timeStamp;
+      Content = content;
+    }
+    //secondary constructor
+    //deconstruct trait
+    public void Deconstruct([NotNull] out string eventName, out PredefinedProvider provider, out DateTime timeStamp, [NotNull] out string content)
+    {
+      eventName = EventName;
+      provider = Provider;
+      timeStamp = TimeStamp;
+      content = Content;
+    }
+    //statics
+    
+    public static CtxReadDelegate<Trace> Read = (ctx, reader) => 
+    {
+      var eventName = reader.ReadString();
+      var provider = (PredefinedProvider)reader.ReadInt();
+      var timeStamp = reader.ReadDateTime();
+      var content = reader.ReadString();
+      var _result = new Trace(eventName, provider, timeStamp, content);
+      return _result;
+    };
+    
+    public static CtxWriteDelegate<Trace> Write = (ctx, writer, value) => 
+    {
+      writer.Write(value.EventName);
+      writer.Write((int)value.Provider);
+      writer.Write(value.TimeStamp);
+      writer.Write(value.Content);
+    };
+    
+    //constants
+    
+    //custom body
+    //methods
+    //equals trait
+    public override bool Equals(object obj)
+    {
+      if (ReferenceEquals(null, obj)) return false;
+      if (ReferenceEquals(this, obj)) return true;
+      if (obj.GetType() != GetType()) return false;
+      return Equals((Trace) obj);
+    }
+    public bool Equals(Trace other)
+    {
+      if (ReferenceEquals(null, other)) return false;
+      if (ReferenceEquals(this, other)) return true;
+      return EventName == other.EventName && Provider == other.Provider && TimeStamp == other.TimeStamp && Content == other.Content;
+    }
+    //hash code trait
+    public override int GetHashCode()
+    {
+      unchecked {
+        var hash = 0;
+        hash = hash * 31 + EventName.GetHashCode();
+        hash = hash * 31 + (int) Provider;
+        hash = hash * 31 + TimeStamp.GetHashCode();
+        hash = hash * 31 + Content.GetHashCode();
+        return hash;
+      }
+    }
+    //pretty print
+    public void Print(PrettyPrinter printer)
+    {
+      printer.Println("Trace (");
+      using (printer.IndentCookie()) {
+        printer.Print("eventName = "); EventName.PrintEx(printer); printer.Println();
+        printer.Print("provider = "); Provider.PrintEx(printer); printer.Println();
+        printer.Print("timeStamp = "); TimeStamp.PrintEx(printer); printer.Println();
+        printer.Print("content = "); Content.PrintEx(printer); printer.Println();
+      }
+      printer.Print(")");
+    }
+    //toString
+    public override string ToString()
+    {
+      var printer = new SingleLinePrettyPrinter();
+      Print(printer);
+      return printer.ToString();
+    }
+  }
+  
+  
+  /// <summary>
   /// <p>Generated from: DiagnosticsHostModel.kt:87</p>
   /// </summary>
   public sealed class TraceCollectionSession : RdBindableBase
@@ -1501,6 +1619,112 @@ namespace DiagnosticsClientPlugin.Generated
         printer.Print("providers = "); Providers.PrintEx(printer); printer.Println();
         printer.Print("predefinedProviders = "); PredefinedProviders.PrintEx(printer); printer.Println();
         printer.Print("duration = "); Duration.PrintEx(printer); printer.Println();
+      }
+      printer.Print(")");
+    }
+    //toString
+    public override string ToString()
+    {
+      var printer = new SingleLinePrettyPrinter();
+      Print(printer);
+      return printer.ToString();
+    }
+  }
+  
+  
+  /// <summary>
+  /// <p>Generated from: DiagnosticsHostModel.kt:100</p>
+  /// </summary>
+  public sealed class TraceMonitoringSession : RdBindableBase
+  {
+    //fields
+    //public fields
+    [NotNull] public List<PredefinedProvider> PredefinedProviders {get; private set;}
+    [NotNull] public IViewableProperty<bool> Active => _Active;
+    [NotNull] public IViewableProperty<int?> Duration => _Duration;
+    [NotNull] public ISignal<Trace> TraceReceived => _TraceReceived;
+    
+    //private fields
+    [NotNull] private readonly RdProperty<bool> _Active;
+    [NotNull] private readonly RdProperty<int?> _Duration;
+    [NotNull] private readonly RdSignal<Trace> _TraceReceived;
+    
+    //primary constructor
+    private TraceMonitoringSession(
+      [NotNull] List<PredefinedProvider> predefinedProviders,
+      [NotNull] RdProperty<bool> active,
+      [NotNull] RdProperty<int?> duration,
+      [NotNull] RdSignal<Trace> traceReceived
+    )
+    {
+      if (predefinedProviders == null) throw new ArgumentNullException("predefinedProviders");
+      if (active == null) throw new ArgumentNullException("active");
+      if (duration == null) throw new ArgumentNullException("duration");
+      if (traceReceived == null) throw new ArgumentNullException("traceReceived");
+      
+      PredefinedProviders = predefinedProviders;
+      _Active = active;
+      _Duration = duration;
+      _TraceReceived = traceReceived;
+      _Active.OptimizeNested = true;
+      _Duration.OptimizeNested = true;
+      _TraceReceived.Async = true;
+      _Duration.ValueCanBeNull = true;
+      BindableChildren.Add(new KeyValuePair<string, object>("active", _Active));
+      BindableChildren.Add(new KeyValuePair<string, object>("duration", _Duration));
+      BindableChildren.Add(new KeyValuePair<string, object>("traceReceived", _TraceReceived));
+    }
+    //secondary constructor
+    public TraceMonitoringSession (
+      [NotNull] List<PredefinedProvider> predefinedProviders
+    ) : this (
+      predefinedProviders,
+      new RdProperty<bool>(JetBrains.Rd.Impl.Serializers.ReadBool, JetBrains.Rd.Impl.Serializers.WriteBool),
+      new RdProperty<int?>(ReadIntNullable, WriteIntNullable),
+      new RdSignal<Trace>(Trace.Read, Trace.Write)
+    ) {}
+    //deconstruct trait
+    //statics
+    
+    public static CtxReadDelegate<TraceMonitoringSession> Read = (ctx, reader) => 
+    {
+      var _id = RdId.Read(reader);
+      var predefinedProviders = ReadPredefinedProviderList(ctx, reader);
+      var active = RdProperty<bool>.Read(ctx, reader, JetBrains.Rd.Impl.Serializers.ReadBool, JetBrains.Rd.Impl.Serializers.WriteBool);
+      var duration = RdProperty<int?>.Read(ctx, reader, ReadIntNullable, WriteIntNullable);
+      var traceReceived = RdSignal<Trace>.Read(ctx, reader, Trace.Read, Trace.Write);
+      var _result = new TraceMonitoringSession(predefinedProviders, active, duration, traceReceived).WithId(_id);
+      return _result;
+    };
+    public static CtxReadDelegate<List<PredefinedProvider>> ReadPredefinedProviderList = new CtxReadDelegate<PredefinedProvider>(JetBrains.Rd.Impl.Serializers.ReadEnum<PredefinedProvider>).List();
+    public static CtxReadDelegate<int?> ReadIntNullable = JetBrains.Rd.Impl.Serializers.ReadInt.NullableStruct();
+    
+    public static CtxWriteDelegate<TraceMonitoringSession> Write = (ctx, writer, value) => 
+    {
+      value.RdId.Write(writer);
+      WritePredefinedProviderList(ctx, writer, value.PredefinedProviders);
+      RdProperty<bool>.Write(ctx, writer, value._Active);
+      RdProperty<int?>.Write(ctx, writer, value._Duration);
+      RdSignal<Trace>.Write(ctx, writer, value._TraceReceived);
+    };
+    public static  CtxWriteDelegate<List<PredefinedProvider>> WritePredefinedProviderList = new CtxWriteDelegate<PredefinedProvider>(JetBrains.Rd.Impl.Serializers.WriteEnum<PredefinedProvider>).List();
+    public static  CtxWriteDelegate<int?> WriteIntNullable = JetBrains.Rd.Impl.Serializers.WriteInt.NullableStruct();
+    
+    //constants
+    
+    //custom body
+    //methods
+    //equals trait
+    //hash code trait
+    //pretty print
+    public override void Print(PrettyPrinter printer)
+    {
+      printer.Println("TraceMonitoringSession (");
+      using (printer.IndentCookie()) {
+        printer.Print("predefinedProviders = "); PredefinedProviders.PrintEx(printer); printer.Println();
+        printer.Print("active = "); _Active.PrintEx(printer); printer.Println();
+        printer.Print("duration = "); _Duration.PrintEx(printer); printer.Println();
+        printer.Print("traceReceived = "); _TraceReceived.PrintEx(printer); printer.Println();
       }
       printer.Print(")");
     }

@@ -34,6 +34,19 @@ data class CollectGcEventsModel(
     var duration: Int
 )
 
+data class MonitorTracesModel(
+    var stoppingType: StoppingType,
+    var duration: Int,
+    var http: Boolean,
+    var aspNet: Boolean,
+    var ef: Boolean,
+    var exceptions: Boolean,
+    var threads: Boolean,
+    var contentions: Boolean,
+    var tasks: Boolean,
+    var loader: Boolean
+)
+
 data class CollectTracesModel(
     var path: String,
     var filename: String,
@@ -48,7 +61,7 @@ data class CollectTracesModel(
     var threads: Boolean,
     var contentions: Boolean,
     var tasks: Boolean,
-    var loader: Boolean,
+    var loader: Boolean
 )
 
 data class MonitoringTimerModel(var stoppingType: StoppingType, var duration: Int)

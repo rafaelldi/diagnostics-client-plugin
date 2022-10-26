@@ -4,7 +4,7 @@ import com.github.rafaelldi.diagnosticsclientplugin.generated.GcEvent
 import com.intellij.ui.table.JBTable
 import javax.swing.table.DefaultTableModel
 
-class GcTableComponent : JBTable() {
+class GcEventTableComponent : JBTable() {
     companion object {
         private const val NUMBER_COLUMN_TITLE = "Number"
         private const val GENERATION_COLUMN_TITLE = "Gen"

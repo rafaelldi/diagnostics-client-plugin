@@ -8,12 +8,12 @@ import com.intellij.openapi.project.Project
 import com.jetbrains.rider.projectView.solutionDirectoryPath
 
 @Service
-@State(name = "GcEventsSettings", storages = [(Storage("diagnostics-client.xml"))])
-class GcEventsSettings(project: Project) : SimplePersistentStateComponent<GcEventsSettings.GcSettingsState>(
-    GcSettingsState(project.solutionDirectoryPath.toString())
+@State(name = "GcEventSettings", storages = [(Storage("diagnostics-client.xml"))])
+class GcEventSettings(project: Project) : SimplePersistentStateComponent<GcEventSettings.GcEventSettingsState>(
+    GcEventSettingsState(project.solutionDirectoryPath.toString())
 ) {
     companion object {
-        fun getInstance(project: Project): GcEventsSettings = project.service()
+        fun getInstance(project: Project): GcEventSettings = project.service()
     }
 
     fun getMonitorModel() = MonitorGcEventsModel(state.stoppingType, state.duration)
@@ -41,7 +41,7 @@ class GcEventsSettings(project: Project) : SimplePersistentStateComponent<GcEven
         }
     }
 
-    class GcSettingsState(solutionPath: String = "") : BaseState() {
+    class GcEventSettingsState(solutionPath: String = "") : BaseState() {
         var path by string(solutionPath)
         var filename by string("gc-events")
         var stoppingType by enum(StoppingType.AfterPeriod)

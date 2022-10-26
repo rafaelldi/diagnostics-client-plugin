@@ -22,6 +22,8 @@
                 topic="com.github.rafaelldi.diagnosticsclientplugin.services.counters.CounterSessionListener"/>
         <listener class="com.github.rafaelldi.diagnosticsclientplugin.services.gc.GcEventMonitoringSessionController"
                   topic="com.github.rafaelldi.diagnosticsclientplugin.services.gc.GcEventSessionListener"/>
+        <listener class="com.github.rafaelldi.diagnosticsclientplugin.services.traces.TraceMonitoringSessionController"
+                  topic="com.github.rafaelldi.diagnosticsclientplugin.services.traces.TraceSessionListener"/>
     </projectListeners>
 
     <actions>
@@ -101,6 +103,18 @@
                    icon="DiagnosticsClientIcons.Traces"
                    text="Traces"
                    popup="true">
+                <action id="DiagnosticsClient.ToolWindow.Explorer.StartMonitoringTraces"
+                        class="com.github.rafaelldi.diagnosticsclientplugin.actions.traces.StartMonitoringTracesAction"
+                        text="Monitor Traces"
+                        description="Start monitoring traces"
+                        icon="AllIcons.Actions.Show">
+                </action>
+                <action id="DiagnosticsClient.ToolWindow.Explorer.StopMonitoringTraces"
+                        class="com.github.rafaelldi.diagnosticsclientplugin.actions.traces.StopMonitoringTracesAction"
+                        text="Stop Monitoring Traces"
+                        description="Stop monitoring traces"
+                        icon="AllIcons.Actions.Suspend">
+                </action>
                 <action id="DiagnosticsClient.ToolWindow.Explorer.StartCollectingTraces"
                         class="com.github.rafaelldi.diagnosticsclientplugin.actions.traces.StartCollectingTracesAction"
                         text="Collect Traces"
@@ -131,31 +145,31 @@
                     class="com.github.rafaelldi.diagnosticsclientplugin.actions.DiagnosticsClientHelpAction">
             </action>
         </group>
-        <group id="DiagnosticsClient.ToolWindow.CountersSession">
-            <action id="DiagnosticsClient.ToolWindow.CountersSession.Start"
+        <group id="DiagnosticsClient.ToolWindow.CounterSession">
+            <action id="DiagnosticsClient.ToolWindow.CounterSession.Start"
                     class="com.github.rafaelldi.diagnosticsclientplugin.actions.counters.StartCounterMonitoringSessionAction"
-                    text="Start Counters Monitoring Session"
-                    description="Start counters monitoring session"
+                    text="Start Counter Monitoring Session"
+                    description="Start counter monitoring session"
                     icon="AllIcons.Actions.Execute">
             </action>
-            <action id="DiagnosticsClient.ToolWindow.CountersSession.Stop"
+            <action id="DiagnosticsClient.ToolWindow.CounterSession.Stop"
                     class="com.github.rafaelldi.diagnosticsclientplugin.actions.counters.StopCounterMonitoringSessionAction"
-                    text="Stop Counters Monitoring Session"
-                    description="Stop counters monitoring session"
+                    text="Stop Counter Monitoring Session"
+                    description="Stop counter monitoring session"
                     icon="AllIcons.Actions.Suspend">
             </action>
         </group>
-        <group id="DiagnosticsClient.ToolWindow.GcSession">
-            <action id="DiagnosticsClient.ToolWindow.GcSession.Start"
+        <group id="DiagnosticsClient.ToolWindow.GcEventSession">
+            <action id="DiagnosticsClient.ToolWindow.GcEventSession.Start"
                     class="com.github.rafaelldi.diagnosticsclientplugin.actions.gc.StartGcEventMonitoringSessionAction"
-                    text="Start GC Monitoring Session"
-                    description="Start GC monitoring session"
+                    text="Start GC Event Monitoring Session"
+                    description="Start GC event monitoring session"
                     icon="AllIcons.Actions.Execute">
             </action>
-            <action id="DiagnosticsClient.ToolWindow.GcSession.Stop"
+            <action id="DiagnosticsClient.ToolWindow.GcEventSession.Stop"
                     class="com.github.rafaelldi.diagnosticsclientplugin.actions.gc.StopGcEventMonitoringSessionAction"
-                    text="Stop GC Monitoring Session"
-                    description="Stop counters monitoring session"
+                    text="Stop GC Event Monitoring Session"
+                    description="Stop GC event monitoring session"
                     icon="AllIcons.Actions.Suspend">
             </action>
             <action id="DiagnosticsClient.ToolWindow.GcSession.TriggerCollection"
@@ -163,6 +177,20 @@
                     text="Trigger GC"
                     description="Trigger GC"
                     icon="AllIcons.Actions.Lightning">
+            </action>
+        </group>
+        <group id="DiagnosticsClient.ToolWindow.TraceSession">
+            <action id="DiagnosticsClient.ToolWindow.TraceSession.Start"
+                    class="com.github.rafaelldi.diagnosticsclientplugin.actions.traces.StartTraceMonitoringSessionAction"
+                    text="Start Trace Monitoring Session"
+                    description="Start trace monitoring session"
+                    icon="AllIcons.Actions.Execute">
+            </action>
+            <action id="DiagnosticsClient.ToolWindow.TraceSession.Stop"
+                    class="com.github.rafaelldi.diagnosticsclientplugin.actions.traces.StopTraceMonitoringSessionAction"
+                    text="Stop Trace Monitoring Session"
+                    description="Stop trace monitoring session"
+                    icon="AllIcons.Actions.Suspend">
             </action>
         </group>
     </actions>

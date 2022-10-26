@@ -1,9 +1,9 @@
 package com.github.rafaelldi.diagnosticsclientplugin.toolWindow
 
-import com.github.rafaelldi.diagnosticsclientplugin.generated.CounterMonitoringSession
+import com.github.rafaelldi.diagnosticsclientplugin.generated.TraceMonitoringSession
 import com.github.rafaelldi.diagnosticsclientplugin.generated.diagnosticsHostModel
-import com.github.rafaelldi.diagnosticsclientplugin.services.counters.CounterSessionListener
-import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.CounterMonitoringTab
+import com.github.rafaelldi.diagnosticsclientplugin.services.traces.TraceSessionListener
+import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.TraceMonitoringTab
 import com.intellij.execution.runners.ExecutionUtil
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
@@ -17,24 +17,24 @@ import com.jetbrains.rider.projectView.solution
 import icons.DiagnosticsClientIcons
 
 @Service
-class CounterTabManager(project: Project) : ProtocolSubscribedProjectComponent(project) {
+class TraceTabManager(project: Project) : ProtocolSubscribedProjectComponent(project) {
     companion object {
-        fun getInstance(project: Project): CounterTabManager = project.service()
+        fun getInstance(project: Project): TraceTabManager = project.service()
     }
 
     init {
         val model = project.solution.diagnosticsHostModel
-        model.counterMonitoringSessions.view(projectComponentLifetime) { lt, pid, session ->
-            addCounterSessionTab(lt, pid, session)
+        model.traceMonitoringSessions.view(projectComponentLifetime) { lt, pid, session ->
+            addTraceSessionTab(lt, pid, session)
         }
     }
 
-    private fun addCounterSessionTab(lt: Lifetime, pid: Int, session: CounterMonitoringSession) {
+    private fun addTraceSessionTab(lt: Lifetime, pid: Int, session: TraceMonitoringSession) {
         val toolWindow = DiagnosticsTabManager.getToolWindow(project) ?: return
         val contentFactory = ContentFactory.getInstance()
-        val counterMonitoringTab = CounterMonitoringTab(pid, session, this, lt)
-        val content = contentFactory.createContent(counterMonitoringTab, "Counters for $pid", true)
-        content.icon = DiagnosticsClientIcons.Counters
+        val traceMonitoringTab = TraceMonitoringTab(pid, session, this, project, lt)
+        val content = contentFactory.createContent(traceMonitoringTab, "Traces for $pid", true)
+        content.icon = DiagnosticsClientIcons.Traces
         content.putUserData(ToolWindow.SHOW_CONTENT_ICON, true)
         lt.bracketIfAlive(
             { toolWindow.contentManager.addContent(content) },
@@ -45,15 +45,15 @@ class CounterTabManager(project: Project) : ProtocolSubscribedProjectComponent(p
 
     private fun sessionStatusChanged(isActive: Boolean, content: Content) {
         if (isActive) {
-            content.icon = ExecutionUtil.getLiveIndicator(DiagnosticsClientIcons.Counters)
+            content.icon = ExecutionUtil.getLiveIndicator(DiagnosticsClientIcons.Traces)
             val toolWindow = DiagnosticsTabManager.getToolWindow(project) ?: return
             toolWindow.contentManager.setSelectedContent(content, true, true)
         } else {
-            content.icon = DiagnosticsClientIcons.Counters
+            content.icon = DiagnosticsClientIcons.Traces
         }
     }
 
     fun tabClosed(pid: Int) {
-        project.messageBus.syncPublisher(CounterSessionListener.TOPIC).sessionClosed(pid)
+        project.messageBus.syncPublisher(TraceSessionListener.TOPIC).sessionClosed(pid)
     }
 }

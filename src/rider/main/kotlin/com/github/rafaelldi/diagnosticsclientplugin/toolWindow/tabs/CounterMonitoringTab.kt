@@ -15,7 +15,7 @@ import com.jetbrains.rd.util.reactive.IViewableMap
 import java.awt.BorderLayout
 import javax.swing.JPanel
 
-class MonitorCountersTab(
+class CounterMonitoringTab(
     val pid: Int,
     session: CounterMonitoringSession,
     private val manager: CounterTabManager,
@@ -23,8 +23,8 @@ class MonitorCountersTab(
 ) : SimpleToolWindowPanel(false), Disposable {
 
     companion object {
-        val MONITOR_COUNTERS_TAB: DataKey<MonitorCountersTab> =
-            DataKey.create("DiagnosticsClient.ToolWindow.MonitorCountersTab")
+        val COUNTER_MONITORING_TAB: DataKey<CounterMonitoringTab> =
+            DataKey.create("DiagnosticsClient.ToolWindow.CounterMonitoringTab")
     }
 
     private val table: CounterTableComponent
@@ -44,7 +44,7 @@ class MonitorCountersTab(
 
     private fun initActionToolbar() {
         val actionManager = ActionManager.getInstance()
-        val actionGroup = actionManager.getAction("DiagnosticsClient.ToolWindow.CountersSession") as ActionGroup
+        val actionGroup = actionManager.getAction("DiagnosticsClient.ToolWindow.CounterSession") as ActionGroup
         val actionToolbar = actionManager.createActionToolbar(
             "DiagnosticsClient.ToolWindow.CountersSession.ActionToolbar",
             actionGroup,
@@ -63,7 +63,7 @@ class MonitorCountersTab(
     }
 
     override fun getData(dataId: String): Any? {
-        if (MONITOR_COUNTERS_TAB.`is`(dataId)) return this
+        if (COUNTER_MONITORING_TAB.`is`(dataId)) return this
         return super.getData(dataId)
     }
 

@@ -20,7 +20,7 @@ internal sealed class TraceCollectionHandler
 
     private static void Handle(Lifetime lt, int pid, TraceCollectionSession session)
     {
-        var providers = new TraceProviderCollection(session.Providers, session.Profile);
+        var providers = new TraceProviderCollection(session.Providers, session.Profile, session.PredefinedProviders);
         var sessionManager = new EventPipeSessionManager(pid);
         var eventPipeSession = sessionManager.StartSession(providers.EventPipeProviders);
         lt.AddDispose(eventPipeSession);

@@ -1,6 +1,6 @@
 package com.github.rafaelldi.diagnosticsclientplugin.dialogs
 
-import com.github.rafaelldi.diagnosticsclientplugin.services.gc.GcEventsSettings
+import com.github.rafaelldi.diagnosticsclientplugin.services.gc.GcEventSettings
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.ui.components.JBRadioButton
@@ -8,7 +8,7 @@ import com.intellij.ui.dsl.builder.*
 import javax.swing.JComponent
 
 class MonitorGcEventsDialog(project: Project) : DialogWrapper(project) {
-    private val model = GcEventsSettings.getInstance(project).getMonitorModel()
+    private val model = GcEventSettings.getInstance(project).getMonitorModel()
 
     init {
         init()
