@@ -1,8 +1,8 @@
 package com.github.rafaelldi.diagnosticsclientplugin.actions
 
-import com.github.rafaelldi.diagnosticsclientplugin.generated.diagnosticsHostModel
 import com.github.rafaelldi.diagnosticsclientplugin.services.StackTraceCollectionController
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.ProcessExplorerTab
+import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.rd.util.launchOnUi
@@ -29,4 +29,6 @@ class CollectStackTraceAction : AnAction() {
             event.presentation.isEnabled = tab.selectedProcessId != null
         }
     }
+
+    override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.EDT
 }

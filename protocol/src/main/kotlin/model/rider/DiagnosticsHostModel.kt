@@ -84,6 +84,18 @@ object DiagnosticsHostModel : Ext(SolutionModel.Solution) {
         field("pinnedObjects", int)
     }
 
+    private val TraceCollectionSession = classdef("TraceCollectionSession") {
+        field("filePath", string)
+        field("profile", enum("TracingProfile") {
+            +"None"
+            +"CpuSampling"
+            +"GcVerbose"
+            +"GcCollect"
+        })
+        field("providers", string)
+        field("duration", int.nullable)
+    }
+
     init {
         setting(CSharp50Generator.Namespace, "DiagnosticsClientPlugin.Generated")
         setting(Kotlin11Generator.Namespace, "com.github.rafaelldi.diagnosticsclientplugin.generated")
@@ -97,7 +109,7 @@ object DiagnosticsHostModel : Ext(SolutionModel.Solution) {
         map("gcEventMonitoringSessions", int, GcEventMonitoringSession)
         source("triggerGc", int)
 
-        list("traceCollectionSessions", int).async
+        map("traceCollectionSessions", int, TraceCollectionSession)
 
         call("collectDump",
             structdef("CollectDumpCommand") {
@@ -114,23 +126,6 @@ object DiagnosticsHostModel : Ext(SolutionModel.Solution) {
             }, structdef("DumpCollectionResult") {
                 field("filePath", string)
             })
-
-        call(
-            "collectTraces",
-            structdef("CollectTracesCommand") {
-                field("pid", int)
-                field("filePath", string)
-                field("profile", enum("TracingProfile") {
-                    +"None"
-                    +"CpuSampling"
-                    +"GcVerbose"
-                    +"GcCollect"
-                })
-                field("providers", string)
-                field("duration", int.nullable)
-            },
-            void
-        )
 
         call(
             "collectStackTrace",

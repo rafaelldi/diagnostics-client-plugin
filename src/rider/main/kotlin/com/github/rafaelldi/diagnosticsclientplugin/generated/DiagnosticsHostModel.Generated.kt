@@ -24,9 +24,8 @@ class DiagnosticsHostModel private constructor(
     private val _gcEventCollectionSessions: RdMap<Int, GcEventCollectionSession>,
     private val _gcEventMonitoringSessions: RdMap<Int, GcEventMonitoringSession>,
     private val _triggerGc: RdSignal<Int>,
-    private val _traceCollectionSessions: RdList<Int>,
+    private val _traceCollectionSessions: RdMap<Int, TraceCollectionSession>,
     private val _collectDump: RdCall<CollectDumpCommand, DumpCollectionResult>,
-    private val _collectTraces: RdCall<CollectTracesCommand, Unit>,
     private val _collectStackTrace: RdCall<CollectStackTraceCommand, String>
 ) : RdExtBase() {
     //companion
@@ -42,20 +41,20 @@ class DiagnosticsHostModel private constructor(
             serializers.register(GcEventCollectionSession)
             serializers.register(GcEventMonitoringSession)
             serializers.register(GcEvent)
+            serializers.register(TraceCollectionSession)
             serializers.register(CollectDumpCommand)
             serializers.register(DumpCollectionResult)
-            serializers.register(CollectTracesCommand)
             serializers.register(CollectStackTraceCommand)
             serializers.register(CounterFileFormat.marshaller)
-            serializers.register(DumpType.marshaller)
             serializers.register(TracingProfile.marshaller)
+            serializers.register(DumpType.marshaller)
         }
         
         
         
         
         
-        const val serializationHash = -7734284393143760592L
+        const val serializationHash = 3780503103546088433L
         
     }
     override val serializersOwner: ISerializersOwner get() = DiagnosticsHostModel
@@ -67,20 +66,11 @@ class DiagnosticsHostModel private constructor(
     val gcEventCollectionSessions: IMutableViewableMap<Int, GcEventCollectionSession> get() = _gcEventCollectionSessions
     val gcEventMonitoringSessions: IMutableViewableMap<Int, GcEventMonitoringSession> get() = _gcEventMonitoringSessions
     val triggerGc: ISignal<Int> get() = _triggerGc
-    val traceCollectionSessions: IMutableViewableList<Int> get() = _traceCollectionSessions
+    val traceCollectionSessions: IMutableViewableMap<Int, TraceCollectionSession> get() = _traceCollectionSessions
     val collectDump: IRdCall<CollectDumpCommand, DumpCollectionResult> get() = _collectDump
-    val collectTraces: IRdCall<CollectTracesCommand, Unit> get() = _collectTraces
     val collectStackTrace: IRdCall<CollectStackTraceCommand, String> get() = _collectStackTrace
     //methods
     //initializer
-    init {
-        _traceCollectionSessions.optimizeNested = true
-    }
-    
-    init {
-        _traceCollectionSessions.async = true
-    }
-    
     init {
         bindableChildren.add("processList" to processList)
         bindableChildren.add("counterCollectionSessions" to _counterCollectionSessions)
@@ -90,7 +80,6 @@ class DiagnosticsHostModel private constructor(
         bindableChildren.add("triggerGc" to _triggerGc)
         bindableChildren.add("traceCollectionSessions" to _traceCollectionSessions)
         bindableChildren.add("collectDump" to _collectDump)
-        bindableChildren.add("collectTraces" to _collectTraces)
         bindableChildren.add("collectStackTrace" to _collectStackTrace)
     }
     
@@ -103,9 +92,8 @@ class DiagnosticsHostModel private constructor(
         RdMap<Int, GcEventCollectionSession>(FrameworkMarshallers.Int, GcEventCollectionSession),
         RdMap<Int, GcEventMonitoringSession>(FrameworkMarshallers.Int, GcEventMonitoringSession),
         RdSignal<Int>(FrameworkMarshallers.Int),
-        RdList<Int>(FrameworkMarshallers.Int),
+        RdMap<Int, TraceCollectionSession>(FrameworkMarshallers.Int, TraceCollectionSession),
         RdCall<CollectDumpCommand, DumpCollectionResult>(CollectDumpCommand, DumpCollectionResult),
-        RdCall<CollectTracesCommand, Unit>(CollectTracesCommand, FrameworkMarshallers.Void),
         RdCall<CollectStackTraceCommand, String>(CollectStackTraceCommand, FrameworkMarshallers.String)
     )
     
@@ -123,7 +111,6 @@ class DiagnosticsHostModel private constructor(
             print("triggerGc = "); _triggerGc.print(printer); println()
             print("traceCollectionSessions = "); _traceCollectionSessions.print(printer); println()
             print("collectDump = "); _collectDump.print(printer); println()
-            print("collectTraces = "); _collectTraces.print(printer); println()
             print("collectStackTrace = "); _collectStackTrace.print(printer); println()
         }
         printer.print(")")
@@ -139,7 +126,6 @@ class DiagnosticsHostModel private constructor(
             _triggerGc.deepClonePolymorphic(),
             _traceCollectionSessions.deepClonePolymorphic(),
             _collectDump.deepClonePolymorphic(),
-            _collectTraces.deepClonePolymorphic(),
             _collectStackTrace.deepClonePolymorphic()
         )
     }
@@ -150,7 +136,7 @@ val com.jetbrains.rd.ide.model.Solution.diagnosticsHostModel get() = getOrCreate
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:103]
+ * #### Generated from [DiagnosticsHostModel.kt:115]
  */
 data class CollectDumpCommand (
     val pid: Int,
@@ -231,7 +217,7 @@ data class CollectDumpCommand (
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:137]
+ * #### Generated from [DiagnosticsHostModel.kt:132]
  */
 data class CollectStackTraceCommand (
     val pid: Int
@@ -279,87 +265,6 @@ data class CollectStackTraceCommand (
         printer.println("CollectStackTraceCommand (")
         printer.indent {
             print("pid = "); pid.print(printer); println()
-        }
-        printer.print(")")
-    }
-    //deepClone
-    //contexts
-}
-
-
-/**
- * #### Generated from [DiagnosticsHostModel.kt:120]
- */
-data class CollectTracesCommand (
-    val pid: Int,
-    val filePath: String,
-    val profile: TracingProfile,
-    val providers: String,
-    val duration: Int?
-) : IPrintable {
-    //companion
-    
-    companion object : IMarshaller<CollectTracesCommand> {
-        override val _type: KClass<CollectTracesCommand> = CollectTracesCommand::class
-        
-        @Suppress("UNCHECKED_CAST")
-        override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): CollectTracesCommand  {
-            val pid = buffer.readInt()
-            val filePath = buffer.readString()
-            val profile = buffer.readEnum<TracingProfile>()
-            val providers = buffer.readString()
-            val duration = buffer.readNullable { buffer.readInt() }
-            return CollectTracesCommand(pid, filePath, profile, providers, duration)
-        }
-        
-        override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: CollectTracesCommand)  {
-            buffer.writeInt(value.pid)
-            buffer.writeString(value.filePath)
-            buffer.writeEnum(value.profile)
-            buffer.writeString(value.providers)
-            buffer.writeNullable(value.duration) { buffer.writeInt(it) }
-        }
-        
-        
-    }
-    //fields
-    //methods
-    //initializer
-    //secondary constructor
-    //equals trait
-    override fun equals(other: Any?): Boolean  {
-        if (this === other) return true
-        if (other == null || other::class != this::class) return false
-        
-        other as CollectTracesCommand
-        
-        if (pid != other.pid) return false
-        if (filePath != other.filePath) return false
-        if (profile != other.profile) return false
-        if (providers != other.providers) return false
-        if (duration != other.duration) return false
-        
-        return true
-    }
-    //hash code trait
-    override fun hashCode(): Int  {
-        var __r = 0
-        __r = __r*31 + pid.hashCode()
-        __r = __r*31 + filePath.hashCode()
-        __r = __r*31 + profile.hashCode()
-        __r = __r*31 + providers.hashCode()
-        __r = __r*31 + if (duration != null) duration.hashCode() else 0
-        return __r
-    }
-    //pretty print
-    override fun print(printer: PrettyPrinter)  {
-        printer.println("CollectTracesCommand (")
-        printer.indent {
-            print("pid = "); pid.print(printer); println()
-            print("filePath = "); filePath.print(printer); println()
-            print("profile = "); profile.print(printer); println()
-            print("providers = "); providers.print(printer); println()
-            print("duration = "); duration.print(printer); println()
         }
         printer.print(")")
     }
@@ -657,7 +562,7 @@ class CounterMonitoringSession private constructor(
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:114]
+ * #### Generated from [DiagnosticsHostModel.kt:126]
  */
 data class DumpCollectionResult (
     val filePath: String
@@ -714,7 +619,7 @@ data class DumpCollectionResult (
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:105]
+ * #### Generated from [DiagnosticsHostModel.kt:117]
  */
 enum class DumpType {
     Full, 
@@ -1174,7 +1079,71 @@ class ProcessList private constructor(
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:123]
+ * #### Generated from [DiagnosticsHostModel.kt:87]
+ */
+class TraceCollectionSession (
+    val filePath: String,
+    val profile: TracingProfile,
+    val providers: String,
+    val duration: Int?
+) : RdBindableBase() {
+    //companion
+    
+    companion object : IMarshaller<TraceCollectionSession> {
+        override val _type: KClass<TraceCollectionSession> = TraceCollectionSession::class
+        
+        @Suppress("UNCHECKED_CAST")
+        override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): TraceCollectionSession  {
+            val _id = RdId.read(buffer)
+            val filePath = buffer.readString()
+            val profile = buffer.readEnum<TracingProfile>()
+            val providers = buffer.readString()
+            val duration = buffer.readNullable { buffer.readInt() }
+            return TraceCollectionSession(filePath, profile, providers, duration).withId(_id)
+        }
+        
+        override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: TraceCollectionSession)  {
+            value.rdid.write(buffer)
+            buffer.writeString(value.filePath)
+            buffer.writeEnum(value.profile)
+            buffer.writeString(value.providers)
+            buffer.writeNullable(value.duration) { buffer.writeInt(it) }
+        }
+        
+        
+    }
+    //fields
+    //methods
+    //initializer
+    //secondary constructor
+    //equals trait
+    //hash code trait
+    //pretty print
+    override fun print(printer: PrettyPrinter)  {
+        printer.println("TraceCollectionSession (")
+        printer.indent {
+            print("filePath = "); filePath.print(printer); println()
+            print("profile = "); profile.print(printer); println()
+            print("providers = "); providers.print(printer); println()
+            print("duration = "); duration.print(printer); println()
+        }
+        printer.print(")")
+    }
+    //deepClone
+    override fun deepClone(): TraceCollectionSession   {
+        return TraceCollectionSession(
+            filePath,
+            profile,
+            providers,
+            duration
+        )
+    }
+    //contexts
+}
+
+
+/**
+ * #### Generated from [DiagnosticsHostModel.kt:89]
  */
 enum class TracingProfile {
     None, 

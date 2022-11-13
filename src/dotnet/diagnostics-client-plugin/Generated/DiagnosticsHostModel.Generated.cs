@@ -48,9 +48,8 @@ namespace DiagnosticsClientPlugin.Generated
     [NotNull] public IViewableMap<int, GcEventCollectionSession> GcEventCollectionSessions => _GcEventCollectionSessions;
     [NotNull] public IViewableMap<int, GcEventMonitoringSession> GcEventMonitoringSessions => _GcEventMonitoringSessions;
     [NotNull] public ISource<int> TriggerGc => _TriggerGc;
-    [NotNull] public IViewableList<int> TraceCollectionSessions => _TraceCollectionSessions;
+    [NotNull] public IViewableMap<int, TraceCollectionSession> TraceCollectionSessions => _TraceCollectionSessions;
     [NotNull] public IRdEndpoint<CollectDumpCommand, DumpCollectionResult> CollectDump => _CollectDump;
-    [NotNull] public IRdEndpoint<CollectTracesCommand, Unit> CollectTraces => _CollectTraces;
     [NotNull] public IRdEndpoint<CollectStackTraceCommand, string> CollectStackTrace => _CollectStackTrace;
     
     //private fields
@@ -59,9 +58,8 @@ namespace DiagnosticsClientPlugin.Generated
     [NotNull] private readonly RdMap<int, GcEventCollectionSession> _GcEventCollectionSessions;
     [NotNull] private readonly RdMap<int, GcEventMonitoringSession> _GcEventMonitoringSessions;
     [NotNull] private readonly RdSignal<int> _TriggerGc;
-    [NotNull] private readonly RdList<int> _TraceCollectionSessions;
+    [NotNull] private readonly RdMap<int, TraceCollectionSession> _TraceCollectionSessions;
     [NotNull] private readonly RdCall<CollectDumpCommand, DumpCollectionResult> _CollectDump;
-    [NotNull] private readonly RdCall<CollectTracesCommand, Unit> _CollectTraces;
     [NotNull] private readonly RdCall<CollectStackTraceCommand, string> _CollectStackTrace;
     
     //primary constructor
@@ -72,9 +70,8 @@ namespace DiagnosticsClientPlugin.Generated
       [NotNull] RdMap<int, GcEventCollectionSession> gcEventCollectionSessions,
       [NotNull] RdMap<int, GcEventMonitoringSession> gcEventMonitoringSessions,
       [NotNull] RdSignal<int> triggerGc,
-      [NotNull] RdList<int> traceCollectionSessions,
+      [NotNull] RdMap<int, TraceCollectionSession> traceCollectionSessions,
       [NotNull] RdCall<CollectDumpCommand, DumpCollectionResult> collectDump,
-      [NotNull] RdCall<CollectTracesCommand, Unit> collectTraces,
       [NotNull] RdCall<CollectStackTraceCommand, string> collectStackTrace
     )
     {
@@ -86,7 +83,6 @@ namespace DiagnosticsClientPlugin.Generated
       if (triggerGc == null) throw new ArgumentNullException("triggerGc");
       if (traceCollectionSessions == null) throw new ArgumentNullException("traceCollectionSessions");
       if (collectDump == null) throw new ArgumentNullException("collectDump");
-      if (collectTraces == null) throw new ArgumentNullException("collectTraces");
       if (collectStackTrace == null) throw new ArgumentNullException("collectStackTrace");
       
       ProcessList = processList;
@@ -97,10 +93,7 @@ namespace DiagnosticsClientPlugin.Generated
       _TriggerGc = triggerGc;
       _TraceCollectionSessions = traceCollectionSessions;
       _CollectDump = collectDump;
-      _CollectTraces = collectTraces;
       _CollectStackTrace = collectStackTrace;
-      _TraceCollectionSessions.OptimizeNested = true;
-      _TraceCollectionSessions.Async = true;
       BindableChildren.Add(new KeyValuePair<string, object>("processList", ProcessList));
       BindableChildren.Add(new KeyValuePair<string, object>("counterCollectionSessions", _CounterCollectionSessions));
       BindableChildren.Add(new KeyValuePair<string, object>("counterMonitoringSessions", _CounterMonitoringSessions));
@@ -109,7 +102,6 @@ namespace DiagnosticsClientPlugin.Generated
       BindableChildren.Add(new KeyValuePair<string, object>("triggerGc", _TriggerGc));
       BindableChildren.Add(new KeyValuePair<string, object>("traceCollectionSessions", _TraceCollectionSessions));
       BindableChildren.Add(new KeyValuePair<string, object>("collectDump", _CollectDump));
-      BindableChildren.Add(new KeyValuePair<string, object>("collectTraces", _CollectTraces));
       BindableChildren.Add(new KeyValuePair<string, object>("collectStackTrace", _CollectStackTrace));
     }
     //secondary constructor
@@ -121,9 +113,8 @@ namespace DiagnosticsClientPlugin.Generated
       new RdMap<int, GcEventCollectionSession>(JetBrains.Rd.Impl.Serializers.ReadInt, JetBrains.Rd.Impl.Serializers.WriteInt, GcEventCollectionSession.Read, GcEventCollectionSession.Write),
       new RdMap<int, GcEventMonitoringSession>(JetBrains.Rd.Impl.Serializers.ReadInt, JetBrains.Rd.Impl.Serializers.WriteInt, GcEventMonitoringSession.Read, GcEventMonitoringSession.Write),
       new RdSignal<int>(JetBrains.Rd.Impl.Serializers.ReadInt, JetBrains.Rd.Impl.Serializers.WriteInt),
-      new RdList<int>(JetBrains.Rd.Impl.Serializers.ReadInt, JetBrains.Rd.Impl.Serializers.WriteInt),
+      new RdMap<int, TraceCollectionSession>(JetBrains.Rd.Impl.Serializers.ReadInt, JetBrains.Rd.Impl.Serializers.WriteInt, TraceCollectionSession.Read, TraceCollectionSession.Write),
       new RdCall<CollectDumpCommand, DumpCollectionResult>(CollectDumpCommand.Read, CollectDumpCommand.Write, DumpCollectionResult.Read, DumpCollectionResult.Write),
-      new RdCall<CollectTracesCommand, Unit>(CollectTracesCommand.Read, CollectTracesCommand.Write, JetBrains.Rd.Impl.Serializers.ReadVoid, JetBrains.Rd.Impl.Serializers.WriteVoid),
       new RdCall<CollectStackTraceCommand, string>(CollectStackTraceCommand.Read, CollectStackTraceCommand.Write, JetBrains.Rd.Impl.Serializers.ReadString, JetBrains.Rd.Impl.Serializers.WriteString)
     ) {}
     //deconstruct trait
@@ -131,7 +122,7 @@ namespace DiagnosticsClientPlugin.Generated
     
     
     
-    protected override long SerializationHash => -7734284393143760592L;
+    protected override long SerializationHash => 3780503103546088433L;
     
     protected override Action<ISerializers> Register => RegisterDeclaredTypesSerializers;
     public static void RegisterDeclaredTypesSerializers(ISerializers serializers)
@@ -160,7 +151,6 @@ namespace DiagnosticsClientPlugin.Generated
         printer.Print("triggerGc = "); _TriggerGc.PrintEx(printer); printer.Println();
         printer.Print("traceCollectionSessions = "); _TraceCollectionSessions.PrintEx(printer); printer.Println();
         printer.Print("collectDump = "); _CollectDump.PrintEx(printer); printer.Println();
-        printer.Print("collectTraces = "); _CollectTraces.PrintEx(printer); printer.Println();
         printer.Print("collectStackTrace = "); _CollectStackTrace.PrintEx(printer); printer.Println();
       }
       printer.Print(")");
@@ -183,7 +173,7 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:103</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:115</p>
   /// </summary>
   public sealed class CollectDumpCommand : IPrintable, IEquatable<CollectDumpCommand>
   {
@@ -301,7 +291,7 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:137</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:132</p>
   /// </summary>
   public sealed class CollectStackTraceCommand : IPrintable, IEquatable<CollectStackTraceCommand>
   {
@@ -370,126 +360,6 @@ namespace DiagnosticsClientPlugin.Generated
       printer.Println("CollectStackTraceCommand (");
       using (printer.IndentCookie()) {
         printer.Print("pid = "); Pid.PrintEx(printer); printer.Println();
-      }
-      printer.Print(")");
-    }
-    //toString
-    public override string ToString()
-    {
-      var printer = new SingleLinePrettyPrinter();
-      Print(printer);
-      return printer.ToString();
-    }
-  }
-  
-  
-  /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:120</p>
-  /// </summary>
-  public sealed class CollectTracesCommand : IPrintable, IEquatable<CollectTracesCommand>
-  {
-    //fields
-    //public fields
-    public int Pid {get; private set;}
-    [NotNull] public string FilePath {get; private set;}
-    public TracingProfile Profile {get; private set;}
-    [NotNull] public string Providers {get; private set;}
-    [CanBeNull] public int? Duration {get; private set;}
-    
-    //private fields
-    //primary constructor
-    public CollectTracesCommand(
-      int pid,
-      [NotNull] string filePath,
-      TracingProfile profile,
-      [NotNull] string providers,
-      [CanBeNull] int? duration
-    )
-    {
-      if (filePath == null) throw new ArgumentNullException("filePath");
-      if (providers == null) throw new ArgumentNullException("providers");
-      
-      Pid = pid;
-      FilePath = filePath;
-      Profile = profile;
-      Providers = providers;
-      Duration = duration;
-    }
-    //secondary constructor
-    //deconstruct trait
-    public void Deconstruct(out int pid, [NotNull] out string filePath, out TracingProfile profile, [NotNull] out string providers, [CanBeNull] out int? duration)
-    {
-      pid = Pid;
-      filePath = FilePath;
-      profile = Profile;
-      providers = Providers;
-      duration = Duration;
-    }
-    //statics
-    
-    public static CtxReadDelegate<CollectTracesCommand> Read = (ctx, reader) => 
-    {
-      var pid = reader.ReadInt();
-      var filePath = reader.ReadString();
-      var profile = (TracingProfile)reader.ReadInt();
-      var providers = reader.ReadString();
-      var duration = ReadIntNullable(ctx, reader);
-      var _result = new CollectTracesCommand(pid, filePath, profile, providers, duration);
-      return _result;
-    };
-    public static CtxReadDelegate<int?> ReadIntNullable = JetBrains.Rd.Impl.Serializers.ReadInt.NullableStruct();
-    
-    public static CtxWriteDelegate<CollectTracesCommand> Write = (ctx, writer, value) => 
-    {
-      writer.Write(value.Pid);
-      writer.Write(value.FilePath);
-      writer.Write((int)value.Profile);
-      writer.Write(value.Providers);
-      WriteIntNullable(ctx, writer, value.Duration);
-    };
-    public static  CtxWriteDelegate<int?> WriteIntNullable = JetBrains.Rd.Impl.Serializers.WriteInt.NullableStruct();
-    
-    //constants
-    
-    //custom body
-    //methods
-    //equals trait
-    public override bool Equals(object obj)
-    {
-      if (ReferenceEquals(null, obj)) return false;
-      if (ReferenceEquals(this, obj)) return true;
-      if (obj.GetType() != GetType()) return false;
-      return Equals((CollectTracesCommand) obj);
-    }
-    public bool Equals(CollectTracesCommand other)
-    {
-      if (ReferenceEquals(null, other)) return false;
-      if (ReferenceEquals(this, other)) return true;
-      return Pid == other.Pid && FilePath == other.FilePath && Profile == other.Profile && Providers == other.Providers && Equals(Duration, other.Duration);
-    }
-    //hash code trait
-    public override int GetHashCode()
-    {
-      unchecked {
-        var hash = 0;
-        hash = hash * 31 + Pid.GetHashCode();
-        hash = hash * 31 + FilePath.GetHashCode();
-        hash = hash * 31 + (int) Profile;
-        hash = hash * 31 + Providers.GetHashCode();
-        hash = hash * 31 + (Duration != null ? Duration.GetHashCode() : 0);
-        return hash;
-      }
-    }
-    //pretty print
-    public void Print(PrettyPrinter printer)
-    {
-      printer.Println("CollectTracesCommand (");
-      using (printer.IndentCookie()) {
-        printer.Print("pid = "); Pid.PrintEx(printer); printer.Println();
-        printer.Print("filePath = "); FilePath.PrintEx(printer); printer.Println();
-        printer.Print("profile = "); Profile.PrintEx(printer); printer.Println();
-        printer.Print("providers = "); Providers.PrintEx(printer); printer.Println();
-        printer.Print("duration = "); Duration.PrintEx(printer); printer.Println();
       }
       printer.Print(")");
     }
@@ -864,7 +734,7 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:114</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:126</p>
   /// </summary>
   public sealed class DumpCollectionResult : IPrintable, IEquatable<DumpCollectionResult>
   {
@@ -949,7 +819,7 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:105</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:117</p>
   /// </summary>
   public enum DumpType {
     Full,
@@ -1538,7 +1408,90 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:123</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:87</p>
+  /// </summary>
+  public sealed class TraceCollectionSession : RdBindableBase
+  {
+    //fields
+    //public fields
+    [NotNull] public string FilePath {get; private set;}
+    public TracingProfile Profile {get; private set;}
+    [NotNull] public string Providers {get; private set;}
+    [CanBeNull] public int? Duration {get; private set;}
+    
+    //private fields
+    //primary constructor
+    public TraceCollectionSession(
+      [NotNull] string filePath,
+      TracingProfile profile,
+      [NotNull] string providers,
+      [CanBeNull] int? duration
+    )
+    {
+      if (filePath == null) throw new ArgumentNullException("filePath");
+      if (providers == null) throw new ArgumentNullException("providers");
+      
+      FilePath = filePath;
+      Profile = profile;
+      Providers = providers;
+      Duration = duration;
+    }
+    //secondary constructor
+    //deconstruct trait
+    //statics
+    
+    public static CtxReadDelegate<TraceCollectionSession> Read = (ctx, reader) => 
+    {
+      var _id = RdId.Read(reader);
+      var filePath = reader.ReadString();
+      var profile = (TracingProfile)reader.ReadInt();
+      var providers = reader.ReadString();
+      var duration = ReadIntNullable(ctx, reader);
+      var _result = new TraceCollectionSession(filePath, profile, providers, duration).WithId(_id);
+      return _result;
+    };
+    public static CtxReadDelegate<int?> ReadIntNullable = JetBrains.Rd.Impl.Serializers.ReadInt.NullableStruct();
+    
+    public static CtxWriteDelegate<TraceCollectionSession> Write = (ctx, writer, value) => 
+    {
+      value.RdId.Write(writer);
+      writer.Write(value.FilePath);
+      writer.Write((int)value.Profile);
+      writer.Write(value.Providers);
+      WriteIntNullable(ctx, writer, value.Duration);
+    };
+    public static  CtxWriteDelegate<int?> WriteIntNullable = JetBrains.Rd.Impl.Serializers.WriteInt.NullableStruct();
+    
+    //constants
+    
+    //custom body
+    //methods
+    //equals trait
+    //hash code trait
+    //pretty print
+    public override void Print(PrettyPrinter printer)
+    {
+      printer.Println("TraceCollectionSession (");
+      using (printer.IndentCookie()) {
+        printer.Print("filePath = "); FilePath.PrintEx(printer); printer.Println();
+        printer.Print("profile = "); Profile.PrintEx(printer); printer.Println();
+        printer.Print("providers = "); Providers.PrintEx(printer); printer.Println();
+        printer.Print("duration = "); Duration.PrintEx(printer); printer.Println();
+      }
+      printer.Print(")");
+    }
+    //toString
+    public override string ToString()
+    {
+      var printer = new SingleLinePrettyPrinter();
+      Print(printer);
+      return printer.ToString();
+    }
+  }
+  
+  
+  /// <summary>
+  /// <p>Generated from: DiagnosticsHostModel.kt:89</p>
   /// </summary>
   public enum TracingProfile {
     None,

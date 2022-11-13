@@ -1,4 +1,4 @@
-package com.github.rafaelldi.diagnosticsclientplugin.services
+package com.github.rafaelldi.diagnosticsclientplugin.services.traces
 
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.CollectTracesModel
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.StoppingType

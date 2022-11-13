@@ -4,6 +4,7 @@ import com.github.rafaelldi.diagnosticsclientplugin.dialogs.CollectDumpDialog
 import com.github.rafaelldi.diagnosticsclientplugin.services.DumpCollectionController
 import com.github.rafaelldi.diagnosticsclientplugin.services.DumpSettings
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.ProcessExplorerTab
+import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.rd.util.launchOnUi
@@ -33,4 +34,6 @@ class CollectDumpAction : AnAction() {
             event.presentation.isEnabled = tab.selectedProcessId != null
         }
     }
+
+    override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.EDT
 }

@@ -1,8 +1,9 @@
 package com.github.rafaelldi.diagnosticsclientplugin.actions.traces
 
 import com.github.rafaelldi.diagnosticsclientplugin.generated.diagnosticsHostModel
-import com.github.rafaelldi.diagnosticsclientplugin.services.TraceCollectionSessionController
+import com.github.rafaelldi.diagnosticsclientplugin.services.traces.TraceCollectionSessionController
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.ProcessExplorerTab
+import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.jetbrains.rider.projectView.solution
@@ -30,4 +31,6 @@ class StopCollectingTracesAction : AnAction() {
             }
         }
     }
+
+    override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.EDT
 }

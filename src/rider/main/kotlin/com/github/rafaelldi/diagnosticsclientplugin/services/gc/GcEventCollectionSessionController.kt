@@ -78,7 +78,7 @@ class GcEventCollectionSessionController(project: Project) : ProtocolSubscribedP
 
     private fun sessionAlreadyExists(pid: Int) = Notification(
         "Diagnostics Client",
-        "Session for $pid already exists",
+        "GC events collection session for $pid already exists",
         "",
         NotificationType.WARNING
     )

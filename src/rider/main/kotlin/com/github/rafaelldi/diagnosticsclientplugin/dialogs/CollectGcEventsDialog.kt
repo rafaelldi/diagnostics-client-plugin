@@ -32,7 +32,7 @@ class CollectGcEventsDialog(private val project: Project) : DialogWrapper(projec
                 .bindIntValue(model::duration)
                 .enabledIf(periodStoppingType.selected)
         }
-        groupRowsRange("File Settings") {
+        group("File Settings") {
             row("Output filename:") {
                 textField()
                     .validationOnInput {

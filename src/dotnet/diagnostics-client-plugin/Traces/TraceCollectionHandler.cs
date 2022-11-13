@@ -1,56 +1,37 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Threading.Tasks;
 using DiagnosticsClientPlugin.EventPipes;
 using DiagnosticsClientPlugin.Generated;
-using JetBrains.Core;
+using JetBrains.Collections.Viewable;
 using JetBrains.Lifetimes;
 using JetBrains.ProjectModel;
-using JetBrains.Rd.Tasks;
 using JetBrains.RdBackend.Common.Features;
-using JetBrains.Util;
 
 namespace DiagnosticsClientPlugin.Traces;
 
 [SolutionComponent]
 internal sealed class TraceCollectionHandler
 {
-    private readonly DiagnosticsHostModel _hostModel;
-
-    public TraceCollectionHandler(ISolution solution)
+    public TraceCollectionHandler(ISolution solution, Lifetime lifetime)
     {
-        _hostModel = solution.GetProtocolSolution().GetDiagnosticsHostModel();
-        _hostModel.CollectTraces.Set(async (lt, command) => await CollectAsync(command, lt));
+        var hostModel = solution.GetProtocolSolution().GetDiagnosticsHostModel();
+        hostModel.TraceCollectionSessions.View(lifetime, (lt, pid, session) => Handle(lt, pid, session));
     }
 
-    private async Task<Unit> CollectAsync(CollectTracesCommand command, Lifetime lifetime)
+    private static void Handle(Lifetime lt, int pid, TraceCollectionSession session)
     {
-        _hostModel.TraceCollectionSessions.Add(lifetime, command.Pid);
+        var providers = new TraceProviderCollection(session.Providers, session.Profile);
+        var sessionManager = new EventPipeSessionManager(pid);
+        var eventPipeSession = sessionManager.StartSession(providers.EventPipeProviders);
+        lt.AddDispose(eventPipeSession);
+        
+        var fileStream = new FileStream(session.FilePath, FileMode.Create, FileAccess.Write);
+        lt.AddDispose(fileStream);
 
-        var providers = new TraceProviderCollection(command.Providers, command.Profile);
-        var sessionManager = new EventPipeSessionManager(command.Pid);
-        using var session = sessionManager.StartSession(providers.EventPipeProviders);
+        var cancellationToken = lt.ToCancellationToken();
+        cancellationToken.Register(() => EventPipeSessionManager.StopSession(eventPipeSession));
 
-        using var fileStream = new FileStream(command.FilePath, FileMode.Create, FileAccess.Write);
-
-        var copyTask = session.EventStream.CopyToAsync(fileStream, 81920);
-
-        var duration = command.Duration.HasValue
-            ? TimeSpan.FromSeconds(command.Duration.Value)
-            : TimeSpan.FromMilliseconds(-1);
-        try
-        {
-            await Task.Delay(duration, lifetime);
-        }
-        catch (OperationCanceledException)
-        {
-            //do nothing
-        }
-
-        EventPipeSessionManager.StopSession(session);
-
-        await copyTask;
-
-        return Unit.Instance;
+        var copyTask = eventPipeSession.EventStream.CopyToAsync(fileStream, 81920);
+        lt.StartAttachedAsync(TaskScheduler.Default, async () => await copyTask);
     }
 }
