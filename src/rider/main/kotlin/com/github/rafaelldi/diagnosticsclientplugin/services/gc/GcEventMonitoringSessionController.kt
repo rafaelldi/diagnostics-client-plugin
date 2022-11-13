@@ -1,9 +1,9 @@
-package com.github.rafaelldi.diagnosticsclientplugin.services.counters
+package com.github.rafaelldi.diagnosticsclientplugin.services.gc
 
-import com.github.rafaelldi.diagnosticsclientplugin.dialogs.MonitorCountersModel
+import com.github.rafaelldi.diagnosticsclientplugin.dialogs.MonitorGcEventsModel
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.StoppingType
-import com.github.rafaelldi.diagnosticsclientplugin.generated.CounterMonitoringSession
 import com.github.rafaelldi.diagnosticsclientplugin.generated.DiagnosticsHostModel
+import com.github.rafaelldi.diagnosticsclientplugin.generated.GcEventMonitoringSession
 import com.github.rafaelldi.diagnosticsclientplugin.generated.diagnosticsHostModel
 import com.intellij.notification.Notification
 import com.intellij.notification.NotificationType
@@ -20,52 +20,44 @@ import kotlinx.coroutines.Dispatchers
 import java.time.Duration
 
 @Service
-class CounterMonitoringSessionController(project: Project) :
-    ProtocolSubscribedProjectComponent(project), CounterSessionListener {
+class GcEventMonitoringSessionController(project: Project) : ProtocolSubscribedProjectComponent(project),
+    GcEventSessionListener {
     companion object {
-        fun getInstance(project: Project): CounterMonitoringSessionController = project.service()
+        fun getInstance(project: Project): GcEventMonitoringSessionController = project.service()
     }
 
     private val hostModel: DiagnosticsHostModel = project.solution.diagnosticsHostModel
 
     init {
-        hostModel.counterMonitoringSessions.view(projectComponentLifetime) { lt, pid, session ->
+        hostModel.gcEventMonitoringSessions.view(projectComponentLifetime) { lt, pid, session ->
             viewSession(pid, session, lt)
         }
     }
 
-    fun startSession(pid: Int, model: MonitorCountersModel) {
-        if (!hostModel.counterMonitoringSessions.contains(pid)) {
-            createNewSession(pid, model)
+    fun startSession(pid: Int, model: MonitorGcEventsModel) {
+        if (!hostModel.gcEventMonitoringSessions.contains(pid)) {
+            createNewSession(pid)
         }
 
         startExistingSession(pid, model.stoppingType, model.duration)
     }
 
-    private fun createNewSession(pid: Int, model: MonitorCountersModel) {
-        if (hostModel.counterMonitoringSessions.contains(pid)) {
+    private fun createNewSession(pid: Int) {
+        if (hostModel.gcEventMonitoringSessions.contains(pid)) {
             return
         }
 
-        val metrics = model.metrics.ifEmpty { null }
-
-        val session = CounterMonitoringSession(
-            model.interval,
-            model.providers,
-            metrics,
-            model.maxTimeSeries,
-            model.maxHistograms,
-        )
+        val session = GcEventMonitoringSession()
 
         try {
-            hostModel.counterMonitoringSessions.addUnique(projectComponentLifetime, pid, session)
+            hostModel.gcEventMonitoringSessions.addUnique(projectComponentLifetime, pid, session)
         } catch (e: IllegalArgumentException) {
             // do nothing
         }
     }
 
     fun startExistingSession(pid: Int, stoppingType: StoppingType, duration: Int) {
-        val session = hostModel.counterMonitoringSessions[pid]
+        val session = hostModel.gcEventMonitoringSessions[pid]
         if (session == null) {
             sessionNotFound(pid)
             return
@@ -85,7 +77,7 @@ class CounterMonitoringSessionController(project: Project) :
     }
 
     fun stopSession(pid: Int) {
-        val session = hostModel.counterMonitoringSessions[pid]
+        val session = hostModel.gcEventMonitoringSessions[pid]
         if (session == null) {
             sessionNotFound(pid)
             return
@@ -97,14 +89,14 @@ class CounterMonitoringSessionController(project: Project) :
     }
 
     override fun sessionClosed(pid: Int) {
-        hostModel.counterMonitoringSessions.remove(pid)
+        hostModel.gcEventMonitoringSessions.remove(pid)
     }
 
-    private fun viewSession(pid: Int, session: CounterMonitoringSession, lifetime: Lifetime) {
+    private fun viewSession(pid: Int, session: GcEventMonitoringSession, lifetime: Lifetime) {
         session.active.whenTrue(lifetime) { lt -> viewActiveStatus(pid, session, lt) }
     }
 
-    private fun viewActiveStatus(pid: Int, session: CounterMonitoringSession, lifetime: Lifetime) {
+    private fun viewActiveStatus(pid: Int, session: GcEventMonitoringSession, lifetime: Lifetime) {
         val duration = session.duration.value
         if (duration != null) {
             val timerLifetime =
@@ -124,7 +116,7 @@ class CounterMonitoringSessionController(project: Project) :
 
     private fun sessionStarted(pid: Int) = Notification(
         "Diagnostics Client",
-        "Counters monitoring started",
+        "GC monitoring started",
         "Session for process $pid started",
         NotificationType.INFORMATION
     )
@@ -132,7 +124,7 @@ class CounterMonitoringSessionController(project: Project) :
 
     private fun sessionFinished(pid: Int) = Notification(
         "Diagnostics Client",
-        "Counters monitoring finished",
+        "GC monitoring finished",
         "Session for process $pid finished",
         NotificationType.INFORMATION
     )
@@ -140,7 +132,7 @@ class CounterMonitoringSessionController(project: Project) :
 
     private fun sessionNotFound(pid: Int) = Notification(
         "Diagnostics Client",
-        "Counters monitoring session for $pid not found",
+        "GC events monitoring session for $pid not found",
         "",
         NotificationType.ERROR
     )

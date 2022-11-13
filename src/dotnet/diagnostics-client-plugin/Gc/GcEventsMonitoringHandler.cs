@@ -1,11 +1,7 @@
-﻿using System.Collections.Concurrent;
-using System.Threading.Tasks;
-using DiagnosticsClientPlugin.Generated;
-using JetBrains;
-using JetBrains.Core;
+﻿using DiagnosticsClientPlugin.Generated;
+using JetBrains.Collections.Viewable;
 using JetBrains.Lifetimes;
 using JetBrains.ProjectModel;
-using JetBrains.Rd.Tasks;
 using JetBrains.RdBackend.Common.Features;
 
 namespace DiagnosticsClientPlugin.Gc;
@@ -13,48 +9,15 @@ namespace DiagnosticsClientPlugin.Gc;
 [SolutionComponent]
 internal sealed class GcEventsMonitoringHandler
 {
-    private readonly Lifetime _lifetime;
-    private readonly DiagnosticsHostModel _hostModel;
-
-    private readonly ConcurrentDictionary<int, (GcMonitoringSessionEnvelope Envelope, LifetimeDefinition Definition)>
-        _sessions = new();
-
     public GcEventsMonitoringHandler(ISolution solution, Lifetime lifetime)
     {
-        _lifetime = lifetime;
-        _hostModel = solution.GetProtocolSolution().GetDiagnosticsHostModel();
-
-        _hostModel.MonitorGcEvents.Set(async (lt, command) => await MonitorAsync(command, lt));
+        var hostModel = solution.GetProtocolSolution().GetDiagnosticsHostModel();
+        hostModel.GcEventMonitoringSessions.View(lifetime, (lt, pid, session) => Handle(lt, pid, session));
     }
 
-    private async Task<Unit> MonitorAsync(MonitorGcEventsCommand command, Lifetime lifetime)
+    private static void Handle(Lifetime lt, int pid, GcEventMonitoringSession session)
     {
-        if (_sessions.TryGetValue(command.Pid, out var session))
-        {
-            await session.Envelope.MonitorAsync(command.Duration, lifetime);
-        }
-        else
-        {
-            var definition = _lifetime.CreateNested();
-            var envelope = new GcMonitoringSessionEnvelope(command.Pid, this, definition.Lifetime);
-            if (!_sessions.TryAdd(command.Pid, (envelope, definition)))
-            {
-                return Unit.Instance;
-            }
-
-            _hostModel.GcEventsMonitoringSessions.Add(definition.Lifetime, command.Pid, envelope.Session);
-
-            await envelope.MonitorAsync(command.Duration, lifetime);
-        }
-
-        return Unit.Instance;
-    }
-
-    internal void CloseSession(int pid)
-    {
-        if (_sessions.TryRemove(pid, out var session))
-        {
-            session.Definition.Terminate();
-        }
+        var envelope = new GcEventMonitoringSessionEnvelope(pid, session, lt);
+        lt.KeepAlive(envelope);
     }
 }

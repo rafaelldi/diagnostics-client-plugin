@@ -2,9 +2,9 @@ using System;
 using System.Globalization;
 using System.IO;
 using System.Text;
-using System.Threading;
 using System.Threading.Channels;
 using System.Threading.Tasks;
+using JetBrains.Lifetimes;
 
 namespace DiagnosticsClientPlugin.Gc;
 
@@ -20,20 +20,19 @@ internal sealed class GcEventCsvExporter
         _reader = reader;
     }
 
-    internal async Task ConsumeAsync(CancellationToken ct)
+    internal async Task ConsumeAsync()
     {
-        if (ct.IsCancellationRequested)
+        if (Lifetime.AsyncLocal.Value.IsNotAlive)
         {
             return;
         }
 
         using var streamWriter = File.CreateText(_filePath);
-
         await streamWriter.WriteLineAsync(GetHeader());
 
         try
         {
-            while (await _reader.WaitToReadAsync(ct))
+            while (await _reader.WaitToReadAsync(Lifetime.AsyncLocal.Value))
             {
                 if (_reader.TryRead(out var gcEvent))
                 {
@@ -47,7 +46,7 @@ internal sealed class GcEventCsvExporter
         }
     }
 
-    private string GetHeader() =>
+    private static string GetHeader() =>
         "Number,Generation,Reason,Pause Duration,Peak,After,Ratio,Promoted,Allocated,Allocation Rate," +
         "Size Gen 0,Fragmentation Gen 0,Survival Gen 0,Budget Gen 0," +
         "Size Gen 1,Fragmentation Gen 1,Survival Gen 1,Budget Gen 1," +

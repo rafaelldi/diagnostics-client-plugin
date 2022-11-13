@@ -5,6 +5,7 @@ import com.github.rafaelldi.diagnosticsclientplugin.generated.diagnosticsHostMod
 import com.github.rafaelldi.diagnosticsclientplugin.services.counters.CounterMonitoringSessionController
 import com.github.rafaelldi.diagnosticsclientplugin.services.counters.CountersSettings
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.ProcessExplorerTab.Companion.PROCESS_EXPLORE_TAB
+import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.jetbrains.rider.projectView.solution
@@ -39,4 +40,6 @@ class StartMonitoringCountersAction : AnAction() {
             }
         }
     }
+
+    override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.EDT
 }

@@ -1,27 +1,27 @@
 ﻿using System;
-using System.Threading;
 using System.Threading.Channels;
 using System.Threading.Tasks;
 using DiagnosticsClientPlugin.Generated;
+using JetBrains.Lifetimes;
 
 namespace DiagnosticsClientPlugin.Gc;
 
 internal sealed class GcEventProtocolExporter
 {
-    private readonly GcEventsMonitoringSession _session;
+    private readonly GcEventMonitoringSession _session;
     private readonly ChannelReader<ValueGcEvent> _reader;
 
-    internal GcEventProtocolExporter(GcEventsMonitoringSession session, ChannelReader<ValueGcEvent> reader)
+    internal GcEventProtocolExporter(GcEventMonitoringSession session, ChannelReader<ValueGcEvent> reader)
     {
         _session = session;
         _reader = reader;
     }
 
-    internal async Task ConsumeAsync(CancellationToken ct)
+    internal async Task ConsumeAsync()
     {
         try
         {
-            while (await _reader.WaitToReadAsync(ct))
+            while (await _reader.WaitToReadAsync(Lifetime.AsyncLocal.Value))
             {
                 if (_reader.TryRead(out var gcEvent))
                 {

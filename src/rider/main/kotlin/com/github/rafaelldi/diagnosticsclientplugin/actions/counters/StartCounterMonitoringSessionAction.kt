@@ -4,6 +4,7 @@ import com.github.rafaelldi.diagnosticsclientplugin.dialogs.MonitoringTimerDialo
 import com.github.rafaelldi.diagnosticsclientplugin.generated.diagnosticsHostModel
 import com.github.rafaelldi.diagnosticsclientplugin.services.counters.CounterMonitoringSessionController
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.MonitorCountersTab.Companion.MONITOR_COUNTERS_TAB
+import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.jetbrains.rider.projectView.solution
@@ -35,4 +36,6 @@ class StartCounterMonitoringSessionAction : AnAction() {
             event.presentation.isEnabled = !isActive
         }
     }
+
+    override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.EDT
 }

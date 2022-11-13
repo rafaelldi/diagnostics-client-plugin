@@ -8,10 +8,10 @@ namespace DiagnosticsClientPlugin.Counters.Exporters;
 
 internal sealed class CounterProtocolExporter
 {
-    private readonly CountersMonitoringSession _session;
+    private readonly CounterMonitoringSession _session;
     private readonly ChannelReader<ValueCounter> _reader;
 
-    internal CounterProtocolExporter(CountersMonitoringSession session, ChannelReader<ValueCounter> reader)
+    internal CounterProtocolExporter(CounterMonitoringSession session, ChannelReader<ValueCounter> reader)
     {
         _session = session;
         _reader = reader;

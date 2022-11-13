@@ -15,7 +15,7 @@ internal sealed class CounterMonitoringHandler
         hostModel.CounterMonitoringSessions.View(lifetime, (lt, pid, session) => Handle(lt, pid, session));
     }
 
-    private static void Handle(Lifetime lt, int pid, CountersMonitoringSession session)
+    private static void Handle(Lifetime lt, int pid, CounterMonitoringSession session)
     {
         var envelope = new CounterMonitoringSessionEnvelope(pid, session, lt);
         lt.KeepAlive(envelope);

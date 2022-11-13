@@ -23,18 +23,47 @@ object DiagnosticsHostModel : Ext(SolutionModel.Solution) {
         source("refresh", void)
     }
 
-    private val GcEventsMonitoringSession = classdef("GcEventsMonitoringSession") {
-        field("pid", int)
-        property("active", bool).async
-        source("gcHappened", GcEvent).async
-        call("monitor", int.nullable, void)
-        source("close", void).async
+    private val CounterCollectionSession = classdef("CounterCollectionSession") {
+        field("filePath", string)
+        field("format", enum("CounterFileFormat") {
+            +"Csv"
+            +"Json"
+        })
+        field("refreshInterval", int)
+        field("providers", string)
+        field("metrics", string.nullable)
+        field("maxTimeSeries", int)
+        field("maxHistograms", int)
+        field("duration", int.nullable)
+    }
+
+    private val CounterMonitoringSession = classdef("CounterMonitoringSession") {
+        property("active", bool)
+        property("duration", int.nullable)
+        map("counters", string, Counter).async
+
+        field("refreshInterval", int)
+        field("providers", string)
+        field("metrics", string.nullable)
+        field("maxTimeSeries", int)
+        field("maxHistograms", int)
     }
 
     private val Counter = structdef {
         field("name", string)
         field("tags", string.nullable)
         field("value", double)
+    }
+
+    private val GcEventCollectionSession = classdef("GcEventCollectionSession") {
+        field("filePath", string)
+        field("duration", int.nullable)
+    }
+
+    private val GcEventMonitoringSession = classdef("GcEventMonitoringSession") {
+        property("active", bool)
+        property("duration", int.nullable)
+        source("gcHappened", GcEvent).async
     }
 
     private val GcEvent = structdef {
@@ -55,44 +84,20 @@ object DiagnosticsHostModel : Ext(SolutionModel.Solution) {
         field("pinnedObjects", int)
     }
 
-    private val CounterCollectionSession = classdef("CounterCollectionSession") {
-        field("filePath", string)
-        field("format", enum("CounterFileFormat") {
-            +"Csv"
-            +"Json"
-        })
-        field("refreshInterval", int)
-        field("providers", string)
-        field("metrics", string.nullable)
-        field("maxTimeSeries", int)
-        field("maxHistograms", int)
-        field("duration", int.nullable)
-    }
-
-    private val CounterMonitoringSession = classdef("CountersMonitoringSession") {
-        property("active", bool)
-        property("duration", int.nullable)
-        map("counters", string, Counter).async
-
-        field("refreshInterval", int)
-        field("providers", string)
-        field("metrics", string.nullable)
-        field("maxTimeSeries", int)
-        field("maxHistograms", int)
-    }
-
     init {
         setting(CSharp50Generator.Namespace, "DiagnosticsClientPlugin.Generated")
         setting(Kotlin11Generator.Namespace, "com.github.rafaelldi.diagnosticsclientplugin.generated")
 
         field("processList", ProcessList)
 
-        list("gcEventsCollectionSessions", int).async
-        map("gcEventsMonitoringSessions", int, GcEventsMonitoringSession).async
-        list("traceCollectionSessions", int).async
-
         map("counterCollectionSessions", int, CounterCollectionSession)
         map("counterMonitoringSessions", int, CounterMonitoringSession)
+
+        map("gcEventCollectionSessions", int, GcEventCollectionSession)
+        map("gcEventMonitoringSessions", int, GcEventMonitoringSession)
+        source("triggerGc", int)
+
+        list("traceCollectionSessions", int).async
 
         call("collectDump",
             structdef("CollectDumpCommand") {
@@ -109,27 +114,6 @@ object DiagnosticsHostModel : Ext(SolutionModel.Solution) {
             }, structdef("DumpCollectionResult") {
                 field("filePath", string)
             })
-
-        call(
-            "collectGcEvents",
-            structdef("CollectGcEventsCommand") {
-                field("pid", int)
-                field("filePath", string)
-                field("duration", int.nullable)
-            },
-            void
-        )
-
-        call(
-            "monitorGcEvents",
-            structdef("MonitorGcEventsCommand") {
-                field("pid", int)
-                field("duration", int.nullable)
-            },
-            void
-        )
-
-        call("triggerGc", structdef("TriggerGcCommand") { field("pid", int) }, void)
 
         call(
             "collectTraces",

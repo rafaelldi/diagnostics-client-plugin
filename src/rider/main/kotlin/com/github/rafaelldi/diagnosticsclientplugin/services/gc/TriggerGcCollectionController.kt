@@ -1,13 +1,9 @@
-@file:Suppress("UnstableApiUsage")
-
-package com.github.rafaelldi.diagnosticsclientplugin.services
+package com.github.rafaelldi.diagnosticsclientplugin.services.gc
 
 import com.github.rafaelldi.diagnosticsclientplugin.generated.DiagnosticsHostModel
-import com.github.rafaelldi.diagnosticsclientplugin.generated.TriggerGcCommand
 import com.github.rafaelldi.diagnosticsclientplugin.generated.diagnosticsHostModel
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
-import com.intellij.openapi.progress.withBackgroundProgressIndicator
 import com.intellij.openapi.project.Project
 import com.jetbrains.rd.platform.util.idea.ProtocolSubscribedProjectComponent
 import com.jetbrains.rider.projectView.solution
@@ -20,9 +16,7 @@ class TriggerGcCollectionController(project: Project) : ProtocolSubscribedProjec
 
     private val hostModel: DiagnosticsHostModel = project.solution.diagnosticsHostModel
 
-    suspend fun triggerGc(pid: Int) {
-        withBackgroundProgressIndicator(project, "Triggering GC") {
-            hostModel.triggerGc.startSuspending(TriggerGcCommand(pid))
-        }
+    fun triggerGc(pid: Int) {
+        hostModel.triggerGc.fire(pid)
     }
 }

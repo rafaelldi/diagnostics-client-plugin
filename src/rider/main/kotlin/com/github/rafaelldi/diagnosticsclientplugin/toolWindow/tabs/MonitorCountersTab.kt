@@ -1,8 +1,8 @@
 package com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs
 
 import com.github.rafaelldi.diagnosticsclientplugin.generated.Counter
-import com.github.rafaelldi.diagnosticsclientplugin.generated.CountersMonitoringSession
-import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.CounterTabsManager
+import com.github.rafaelldi.diagnosticsclientplugin.generated.CounterMonitoringSession
+import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.CounterTabManager
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.components.CounterTableComponent
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ActionGroup
@@ -17,8 +17,8 @@ import javax.swing.JPanel
 
 class MonitorCountersTab(
     val pid: Int,
-    session: CountersMonitoringSession,
-    private val manager: CounterTabsManager,
+    session: CounterMonitoringSession,
+    private val manager: CounterTabManager,
     lt: Lifetime
 ) : SimpleToolWindowPanel(false), Disposable {
 

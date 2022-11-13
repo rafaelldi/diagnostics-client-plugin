@@ -43,87 +43,72 @@ namespace DiagnosticsClientPlugin.Generated
     //fields
     //public fields
     [NotNull] public DiagnosticsClientPlugin.Generated.ProcessList ProcessList {get; private set;}
-    [NotNull] public IViewableList<int> GcEventsCollectionSessions => _GcEventsCollectionSessions;
-    [NotNull] public IViewableMap<int, GcEventsMonitoringSession> GcEventsMonitoringSessions => _GcEventsMonitoringSessions;
-    [NotNull] public IViewableList<int> TraceCollectionSessions => _TraceCollectionSessions;
     [NotNull] public IViewableMap<int, CounterCollectionSession> CounterCollectionSessions => _CounterCollectionSessions;
-    [NotNull] public IViewableMap<int, CountersMonitoringSession> CounterMonitoringSessions => _CounterMonitoringSessions;
+    [NotNull] public IViewableMap<int, CounterMonitoringSession> CounterMonitoringSessions => _CounterMonitoringSessions;
+    [NotNull] public IViewableMap<int, GcEventCollectionSession> GcEventCollectionSessions => _GcEventCollectionSessions;
+    [NotNull] public IViewableMap<int, GcEventMonitoringSession> GcEventMonitoringSessions => _GcEventMonitoringSessions;
+    [NotNull] public ISource<int> TriggerGc => _TriggerGc;
+    [NotNull] public IViewableList<int> TraceCollectionSessions => _TraceCollectionSessions;
     [NotNull] public IRdEndpoint<CollectDumpCommand, DumpCollectionResult> CollectDump => _CollectDump;
-    [NotNull] public IRdEndpoint<CollectGcEventsCommand, Unit> CollectGcEvents => _CollectGcEvents;
-    [NotNull] public IRdEndpoint<MonitorGcEventsCommand, Unit> MonitorGcEvents => _MonitorGcEvents;
-    [NotNull] public IRdEndpoint<TriggerGcCommand, Unit> TriggerGc => _TriggerGc;
     [NotNull] public IRdEndpoint<CollectTracesCommand, Unit> CollectTraces => _CollectTraces;
     [NotNull] public IRdEndpoint<CollectStackTraceCommand, string> CollectStackTrace => _CollectStackTrace;
     
     //private fields
-    [NotNull] private readonly RdList<int> _GcEventsCollectionSessions;
-    [NotNull] private readonly RdMap<int, GcEventsMonitoringSession> _GcEventsMonitoringSessions;
-    [NotNull] private readonly RdList<int> _TraceCollectionSessions;
     [NotNull] private readonly RdMap<int, CounterCollectionSession> _CounterCollectionSessions;
-    [NotNull] private readonly RdMap<int, CountersMonitoringSession> _CounterMonitoringSessions;
+    [NotNull] private readonly RdMap<int, CounterMonitoringSession> _CounterMonitoringSessions;
+    [NotNull] private readonly RdMap<int, GcEventCollectionSession> _GcEventCollectionSessions;
+    [NotNull] private readonly RdMap<int, GcEventMonitoringSession> _GcEventMonitoringSessions;
+    [NotNull] private readonly RdSignal<int> _TriggerGc;
+    [NotNull] private readonly RdList<int> _TraceCollectionSessions;
     [NotNull] private readonly RdCall<CollectDumpCommand, DumpCollectionResult> _CollectDump;
-    [NotNull] private readonly RdCall<CollectGcEventsCommand, Unit> _CollectGcEvents;
-    [NotNull] private readonly RdCall<MonitorGcEventsCommand, Unit> _MonitorGcEvents;
-    [NotNull] private readonly RdCall<TriggerGcCommand, Unit> _TriggerGc;
     [NotNull] private readonly RdCall<CollectTracesCommand, Unit> _CollectTraces;
     [NotNull] private readonly RdCall<CollectStackTraceCommand, string> _CollectStackTrace;
     
     //primary constructor
     private DiagnosticsHostModel(
       [NotNull] DiagnosticsClientPlugin.Generated.ProcessList processList,
-      [NotNull] RdList<int> gcEventsCollectionSessions,
-      [NotNull] RdMap<int, GcEventsMonitoringSession> gcEventsMonitoringSessions,
-      [NotNull] RdList<int> traceCollectionSessions,
       [NotNull] RdMap<int, CounterCollectionSession> counterCollectionSessions,
-      [NotNull] RdMap<int, CountersMonitoringSession> counterMonitoringSessions,
+      [NotNull] RdMap<int, CounterMonitoringSession> counterMonitoringSessions,
+      [NotNull] RdMap<int, GcEventCollectionSession> gcEventCollectionSessions,
+      [NotNull] RdMap<int, GcEventMonitoringSession> gcEventMonitoringSessions,
+      [NotNull] RdSignal<int> triggerGc,
+      [NotNull] RdList<int> traceCollectionSessions,
       [NotNull] RdCall<CollectDumpCommand, DumpCollectionResult> collectDump,
-      [NotNull] RdCall<CollectGcEventsCommand, Unit> collectGcEvents,
-      [NotNull] RdCall<MonitorGcEventsCommand, Unit> monitorGcEvents,
-      [NotNull] RdCall<TriggerGcCommand, Unit> triggerGc,
       [NotNull] RdCall<CollectTracesCommand, Unit> collectTraces,
       [NotNull] RdCall<CollectStackTraceCommand, string> collectStackTrace
     )
     {
       if (processList == null) throw new ArgumentNullException("processList");
-      if (gcEventsCollectionSessions == null) throw new ArgumentNullException("gcEventsCollectionSessions");
-      if (gcEventsMonitoringSessions == null) throw new ArgumentNullException("gcEventsMonitoringSessions");
-      if (traceCollectionSessions == null) throw new ArgumentNullException("traceCollectionSessions");
       if (counterCollectionSessions == null) throw new ArgumentNullException("counterCollectionSessions");
       if (counterMonitoringSessions == null) throw new ArgumentNullException("counterMonitoringSessions");
-      if (collectDump == null) throw new ArgumentNullException("collectDump");
-      if (collectGcEvents == null) throw new ArgumentNullException("collectGcEvents");
-      if (monitorGcEvents == null) throw new ArgumentNullException("monitorGcEvents");
+      if (gcEventCollectionSessions == null) throw new ArgumentNullException("gcEventCollectionSessions");
+      if (gcEventMonitoringSessions == null) throw new ArgumentNullException("gcEventMonitoringSessions");
       if (triggerGc == null) throw new ArgumentNullException("triggerGc");
+      if (traceCollectionSessions == null) throw new ArgumentNullException("traceCollectionSessions");
+      if (collectDump == null) throw new ArgumentNullException("collectDump");
       if (collectTraces == null) throw new ArgumentNullException("collectTraces");
       if (collectStackTrace == null) throw new ArgumentNullException("collectStackTrace");
       
       ProcessList = processList;
-      _GcEventsCollectionSessions = gcEventsCollectionSessions;
-      _GcEventsMonitoringSessions = gcEventsMonitoringSessions;
-      _TraceCollectionSessions = traceCollectionSessions;
       _CounterCollectionSessions = counterCollectionSessions;
       _CounterMonitoringSessions = counterMonitoringSessions;
-      _CollectDump = collectDump;
-      _CollectGcEvents = collectGcEvents;
-      _MonitorGcEvents = monitorGcEvents;
+      _GcEventCollectionSessions = gcEventCollectionSessions;
+      _GcEventMonitoringSessions = gcEventMonitoringSessions;
       _TriggerGc = triggerGc;
+      _TraceCollectionSessions = traceCollectionSessions;
+      _CollectDump = collectDump;
       _CollectTraces = collectTraces;
       _CollectStackTrace = collectStackTrace;
-      _GcEventsCollectionSessions.OptimizeNested = true;
       _TraceCollectionSessions.OptimizeNested = true;
-      _GcEventsCollectionSessions.Async = true;
-      _GcEventsMonitoringSessions.Async = true;
       _TraceCollectionSessions.Async = true;
       BindableChildren.Add(new KeyValuePair<string, object>("processList", ProcessList));
-      BindableChildren.Add(new KeyValuePair<string, object>("gcEventsCollectionSessions", _GcEventsCollectionSessions));
-      BindableChildren.Add(new KeyValuePair<string, object>("gcEventsMonitoringSessions", _GcEventsMonitoringSessions));
-      BindableChildren.Add(new KeyValuePair<string, object>("traceCollectionSessions", _TraceCollectionSessions));
       BindableChildren.Add(new KeyValuePair<string, object>("counterCollectionSessions", _CounterCollectionSessions));
       BindableChildren.Add(new KeyValuePair<string, object>("counterMonitoringSessions", _CounterMonitoringSessions));
-      BindableChildren.Add(new KeyValuePair<string, object>("collectDump", _CollectDump));
-      BindableChildren.Add(new KeyValuePair<string, object>("collectGcEvents", _CollectGcEvents));
-      BindableChildren.Add(new KeyValuePair<string, object>("monitorGcEvents", _MonitorGcEvents));
+      BindableChildren.Add(new KeyValuePair<string, object>("gcEventCollectionSessions", _GcEventCollectionSessions));
+      BindableChildren.Add(new KeyValuePair<string, object>("gcEventMonitoringSessions", _GcEventMonitoringSessions));
       BindableChildren.Add(new KeyValuePair<string, object>("triggerGc", _TriggerGc));
+      BindableChildren.Add(new KeyValuePair<string, object>("traceCollectionSessions", _TraceCollectionSessions));
+      BindableChildren.Add(new KeyValuePair<string, object>("collectDump", _CollectDump));
       BindableChildren.Add(new KeyValuePair<string, object>("collectTraces", _CollectTraces));
       BindableChildren.Add(new KeyValuePair<string, object>("collectStackTrace", _CollectStackTrace));
     }
@@ -131,15 +116,13 @@ namespace DiagnosticsClientPlugin.Generated
     internal DiagnosticsHostModel (
     ) : this (
       new DiagnosticsClientPlugin.Generated.ProcessList(),
-      new RdList<int>(JetBrains.Rd.Impl.Serializers.ReadInt, JetBrains.Rd.Impl.Serializers.WriteInt),
-      new RdMap<int, GcEventsMonitoringSession>(JetBrains.Rd.Impl.Serializers.ReadInt, JetBrains.Rd.Impl.Serializers.WriteInt, GcEventsMonitoringSession.Read, GcEventsMonitoringSession.Write),
-      new RdList<int>(JetBrains.Rd.Impl.Serializers.ReadInt, JetBrains.Rd.Impl.Serializers.WriteInt),
       new RdMap<int, CounterCollectionSession>(JetBrains.Rd.Impl.Serializers.ReadInt, JetBrains.Rd.Impl.Serializers.WriteInt, CounterCollectionSession.Read, CounterCollectionSession.Write),
-      new RdMap<int, CountersMonitoringSession>(JetBrains.Rd.Impl.Serializers.ReadInt, JetBrains.Rd.Impl.Serializers.WriteInt, CountersMonitoringSession.Read, CountersMonitoringSession.Write),
+      new RdMap<int, CounterMonitoringSession>(JetBrains.Rd.Impl.Serializers.ReadInt, JetBrains.Rd.Impl.Serializers.WriteInt, CounterMonitoringSession.Read, CounterMonitoringSession.Write),
+      new RdMap<int, GcEventCollectionSession>(JetBrains.Rd.Impl.Serializers.ReadInt, JetBrains.Rd.Impl.Serializers.WriteInt, GcEventCollectionSession.Read, GcEventCollectionSession.Write),
+      new RdMap<int, GcEventMonitoringSession>(JetBrains.Rd.Impl.Serializers.ReadInt, JetBrains.Rd.Impl.Serializers.WriteInt, GcEventMonitoringSession.Read, GcEventMonitoringSession.Write),
+      new RdSignal<int>(JetBrains.Rd.Impl.Serializers.ReadInt, JetBrains.Rd.Impl.Serializers.WriteInt),
+      new RdList<int>(JetBrains.Rd.Impl.Serializers.ReadInt, JetBrains.Rd.Impl.Serializers.WriteInt),
       new RdCall<CollectDumpCommand, DumpCollectionResult>(CollectDumpCommand.Read, CollectDumpCommand.Write, DumpCollectionResult.Read, DumpCollectionResult.Write),
-      new RdCall<CollectGcEventsCommand, Unit>(CollectGcEventsCommand.Read, CollectGcEventsCommand.Write, JetBrains.Rd.Impl.Serializers.ReadVoid, JetBrains.Rd.Impl.Serializers.WriteVoid),
-      new RdCall<MonitorGcEventsCommand, Unit>(MonitorGcEventsCommand.Read, MonitorGcEventsCommand.Write, JetBrains.Rd.Impl.Serializers.ReadVoid, JetBrains.Rd.Impl.Serializers.WriteVoid),
-      new RdCall<TriggerGcCommand, Unit>(TriggerGcCommand.Read, TriggerGcCommand.Write, JetBrains.Rd.Impl.Serializers.ReadVoid, JetBrains.Rd.Impl.Serializers.WriteVoid),
       new RdCall<CollectTracesCommand, Unit>(CollectTracesCommand.Read, CollectTracesCommand.Write, JetBrains.Rd.Impl.Serializers.ReadVoid, JetBrains.Rd.Impl.Serializers.WriteVoid),
       new RdCall<CollectStackTraceCommand, string>(CollectStackTraceCommand.Read, CollectStackTraceCommand.Write, JetBrains.Rd.Impl.Serializers.ReadString, JetBrains.Rd.Impl.Serializers.WriteString)
     ) {}
@@ -148,7 +131,7 @@ namespace DiagnosticsClientPlugin.Generated
     
     
     
-    protected override long SerializationHash => 6355498676304255287L;
+    protected override long SerializationHash => -7734284393143760592L;
     
     protected override Action<ISerializers> Register => RegisterDeclaredTypesSerializers;
     public static void RegisterDeclaredTypesSerializers(ISerializers serializers)
@@ -170,15 +153,13 @@ namespace DiagnosticsClientPlugin.Generated
       printer.Println("DiagnosticsHostModel (");
       using (printer.IndentCookie()) {
         printer.Print("processList = "); ProcessList.PrintEx(printer); printer.Println();
-        printer.Print("gcEventsCollectionSessions = "); _GcEventsCollectionSessions.PrintEx(printer); printer.Println();
-        printer.Print("gcEventsMonitoringSessions = "); _GcEventsMonitoringSessions.PrintEx(printer); printer.Println();
-        printer.Print("traceCollectionSessions = "); _TraceCollectionSessions.PrintEx(printer); printer.Println();
         printer.Print("counterCollectionSessions = "); _CounterCollectionSessions.PrintEx(printer); printer.Println();
         printer.Print("counterMonitoringSessions = "); _CounterMonitoringSessions.PrintEx(printer); printer.Println();
-        printer.Print("collectDump = "); _CollectDump.PrintEx(printer); printer.Println();
-        printer.Print("collectGcEvents = "); _CollectGcEvents.PrintEx(printer); printer.Println();
-        printer.Print("monitorGcEvents = "); _MonitorGcEvents.PrintEx(printer); printer.Println();
+        printer.Print("gcEventCollectionSessions = "); _GcEventCollectionSessions.PrintEx(printer); printer.Println();
+        printer.Print("gcEventMonitoringSessions = "); _GcEventMonitoringSessions.PrintEx(printer); printer.Println();
         printer.Print("triggerGc = "); _TriggerGc.PrintEx(printer); printer.Println();
+        printer.Print("traceCollectionSessions = "); _TraceCollectionSessions.PrintEx(printer); printer.Println();
+        printer.Print("collectDump = "); _CollectDump.PrintEx(printer); printer.Println();
         printer.Print("collectTraces = "); _CollectTraces.PrintEx(printer); printer.Println();
         printer.Print("collectStackTrace = "); _CollectStackTrace.PrintEx(printer); printer.Println();
       }
@@ -202,7 +183,7 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:98</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:103</p>
   /// </summary>
   public sealed class CollectDumpCommand : IPrintable, IEquatable<CollectDumpCommand>
   {
@@ -320,110 +301,7 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:115</p>
-  /// </summary>
-  public sealed class CollectGcEventsCommand : IPrintable, IEquatable<CollectGcEventsCommand>
-  {
-    //fields
-    //public fields
-    public int Pid {get; private set;}
-    [NotNull] public string FilePath {get; private set;}
-    [CanBeNull] public int? Duration {get; private set;}
-    
-    //private fields
-    //primary constructor
-    public CollectGcEventsCommand(
-      int pid,
-      [NotNull] string filePath,
-      [CanBeNull] int? duration
-    )
-    {
-      if (filePath == null) throw new ArgumentNullException("filePath");
-      
-      Pid = pid;
-      FilePath = filePath;
-      Duration = duration;
-    }
-    //secondary constructor
-    //deconstruct trait
-    public void Deconstruct(out int pid, [NotNull] out string filePath, [CanBeNull] out int? duration)
-    {
-      pid = Pid;
-      filePath = FilePath;
-      duration = Duration;
-    }
-    //statics
-    
-    public static CtxReadDelegate<CollectGcEventsCommand> Read = (ctx, reader) => 
-    {
-      var pid = reader.ReadInt();
-      var filePath = reader.ReadString();
-      var duration = ReadIntNullable(ctx, reader);
-      var _result = new CollectGcEventsCommand(pid, filePath, duration);
-      return _result;
-    };
-    public static CtxReadDelegate<int?> ReadIntNullable = JetBrains.Rd.Impl.Serializers.ReadInt.NullableStruct();
-    
-    public static CtxWriteDelegate<CollectGcEventsCommand> Write = (ctx, writer, value) => 
-    {
-      writer.Write(value.Pid);
-      writer.Write(value.FilePath);
-      WriteIntNullable(ctx, writer, value.Duration);
-    };
-    public static  CtxWriteDelegate<int?> WriteIntNullable = JetBrains.Rd.Impl.Serializers.WriteInt.NullableStruct();
-    
-    //constants
-    
-    //custom body
-    //methods
-    //equals trait
-    public override bool Equals(object obj)
-    {
-      if (ReferenceEquals(null, obj)) return false;
-      if (ReferenceEquals(this, obj)) return true;
-      if (obj.GetType() != GetType()) return false;
-      return Equals((CollectGcEventsCommand) obj);
-    }
-    public bool Equals(CollectGcEventsCommand other)
-    {
-      if (ReferenceEquals(null, other)) return false;
-      if (ReferenceEquals(this, other)) return true;
-      return Pid == other.Pid && FilePath == other.FilePath && Equals(Duration, other.Duration);
-    }
-    //hash code trait
-    public override int GetHashCode()
-    {
-      unchecked {
-        var hash = 0;
-        hash = hash * 31 + Pid.GetHashCode();
-        hash = hash * 31 + FilePath.GetHashCode();
-        hash = hash * 31 + (Duration != null ? Duration.GetHashCode() : 0);
-        return hash;
-      }
-    }
-    //pretty print
-    public void Print(PrettyPrinter printer)
-    {
-      printer.Println("CollectGcEventsCommand (");
-      using (printer.IndentCookie()) {
-        printer.Print("pid = "); Pid.PrintEx(printer); printer.Println();
-        printer.Print("filePath = "); FilePath.PrintEx(printer); printer.Println();
-        printer.Print("duration = "); Duration.PrintEx(printer); printer.Println();
-      }
-      printer.Print(")");
-    }
-    //toString
-    public override string ToString()
-    {
-      var printer = new SingleLinePrettyPrinter();
-      Print(printer);
-      return printer.ToString();
-    }
-  }
-  
-  
-  /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:153</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:137</p>
   /// </summary>
   public sealed class CollectStackTraceCommand : IPrintable, IEquatable<CollectStackTraceCommand>
   {
@@ -506,7 +384,7 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:136</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:120</p>
   /// </summary>
   public sealed class CollectTracesCommand : IPrintable, IEquatable<CollectTracesCommand>
   {
@@ -626,7 +504,7 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:34</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:52</p>
   /// </summary>
   public sealed class Counter : IPrintable, IEquatable<Counter>
   {
@@ -729,7 +607,7 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:58</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:26</p>
   /// </summary>
   public sealed class CounterCollectionSession : RdBindableBase
   {
@@ -838,7 +716,7 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:60</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:28</p>
   /// </summary>
   public enum CounterFileFormat {
     Csv,
@@ -847,9 +725,9 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:72</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:40</p>
   /// </summary>
-  public sealed class CountersMonitoringSession : RdBindableBase
+  public sealed class CounterMonitoringSession : RdBindableBase
   {
     //fields
     //public fields
@@ -868,7 +746,7 @@ namespace DiagnosticsClientPlugin.Generated
     [NotNull] private readonly RdMap<string, Counter> _Counters;
     
     //primary constructor
-    private CountersMonitoringSession(
+    private CounterMonitoringSession(
       [NotNull] RdProperty<bool> active,
       [NotNull] RdProperty<int?> duration,
       [NotNull] RdMap<string, Counter> counters,
@@ -902,7 +780,7 @@ namespace DiagnosticsClientPlugin.Generated
       BindableChildren.Add(new KeyValuePair<string, object>("counters", _Counters));
     }
     //secondary constructor
-    public CountersMonitoringSession (
+    public CounterMonitoringSession (
       int refreshInterval,
       [NotNull] string providers,
       [CanBeNull] string metrics,
@@ -921,7 +799,7 @@ namespace DiagnosticsClientPlugin.Generated
     //deconstruct trait
     //statics
     
-    public static CtxReadDelegate<CountersMonitoringSession> Read = (ctx, reader) => 
+    public static CtxReadDelegate<CounterMonitoringSession> Read = (ctx, reader) => 
     {
       var _id = RdId.Read(reader);
       var active = RdProperty<bool>.Read(ctx, reader, JetBrains.Rd.Impl.Serializers.ReadBool, JetBrains.Rd.Impl.Serializers.WriteBool);
@@ -932,13 +810,13 @@ namespace DiagnosticsClientPlugin.Generated
       var metrics = ReadStringNullable(ctx, reader);
       var maxTimeSeries = reader.ReadInt();
       var maxHistograms = reader.ReadInt();
-      var _result = new CountersMonitoringSession(active, duration, counters, refreshInterval, providers, metrics, maxTimeSeries, maxHistograms).WithId(_id);
+      var _result = new CounterMonitoringSession(active, duration, counters, refreshInterval, providers, metrics, maxTimeSeries, maxHistograms).WithId(_id);
       return _result;
     };
     public static CtxReadDelegate<int?> ReadIntNullable = JetBrains.Rd.Impl.Serializers.ReadInt.NullableStruct();
     public static CtxReadDelegate<string> ReadStringNullable = JetBrains.Rd.Impl.Serializers.ReadString.NullableClass();
     
-    public static CtxWriteDelegate<CountersMonitoringSession> Write = (ctx, writer, value) => 
+    public static CtxWriteDelegate<CounterMonitoringSession> Write = (ctx, writer, value) => 
     {
       value.RdId.Write(writer);
       RdProperty<bool>.Write(ctx, writer, value._Active);
@@ -962,7 +840,7 @@ namespace DiagnosticsClientPlugin.Generated
     //pretty print
     public override void Print(PrettyPrinter printer)
     {
-      printer.Println("CountersMonitoringSession (");
+      printer.Println("CounterMonitoringSession (");
       using (printer.IndentCookie()) {
         printer.Print("active = "); _Active.PrintEx(printer); printer.Println();
         printer.Print("duration = "); _Duration.PrintEx(printer); printer.Println();
@@ -986,7 +864,7 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:109</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:114</p>
   /// </summary>
   public sealed class DumpCollectionResult : IPrintable, IEquatable<DumpCollectionResult>
   {
@@ -1071,7 +949,7 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:100</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:105</p>
   /// </summary>
   public enum DumpType {
     Full,
@@ -1082,7 +960,7 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:40</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:69</p>
   /// </summary>
   public sealed class GcEvent : IPrintable, IEquatable<GcEvent>
   {
@@ -1280,87 +1158,46 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:26</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:58</p>
   /// </summary>
-  public sealed class GcEventsMonitoringSession : RdBindableBase
+  public sealed class GcEventCollectionSession : RdBindableBase
   {
     //fields
     //public fields
-    public int Pid {get; private set;}
-    [NotNull] public IViewableProperty<bool> Active => _Active;
-    [NotNull] public ISignal<GcEvent> GcHappened => _GcHappened;
-    [NotNull] public IRdEndpoint<int?, Unit> Monitor => _Monitor;
-    [NotNull] public ISignal<Unit> Close => _Close;
+    [NotNull] public string FilePath {get; private set;}
+    [CanBeNull] public int? Duration {get; private set;}
     
     //private fields
-    [NotNull] private readonly RdProperty<bool> _Active;
-    [NotNull] private readonly RdSignal<GcEvent> _GcHappened;
-    [NotNull] private readonly RdCall<int?, Unit> _Monitor;
-    [NotNull] private readonly RdSignal<Unit> _Close;
-    
     //primary constructor
-    private GcEventsMonitoringSession(
-      int pid,
-      [NotNull] RdProperty<bool> active,
-      [NotNull] RdSignal<GcEvent> gcHappened,
-      [NotNull] RdCall<int?, Unit> monitor,
-      [NotNull] RdSignal<Unit> close
+    public GcEventCollectionSession(
+      [NotNull] string filePath,
+      [CanBeNull] int? duration
     )
     {
-      if (active == null) throw new ArgumentNullException("active");
-      if (gcHappened == null) throw new ArgumentNullException("gcHappened");
-      if (monitor == null) throw new ArgumentNullException("monitor");
-      if (close == null) throw new ArgumentNullException("close");
+      if (filePath == null) throw new ArgumentNullException("filePath");
       
-      Pid = pid;
-      _Active = active;
-      _GcHappened = gcHappened;
-      _Monitor = monitor;
-      _Close = close;
-      _Active.OptimizeNested = true;
-      _Active.Async = true;
-      _GcHappened.Async = true;
-      _Close.Async = true;
-      _Monitor.ValueCanBeNull = true;
-      BindableChildren.Add(new KeyValuePair<string, object>("active", _Active));
-      BindableChildren.Add(new KeyValuePair<string, object>("gcHappened", _GcHappened));
-      BindableChildren.Add(new KeyValuePair<string, object>("monitor", _Monitor));
-      BindableChildren.Add(new KeyValuePair<string, object>("close", _Close));
+      FilePath = filePath;
+      Duration = duration;
     }
     //secondary constructor
-    public GcEventsMonitoringSession (
-      int pid
-    ) : this (
-      pid,
-      new RdProperty<bool>(JetBrains.Rd.Impl.Serializers.ReadBool, JetBrains.Rd.Impl.Serializers.WriteBool),
-      new RdSignal<GcEvent>(GcEvent.Read, GcEvent.Write),
-      new RdCall<int?, Unit>(ReadIntNullable, WriteIntNullable, JetBrains.Rd.Impl.Serializers.ReadVoid, JetBrains.Rd.Impl.Serializers.WriteVoid),
-      new RdSignal<Unit>(JetBrains.Rd.Impl.Serializers.ReadVoid, JetBrains.Rd.Impl.Serializers.WriteVoid)
-    ) {}
     //deconstruct trait
     //statics
     
-    public static CtxReadDelegate<GcEventsMonitoringSession> Read = (ctx, reader) => 
+    public static CtxReadDelegate<GcEventCollectionSession> Read = (ctx, reader) => 
     {
       var _id = RdId.Read(reader);
-      var pid = reader.ReadInt();
-      var active = RdProperty<bool>.Read(ctx, reader, JetBrains.Rd.Impl.Serializers.ReadBool, JetBrains.Rd.Impl.Serializers.WriteBool);
-      var gcHappened = RdSignal<GcEvent>.Read(ctx, reader, GcEvent.Read, GcEvent.Write);
-      var monitor = RdCall<int?, Unit>.Read(ctx, reader, ReadIntNullable, WriteIntNullable, JetBrains.Rd.Impl.Serializers.ReadVoid, JetBrains.Rd.Impl.Serializers.WriteVoid);
-      var close = RdSignal<Unit>.Read(ctx, reader, JetBrains.Rd.Impl.Serializers.ReadVoid, JetBrains.Rd.Impl.Serializers.WriteVoid);
-      var _result = new GcEventsMonitoringSession(pid, active, gcHappened, monitor, close).WithId(_id);
+      var filePath = reader.ReadString();
+      var duration = ReadIntNullable(ctx, reader);
+      var _result = new GcEventCollectionSession(filePath, duration).WithId(_id);
       return _result;
     };
     public static CtxReadDelegate<int?> ReadIntNullable = JetBrains.Rd.Impl.Serializers.ReadInt.NullableStruct();
     
-    public static CtxWriteDelegate<GcEventsMonitoringSession> Write = (ctx, writer, value) => 
+    public static CtxWriteDelegate<GcEventCollectionSession> Write = (ctx, writer, value) => 
     {
       value.RdId.Write(writer);
-      writer.Write(value.Pid);
-      RdProperty<bool>.Write(ctx, writer, value._Active);
-      RdSignal<GcEvent>.Write(ctx, writer, value._GcHappened);
-      RdCall<int?, Unit>.Write(ctx, writer, value._Monitor);
-      RdSignal<Unit>.Write(ctx, writer, value._Close);
+      writer.Write(value.FilePath);
+      WriteIntNullable(ctx, writer, value.Duration);
     };
     public static  CtxWriteDelegate<int?> WriteIntNullable = JetBrains.Rd.Impl.Serializers.WriteInt.NullableStruct();
     
@@ -1373,13 +1210,10 @@ namespace DiagnosticsClientPlugin.Generated
     //pretty print
     public override void Print(PrettyPrinter printer)
     {
-      printer.Println("GcEventsMonitoringSession (");
+      printer.Println("GcEventCollectionSession (");
       using (printer.IndentCookie()) {
-        printer.Print("pid = "); Pid.PrintEx(printer); printer.Println();
-        printer.Print("active = "); _Active.PrintEx(printer); printer.Println();
-        printer.Print("gcHappened = "); _GcHappened.PrintEx(printer); printer.Println();
-        printer.Print("monitor = "); _Monitor.PrintEx(printer); printer.Println();
-        printer.Print("close = "); _Close.PrintEx(printer); printer.Println();
+        printer.Print("filePath = "); FilePath.PrintEx(printer); printer.Println();
+        printer.Print("duration = "); Duration.PrintEx(printer); printer.Println();
       }
       printer.Print(")");
     }
@@ -1394,47 +1228,70 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:125</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:63</p>
   /// </summary>
-  public sealed class MonitorGcEventsCommand : IPrintable, IEquatable<MonitorGcEventsCommand>
+  public sealed class GcEventMonitoringSession : RdBindableBase
   {
     //fields
     //public fields
-    public int Pid {get; private set;}
-    [CanBeNull] public int? Duration {get; private set;}
+    [NotNull] public IViewableProperty<bool> Active => _Active;
+    [NotNull] public IViewableProperty<int?> Duration => _Duration;
+    [NotNull] public ISignal<GcEvent> GcHappened => _GcHappened;
     
     //private fields
+    [NotNull] private readonly RdProperty<bool> _Active;
+    [NotNull] private readonly RdProperty<int?> _Duration;
+    [NotNull] private readonly RdSignal<GcEvent> _GcHappened;
+    
     //primary constructor
-    public MonitorGcEventsCommand(
-      int pid,
-      [CanBeNull] int? duration
+    private GcEventMonitoringSession(
+      [NotNull] RdProperty<bool> active,
+      [NotNull] RdProperty<int?> duration,
+      [NotNull] RdSignal<GcEvent> gcHappened
     )
     {
-      Pid = pid;
-      Duration = duration;
+      if (active == null) throw new ArgumentNullException("active");
+      if (duration == null) throw new ArgumentNullException("duration");
+      if (gcHappened == null) throw new ArgumentNullException("gcHappened");
+      
+      _Active = active;
+      _Duration = duration;
+      _GcHappened = gcHappened;
+      _Active.OptimizeNested = true;
+      _Duration.OptimizeNested = true;
+      _GcHappened.Async = true;
+      _Duration.ValueCanBeNull = true;
+      BindableChildren.Add(new KeyValuePair<string, object>("active", _Active));
+      BindableChildren.Add(new KeyValuePair<string, object>("duration", _Duration));
+      BindableChildren.Add(new KeyValuePair<string, object>("gcHappened", _GcHappened));
     }
     //secondary constructor
+    public GcEventMonitoringSession (
+    ) : this (
+      new RdProperty<bool>(JetBrains.Rd.Impl.Serializers.ReadBool, JetBrains.Rd.Impl.Serializers.WriteBool),
+      new RdProperty<int?>(ReadIntNullable, WriteIntNullable),
+      new RdSignal<GcEvent>(GcEvent.Read, GcEvent.Write)
+    ) {}
     //deconstruct trait
-    public void Deconstruct(out int pid, [CanBeNull] out int? duration)
-    {
-      pid = Pid;
-      duration = Duration;
-    }
     //statics
     
-    public static CtxReadDelegate<MonitorGcEventsCommand> Read = (ctx, reader) => 
+    public static CtxReadDelegate<GcEventMonitoringSession> Read = (ctx, reader) => 
     {
-      var pid = reader.ReadInt();
-      var duration = ReadIntNullable(ctx, reader);
-      var _result = new MonitorGcEventsCommand(pid, duration);
+      var _id = RdId.Read(reader);
+      var active = RdProperty<bool>.Read(ctx, reader, JetBrains.Rd.Impl.Serializers.ReadBool, JetBrains.Rd.Impl.Serializers.WriteBool);
+      var duration = RdProperty<int?>.Read(ctx, reader, ReadIntNullable, WriteIntNullable);
+      var gcHappened = RdSignal<GcEvent>.Read(ctx, reader, GcEvent.Read, GcEvent.Write);
+      var _result = new GcEventMonitoringSession(active, duration, gcHappened).WithId(_id);
       return _result;
     };
     public static CtxReadDelegate<int?> ReadIntNullable = JetBrains.Rd.Impl.Serializers.ReadInt.NullableStruct();
     
-    public static CtxWriteDelegate<MonitorGcEventsCommand> Write = (ctx, writer, value) => 
+    public static CtxWriteDelegate<GcEventMonitoringSession> Write = (ctx, writer, value) => 
     {
-      writer.Write(value.Pid);
-      WriteIntNullable(ctx, writer, value.Duration);
+      value.RdId.Write(writer);
+      RdProperty<bool>.Write(ctx, writer, value._Active);
+      RdProperty<int?>.Write(ctx, writer, value._Duration);
+      RdSignal<GcEvent>.Write(ctx, writer, value._GcHappened);
     };
     public static  CtxWriteDelegate<int?> WriteIntNullable = JetBrains.Rd.Impl.Serializers.WriteInt.NullableStruct();
     
@@ -1443,36 +1300,15 @@ namespace DiagnosticsClientPlugin.Generated
     //custom body
     //methods
     //equals trait
-    public override bool Equals(object obj)
-    {
-      if (ReferenceEquals(null, obj)) return false;
-      if (ReferenceEquals(this, obj)) return true;
-      if (obj.GetType() != GetType()) return false;
-      return Equals((MonitorGcEventsCommand) obj);
-    }
-    public bool Equals(MonitorGcEventsCommand other)
-    {
-      if (ReferenceEquals(null, other)) return false;
-      if (ReferenceEquals(this, other)) return true;
-      return Pid == other.Pid && Equals(Duration, other.Duration);
-    }
     //hash code trait
-    public override int GetHashCode()
-    {
-      unchecked {
-        var hash = 0;
-        hash = hash * 31 + Pid.GetHashCode();
-        hash = hash * 31 + (Duration != null ? Duration.GetHashCode() : 0);
-        return hash;
-      }
-    }
     //pretty print
-    public void Print(PrettyPrinter printer)
+    public override void Print(PrettyPrinter printer)
     {
-      printer.Println("MonitorGcEventsCommand (");
+      printer.Println("GcEventMonitoringSession (");
       using (printer.IndentCookie()) {
-        printer.Print("pid = "); Pid.PrintEx(printer); printer.Println();
-        printer.Print("duration = "); Duration.PrintEx(printer); printer.Println();
+        printer.Print("active = "); _Active.PrintEx(printer); printer.Println();
+        printer.Print("duration = "); _Duration.PrintEx(printer); printer.Println();
+        printer.Print("gcHappened = "); _GcHappened.PrintEx(printer); printer.Println();
       }
       printer.Print(")");
     }
@@ -1702,95 +1538,12 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:139</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:123</p>
   /// </summary>
   public enum TracingProfile {
     None,
     CpuSampling,
     GcVerbose,
     GcCollect
-  }
-  
-  
-  /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:132</p>
-  /// </summary>
-  public sealed class TriggerGcCommand : IPrintable, IEquatable<TriggerGcCommand>
-  {
-    //fields
-    //public fields
-    public int Pid {get; private set;}
-    
-    //private fields
-    //primary constructor
-    public TriggerGcCommand(
-      int pid
-    )
-    {
-      Pid = pid;
-    }
-    //secondary constructor
-    //deconstruct trait
-    public void Deconstruct(out int pid)
-    {
-      pid = Pid;
-    }
-    //statics
-    
-    public static CtxReadDelegate<TriggerGcCommand> Read = (ctx, reader) => 
-    {
-      var pid = reader.ReadInt();
-      var _result = new TriggerGcCommand(pid);
-      return _result;
-    };
-    
-    public static CtxWriteDelegate<TriggerGcCommand> Write = (ctx, writer, value) => 
-    {
-      writer.Write(value.Pid);
-    };
-    
-    //constants
-    
-    //custom body
-    //methods
-    //equals trait
-    public override bool Equals(object obj)
-    {
-      if (ReferenceEquals(null, obj)) return false;
-      if (ReferenceEquals(this, obj)) return true;
-      if (obj.GetType() != GetType()) return false;
-      return Equals((TriggerGcCommand) obj);
-    }
-    public bool Equals(TriggerGcCommand other)
-    {
-      if (ReferenceEquals(null, other)) return false;
-      if (ReferenceEquals(this, other)) return true;
-      return Pid == other.Pid;
-    }
-    //hash code trait
-    public override int GetHashCode()
-    {
-      unchecked {
-        var hash = 0;
-        hash = hash * 31 + Pid.GetHashCode();
-        return hash;
-      }
-    }
-    //pretty print
-    public void Print(PrettyPrinter printer)
-    {
-      printer.Println("TriggerGcCommand (");
-      using (printer.IndentCookie()) {
-        printer.Print("pid = "); Pid.PrintEx(printer); printer.Println();
-      }
-      printer.Print(")");
-    }
-    //toString
-    public override string ToString()
-    {
-      var printer = new SingleLinePrettyPrinter();
-      Print(printer);
-      return printer.ToString();
-    }
   }
 }

@@ -2,9 +2,10 @@ package com.github.rafaelldi.diagnosticsclientplugin.actions.gc
 
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.CollectGcEventsDialog
 import com.github.rafaelldi.diagnosticsclientplugin.generated.diagnosticsHostModel
-import com.github.rafaelldi.diagnosticsclientplugin.services.GcEventCollectionSessionController
-import com.github.rafaelldi.diagnosticsclientplugin.services.GcEventsSettings
+import com.github.rafaelldi.diagnosticsclientplugin.services.gc.GcEventCollectionSessionController
+import com.github.rafaelldi.diagnosticsclientplugin.services.gc.GcEventsSettings
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.ProcessExplorerTab
+import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.jetbrains.rider.projectView.solution
@@ -33,8 +34,10 @@ class StartCollectingGcEventsAction : AnAction() {
                 event.presentation.isEnabled = false
             } else {
                 val model = project.solution.diagnosticsHostModel
-                event.presentation.isEnabledAndVisible = !model.gcEventsCollectionSessions.contains(selected)
+                event.presentation.isEnabledAndVisible = !model.gcEventCollectionSessions.contains(selected)
             }
         }
     }
+
+    override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.EDT
 }

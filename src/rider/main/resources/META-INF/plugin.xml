@@ -19,6 +19,8 @@
     <projectListeners>
         <listener class="com.github.rafaelldi.diagnosticsclientplugin.services.counters.CounterMonitoringSessionController"
                   topic="com.github.rafaelldi.diagnosticsclientplugin.services.counters.CounterSessionListener"/>
+        <listener class="com.github.rafaelldi.diagnosticsclientplugin.services.gc.GcEventMonitoringSessionController"
+                  topic="com.github.rafaelldi.diagnosticsclientplugin.services.gc.GcEventSessionListener"/>
     </projectListeners>
 
     <actions>

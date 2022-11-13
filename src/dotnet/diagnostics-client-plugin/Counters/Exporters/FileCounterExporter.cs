@@ -39,8 +39,7 @@ internal abstract class FileCounterExporter
             {
                 if (_reader.TryRead(out var counter))
                 {
-                    var counterString = GetCounterString(in counter);
-                    await streamWriter.WriteLineAsync(counterString);
+                    await streamWriter.WriteLineAsync(GetCounterString(in counter));
                 }
             }
         }
