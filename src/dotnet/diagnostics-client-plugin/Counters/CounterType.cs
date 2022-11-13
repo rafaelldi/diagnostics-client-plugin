@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DiagnosticsClientPlugin.Counters.Common;
+namespace DiagnosticsClientPlugin.Counters;
 
 internal enum CounterType
 {

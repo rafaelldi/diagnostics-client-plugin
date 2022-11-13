@@ -1,6 +1,6 @@
 package com.github.rafaelldi.diagnosticsclientplugin.dialogs
 
-import com.github.rafaelldi.diagnosticsclientplugin.services.CountersSettings
+import com.github.rafaelldi.diagnosticsclientplugin.services.counters.CountersSettings
 import com.github.rafaelldi.diagnosticsclientplugin.utils.isValidCounterProviderList
 import com.github.rafaelldi.diagnosticsclientplugin.utils.isValidFilename
 import com.github.rafaelldi.diagnosticsclientplugin.utils.isValidMetricList
@@ -28,6 +28,7 @@ class CollectCountersDialog(private val project: Project) : DialogWrapper(projec
         row("Refresh interval (sec.):") {
             spinner(1..3600, 1)
                 .bindIntValue(model::interval)
+                .focused()
         }
         buttonsGroup {
             row("Stop collection:") {
@@ -52,7 +53,7 @@ class CollectCountersDialog(private val project: Project) : DialogWrapper(projec
                 }
                 .bindText(model::providers)
         }
-        groupRowsRange("Metrics") {
+        collapsibleGroup("Metrics") {
             row {
                 metricsEnablingFlag = checkBox("Enable metrics")
             }
@@ -80,7 +81,7 @@ class CollectCountersDialog(private val project: Project) : DialogWrapper(projec
                     .enabledIf(metricsEnablingFlag.selected)
             }
         }
-        groupRowsRange("File Settings") {
+        group("File Settings") {
             buttonsGroup {
                 row("File format:") {
                     for (format in CounterFileFormat.values()) {

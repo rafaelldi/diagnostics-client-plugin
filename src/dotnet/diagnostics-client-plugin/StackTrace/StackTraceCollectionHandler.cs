@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
-using DiagnosticsClientPlugin.Counters.EventPipes;
 using DiagnosticsClientPlugin.EventPipes;
 using DiagnosticsClientPlugin.Generated;
 using JetBrains.Lifetimes;

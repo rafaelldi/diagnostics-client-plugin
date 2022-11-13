@@ -1,13 +1,13 @@
 package com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs
 
 import com.github.rafaelldi.diagnosticsclientplugin.generated.Counter
-import com.github.rafaelldi.diagnosticsclientplugin.generated.CountersMonitoringSession
-import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.DiagnosticsClientDataKeys
-import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.DiagnosticsTabsManager
+import com.github.rafaelldi.diagnosticsclientplugin.generated.CounterMonitoringSession
+import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.CounterTabManager
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.components.CounterTableComponent
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ActionGroup
 import com.intellij.openapi.actionSystem.ActionManager
+import com.intellij.openapi.actionSystem.DataKey
 import com.intellij.openapi.ui.SimpleToolWindowPanel
 import com.intellij.ui.components.JBScrollPane
 import com.jetbrains.rd.util.lifetime.Lifetime
@@ -16,10 +16,16 @@ import java.awt.BorderLayout
 import javax.swing.JPanel
 
 class MonitorCountersTab(
-    private val session: CountersMonitoringSession,
-    private val tabsManager: DiagnosticsTabsManager,
+    val pid: Int,
+    session: CounterMonitoringSession,
+    private val manager: CounterTabManager,
     lt: Lifetime
 ) : SimpleToolWindowPanel(false), Disposable {
+
+    companion object {
+        val MONITOR_COUNTERS_TAB: DataKey<MonitorCountersTab> =
+            DataKey.create("DiagnosticsClient.ToolWindow.MonitorCountersTab")
+    }
 
     private val table: CounterTableComponent
 
@@ -34,10 +40,7 @@ class MonitorCountersTab(
         initActionToolbar()
 
         session.counters.advise(lt) { countersCollectionChanged(it) }
-        session.active.advise(lt) { statusChanged(it) }
     }
-
-    fun getSessionPid() = session.pid
 
     private fun initActionToolbar() {
         val actionManager = ActionManager.getInstance()
@@ -59,20 +62,12 @@ class MonitorCountersTab(
         }
     }
 
-    private fun statusChanged(isActive: Boolean) {
-        if (isActive) {
-            tabsManager.activateCountersSessionTab(session.pid)
-        } else {
-            tabsManager.deactivateCountersSessionTab(session.pid)
-        }
-    }
-
     override fun getData(dataId: String): Any? {
-        if (DiagnosticsClientDataKeys.MONITOR_COUNTERS_TAB.`is`(dataId)) return this
+        if (MONITOR_COUNTERS_TAB.`is`(dataId)) return this
         return super.getData(dataId)
     }
 
     override fun dispose() {
-        session.close.fire(Unit)
+        manager.tabClosed(pid)
     }
 }

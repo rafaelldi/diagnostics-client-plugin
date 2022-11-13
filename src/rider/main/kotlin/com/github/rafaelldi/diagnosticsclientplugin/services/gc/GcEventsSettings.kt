@@ -1,4 +1,4 @@
-package com.github.rafaelldi.diagnosticsclientplugin.services
+package com.github.rafaelldi.diagnosticsclientplugin.services.gc
 
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.CollectGcEventsModel
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.MonitorGcEventsModel
@@ -9,9 +9,10 @@ import com.jetbrains.rider.projectView.solutionDirectoryPath
 
 @Service
 @State(name = "GcEventsSettings", storages = [(Storage("diagnostics-client.xml"))])
-class GcEventsSettings(project: Project) : SimplePersistentStateComponent<GcEventsSettings.GcSettingsState>(GcSettingsState(project.solutionDirectoryPath.toString())) {
+class GcEventsSettings(project: Project) : SimplePersistentStateComponent<GcEventsSettings.GcSettingsState>(
+    GcSettingsState(project.solutionDirectoryPath.toString())
+) {
     companion object {
-        @JvmStatic
         fun getInstance(project: Project): GcEventsSettings = project.service()
     }
 
@@ -40,7 +41,7 @@ class GcEventsSettings(project: Project) : SimplePersistentStateComponent<GcEven
         }
     }
 
-    class GcSettingsState(solutionPath: String?) : BaseState() {
+    class GcSettingsState(solutionPath: String = "") : BaseState() {
         var path by string(solutionPath)
         var filename by string("gc-events")
         var stoppingType by enum(StoppingType.AfterPeriod)

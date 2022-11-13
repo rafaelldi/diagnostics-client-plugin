@@ -1,74 +1,60 @@
 ﻿using System;
 using System.Threading.Channels;
 using System.Threading.Tasks;
-using DiagnosticsClientPlugin.Common;
-using DiagnosticsClientPlugin.Counters.Common;
 using DiagnosticsClientPlugin.Counters.Exporters;
 using DiagnosticsClientPlugin.Counters.Producer;
 using DiagnosticsClientPlugin.Generated;
-using JetBrains.Core;
+using JetBrains.Collections.Viewable;
 using JetBrains.Lifetimes;
 using JetBrains.ProjectModel;
-using JetBrains.Rd.Tasks;
 using JetBrains.RdBackend.Common.Features;
-using JetBrains.Util;
 
-namespace DiagnosticsClientPlugin.Counters.Collection;
+namespace DiagnosticsClientPlugin.Counters;
 
 [SolutionComponent]
 internal sealed class CounterCollectionHandler
 {
-    private readonly DiagnosticsHostModel _hostModel;
-
-    public CounterCollectionHandler(ISolution solution)
+    public CounterCollectionHandler(ISolution solution, Lifetime lifetime)
     {
-        _hostModel = solution.GetProtocolSolution().GetDiagnosticsHostModel();
-        _hostModel.CollectCounters.Set(async (lt, command) => await CollectAsync(command, lt));
+        var hostModel = solution.GetProtocolSolution().GetDiagnosticsHostModel();
+        hostModel.CounterCollectionSessions.View(lifetime, (lt, pid, session) => Handle(lt, pid, session));
     }
 
-    private async Task<Unit> CollectAsync(CollectCountersCommand command, Lifetime lifetime)
+    private static void Handle(Lifetime lt, int pid, CounterCollectionSession session)
     {
-        var sessionLifetime = lifetime.IntersectWithTimer(command.Duration);
-
-        _hostModel.CounterCollectionSessions.Add(sessionLifetime, command.Pid);
-
         var channel = Channel.CreateBounded<ValueCounter>(new BoundedChannelOptions(100)
         {
             SingleReader = true,
             SingleWriter = true,
             FullMode = BoundedChannelFullMode.DropOldest
         });
+        
+        var exporter = CreateExporter(session, channel);
+        var producer = CreateProducer(pid, session, channel, lt);
 
-        var exporter = CreateExporter(command, channel);
-        var producer = CreateProducer(command, channel, sessionLifetime);
-
-        var exporterTask = exporter.ConsumeAsync(sessionLifetime);
-        var producerTask = producer.Produce(sessionLifetime);
-
-        var completedTask = await Task.WhenAny(exporterTask, producerTask);
-        await completedTask;
-
-        return Unit.Instance;
+        lt.StartAttachedAsync(TaskScheduler.Default, async () => await exporter.ConsumeAsync());
+        lt.StartAttachedAsync(TaskScheduler.Default, async () => await producer.Produce());
     }
 
-    private FileCounterExporter CreateExporter(
-        CollectCountersCommand command,
+    private static FileCounterExporter CreateExporter(
+        CounterCollectionSession session,
         Channel<ValueCounter> channel) =>
-        FileCounterExporter.Create(command.FilePath, command.Format, channel.Reader);
+        FileCounterExporter.Create(session.FilePath, session.Format, channel.Reader);
 
-    private CounterProducer CreateProducer(
-        CollectCountersCommand command,
+    private static CounterProducer CreateProducer(
+        int pid,
+        CounterCollectionSession session,
         Channel<ValueCounter> channel,
         Lifetime lt)
     {
         var configuration = new CounterProducerConfiguration(
             Guid.NewGuid().ToString(),
-            command.Providers,
-            command.Metrics,
-            command.RefreshInterval,
-            command.MaxTimeSeries,
-            command.MaxHistograms
+            session.Providers,
+            session.Metrics,
+            session.RefreshInterval,
+            session.MaxTimeSeries,
+            session.MaxHistograms
         );
-        return new CounterProducer(command.Pid, configuration, channel.Writer, lt);
+        return new CounterProducer(pid, configuration, channel.Writer, lt);
     }
 }

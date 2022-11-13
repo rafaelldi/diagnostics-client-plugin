@@ -2,8 +2,10 @@ package com.github.rafaelldi.diagnosticsclientplugin.actions.gc
 
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.MonitorGcEventsDialog
 import com.github.rafaelldi.diagnosticsclientplugin.generated.diagnosticsHostModel
-import com.github.rafaelldi.diagnosticsclientplugin.services.GcEventMonitoringSessionController
-import com.github.rafaelldi.diagnosticsclientplugin.services.GcEventsSettings
+import com.github.rafaelldi.diagnosticsclientplugin.services.gc.GcEventMonitoringSessionController
+import com.github.rafaelldi.diagnosticsclientplugin.services.gc.GcEventsSettings
+import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.ProcessExplorerTab
+import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.jetbrains.rider.projectView.solution
@@ -11,7 +13,8 @@ import com.jetbrains.rider.projectView.solution
 class StartMonitoringGcEventsAction : AnAction() {
     override fun actionPerformed(event: AnActionEvent) {
         val project = event.project ?: return
-        val pid = project.solution.diagnosticsHostModel.processList.selected.value ?: return
+        val tab = event.getData(ProcessExplorerTab.PROCESS_EXPLORE_TAB) ?: return
+        val pid = tab.selectedProcessId ?: return
         val dialog = MonitorGcEventsDialog(project)
         if (dialog.showAndGet()) {
             val model = dialog.getModel()
@@ -22,18 +25,21 @@ class StartMonitoringGcEventsAction : AnAction() {
 
     override fun update(event: AnActionEvent) {
         val project = event.project
-        if (project == null) {
+        val tab = event.getData(ProcessExplorerTab.PROCESS_EXPLORE_TAB)
+        if (project == null  || tab == null) {
             event.presentation.isEnabled = false
         } else {
-            val model = project.solution.diagnosticsHostModel
-            val selected = model.processList.selected.value
+            val selected = tab.selectedProcessId
             if (selected == null) {
                 event.presentation.isEnabled = false
             } else {
-                val session = model.gcEventsMonitoringSessions[selected]
+                val model = project.solution.diagnosticsHostModel
+                val session = model.gcEventMonitoringSessions[selected]
                 val isActive = session?.active?.valueOrNull ?: false
                 event.presentation.isEnabledAndVisible = !isActive
             }
         }
     }
+
+    override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.EDT
 }

@@ -1,6 +1,6 @@
 package com.github.rafaelldi.diagnosticsclientplugin.dialogs
 
-import com.github.rafaelldi.diagnosticsclientplugin.services.GcEventsSettings
+import com.github.rafaelldi.diagnosticsclientplugin.services.gc.GcEventsSettings
 import com.github.rafaelldi.diagnosticsclientplugin.utils.isValidFilename
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
 import com.intellij.openapi.project.Project
@@ -32,7 +32,7 @@ class CollectGcEventsDialog(private val project: Project) : DialogWrapper(projec
                 .bindIntValue(model::duration)
                 .enabledIf(periodStoppingType.selected)
         }
-        groupRowsRange("File Settings") {
+        group("File Settings") {
             row("Output filename:") {
                 textField()
                     .validationOnInput {

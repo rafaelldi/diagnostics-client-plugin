@@ -1,6 +1,6 @@
 package com.github.rafaelldi.diagnosticsclientplugin.dialogs
 
-import com.github.rafaelldi.diagnosticsclientplugin.services.TracesSettings
+import com.github.rafaelldi.diagnosticsclientplugin.services.traces.TracesSettings
 import com.github.rafaelldi.diagnosticsclientplugin.utils.isValidFilename
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
 import com.intellij.openapi.project.Project
@@ -36,7 +36,7 @@ class CollectTracesDialog(private val project: Project) : DialogWrapper(project)
                 .bindIntValue(model::duration)
                 .enabledIf(periodStoppingType.selected)
         }
-        groupRowsRange("Providers") {
+        group("Providers") {
             row("Profile:") {
                 profileComboBox = comboBox(TracingProfile.values().toList())
                     .validationOnApply {
@@ -61,7 +61,7 @@ class CollectTracesDialog(private val project: Project) : DialogWrapper(project)
                     .bindText(model::providers)
             }
         }
-        groupRowsRange("File Settings") {
+        group("File Settings") {
             row("Output filename:") {
                 textField()
                     .validationOnInput {

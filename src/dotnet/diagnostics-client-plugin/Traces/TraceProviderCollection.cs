@@ -4,7 +4,7 @@ using System.Linq;
 using DiagnosticsClientPlugin.Generated;
 using JetBrains.Util;
 using Microsoft.Diagnostics.NETCore.Client;
-using static DiagnosticsClientPlugin.Counters.EventPipes.EventPipeProviderFactory;
+using static DiagnosticsClientPlugin.EventPipes.EventPipeProviderFactory;
 
 namespace DiagnosticsClientPlugin.Traces;
 

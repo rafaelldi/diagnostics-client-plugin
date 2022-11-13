@@ -6,7 +6,7 @@ using Microsoft.Diagnostics.NETCore.Client;
 using Microsoft.Diagnostics.Tracing.Parsers;
 using static DiagnosticsClientPlugin.Common.Providers;
 
-namespace DiagnosticsClientPlugin.Counters.EventPipes;
+namespace DiagnosticsClientPlugin.EventPipes;
 
 internal static class EventPipeProviderFactory
 {

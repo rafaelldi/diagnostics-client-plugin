@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Channels;
 using System.Threading.Tasks;
-using DiagnosticsClientPlugin.Counters.EventPipes;
 using DiagnosticsClientPlugin.EventPipes;
 using JetBrains.Lifetimes;
 using Microsoft.Diagnostics.NETCore.Client;
@@ -18,33 +17,30 @@ internal sealed class GcEventProducer
     private readonly EventPipeSessionManager _sessionManager;
     private readonly ChannelWriter<ValueGcEvent> _writer;
     private readonly EventPipeProvider[] _providers;
-    private readonly Lifetime _lt;
 
     internal GcEventProducer(
         int pid,
         ChannelWriter<ValueGcEvent> writer,
-        Lifetime lt)
+        Lifetime lifetime)
     {
         _pid = pid;
         _sessionManager = new EventPipeSessionManager(pid);
         _writer = writer;
         _providers = new[] { EventPipeProviderFactory.CreateGcProvider() };
-        _lt = lt;
 
-        _lt.OnTermination(() => _writer.Complete());
+        lifetime.OnTermination(() => _writer.Complete());
     }
 
-    internal Task Produce(Lifetime lt)
+    internal Task Produce()
     {
-        var lifetime = _lt.Intersect(lt);
-
         var session = _sessionManager.StartSession(_providers, false);
-        lifetime.AddDispose(session);
+        Lifetime.AsyncLocal.Value.AddDispose(session);
 
         var source = new EventPipeEventSource(session.EventStream);
-        lifetime.AddDispose(source);
+        Lifetime.AsyncLocal.Value.AddDispose(source);
 
-        lifetime.OnTermination(() => EventPipeSessionManager.StopSession(session));
+        var cancellationToken = Lifetime.AsyncLocal.Value.ToCancellationToken();
+        cancellationToken.Register(() => EventPipeSessionManager.StopSession(session));
 
         source.NeedLoadedDotNetRuntimes();
         source.AddCallbackOnProcessStart(tp =>
@@ -53,7 +49,7 @@ internal sealed class GcEventProducer
                 runtime.GCEnd += (process, gc) => HandleEvent(process, gc));
         });
 
-        return Task.Run(() => { source.Process(); }, lifetime);
+        return Task.Run(() =>  source.Process(), Lifetime.AsyncLocal.Value);
     }
 
     private void HandleEvent(TraceProcess process, TraceGC gc)

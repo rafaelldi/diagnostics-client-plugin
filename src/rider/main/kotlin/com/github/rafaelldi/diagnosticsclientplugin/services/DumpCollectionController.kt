@@ -20,7 +20,6 @@ import com.jetbrains.rider.projectView.solution
 @Service
 class DumpCollectionController(project: Project) : ProtocolSubscribedProjectComponent(project) {
     companion object {
-        @JvmStatic
         fun getInstance(project: Project): DumpCollectionController = project.service()
     }
 

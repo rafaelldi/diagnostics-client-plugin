@@ -1,7 +1,6 @@
 ﻿using System.Globalization;
 using System.Text;
 using System.Threading.Channels;
-using DiagnosticsClientPlugin.Counters.Common;
 
 namespace DiagnosticsClientPlugin.Counters.Exporters;
 

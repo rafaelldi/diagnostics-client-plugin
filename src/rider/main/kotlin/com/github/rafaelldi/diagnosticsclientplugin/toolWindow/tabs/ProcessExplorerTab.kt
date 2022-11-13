@@ -5,6 +5,7 @@ import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.components.Proces
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.components.ProcessTablePanel
 import com.intellij.openapi.actionSystem.ActionGroup
 import com.intellij.openapi.actionSystem.ActionManager
+import com.intellij.openapi.actionSystem.DataKey
 import com.intellij.openapi.ui.SimpleToolWindowPanel
 import com.intellij.ui.OnePixelSplitter
 import com.intellij.ui.components.JBScrollPane
@@ -15,9 +16,15 @@ import javax.swing.event.ListSelectionListener
 
 class ProcessExplorerTab(private val processList: ProcessList, lt: Lifetime) :
     SimpleToolWindowPanel(false), ListSelectionListener {
+
     companion object {
         const val SPLITTER_PROPORTION = 0.3F
+        val PROCESS_EXPLORE_TAB: DataKey<ProcessExplorerTab> =
+            DataKey.create("DiagnosticsClient.ToolWindow.ProcessExplorerTab")
     }
+
+    var selectedProcessId: Int? = null
+        private set
 
     private val processListComponent: ProcessListComponent = ProcessListComponent()
     private val processPanelComponent: ProcessTablePanel = ProcessTablePanel()
@@ -62,12 +69,18 @@ class ProcessExplorerTab(private val processList: ProcessList, lt: Lifetime) :
         }
 
         val selectedPid = processListComponent.selectedProcessId
-        processList.selected.set(selectedPid)
+        selectedProcessId = selectedPid
+
         if (selectedPid != null) {
             val process = processList.items.firstOrNull { it.processId == selectedPid } ?: return
             processPanelComponent.update(process)
         } else {
             processPanelComponent.clear()
         }
+    }
+
+    override fun getData(dataId: String): Any? {
+        if (PROCESS_EXPLORE_TAB.`is`(dataId)) return this
+        return super.getData(dataId)
     }
 }

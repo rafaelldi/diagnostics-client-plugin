@@ -1,30 +1,21 @@
-﻿using System.Threading.Channels;
+﻿using System;
+using System.Threading.Channels;
 using System.Threading.Tasks;
-using DiagnosticsClientPlugin.Common;
-using DiagnosticsClientPlugin.Counters.Common;
 using DiagnosticsClientPlugin.Counters.Exporters;
 using DiagnosticsClientPlugin.Counters.Producer;
 using DiagnosticsClientPlugin.Generated;
-using JetBrains.Core;
+using JetBrains.Collections.Viewable;
 using JetBrains.Lifetimes;
-using JetBrains.Rd.Tasks;
 
-namespace DiagnosticsClientPlugin.Counters.Monitoring;
+namespace DiagnosticsClientPlugin.Counters;
 
 internal sealed class CounterMonitoringSessionEnvelope
 {
-    private readonly CounterMonitoringHandler _handler;
-    private readonly Lifetime _lifetime;
     private readonly CounterProtocolExporter _exporter;
     private readonly CounterProducer _producer;
 
-    internal CounterMonitoringSessionEnvelope(int pid, CounterProducerConfiguration producerConfiguration,
-        CounterMonitoringHandler handler, Lifetime lifetime)
+    internal CounterMonitoringSessionEnvelope(int pid, CounterMonitoringSession session, Lifetime lifetime)
     {
-        _handler = handler;
-        _lifetime = lifetime;
-        Session = new CountersMonitoringSession(pid);
-
         var channel = Channel.CreateBounded<ValueCounter>(new BoundedChannelOptions(100)
         {
             SingleReader = true,
@@ -32,35 +23,35 @@ internal sealed class CounterMonitoringSessionEnvelope
             FullMode = BoundedChannelFullMode.DropOldest
         });
 
-        _exporter = new CounterProtocolExporter(Session, channel.Reader);
-        _producer = new CounterProducer(pid, producerConfiguration, channel.Writer, lifetime);
+        _exporter = CreateExporter(session, channel);
+        _producer = CreateProducer(pid, session, channel, lifetime);
 
-        Session.Monitor.Set(async (lt, duration) => await MonitorAsync(duration, lt));
-        Session.Close.Advise(lifetime, _ => Close());
+        session.Active.WhenTrue(lifetime, lt => Handle(lt));
     }
 
-    internal CountersMonitoringSession Session { get; }
-
-    internal async Task<Unit> MonitorAsync(int? duration, Lifetime lifetime)
+    private void Handle(Lifetime lt)
     {
-        var operationLifetime = _lifetime.IntersectWithTimer(lifetime, duration);
+        lt.StartAttachedAsync(TaskScheduler.Default, async () => await _exporter.ConsumeAsync());
+        lt.StartAttachedAsync(TaskScheduler.Default, async () => await _producer.Produce());
+    }
 
-        operationLifetime.Bracket(
-            () => Session.Active.Value = true,
-            () => Session.Active.Value = false
+    private static CounterProtocolExporter CreateExporter(CounterMonitoringSession session,
+        Channel<ValueCounter> channel) => new(session, channel.Reader);
+
+    private static CounterProducer CreateProducer(
+        int pid,
+        CounterMonitoringSession session,
+        Channel<ValueCounter> channel,
+        Lifetime lt)
+    {
+        var configuration = new CounterProducerConfiguration(
+            Guid.NewGuid().ToString(),
+            session.Providers,
+            session.Metrics,
+            session.RefreshInterval,
+            session.MaxTimeSeries,
+            session.MaxHistograms
         );
-
-        var exporterTask = _exporter.ConsumeAsync(operationLifetime);
-        var producerTask = _producer.Produce(operationLifetime);
-
-        var completedTask = await Task.WhenAny(exporterTask, producerTask);
-        await completedTask;
-
-        return Unit.Instance;
-    }
-
-    private void Close()
-    {
-        _handler.CloseSession(Session.Pid);
+        return new CounterProducer(pid, configuration, channel.Writer, lt);
     }
 }

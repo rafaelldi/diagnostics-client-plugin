@@ -1,4 +1,4 @@
-package com.github.rafaelldi.diagnosticsclientplugin.services
+package com.github.rafaelldi.diagnosticsclientplugin.services.traces
 
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.CollectTracesModel
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.StoppingType
@@ -19,7 +19,6 @@ class TracesSettings(project: Project) :
         )
     ) {
     companion object {
-        @JvmStatic
         fun getInstance(project: Project): TracesSettings = project.service()
 
         private fun getDefaultFilename(): String {
@@ -50,7 +49,7 @@ class TracesSettings(project: Project) :
         }
     }
 
-    class TracesSettingsState(solutionPath: String?, defaultFilename: String?) : BaseState() {
+    class TracesSettingsState(solutionPath: String = "", defaultFilename: String = "") : BaseState() {
         var path by string(solutionPath)
         var filename by string(defaultFilename)
         var stoppingType by enum(StoppingType.AfterPeriod)
