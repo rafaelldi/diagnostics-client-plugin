@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using DiagnosticsClientPlugin.Counters.EventPipes;
+using DiagnosticsClientPlugin.EventPipes;
 using Microsoft.Diagnostics.NETCore.Client;
 
 namespace DiagnosticsClientPlugin.Counters.Producer;

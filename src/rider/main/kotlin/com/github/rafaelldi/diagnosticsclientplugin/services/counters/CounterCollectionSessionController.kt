@@ -1,11 +1,11 @@
-package com.github.rafaelldi.diagnosticsclientplugin.services
+package com.github.rafaelldi.diagnosticsclientplugin.services.counters
 
 import com.github.rafaelldi.diagnosticsclientplugin.actions.notification.OpenFileAction
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.CollectCountersModel
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.CounterFileFormat
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.StoppingType
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.map
-import com.github.rafaelldi.diagnosticsclientplugin.generated.CollectCountersCommand
+import com.github.rafaelldi.diagnosticsclientplugin.generated.CounterCollectionSession
 import com.github.rafaelldi.diagnosticsclientplugin.generated.DiagnosticsHostModel
 import com.github.rafaelldi.diagnosticsclientplugin.generated.diagnosticsHostModel
 import com.intellij.notification.Notification
@@ -13,32 +13,43 @@ import com.intellij.notification.NotificationType
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
-import com.jetbrains.rd.framework.RdTaskResult
+import com.jetbrains.rd.framework.util.createTerminatedAfter
 import com.jetbrains.rd.platform.util.idea.ProtocolSubscribedProjectComponent
-import com.jetbrains.rd.util.lifetime.LifetimeDefinition
+import com.jetbrains.rd.util.addUnique
+import com.jetbrains.rd.util.lifetime.Lifetime
 import com.jetbrains.rider.projectView.solution
-import java.util.concurrent.ConcurrentHashMap
+import kotlinx.coroutines.Dispatchers
+import java.time.Duration
 import kotlin.io.path.Path
 import kotlin.io.path.pathString
 
 @Service
 class CounterCollectionSessionController(project: Project) : ProtocolSubscribedProjectComponent(project) {
     companion object {
-        @JvmStatic
         fun getInstance(project: Project): CounterCollectionSessionController = project.service()
     }
 
     private val hostModel: DiagnosticsHostModel = project.solution.diagnosticsHostModel
-    private val activeSessions: ConcurrentHashMap<Int, LifetimeDefinition> = ConcurrentHashMap()
+
+    init {
+        hostModel.counterCollectionSessions.view(projectComponentLifetime) { lt, pid, session ->
+            viewSession(pid, session, lt)
+        }
+    }
 
     fun startSession(pid: Int, model: CollectCountersModel) {
-        val sessionDefinition = createDefinitionForSession(pid) ?: return
+        if (hostModel.counterCollectionSessions.contains(pid)) {
+            sessionAlreadyExists(pid)
+            return
+        }
 
         val filePath = calculateFilePath(model)
-        val duration = if (model.stoppingType == StoppingType.AfterPeriod) model.duration else null
         val metrics = model.metrics.ifEmpty { null }
-        val command = CollectCountersCommand(
-            pid,
+        val duration =
+            if (model.stoppingType == StoppingType.AfterPeriod) model.duration
+            else null
+
+        val session = CounterCollectionSession(
             filePath,
             model.format.map(),
             model.interval,
@@ -49,43 +60,15 @@ class CounterCollectionSessionController(project: Project) : ProtocolSubscribedP
             duration
         )
 
-        val collectTask = hostModel.collectCounters.start(sessionDefinition.lifetime, command)
-        sessionStarted(pid)
-
-        collectTask
-            .result
-            .advise(projectComponentLifetime) { result ->
-                when (result) {
-                    is RdTaskResult.Success -> {
-                        activeSessions.remove(pid)
-                        sessionFinished(pid, filePath)
-                    }
-
-                    is RdTaskResult.Cancelled -> {
-                        activeSessions.remove(pid)
-                        sessionFinished(pid, filePath)
-                    }
-
-                    is RdTaskResult.Fault -> {
-                        activeSessions.remove(pid)
-                        sessionFaulted(pid, result.error.reasonMessage)
-                    }
-                }
-            }
+        try {
+            hostModel.counterCollectionSessions.addUnique(projectComponentLifetime, pid, session)
+        } catch (e: IllegalArgumentException) {
+            sessionAlreadyExists(pid)
+        }
     }
 
-    private fun createDefinitionForSession(pid: Int): LifetimeDefinition? {
-        if (activeSessions.containsKey(pid)) {
-            return null
-        }
-
-        val sessionDefinition = projectComponentLifetime.createNested()
-        val currentDefinition = activeSessions.putIfAbsent(pid, sessionDefinition)
-        if (currentDefinition != null) {
-            return null
-        }
-
-        return sessionDefinition
+    fun stopSession(pid: Int) {
+        hostModel.counterCollectionSessions.remove(pid)
     }
 
     private fun calculateFilePath(model: CollectCountersModel): String {
@@ -108,10 +91,30 @@ class CounterCollectionSessionController(project: Project) : ProtocolSubscribedP
         return Path(model.path, filename).pathString
     }
 
-    fun stopSession(pid: Int) {
-        val sessionDefinition = activeSessions.remove(pid) ?: return
-        sessionDefinition.terminate()
+    private fun viewSession(pid: Int, session: CounterCollectionSession, lt: Lifetime) {
+        if (session.duration != null) {
+            val timerLifetime =
+                lt.createTerminatedAfter(Duration.ofSeconds(session.duration.toLong()), Dispatchers.Main)
+            timerLifetime.onTermination {
+                if (hostModel.counterCollectionSessions.containsKey(pid)) {
+                    hostModel.counterCollectionSessions.remove(pid)
+                }
+            }
+        }
+
+        lt.bracketIfAlive(
+            { sessionStarted(pid) },
+            { sessionFinished(pid, session.filePath) }
+        )
     }
+
+    private fun sessionAlreadyExists(pid: Int) = Notification(
+        "Diagnostics Client",
+        "Session for $pid already exists",
+        "",
+        NotificationType.WARNING
+    )
+        .notify(project)
 
     private fun sessionStarted(pid: Int) = Notification(
         "Diagnostics Client",
@@ -128,13 +131,5 @@ class CounterCollectionSessionController(project: Project) : ProtocolSubscribedP
         NotificationType.INFORMATION
     )
         .addAction(OpenFileAction(filePath))
-        .notify(project)
-
-    private fun sessionFaulted(pid: Int, message: String) = Notification(
-        "Diagnostics Client",
-        "Counters collection for $pid faulted",
-        message,
-        NotificationType.ERROR
-    )
         .notify(project)
 }

@@ -1,5 +1,4 @@
 ﻿using System.Threading.Tasks;
-using DiagnosticsClientPlugin.Counters.EventPipes;
 using DiagnosticsClientPlugin.EventPipes;
 using DiagnosticsClientPlugin.Generated;
 using JetBrains.Core;

@@ -23,7 +23,6 @@ import kotlin.io.path.pathString
 @Service
 class TraceCollectionSessionController(project: Project) : ProtocolSubscribedProjectComponent(project) {
     companion object {
-        @JvmStatic
         fun getInstance(project: Project): TraceCollectionSessionController = project.service()
     }
 

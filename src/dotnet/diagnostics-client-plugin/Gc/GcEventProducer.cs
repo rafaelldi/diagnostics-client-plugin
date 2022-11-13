@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Channels;
 using System.Threading.Tasks;
-using DiagnosticsClientPlugin.Counters.EventPipes;
 using DiagnosticsClientPlugin.EventPipes;
 using JetBrains.Lifetimes;
 using Microsoft.Diagnostics.NETCore.Client;

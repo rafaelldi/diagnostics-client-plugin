@@ -1,10 +1,9 @@
 ﻿using System;
 using System.IO;
-using System.Threading;
 using System.Threading.Channels;
 using System.Threading.Tasks;
-using DiagnosticsClientPlugin.Counters.Common;
 using DiagnosticsClientPlugin.Generated;
+using JetBrains.Lifetimes;
 
 namespace DiagnosticsClientPlugin.Counters.Exporters;
 
@@ -19,9 +18,9 @@ internal abstract class FileCounterExporter
         _reader = reader;
     }
 
-    internal async Task ConsumeAsync(CancellationToken ct)
+    internal async Task ConsumeAsync()
     {
-        if (ct.IsCancellationRequested)
+        if (Lifetime.AsyncLocal.Value.IsNotAlive)
         {
             return;
         }
@@ -36,7 +35,7 @@ internal abstract class FileCounterExporter
 
         try
         {
-            while (await _reader.WaitToReadAsync(ct))
+            while (await _reader.WaitToReadAsync(Lifetime.AsyncLocal.Value))
             {
                 if (_reader.TryRead(out var counter))
                 {

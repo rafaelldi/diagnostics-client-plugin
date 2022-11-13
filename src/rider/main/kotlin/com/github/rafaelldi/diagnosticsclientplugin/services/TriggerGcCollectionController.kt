@@ -15,7 +15,6 @@ import com.jetbrains.rider.projectView.solution
 @Service
 class TriggerGcCollectionController(project: Project) : ProtocolSubscribedProjectComponent(project) {
     companion object {
-        @JvmStatic
         fun getInstance(project: Project): TriggerGcCollectionController = project.service()
     }
 

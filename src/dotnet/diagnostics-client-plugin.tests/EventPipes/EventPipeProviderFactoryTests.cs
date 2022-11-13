@@ -2,7 +2,7 @@
 using System.Diagnostics.Tracing;
 using System.Linq;
 using AutoFixture.NUnit3;
-using DiagnosticsClientPlugin.Counters.EventPipes;
+using DiagnosticsClientPlugin.EventPipes;
 using DiagnosticsClientPlugin.Traces;
 using Microsoft.Diagnostics.Tracing.Parsers;
 using NUnit.Framework;

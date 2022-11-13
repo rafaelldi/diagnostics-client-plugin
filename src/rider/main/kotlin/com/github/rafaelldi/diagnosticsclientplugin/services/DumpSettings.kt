@@ -19,7 +19,6 @@ class DumpSettings(project: Project) :
         )
     ) {
     companion object {
-        @JvmStatic
         fun getInstance(project: Project): DumpSettings = project.service()
 
         private fun getDefaultFilename(): String {
@@ -50,7 +49,7 @@ class DumpSettings(project: Project) :
         }
     }
 
-    class DumpSettingsState(solutionPath: String?, defaultFilename: String?) : BaseState() {
+    class DumpSettingsState(solutionPath: String = "", defaultFilename: String = "") : BaseState() {
         var path by string(solutionPath)
         var filename by string(defaultFilename)
         var type by enum(DumpType.Full)

@@ -20,7 +20,6 @@ import java.util.concurrent.ConcurrentHashMap
 @Service
 class GcEventMonitoringSessionController(project: Project) : ProtocolSubscribedProjectComponent(project) {
     companion object {
-        @JvmStatic
         fun getInstance(project: Project): GcEventMonitoringSessionController = project.service()
     }
 

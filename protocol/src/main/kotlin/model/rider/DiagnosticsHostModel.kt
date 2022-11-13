@@ -20,16 +20,7 @@ object DiagnosticsHostModel : Ext(SolutionModel.Solution) {
 
     private val ProcessList = aggregatedef("ProcessList") {
         list("items", ProcessInfo)
-        property("selected", int.nullable)
         source("refresh", void)
-    }
-
-    private val CounterMonitoringSession = classdef("CountersMonitoringSession") {
-        field("pid", int)
-        property("active", bool).async
-        map("counters", string, Counter).async
-        call("monitor", int.nullable, void)
-        source("close", void).async
     }
 
     private val GcEventsMonitoringSession = classdef("GcEventsMonitoringSession") {
@@ -64,16 +55,44 @@ object DiagnosticsHostModel : Ext(SolutionModel.Solution) {
         field("pinnedObjects", int)
     }
 
+    private val CounterCollectionSession = classdef("CounterCollectionSession") {
+        field("filePath", string)
+        field("format", enum("CounterFileFormat") {
+            +"Csv"
+            +"Json"
+        })
+        field("refreshInterval", int)
+        field("providers", string)
+        field("metrics", string.nullable)
+        field("maxTimeSeries", int)
+        field("maxHistograms", int)
+        field("duration", int.nullable)
+    }
+
+    private val CounterMonitoringSession = classdef("CountersMonitoringSession") {
+        property("active", bool)
+        property("duration", int.nullable)
+        map("counters", string, Counter).async
+
+        field("refreshInterval", int)
+        field("providers", string)
+        field("metrics", string.nullable)
+        field("maxTimeSeries", int)
+        field("maxHistograms", int)
+    }
+
     init {
         setting(CSharp50Generator.Namespace, "DiagnosticsClientPlugin.Generated")
         setting(Kotlin11Generator.Namespace, "com.github.rafaelldi.diagnosticsclientplugin.generated")
 
         field("processList", ProcessList)
-        list("counterCollectionSessions", int).async
-        map("counterMonitoringSessions", int, CounterMonitoringSession).async
+
         list("gcEventsCollectionSessions", int).async
         map("gcEventsMonitoringSessions", int, GcEventsMonitoringSession).async
         list("traceCollectionSessions", int).async
+
+        map("counterCollectionSessions", int, CounterCollectionSession)
+        map("counterMonitoringSessions", int, CounterMonitoringSession)
 
         call("collectDump",
             structdef("CollectDumpCommand") {
@@ -90,39 +109,6 @@ object DiagnosticsHostModel : Ext(SolutionModel.Solution) {
             }, structdef("DumpCollectionResult") {
                 field("filePath", string)
             })
-
-        call(
-            "collectCounters",
-            structdef("CollectCountersCommand") {
-                field("pid", int)
-                field("filePath", string)
-                field("format", enum("CounterFileFormat") {
-                    +"Csv"
-                    +"Json"
-                })
-                field("refreshInterval", int)
-                field("providers", string)
-                field("metrics", string.nullable)
-                field("maxTimeSeries", int)
-                field("maxHistograms", int)
-                field("duration", int.nullable)
-            },
-            void
-        )
-
-        call(
-            "monitorCounters",
-            structdef("MonitorCountersCommand") {
-                field("pid", int)
-                field("refreshInterval", int)
-                field("providers", string)
-                field("metrics", string.nullable)
-                field("maxTimeSeries", int)
-                field("maxHistograms", int)
-                field("duration", int.nullable)
-            },
-            void
-        )
 
         call(
             "collectGcEvents",

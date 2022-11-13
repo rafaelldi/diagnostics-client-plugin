@@ -2,7 +2,7 @@ package com.github.rafaelldi.diagnosticsclientplugin.actions.gc
 
 import com.github.rafaelldi.diagnosticsclientplugin.generated.diagnosticsHostModel
 import com.github.rafaelldi.diagnosticsclientplugin.services.TriggerGcCollectionController
-import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.DiagnosticsClientDataKeys
+import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.MonitorGcTab.Companion.MONITOR_GC_TAB
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.rd.util.launchOnUi
@@ -12,7 +12,7 @@ import com.jetbrains.rider.projectView.solution
 class TriggerGcCollectionSessionAction : AnAction() {
     override fun actionPerformed(event: AnActionEvent) {
         val project = event.project ?: return
-        val tab = event.getData(DiagnosticsClientDataKeys.MONITOR_GC_TAB) ?: return
+        val tab = event.getData(MONITOR_GC_TAB) ?: return
         val pid = tab.getSessionPid()
         project.lifetime.launchOnUi {
             TriggerGcCollectionController.getInstance(project).triggerGc(pid)
@@ -20,7 +20,7 @@ class TriggerGcCollectionSessionAction : AnAction() {
     }
 
     override fun update(event: AnActionEvent) {
-        val tab = event.getData(DiagnosticsClientDataKeys.MONITOR_GC_TAB)
+        val tab = event.getData(MONITOR_GC_TAB)
         val project = event.project
         if (tab == null || project == null) {
             event.presentation.isEnabled = false

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Threading.Channels;
 using System.Threading.Tasks;
 using DiagnosticsClientPlugin.Common;
-using DiagnosticsClientPlugin.Counters.Common;
 using DiagnosticsClientPlugin.EventPipes;
 using JetBrains.Lifetimes;
 using Microsoft.Diagnostics.Tracing;
@@ -16,41 +15,38 @@ internal sealed class CounterProducer
     private readonly EventPipeSessionManager _sessionManager;
     private readonly CounterProducerConfiguration _configuration;
     private readonly ChannelWriter<ValueCounter> _writer;
-    private readonly Lifetime _lt;
 
     internal CounterProducer(
         int pid,
         CounterProducerConfiguration configuration,
         ChannelWriter<ValueCounter> writer,
-        Lifetime lt)
+        Lifetime lifetime)
     {
         _pid = pid;
         _sessionManager = new EventPipeSessionManager(pid);
         _configuration = configuration;
         _writer = writer;
-        _lt = lt;
 
-        _lt.OnTermination(() => _writer.Complete());
+        lifetime.OnTermination(() => _writer.Complete());
     }
 
-    internal Task Produce(Lifetime lt)
+    internal Task Produce()
     {
-        var lifetime = _lt.Intersect(lt);
-
         var session = _sessionManager.StartSession(_configuration.EventPipeProviders, false);
-        lifetime.AddDispose(session);
+        Lifetime.AsyncLocal.Value.AddDispose(session);
 
         var source = new EventPipeEventSource(session.EventStream);
-        lifetime.AddDispose(source);
+        Lifetime.AsyncLocal.Value.AddDispose(source);
 
-        lifetime.Bracket(
+        Lifetime.AsyncLocal.Value.Bracket(
             () => source.Dynamic.All += HandleEvent,
             () => source.Dynamic.All -= HandleEvent
         );
 
-        lifetime.OnTermination(() => EventPipeSessionManager.StopSession(session));
+        var cancellationToken = Lifetime.AsyncLocal.Value.ToCancellationToken();
+        cancellationToken.Register(() => EventPipeSessionManager.StopSession(session));
 
-        return Task.Run(() => source.Process(), lifetime);
+        return Task.Run(() => source.Process(), Lifetime.AsyncLocal.Value);
     }
 
     private void HandleEvent(TraceEvent evt)
@@ -62,17 +58,17 @@ internal sealed class CounterProducer
 
         if (evt.ProviderName is Providers.SystemDiagnosticsMetricsProvider)
         {
-            if (evt.EventName is "CounterRateValuePublished")
+            switch (evt.EventName)
             {
-                HandleCounterRateEvent(evt);
-            }
-            else if (evt.EventName is "GaugeValuePublished")
-            {
-                HandleGaugeEvent(evt);
-            }
-            else if (evt.EventName is "HistogramValuePublished")
-            {
-                HandleHistogramEvent(evt);
+                case "CounterRateValuePublished":
+                    HandleCounterRateEvent(evt);
+                    break;
+                case "GaugeValuePublished":
+                    HandleGaugeEvent(evt);
+                    break;
+                case "HistogramValuePublished":
+                    HandleHistogramEvent(evt);
+                    break;
             }
         }
         else if (evt.EventName is "EventCounters")
@@ -232,7 +228,7 @@ internal sealed class CounterProducer
         );
     }
 
-    private ValueCounter MapToMetricCounter(
+    private static ValueCounter MapToMetricCounter(
         DateTime timeStamp,
         string name,
         string units,

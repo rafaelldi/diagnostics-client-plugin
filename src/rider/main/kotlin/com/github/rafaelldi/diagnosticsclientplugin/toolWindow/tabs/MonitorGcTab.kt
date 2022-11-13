@@ -2,12 +2,12 @@ package com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs
 
 import com.github.rafaelldi.diagnosticsclientplugin.generated.GcEvent
 import com.github.rafaelldi.diagnosticsclientplugin.generated.GcEventsMonitoringSession
-import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.DiagnosticsClientDataKeys
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.DiagnosticsTabsManager
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.components.GcTableComponent
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ActionGroup
 import com.intellij.openapi.actionSystem.ActionManager
+import com.intellij.openapi.actionSystem.DataKey
 import com.intellij.openapi.ui.SimpleToolWindowPanel
 import com.intellij.ui.components.JBScrollPane
 import com.jetbrains.rd.util.lifetime.Lifetime
@@ -19,6 +19,11 @@ class MonitorGcTab(
     private val tabsManager: DiagnosticsTabsManager,
     lt: Lifetime
 ) : SimpleToolWindowPanel(false), Disposable {
+
+    companion object {
+        val MONITOR_GC_TAB: DataKey<MonitorGcTab> =
+            DataKey.create("DiagnosticsClient.ToolWindow.MonitorGcTab")
+    }
 
     private val table: GcTableComponent
 
@@ -63,7 +68,7 @@ class MonitorGcTab(
     }
 
     override fun getData(dataId: String): Any? {
-        if (DiagnosticsClientDataKeys.MONITOR_GC_TAB.`is`(dataId)) return this
+        if (MONITOR_GC_TAB.`is`(dataId)) return this
         return super.getData(dataId)
     }
 

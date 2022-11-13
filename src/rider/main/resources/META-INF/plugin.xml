@@ -16,6 +16,11 @@
         <notificationGroup id="Diagnostics Client" displayType="BALLOON"/>
     </extensions>
 
+    <projectListeners>
+        <listener class="com.github.rafaelldi.diagnosticsclientplugin.services.counters.CounterMonitoringSessionController"
+                  topic="com.github.rafaelldi.diagnosticsclientplugin.services.counters.CounterSessionListener"/>
+    </projectListeners>
+
     <actions>
         <group id="DiagnosticsClient.ToolWindow.Explorer">
             <action id="DiagnosticsClient.ToolWindow.Explorer.RefreshList"

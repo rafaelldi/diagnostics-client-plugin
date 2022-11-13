@@ -1,4 +1,4 @@
-package com.github.rafaelldi.diagnosticsclientplugin.services
+package com.github.rafaelldi.diagnosticsclientplugin.services.counters
 
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.CollectCountersModel
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.CounterFileFormat
@@ -13,7 +13,6 @@ import com.jetbrains.rider.projectView.solutionDirectoryPath
 class CountersSettings(project: Project) :
     SimplePersistentStateComponent<CountersSettings.CountersSettingsState>(CountersSettingsState(project.solutionDirectoryPath.toString())) {
     companion object {
-        @JvmStatic
         fun getInstance(project: Project): CountersSettings = project.service()
     }
 
@@ -67,7 +66,7 @@ class CountersSettings(project: Project) :
         }
     }
 
-    class CountersSettingsState(solutionPath: String?) : BaseState() {
+    class CountersSettingsState(solutionPath: String = "") : BaseState() {
         var path by string(solutionPath)
         var filename by string("counters")
         var format by enum(CounterFileFormat.Csv)

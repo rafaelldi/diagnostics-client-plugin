@@ -1,6 +1,6 @@
 package com.github.rafaelldi.diagnosticsclientplugin.dialogs
 
-import com.github.rafaelldi.diagnosticsclientplugin.services.CountersSettings
+import com.github.rafaelldi.diagnosticsclientplugin.services.counters.CountersSettings
 import com.github.rafaelldi.diagnosticsclientplugin.utils.isValidCounterProviderList
 import com.github.rafaelldi.diagnosticsclientplugin.utils.isValidMetricList
 import com.intellij.openapi.project.Project
@@ -26,6 +26,7 @@ class MonitorCountersDialog(project: Project) : DialogWrapper(project) {
         row("Refresh interval (sec.):") {
             spinner(1..3600, 1)
                 .bindIntValue(model::interval)
+                .focused()
         }
         buttonsGroup {
             row("Stop monitoring:") {
@@ -50,7 +51,7 @@ class MonitorCountersDialog(project: Project) : DialogWrapper(project) {
                 }
                 .bindText(model::providers)
         }
-        groupRowsRange("Metrics") {
+        collapsibleGroup("Metrics") {
             row {
                 metricsEnablingFlag = checkBox("Enable metrics")
             }

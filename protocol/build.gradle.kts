@@ -11,7 +11,7 @@ dependencies {
 val rdLibDirectory: () -> File by rootProject.extra
 
 repositories {
-    mavenCentral()
+    maven { setUrl("https://cache-redirector.jetbrains.com/maven-central") }
     flatDir {
         dir(rdLibDirectory())
     }
