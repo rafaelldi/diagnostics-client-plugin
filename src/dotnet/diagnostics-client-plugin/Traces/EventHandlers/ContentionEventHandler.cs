@@ -6,7 +6,7 @@ using Microsoft.Diagnostics.Tracing.Parsers.Clr;
 
 namespace DiagnosticsClientPlugin.Traces.EventHandlers;
 
-internal sealed class ContentionEventHandler
+internal sealed class ContentionEventHandler : IEventHandler
 {
     private readonly int _pid;
     private readonly ChannelWriter<ValueTrace> _writer;
@@ -17,7 +17,7 @@ internal sealed class ContentionEventHandler
         _writer = writer;
     }
 
-    internal void SubscribeToEvents(EventPipeEventSource source)
+    public void SubscribeToEvents(EventPipeEventSource source)
     {
         Lifetime.AsyncLocal.Value.Bracket(
             () => source.Clr.ContentionStart += HandleContentionStartEvent,

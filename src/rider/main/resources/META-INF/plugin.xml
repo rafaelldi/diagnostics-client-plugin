@@ -17,12 +17,11 @@
     </extensions>
 
     <projectListeners>
-        <listener
-                class="com.github.rafaelldi.diagnosticsclientplugin.services.counters.CounterMonitoringSessionController"
-                topic="com.github.rafaelldi.diagnosticsclientplugin.services.counters.CounterSessionListener"/>
-        <listener class="com.github.rafaelldi.diagnosticsclientplugin.services.gc.GcEventMonitoringSessionController"
+        <listener class="com.github.rafaelldi.diagnosticsclientplugin.services.counters.CounterSessionListenerService"
+                  topic="com.github.rafaelldi.diagnosticsclientplugin.services.counters.CounterSessionListener"/>
+        <listener class="com.github.rafaelldi.diagnosticsclientplugin.services.gc.GcEventSessionListenerService"
                   topic="com.github.rafaelldi.diagnosticsclientplugin.services.gc.GcEventSessionListener"/>
-        <listener class="com.github.rafaelldi.diagnosticsclientplugin.services.traces.TraceMonitoringSessionController"
+        <listener class="com.github.rafaelldi.diagnosticsclientplugin.services.traces.TraceSessionListenerService"
                   topic="com.github.rafaelldi.diagnosticsclientplugin.services.traces.TraceSessionListener"/>
     </projectListeners>
 

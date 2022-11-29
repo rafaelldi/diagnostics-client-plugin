@@ -21,8 +21,7 @@ import kotlinx.coroutines.Dispatchers
 import java.time.Duration
 
 @Service
-class TraceMonitoringSessionController(project: Project) :
-    ProtocolSubscribedProjectComponent(project), TraceSessionListener {
+class TraceMonitoringSessionController(project: Project) : ProtocolSubscribedProjectComponent(project) {
     companion object {
         fun getInstance(project: Project): TraceMonitoringSessionController = project.service()
     }
@@ -113,7 +112,7 @@ class TraceMonitoringSessionController(project: Project) :
         }
     }
 
-    override fun sessionClosed(pid: Int) {
+    fun closeSession(pid: Int) {
         hostModel.traceMonitoringSessions.remove(pid)
     }
 

@@ -20,8 +20,8 @@ internal sealed class TraceProviderCollection
         var providers = providersString.IsNotEmpty()
             ? TraceCollectionParser.Parse(providersString.AsSpan())
             : new List<TraceProvider>();
-        var profileProviders = TraceProfileParser.ParseProfile(profile);
-        var predefinedProviders = PredefinedProviderParser.Parse(predefinedProviderList);
+        var profileProviders = TraceProfileConverter.Convert(profile);
+        var predefinedProviders = PredefinedProviderConverter.Convert(predefinedProviderList);
 
         MergeProviders(providers, profileProviders, predefinedProviders);
 

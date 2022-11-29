@@ -19,7 +19,7 @@ internal sealed class TraceProducerConfiguration
 
     internal TraceProducerConfiguration(List<PredefinedProvider> providers)
     {
-        var traceProviders = PredefinedProviderParser.Parse(providers);
+        var traceProviders = PredefinedProviderConverter.Convert(providers);
         EventPipeProviders = EventPipeProviderFactory.CreateTraceProviders(traceProviders);
         IsHttpEnabled = providers.Contains(PredefinedProvider.Http);
         IsAspNetEnabled = providers.Contains(PredefinedProvider.AspNet);

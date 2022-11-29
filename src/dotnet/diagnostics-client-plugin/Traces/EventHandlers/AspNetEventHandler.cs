@@ -8,7 +8,7 @@ using Microsoft.Diagnostics.Tracing;
 
 namespace DiagnosticsClientPlugin.Traces.EventHandlers;
 
-internal sealed class AspNetEventHandler
+internal sealed class AspNetEventHandler : IEventHandler
 {
     private readonly int _pid;
     private readonly ChannelWriter<ValueTrace> _writer;
@@ -20,7 +20,7 @@ internal sealed class AspNetEventHandler
         _writer = writer;
     }
 
-    internal void SubscribeToEvents(EventPipeEventSource source)
+    public void SubscribeToEvents(EventPipeEventSource source)
     {
         Lifetime.AsyncLocal.Value.Bracket(
             () => source.Dynamic.All += HandleEvent,
@@ -68,7 +68,7 @@ internal sealed class AspNetEventHandler
                     continue;
                 }
 
-                sb.Append($"{keyString}={valueString}; ");
+                sb.Append($"{keyString} = {valueString}; ");
             }
         }
 
@@ -80,7 +80,7 @@ internal sealed class AspNetEventHandler
         );
         _writer.TryWrite(trace);
     }
-    
+
     private static string GetEventName(TraceEvent evt) => evt.EventName switch
     {
         "Activity1/Start" => "Request Started",

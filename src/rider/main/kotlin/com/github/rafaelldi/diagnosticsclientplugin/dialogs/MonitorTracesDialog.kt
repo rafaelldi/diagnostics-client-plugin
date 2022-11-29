@@ -3,12 +3,22 @@ package com.github.rafaelldi.diagnosticsclientplugin.dialogs
 import com.github.rafaelldi.diagnosticsclientplugin.services.traces.TraceSettings
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogWrapper
+import com.intellij.openapi.ui.ValidationInfo
+import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.components.JBRadioButton
 import com.intellij.ui.dsl.builder.*
 import javax.swing.JComponent
 
 class MonitorTracesDialog(project: Project) : DialogWrapper(project) {
     private val model = TraceSettings.getInstance(project).getMonitorModel()
+    private lateinit var httpCheckBox: Cell<JBCheckBox>
+    private lateinit var aspNetCheckBox: Cell<JBCheckBox>
+    private lateinit var efCheckBox: Cell<JBCheckBox>
+    private lateinit var exceptionsCheckBox: Cell<JBCheckBox>
+    private lateinit var threadsCheckBox: Cell<JBCheckBox>
+    private lateinit var contentionsCheckBox: Cell<JBCheckBox>
+    private lateinit var tasksCheckBox: Cell<JBCheckBox>
+    private lateinit var loaderCheckBox: Cell<JBCheckBox>
 
     init {
         init()
@@ -32,33 +42,50 @@ class MonitorTracesDialog(project: Project) : DialogWrapper(project) {
         }
         group("Providers") {
             row {
-                checkBox("Http")
+                httpCheckBox = checkBox("Http")
                     .bindSelected(model::http)
                 @Suppress("DialogTitleCapitalization")
-                checkBox("ASP.NET Core")
+                aspNetCheckBox = checkBox("ASP.NET Core")
                     .bindSelected(model::aspNet)
                 @Suppress("DialogTitleCapitalization")
-                checkBox("EF Core")
+                efCheckBox = checkBox("EF Core")
                     .bindSelected(model::ef)
             }.layout(RowLayout.PARENT_GRID)
             row {
-                checkBox("Exceptions")
+                exceptionsCheckBox = checkBox("Exceptions")
                     .bindSelected(model::exceptions)
-                checkBox("Threads")
+                threadsCheckBox = checkBox("Threads")
                     .bindSelected(model::threads)
-                checkBox("Contentions")
+                contentionsCheckBox = checkBox("Contentions")
                     .bindSelected(model::contentions)
             }.layout(RowLayout.PARENT_GRID)
             row {
-                checkBox("Tasks")
+                tasksCheckBox = checkBox("Tasks")
                     .bindSelected(model::tasks)
-                checkBox("Loader")
+                loaderCheckBox = checkBox("Loader")
                     .bindSelected(model::loader)
             }.layout(RowLayout.PARENT_GRID)
         }
     }
 
     fun getModel(): MonitorTracesModel = model
+
+    override fun doValidate(): ValidationInfo? {
+        return if (
+            httpCheckBox.component.isSelected ||
+            aspNetCheckBox.component.isSelected ||
+            efCheckBox.component.isSelected ||
+            exceptionsCheckBox.component.isSelected ||
+            threadsCheckBox.component.isSelected ||
+            contentionsCheckBox.component.isSelected ||
+            tasksCheckBox.component.isSelected ||
+            loaderCheckBox.component.isSelected
+        ) {
+            null
+        } else {
+            ValidationInfo("No provider selected")
+        }
+    }
 
     override fun getHelpId(): String = "com.github.rafaelldi.diagnosticsclientplugin.traces"
 }

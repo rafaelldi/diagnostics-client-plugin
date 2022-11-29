@@ -7,7 +7,7 @@ using Microsoft.Diagnostics.Tracing.Parsers.Tpl;
 
 namespace DiagnosticsClientPlugin.Traces.EventHandlers;
 
-internal sealed class TaskEventHandler
+internal sealed class TaskEventHandler : IEventHandler
 {
     private readonly int _pid;
     private readonly ChannelWriter<ValueTrace> _writer;
@@ -18,7 +18,7 @@ internal sealed class TaskEventHandler
         _writer = writer;
     }
 
-    internal void SubscribeToEvents(EventPipeEventSource source)
+    public void SubscribeToEvents(EventPipeEventSource source)
     {
         var parser = new TplEtwProviderTraceEventParser(source);
         Lifetime.AsyncLocal.Value.Bracket(

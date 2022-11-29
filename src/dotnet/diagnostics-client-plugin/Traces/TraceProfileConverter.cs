@@ -6,9 +6,9 @@ using static DiagnosticsClientPlugin.Common.Providers;
 
 namespace DiagnosticsClientPlugin.Traces;
 
-internal static class TraceProfileParser
+internal static class TraceProfileConverter
 {
-    internal static TraceProvider[] ParseProfile(TracingProfile profile) =>
+    internal static TraceProvider[] Convert(TracingProfile profile) =>
         profile switch
         {
             TracingProfile.None => Array.Empty<TraceProvider>(),
