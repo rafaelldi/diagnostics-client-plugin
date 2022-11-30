@@ -14,7 +14,7 @@ public class TraceProfileParserTests
     [Test]
     public void Parse_none_profile()
     {
-        var providers = TraceProfileParser.ParseProfile(TracingProfile.None);
+        var providers = TraceProfileConverter.Convert(TracingProfile.None);
 
         providers.ShouldBeEmpty();
     }
@@ -22,7 +22,7 @@ public class TraceProfileParserTests
     [Test]
     public void Parse_cpu_sampling_profile()
     {
-        var providers = TraceProfileParser.ParseProfile(TracingProfile.CpuSampling);
+        var providers = TraceProfileConverter.Convert(TracingProfile.CpuSampling);
 
         providers.Length.ShouldEqual(2);
         var sampleProvider = providers.Single(it => it.Name == SampleProfilerProvider);
@@ -36,7 +36,7 @@ public class TraceProfileParserTests
     [Test]
     public void Parse_gc_verbose_profile()
     {
-        var providers = TraceProfileParser.ParseProfile(TracingProfile.GcVerbose);
+        var providers = TraceProfileConverter.Convert(TracingProfile.GcVerbose);
         
         providers.Length.ShouldEqual(1);
         var provider = providers.Single();
@@ -48,7 +48,7 @@ public class TraceProfileParserTests
     [Test]
     public void Parse_gc_collect_profile()
     {
-        var providers = TraceProfileParser.ParseProfile(TracingProfile.GcCollect);
+        var providers = TraceProfileConverter.Convert(TracingProfile.GcCollect);
         
         providers.Length.ShouldEqual(1);
         var provider = providers.Single();

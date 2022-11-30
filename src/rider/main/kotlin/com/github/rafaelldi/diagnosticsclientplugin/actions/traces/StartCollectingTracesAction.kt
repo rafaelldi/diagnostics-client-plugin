@@ -3,7 +3,7 @@ package com.github.rafaelldi.diagnosticsclientplugin.actions.traces
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.CollectTracesDialog
 import com.github.rafaelldi.diagnosticsclientplugin.generated.diagnosticsHostModel
 import com.github.rafaelldi.diagnosticsclientplugin.services.traces.TraceCollectionSessionController
-import com.github.rafaelldi.diagnosticsclientplugin.services.traces.TracesSettings
+import com.github.rafaelldi.diagnosticsclientplugin.services.traces.TraceSettings
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.ProcessExplorerTab
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
@@ -18,7 +18,7 @@ class StartCollectingTracesAction : AnAction() {
         val dialog = CollectTracesDialog(project)
         if (dialog.showAndGet()) {
             val model = dialog.getModel()
-            TracesSettings.getInstance(project).update(model)
+            TraceSettings.getInstance(project).update(model)
             TraceCollectionSessionController.getInstance(project).startSession(pid, model)
         }
     }

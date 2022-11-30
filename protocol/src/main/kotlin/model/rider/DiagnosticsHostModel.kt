@@ -93,7 +93,33 @@ object DiagnosticsHostModel : Ext(SolutionModel.Solution) {
             +"GcCollect"
         })
         field("providers", string)
+        field("predefinedProviders", immutableList(PredefinedProvider))
         field("duration", int.nullable)
+    }
+
+    private val TraceMonitoringSession = classdef("TraceMonitoringSession") {
+        field("predefinedProviders", immutableList(PredefinedProvider))
+        property("active", bool)
+        property("duration", int.nullable)
+        source("traceReceived", Trace).async
+    }
+
+    private val PredefinedProvider = enum("PredefinedProvider") {
+        +"Http"
+        +"AspNet"
+        +"EF"
+        +"Exceptions"
+        +"Threads"
+        +"Contentions"
+        +"Tasks"
+        +"Loader"
+    }
+
+    private val Trace = structdef {
+        field("eventName", string)
+        field("provider", PredefinedProvider)
+        field("timeStamp", dateTime)
+        field("content", string)
     }
 
     init {
@@ -110,6 +136,7 @@ object DiagnosticsHostModel : Ext(SolutionModel.Solution) {
         source("triggerGc", int)
 
         map("traceCollectionSessions", int, TraceCollectionSession)
+        map("traceMonitoringSessions", int, TraceMonitoringSession)
 
         call("collectDump",
             structdef("CollectDumpCommand") {

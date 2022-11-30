@@ -20,8 +20,7 @@ import kotlinx.coroutines.Dispatchers
 import java.time.Duration
 
 @Service
-class CounterMonitoringSessionController(project: Project) :
-    ProtocolSubscribedProjectComponent(project), CounterSessionListener {
+class CounterMonitoringSessionController(project: Project) : ProtocolSubscribedProjectComponent(project) {
     companion object {
         fun getInstance(project: Project): CounterMonitoringSessionController = project.service()
     }
@@ -96,7 +95,7 @@ class CounterMonitoringSessionController(project: Project) :
         }
     }
 
-    override fun sessionClosed(pid: Int) {
+    fun closeSession(pid: Int) {
         hostModel.counterMonitoringSessions.remove(pid)
     }
 

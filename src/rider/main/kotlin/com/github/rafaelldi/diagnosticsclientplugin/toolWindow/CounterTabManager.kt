@@ -3,7 +3,7 @@ package com.github.rafaelldi.diagnosticsclientplugin.toolWindow
 import com.github.rafaelldi.diagnosticsclientplugin.generated.CounterMonitoringSession
 import com.github.rafaelldi.diagnosticsclientplugin.generated.diagnosticsHostModel
 import com.github.rafaelldi.diagnosticsclientplugin.services.counters.CounterSessionListener
-import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.MonitorCountersTab
+import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.CounterMonitoringTab
 import com.intellij.execution.runners.ExecutionUtil
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
@@ -32,8 +32,8 @@ class CounterTabManager(project: Project) : ProtocolSubscribedProjectComponent(p
     private fun addCounterSessionTab(lt: Lifetime, pid: Int, session: CounterMonitoringSession) {
         val toolWindow = DiagnosticsTabManager.getToolWindow(project) ?: return
         val contentFactory = ContentFactory.getInstance()
-        val monitorCountersTab = MonitorCountersTab(pid, session, this, lt)
-        val content = contentFactory.createContent(monitorCountersTab, "Counters for $pid", true)
+        val counterMonitoringTab = CounterMonitoringTab(pid, session, this, lt)
+        val content = contentFactory.createContent(counterMonitoringTab, "Counters for $pid", true)
         content.icon = DiagnosticsClientIcons.Counters
         content.putUserData(ToolWindow.SHOW_CONTENT_ICON, true)
         lt.bracketIfAlive(

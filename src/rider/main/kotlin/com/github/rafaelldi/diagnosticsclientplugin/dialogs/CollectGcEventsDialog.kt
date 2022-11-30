@@ -1,6 +1,6 @@
 package com.github.rafaelldi.diagnosticsclientplugin.dialogs
 
-import com.github.rafaelldi.diagnosticsclientplugin.services.gc.GcEventsSettings
+import com.github.rafaelldi.diagnosticsclientplugin.services.gc.GcEventSettings
 import com.github.rafaelldi.diagnosticsclientplugin.utils.isValidFilename
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
 import com.intellij.openapi.project.Project
@@ -10,7 +10,7 @@ import com.intellij.ui.dsl.builder.*
 import javax.swing.JComponent
 
 class CollectGcEventsDialog(private val project: Project) : DialogWrapper(project) {
-    private val model = GcEventsSettings.getInstance(project).getCollectModel()
+    private val model = GcEventSettings.getInstance(project).getCollectModel()
 
     init {
         init()

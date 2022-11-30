@@ -9,6 +9,7 @@ internal sealed class CounterProducerConfiguration
     internal string SessionId { get; }
     internal int RefreshInterval { get; }
     internal IReadOnlyCollection<EventPipeProvider> EventPipeProviders { get; }
+
     private readonly CounterProviderCollection _counterProviders;
 
     internal CounterProducerConfiguration(

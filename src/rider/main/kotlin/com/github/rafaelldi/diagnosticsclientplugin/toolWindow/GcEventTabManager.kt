@@ -3,7 +3,7 @@ package com.github.rafaelldi.diagnosticsclientplugin.toolWindow
 import com.github.rafaelldi.diagnosticsclientplugin.generated.GcEventMonitoringSession
 import com.github.rafaelldi.diagnosticsclientplugin.generated.diagnosticsHostModel
 import com.github.rafaelldi.diagnosticsclientplugin.services.gc.GcEventSessionListener
-import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.MonitorGcTab
+import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.GcEventMonitoringTab
 import com.intellij.execution.runners.ExecutionUtil
 import com.intellij.icons.AllIcons
 import com.intellij.openapi.components.Service
@@ -32,8 +32,8 @@ class GcEventTabManager(project: Project) : ProtocolSubscribedProjectComponent(p
     private fun addGcEventSessionTab(lt: Lifetime, pid: Int, session: GcEventMonitoringSession) {
         val toolWindow = DiagnosticsTabManager.getToolWindow(project) ?: return
         val contentFactory = ContentFactory.getInstance()
-        val monitorGcTab = MonitorGcTab(pid, session, this, lt)
-        val content = contentFactory.createContent(monitorGcTab, "GC for $pid", true)
+        val gcEventMonitoringTab = GcEventMonitoringTab(pid, session, this, lt)
+        val content = contentFactory.createContent(gcEventMonitoringTab, "GC for $pid", true)
         content.icon = AllIcons.Actions.GC
         content.putUserData(ToolWindow.SHOW_CONTENT_ICON, true)
         lt.bracketIfAlive(

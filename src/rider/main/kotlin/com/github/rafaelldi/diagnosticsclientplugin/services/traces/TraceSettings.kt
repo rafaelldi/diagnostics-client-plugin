@@ -1,6 +1,7 @@
 package com.github.rafaelldi.diagnosticsclientplugin.services.traces
 
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.CollectTracesModel
+import com.github.rafaelldi.diagnosticsclientplugin.dialogs.MonitorTracesModel
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.StoppingType
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.TracingProfile
 import com.intellij.openapi.components.*
@@ -10,16 +11,12 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 @Service
-@State(name = "TracesSettings", storages = [(Storage("diagnostics-client.xml"))])
-class TracesSettings(project: Project) :
-    SimplePersistentStateComponent<TracesSettings.TracesSettingsState>(
-        TracesSettingsState(
-            project.solutionDirectoryPath.toString(),
-            getDefaultFilename()
-        )
-    ) {
+@State(name = "TraceSettings", storages = [(Storage("diagnostics-client.xml"))])
+class TraceSettings(project: Project) : SimplePersistentStateComponent<TraceSettings.TraceSettingsState>(
+    TraceSettingsState(project.solutionDirectoryPath.toString(), getDefaultFilename())
+) {
     companion object {
-        fun getInstance(project: Project): TracesSettings = project.service()
+        fun getInstance(project: Project): TraceSettings = project.service()
 
         private fun getDefaultFilename(): String {
             val current = LocalDateTime.now()
@@ -29,13 +26,34 @@ class TracesSettings(project: Project) :
         }
     }
 
-    fun getModel() = CollectTracesModel(
+    fun getCollectModel() = CollectTracesModel(
         state.path ?: "",
         state.filename ?: "",
         state.stoppingType,
         state.duration,
         state.profile,
-        state.providers ?: ""
+        state.providers ?: "",
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+    )
+
+    fun getMonitorModel() = MonitorTracesModel(
+        state.stoppingType,
+        state.duration,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
     )
 
     fun update(model: CollectTracesModel) {
@@ -49,7 +67,14 @@ class TracesSettings(project: Project) :
         }
     }
 
-    class TracesSettingsState(solutionPath: String = "", defaultFilename: String = "") : BaseState() {
+    fun update(model: MonitorTracesModel) {
+        state.apply {
+            stoppingType = model.stoppingType
+            duration = model.duration
+        }
+    }
+
+    class TraceSettingsState(solutionPath: String = "", defaultFilename: String = "") : BaseState() {
         var path by string(solutionPath)
         var filename by string(defaultFilename)
         var stoppingType by enum(StoppingType.AfterPeriod)

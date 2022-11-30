@@ -5,6 +5,7 @@ import com.github.rafaelldi.diagnosticsclientplugin.dialogs.CollectTracesModel
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.StoppingType
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.map
 import com.github.rafaelldi.diagnosticsclientplugin.generated.DiagnosticsHostModel
+import com.github.rafaelldi.diagnosticsclientplugin.generated.PredefinedProvider
 import com.github.rafaelldi.diagnosticsclientplugin.generated.TraceCollectionSession
 import com.github.rafaelldi.diagnosticsclientplugin.generated.diagnosticsHostModel
 import com.intellij.notification.Notification
@@ -46,11 +47,13 @@ class TraceCollectionSessionController(project: Project) : ProtocolSubscribedPro
         val duration =
             if (model.stoppingType == StoppingType.AfterPeriod) model.duration
             else null
+        val predefinedProvider = getPredefinedProviders(model)
 
         val session = TraceCollectionSession(
             filePath,
             model.profile.map(),
             model.providers,
+            predefinedProvider,
             duration
         )
 
@@ -63,6 +66,29 @@ class TraceCollectionSessionController(project: Project) : ProtocolSubscribedPro
 
     fun stopSession(pid: Int) {
         hostModel.traceCollectionSessions.remove(pid)
+    }
+
+    private fun getPredefinedProviders(model: CollectTracesModel): List<PredefinedProvider> {
+        val providers = mutableListOf<PredefinedProvider>()
+
+        if (model.http)
+            providers.add(PredefinedProvider.Http)
+        if (model.aspNet)
+            providers.add(PredefinedProvider.AspNet)
+        if (model.ef)
+            providers.add(PredefinedProvider.EF)
+        if (model.exceptions)
+            providers.add(PredefinedProvider.Exceptions)
+        if (model.threads)
+            providers.add(PredefinedProvider.Threads)
+        if (model.contentions)
+            providers.add(PredefinedProvider.Contentions)
+        if (model.tasks)
+            providers.add(PredefinedProvider.Tasks)
+        if (model.loader)
+            providers.add(PredefinedProvider.Loader)
+
+        return providers
     }
 
     private fun viewSession(pid: Int, session: TraceCollectionSession, lt: Lifetime) {

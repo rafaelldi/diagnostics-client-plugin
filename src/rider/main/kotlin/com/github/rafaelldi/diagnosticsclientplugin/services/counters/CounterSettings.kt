@@ -9,11 +9,12 @@ import com.intellij.openapi.project.Project
 import com.jetbrains.rider.projectView.solutionDirectoryPath
 
 @Service
-@State(name = "CountersSettings", storages = [(Storage("diagnostics-client.xml"))])
-class CountersSettings(project: Project) :
-    SimplePersistentStateComponent<CountersSettings.CountersSettingsState>(CountersSettingsState(project.solutionDirectoryPath.toString())) {
+@State(name = "CounterSettings", storages = [(Storage("diagnostics-client.xml"))])
+class CounterSettings(project: Project) : SimplePersistentStateComponent<CounterSettings.CounterSettingsState>(
+    CounterSettingsState(project.solutionDirectoryPath.toString())
+) {
     companion object {
-        fun getInstance(project: Project): CountersSettings = project.service()
+        fun getInstance(project: Project): CounterSettings = project.service()
     }
 
     fun getCollectModel() = CollectCountersModel(
@@ -66,7 +67,7 @@ class CountersSettings(project: Project) :
         }
     }
 
-    class CountersSettingsState(solutionPath: String = "") : BaseState() {
+    class CounterSettingsState(solutionPath: String = "") : BaseState() {
         var path by string(solutionPath)
         var filename by string("counters")
         var format by enum(CounterFileFormat.Csv)

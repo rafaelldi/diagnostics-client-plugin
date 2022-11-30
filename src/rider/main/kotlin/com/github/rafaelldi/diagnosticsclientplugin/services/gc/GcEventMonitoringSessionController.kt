@@ -20,8 +20,7 @@ import kotlinx.coroutines.Dispatchers
 import java.time.Duration
 
 @Service
-class GcEventMonitoringSessionController(project: Project) : ProtocolSubscribedProjectComponent(project),
-    GcEventSessionListener {
+class GcEventMonitoringSessionController(project: Project) : ProtocolSubscribedProjectComponent(project) {
     companion object {
         fun getInstance(project: Project): GcEventMonitoringSessionController = project.service()
     }
@@ -88,7 +87,7 @@ class GcEventMonitoringSessionController(project: Project) : ProtocolSubscribedP
         }
     }
 
-    override fun sessionClosed(pid: Int) {
+    fun closeSession(pid: Int) {
         hostModel.gcEventMonitoringSessions.remove(pid)
     }
 

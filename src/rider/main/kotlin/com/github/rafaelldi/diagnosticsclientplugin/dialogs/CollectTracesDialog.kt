@@ -1,6 +1,6 @@
 package com.github.rafaelldi.diagnosticsclientplugin.dialogs
 
-import com.github.rafaelldi.diagnosticsclientplugin.services.traces.TracesSettings
+import com.github.rafaelldi.diagnosticsclientplugin.services.traces.TraceSettings
 import com.github.rafaelldi.diagnosticsclientplugin.utils.isValidFilename
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
 import com.intellij.openapi.project.Project
@@ -12,7 +12,7 @@ import com.intellij.ui.dsl.builder.*
 import javax.swing.JComponent
 
 class CollectTracesDialog(private val project: Project) : DialogWrapper(project) {
-    private val model = TracesSettings.getInstance(project).getModel()
+    private val model = TraceSettings.getInstance(project).getCollectModel()
 
     init {
         init()
@@ -23,7 +23,7 @@ class CollectTracesDialog(private val project: Project) : DialogWrapper(project)
     override fun createCenterPanel(): JComponent = panel {
         lateinit var periodStoppingType: Cell<JBRadioButton>
         lateinit var profileComboBox: Cell<ComboBox<TracingProfile>>
-        lateinit var providersTextField: Cell<ExpandableTextField>
+        lateinit var providerTextField: Cell<ExpandableTextField>
 
         buttonsGroup {
             row("Stop collection:") {
@@ -40,7 +40,7 @@ class CollectTracesDialog(private val project: Project) : DialogWrapper(project)
             row("Profile:") {
                 profileComboBox = comboBox(TracingProfile.values().toList())
                     .validationOnApply {
-                        if (it.item == TracingProfile.None && providersTextField.component.text.isNullOrEmpty()) {
+                        if (it.item == TracingProfile.None && providerTextField.component.text.isNullOrEmpty()) {
                             return@validationOnApply error("Please select a profile or fill in the providers field")
                         } else {
                             return@validationOnApply null
@@ -49,7 +49,7 @@ class CollectTracesDialog(private val project: Project) : DialogWrapper(project)
                     .bindItem(model::profile.toNullableProperty())
             }
             row("Providers:") {
-                providersTextField = expandableTextField()
+                providerTextField = expandableTextField()
                     .columns(COLUMNS_MEDIUM)
                     .validationOnApply {
                         if (it.text.isNullOrEmpty() && profileComboBox.component.item == TracingProfile.None) {
@@ -60,6 +60,32 @@ class CollectTracesDialog(private val project: Project) : DialogWrapper(project)
                     }
                     .bindText(model::providers)
             }
+        }
+        collapsibleGroup("Predefined Providers") {
+            row {
+                checkBox("Http")
+                    .bindSelected(model::http)
+                @Suppress("DialogTitleCapitalization")
+                checkBox("ASP.NET Core")
+                    .bindSelected(model::aspNet)
+                @Suppress("DialogTitleCapitalization")
+                checkBox("EF Core")
+                    .bindSelected(model::ef)
+            }.layout(RowLayout.PARENT_GRID)
+            row {
+                checkBox("Exceptions")
+                    .bindSelected(model::exceptions)
+                checkBox("Threads")
+                    .bindSelected(model::threads)
+                checkBox("Contentions")
+                    .bindSelected(model::contentions)
+            }.layout(RowLayout.PARENT_GRID)
+            row {
+                checkBox("Tasks")
+                    .bindSelected(model::tasks)
+                checkBox("Loader")
+                    .bindSelected(model::loader)
+            }.layout(RowLayout.PARENT_GRID)
         }
         group("File Settings") {
             row("Output filename:") {

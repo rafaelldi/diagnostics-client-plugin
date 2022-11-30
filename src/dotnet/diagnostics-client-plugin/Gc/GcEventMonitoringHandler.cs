@@ -7,9 +7,9 @@ using JetBrains.RdBackend.Common.Features;
 namespace DiagnosticsClientPlugin.Gc;
 
 [SolutionComponent]
-internal sealed class GcEventsMonitoringHandler
+internal sealed class GcEventMonitoringHandler
 {
-    public GcEventsMonitoringHandler(ISolution solution, Lifetime lifetime)
+    public GcEventMonitoringHandler(ISolution solution, Lifetime lifetime)
     {
         var hostModel = solution.GetProtocolSolution().GetDiagnosticsHostModel();
         hostModel.GcEventMonitoringSessions.View(lifetime, (lt, pid, session) => Handle(lt, pid, session));

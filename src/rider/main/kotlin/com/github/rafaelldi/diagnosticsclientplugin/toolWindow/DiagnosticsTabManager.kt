@@ -22,6 +22,7 @@ class DiagnosticsTabManager(project: Project) : ProtocolSubscribedProjectCompone
 
     private val counterTabManager: CounterTabManager = project.service()
     private val gcEventTabManager: GcEventTabManager = project.service()
+    private val traceTabManager: TraceTabManager = project.service()
 
     fun createExplorerTab(toolWindow: ToolWindow) {
         val contentFactory = ContentFactory.getInstance()

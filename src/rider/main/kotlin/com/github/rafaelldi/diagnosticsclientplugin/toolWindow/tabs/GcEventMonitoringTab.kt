@@ -3,7 +3,7 @@ package com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs
 import com.github.rafaelldi.diagnosticsclientplugin.generated.GcEvent
 import com.github.rafaelldi.diagnosticsclientplugin.generated.GcEventMonitoringSession
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.GcEventTabManager
-import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.components.GcTableComponent
+import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.components.GcEventTableComponent
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ActionGroup
 import com.intellij.openapi.actionSystem.ActionManager
@@ -14,7 +14,7 @@ import com.jetbrains.rd.util.lifetime.Lifetime
 import java.awt.BorderLayout
 import javax.swing.JPanel
 
-class MonitorGcTab(
+class GcEventMonitoringTab(
     val pid: Int,
     session: GcEventMonitoringSession,
     private val manager: GcEventTabManager,
@@ -22,15 +22,15 @@ class MonitorGcTab(
 ) : SimpleToolWindowPanel(false), Disposable {
 
     companion object {
-        val MONITOR_GC_TAB: DataKey<MonitorGcTab> =
-            DataKey.create("DiagnosticsClient.ToolWindow.MonitorGcTab")
+        val GC_EVENT_MONITORING_TAB: DataKey<GcEventMonitoringTab> =
+            DataKey.create("DiagnosticsClient.ToolWindow.GcEventMonitoringTab")
     }
 
-    private val table: GcTableComponent
+    private val table: GcEventTableComponent
 
     private val panel: JPanel = JPanel().apply {
         layout = BorderLayout()
-        table = GcTableComponent()
+        table = GcEventTableComponent()
         add(JBScrollPane(table))
     }
 
@@ -43,9 +43,9 @@ class MonitorGcTab(
 
     private fun initActionToolbar() {
         val actionManager = ActionManager.getInstance()
-        val actionGroup = actionManager.getAction("DiagnosticsClient.ToolWindow.GcSession") as ActionGroup
+        val actionGroup = actionManager.getAction("DiagnosticsClient.ToolWindow.GcEventSession") as ActionGroup
         val actionToolbar = actionManager.createActionToolbar(
-            "DiagnosticsClient.ToolWindow.CountersSession.ActionToolbar",
+            "DiagnosticsClient.ToolWindow.GcEventSession.ActionToolbar",
             actionGroup,
             true
         )
@@ -58,7 +58,7 @@ class MonitorGcTab(
     }
 
     override fun getData(dataId: String): Any? {
-        if (MONITOR_GC_TAB.`is`(dataId)) return this
+        if (GC_EVENT_MONITORING_TAB.`is`(dataId)) return this
         return super.getData(dataId)
     }
 
