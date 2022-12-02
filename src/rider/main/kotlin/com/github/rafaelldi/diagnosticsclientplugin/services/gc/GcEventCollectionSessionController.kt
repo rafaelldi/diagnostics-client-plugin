@@ -1,13 +1,13 @@
 package com.github.rafaelldi.diagnosticsclientplugin.services.gc
 
-import com.github.rafaelldi.diagnosticsclientplugin.actions.notification.OpenFileAction
+import com.github.rafaelldi.diagnosticsclientplugin.common.collectionSessionAlreadyExists
+import com.github.rafaelldi.diagnosticsclientplugin.common.collectionSessionFinished
+import com.github.rafaelldi.diagnosticsclientplugin.common.collectionSessionStarted
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.CollectGcEventsModel
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.StoppingType
 import com.github.rafaelldi.diagnosticsclientplugin.generated.DiagnosticsHostModel
 import com.github.rafaelldi.diagnosticsclientplugin.generated.GcEventCollectionSession
 import com.github.rafaelldi.diagnosticsclientplugin.generated.diagnosticsHostModel
-import com.intellij.notification.Notification
-import com.intellij.notification.NotificationType
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
@@ -25,6 +25,7 @@ import kotlin.io.path.pathString
 class GcEventCollectionSessionController(project: Project) : ProtocolSubscribedProjectComponent(project) {
     companion object {
         fun getInstance(project: Project): GcEventCollectionSessionController = project.service()
+        private const val GC_EVENTS = "GC events"
     }
 
     private val hostModel: DiagnosticsHostModel = project.solution.diagnosticsHostModel
@@ -37,7 +38,7 @@ class GcEventCollectionSessionController(project: Project) : ProtocolSubscribedP
 
     fun startSession(pid: Int, model: CollectGcEventsModel) {
         if (hostModel.gcEventCollectionSessions.contains(pid)) {
-            sessionAlreadyExists(pid)
+            collectionSessionAlreadyExists(GC_EVENTS, pid, project)
             return
         }
 
@@ -51,7 +52,7 @@ class GcEventCollectionSessionController(project: Project) : ProtocolSubscribedP
         try {
             hostModel.gcEventCollectionSessions.addUnique(projectComponentLifetime, pid, session)
         } catch (e: IllegalArgumentException) {
-            sessionAlreadyExists(pid)
+            collectionSessionAlreadyExists(GC_EVENTS, pid, project)
         }
     }
 
@@ -71,33 +72,8 @@ class GcEventCollectionSessionController(project: Project) : ProtocolSubscribedP
         }
 
         lt.bracketIfAlive(
-            { sessionStarted(pid) },
-            { sessionFinished(pid, session.filePath) }
+            { collectionSessionStarted(GC_EVENTS, pid, project) },
+            { collectionSessionFinished(GC_EVENTS, pid, session.filePath, true, project) }
         )
     }
-
-    private fun sessionAlreadyExists(pid: Int) = Notification(
-        "Diagnostics Client",
-        "GC events collection session for $pid already exists",
-        "",
-        NotificationType.WARNING
-    )
-        .notify(project)
-
-    private fun sessionStarted(pid: Int) = Notification(
-        "Diagnostics Client",
-        "GC events collection started",
-        "Session for process $pid started",
-        NotificationType.INFORMATION
-    )
-        .notify(project)
-
-    private fun sessionFinished(pid: Int, filePath: String) = Notification(
-        "Diagnostics Client",
-        "GC events collection finished",
-        "Session for process $pid finished",
-        NotificationType.INFORMATION
-    )
-        .addAction(OpenFileAction(filePath))
-        .notify(project)
 }

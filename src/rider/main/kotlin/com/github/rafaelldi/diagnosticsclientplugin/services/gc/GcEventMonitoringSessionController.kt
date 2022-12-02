@@ -1,12 +1,13 @@
 package com.github.rafaelldi.diagnosticsclientplugin.services.gc
 
+import com.github.rafaelldi.diagnosticsclientplugin.common.monitoringSessionFinished
+import com.github.rafaelldi.diagnosticsclientplugin.common.monitoringSessionNotFound
+import com.github.rafaelldi.diagnosticsclientplugin.common.monitoringSessionStarted
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.MonitorGcEventsModel
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.StoppingType
 import com.github.rafaelldi.diagnosticsclientplugin.generated.DiagnosticsHostModel
 import com.github.rafaelldi.diagnosticsclientplugin.generated.GcEventMonitoringSession
 import com.github.rafaelldi.diagnosticsclientplugin.generated.diagnosticsHostModel
-import com.intellij.notification.Notification
-import com.intellij.notification.NotificationType
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
@@ -23,6 +24,7 @@ import java.time.Duration
 class GcEventMonitoringSessionController(project: Project) : ProtocolSubscribedProjectComponent(project) {
     companion object {
         fun getInstance(project: Project): GcEventMonitoringSessionController = project.service()
+        private const val GC_EVENTS = "GC events"
     }
 
     private val hostModel: DiagnosticsHostModel = project.solution.diagnosticsHostModel
@@ -58,7 +60,7 @@ class GcEventMonitoringSessionController(project: Project) : ProtocolSubscribedP
     fun startExistingSession(pid: Int, stoppingType: StoppingType, duration: Int) {
         val session = hostModel.gcEventMonitoringSessions[pid]
         if (session == null) {
-            sessionNotFound(pid)
+            monitoringSessionNotFound(GC_EVENTS, pid, project)
             return
         }
 
@@ -78,7 +80,7 @@ class GcEventMonitoringSessionController(project: Project) : ProtocolSubscribedP
     fun stopSession(pid: Int) {
         val session = hostModel.gcEventMonitoringSessions[pid]
         if (session == null) {
-            sessionNotFound(pid)
+            monitoringSessionNotFound(GC_EVENTS, pid, project)
             return
         }
 
@@ -108,32 +110,8 @@ class GcEventMonitoringSessionController(project: Project) : ProtocolSubscribedP
         }
 
         lifetime.bracketIfAlive(
-            { sessionStarted(pid) },
-            { sessionFinished(pid) }
+            { monitoringSessionStarted(GC_EVENTS, pid, project) },
+            { monitoringSessionFinished(GC_EVENTS, pid, project) }
         )
     }
-
-    private fun sessionStarted(pid: Int) = Notification(
-        "Diagnostics Client",
-        "GC monitoring started",
-        "Session for process $pid started",
-        NotificationType.INFORMATION
-    )
-        .notify(project)
-
-    private fun sessionFinished(pid: Int) = Notification(
-        "Diagnostics Client",
-        "GC monitoring finished",
-        "Session for process $pid finished",
-        NotificationType.INFORMATION
-    )
-        .notify(project)
-
-    private fun sessionNotFound(pid: Int) = Notification(
-        "Diagnostics Client",
-        "GC events monitoring session for $pid not found",
-        "",
-        NotificationType.ERROR
-    )
-        .notify(project)
 }

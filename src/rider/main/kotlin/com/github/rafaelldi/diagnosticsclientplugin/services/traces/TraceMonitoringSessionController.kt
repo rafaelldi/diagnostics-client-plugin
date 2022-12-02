@@ -1,13 +1,13 @@
 package com.github.rafaelldi.diagnosticsclientplugin.services.traces
 
+import com.github.rafaelldi.diagnosticsclientplugin.common.monitoringSessionNotFound
+import com.github.rafaelldi.diagnosticsclientplugin.common.monitoringSessionStarted
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.MonitorTracesModel
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.StoppingType
 import com.github.rafaelldi.diagnosticsclientplugin.generated.DiagnosticsHostModel
 import com.github.rafaelldi.diagnosticsclientplugin.generated.PredefinedProvider
 import com.github.rafaelldi.diagnosticsclientplugin.generated.TraceMonitoringSession
 import com.github.rafaelldi.diagnosticsclientplugin.generated.diagnosticsHostModel
-import com.intellij.notification.Notification
-import com.intellij.notification.NotificationType
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
@@ -24,6 +24,7 @@ import java.time.Duration
 class TraceMonitoringSessionController(project: Project) : ProtocolSubscribedProjectComponent(project) {
     companion object {
         fun getInstance(project: Project): TraceMonitoringSessionController = project.service()
+        private const val TRACES = "Traces"
     }
 
     private val hostModel: DiagnosticsHostModel = project.solution.diagnosticsHostModel
@@ -83,7 +84,7 @@ class TraceMonitoringSessionController(project: Project) : ProtocolSubscribedPro
     fun startExistingSession(pid: Int, stoppingType: StoppingType, duration: Int) {
         val session = hostModel.traceMonitoringSessions[pid]
         if (session == null) {
-            sessionNotFound(pid)
+            monitoringSessionNotFound(TRACES, pid, project)
             return
         }
 
@@ -103,7 +104,7 @@ class TraceMonitoringSessionController(project: Project) : ProtocolSubscribedPro
     fun stopSession(pid: Int) {
         val session = hostModel.traceMonitoringSessions[pid]
         if (session == null) {
-            sessionNotFound(pid)
+            monitoringSessionNotFound(TRACES, pid, project)
             return
         }
 
@@ -133,32 +134,8 @@ class TraceMonitoringSessionController(project: Project) : ProtocolSubscribedPro
         }
 
         lifetime.bracketIfAlive(
-            { sessionStarted(pid) },
-            { sessionFinished(pid) }
+            { monitoringSessionStarted(TRACES, pid, project) },
+            { monitoringSessionStarted(TRACES, pid, project) }
         )
     }
-
-    private fun sessionStarted(pid: Int) = Notification(
-        "Diagnostics Client",
-        "Trace monitoring started",
-        "Session for process $pid started",
-        NotificationType.INFORMATION
-    )
-        .notify(project)
-
-    private fun sessionFinished(pid: Int) = Notification(
-        "Diagnostics Client",
-        "Trace monitoring finished",
-        "Session for process $pid finished",
-        NotificationType.INFORMATION
-    )
-        .notify(project)
-
-    private fun sessionNotFound(pid: Int) = Notification(
-        "Diagnostics Client",
-        "Trace events monitoring session for $pid not found",
-        "",
-        NotificationType.ERROR
-    )
-        .notify(project)
 }

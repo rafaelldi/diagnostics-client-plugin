@@ -1,6 +1,8 @@
 package com.github.rafaelldi.diagnosticsclientplugin.services.traces
 
-import com.github.rafaelldi.diagnosticsclientplugin.actions.notification.RevealFileAction
+import com.github.rafaelldi.diagnosticsclientplugin.common.collectionSessionAlreadyExists
+import com.github.rafaelldi.diagnosticsclientplugin.common.collectionSessionFinished
+import com.github.rafaelldi.diagnosticsclientplugin.common.collectionSessionStarted
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.CollectTracesModel
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.StoppingType
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.map
@@ -8,8 +10,6 @@ import com.github.rafaelldi.diagnosticsclientplugin.generated.DiagnosticsHostMod
 import com.github.rafaelldi.diagnosticsclientplugin.generated.PredefinedProvider
 import com.github.rafaelldi.diagnosticsclientplugin.generated.TraceCollectionSession
 import com.github.rafaelldi.diagnosticsclientplugin.generated.diagnosticsHostModel
-import com.intellij.notification.Notification
-import com.intellij.notification.NotificationType
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
@@ -27,6 +27,7 @@ import kotlin.io.path.pathString
 class TraceCollectionSessionController(project: Project) : ProtocolSubscribedProjectComponent(project) {
     companion object {
         fun getInstance(project: Project): TraceCollectionSessionController = project.service()
+        private const val TRACES = "Traces"
     }
 
     private val hostModel: DiagnosticsHostModel = project.solution.diagnosticsHostModel
@@ -39,7 +40,7 @@ class TraceCollectionSessionController(project: Project) : ProtocolSubscribedPro
 
     fun startSession(pid: Int, model: CollectTracesModel) {
         if (hostModel.traceCollectionSessions.contains(pid)) {
-            sessionAlreadyExists(pid)
+            collectionSessionAlreadyExists(TRACES, pid, project)
             return
         }
 
@@ -60,7 +61,7 @@ class TraceCollectionSessionController(project: Project) : ProtocolSubscribedPro
         try {
             hostModel.traceCollectionSessions.addUnique(projectComponentLifetime, pid, session)
         } catch (e: IllegalArgumentException) {
-            sessionAlreadyExists(pid)
+            collectionSessionAlreadyExists(TRACES, pid, project)
         }
     }
 
@@ -103,33 +104,8 @@ class TraceCollectionSessionController(project: Project) : ProtocolSubscribedPro
         }
 
         lt.bracketIfAlive(
-            { sessionStarted(pid) },
-            { sessionFinished(pid, session.filePath) }
+            { collectionSessionStarted(TRACES, pid, project) },
+            { collectionSessionFinished(TRACES, pid, session.filePath, false, project) }
         )
     }
-
-    private fun sessionAlreadyExists(pid: Int) = Notification(
-        "Diagnostics Client",
-        "Traces collection session for $pid already exists",
-        "",
-        NotificationType.WARNING
-    )
-        .notify(project)
-
-    private fun sessionStarted(pid: Int) = Notification(
-        "Diagnostics Client",
-        "Traces collection started",
-        "Session for process $pid started",
-        NotificationType.INFORMATION
-    )
-        .notify(project)
-
-    private fun sessionFinished(pid: Int, filePath: String) = Notification(
-        "Diagnostics Client",
-        "Traces collection finished",
-        "Session for process $pid finished",
-        NotificationType.INFORMATION
-    )
-        .addAction(RevealFileAction(filePath))
-        .notify(project)
 }
