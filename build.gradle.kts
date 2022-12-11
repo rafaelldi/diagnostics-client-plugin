@@ -1,4 +1,3 @@
-import com.jetbrains.rd.generator.gradle.RdGenExtension
 import org.jetbrains.changelog.Changelog
 import org.jetbrains.changelog.markdownToHTML
 
@@ -62,17 +61,20 @@ tasks {
     val dotNetPluginId = properties("dotnetPluginId")
     val buildConfiguration = properties("buildConfiguration")
 
-    configure<RdGenExtension> {
-        val modelDir = file("$projectDir/protocol/src/main/kotlin/model")
-        val csOutput = file("$projectDir/src/dotnet/$dotNetPluginId/Generated")
-        val ktOutput = file("$projectDir/src/rider/main/kotlin/com/github/rafaelldi/diagnosticsclientplugin/generated")
+    rdgen {
+        val modelDir = projectDir.resolve("protocol").resolve("src").resolve("main").resolve("kotlin")
+            .resolve("model").resolve("rider")
+        val pluginSourcePath = projectDir.resolve("src")
+        val ktOutput = pluginSourcePath.resolve("rider").resolve("main").resolve("kotlin").resolve("com")
+            .resolve("github").resolve("rafaelldi").resolve("diagnosticsclientplugin").resolve("generated")
+        val csOutput = pluginSourcePath.resolve("dotnet").resolve(dotNetPluginId).resolve("Generated")
 
         verbose = true
         logger.info("Configuring rdgen params")
         classpath({
-            "${rdLibDirectory()}/rider-model.jar"
+            rdLibDirectory().resolve("rider-model.jar").canonicalPath
         })
-        sources("$modelDir/rider")
+        sources(modelDir)
         hashFolder = "$rootDir/build/rdgen/rider"
         packages = "model.rider"
 
@@ -80,14 +82,14 @@ tasks {
             language = "kotlin"
             transform = "asis"
             root = "com.jetbrains.rider.model.nova.ide.IdeRoot"
-            directory = "$ktOutput"
+            directory = ktOutput.canonicalPath
         }
 
         generator {
             language = "csharp"
             transform = "reversed"
             root = "com.jetbrains.rider.model.nova.ide.IdeRoot"
-            directory = "$csOutput"
+            directory = csOutput.canonicalPath
         }
     }
 
