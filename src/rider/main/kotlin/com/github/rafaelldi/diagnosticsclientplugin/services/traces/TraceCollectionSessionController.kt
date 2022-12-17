@@ -27,6 +27,12 @@ class TraceCollectionSessionController(project: Project) :
 
     override val sessions = project.solution.diagnosticsHostModel.traceCollectionSessions
 
+    init {
+        sessions.view(projectComponentLifetime) { lt, pid, session ->
+            viewSession(pid, session, lt)
+        }
+    }
+
     override fun createSession(model: CollectTracesModel): TraceCollectionSession {
         val filePath = Path(model.path, model.filename).pathString
         val duration =

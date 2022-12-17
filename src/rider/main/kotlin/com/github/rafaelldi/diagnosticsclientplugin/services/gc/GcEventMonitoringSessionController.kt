@@ -22,6 +22,12 @@ class GcEventMonitoringSessionController(project: Project) :
 
     override val sessions = project.solution.diagnosticsHostModel.gcEventMonitoringSessions
 
+    init {
+        sessions.view(projectComponentLifetime) { lt, pid, session ->
+            viewSession(pid, session, lt)
+        }
+    }
+
     override fun createSession(model: MonitorGcEventsModel): GcEventMonitoringSession {
         return GcEventMonitoringSession()
     }

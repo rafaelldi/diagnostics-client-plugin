@@ -22,6 +22,12 @@ class CounterMonitoringSessionController(project: Project) :
 
     override val sessions = project.solution.diagnosticsHostModel.counterMonitoringSessions
 
+    init {
+        sessions.view(projectComponentLifetime) { lt, pid, session ->
+            viewSession(pid, session, lt)
+        }
+    }
+
     override fun createSession(model: MonitorCountersModel): CounterMonitoringSession {
         val metrics = model.metrics.ifEmpty { null }
         return CounterMonitoringSession(

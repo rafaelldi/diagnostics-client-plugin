@@ -23,6 +23,12 @@ class TraceMonitoringSessionController(project: Project) :
 
     override val sessions = project.solution.diagnosticsHostModel.traceMonitoringSessions
 
+    init {
+        sessions.view(projectComponentLifetime) { lt, pid, session ->
+            viewSession(pid, session, lt)
+        }
+    }
+
     override fun createSession(model: MonitorTracesModel): TraceMonitoringSession {
         val providers = getPredefinedProviders(model)
         return TraceMonitoringSession(providers)

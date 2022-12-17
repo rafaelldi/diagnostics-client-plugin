@@ -18,12 +18,6 @@ abstract class MonitoringSessionController<TSession : MonitoringSession, TModel 
 
     protected abstract val sessions: IMutableViewableMap<Int, TSession>
 
-    init {
-        sessions.view(projectComponentLifetime) { lt, pid, session ->
-            viewSession(pid, session, lt)
-        }
-    }
-
     fun startSession(pid: Int, model: TModel) {
         if (!sessions.contains(pid)) {
             createNewSession(pid, model)
@@ -83,7 +77,7 @@ abstract class MonitoringSessionController<TSession : MonitoringSession, TModel 
         sessions.remove(pid)
     }
 
-    private fun viewSession(pid: Int, session: TSession, lifetime: Lifetime) {
+    protected fun viewSession(pid: Int, session: TSession, lifetime: Lifetime) {
         session.active.whenTrue(lifetime) { lt -> viewActiveStatus(pid, session, lt) }
     }
 

@@ -16,12 +16,6 @@ abstract class CollectionSessionController<TSession : CollectionSession, TModel 
 
     protected abstract val sessions: IMutableViewableMap<Int, TSession>
 
-    init {
-        sessions.view(projectComponentLifetime) { lt, pid, session ->
-            viewSession(pid, session, lt)
-        }
-    }
-
     fun startSession(pid: Int, model: TModel) {
         if (sessions.contains(pid)) {
             sessionAlreadyExists(pid)
@@ -42,7 +36,7 @@ abstract class CollectionSessionController<TSession : CollectionSession, TModel 
         sessions.remove(pid)
     }
 
-    private fun viewSession(pid: Int, session: TSession, lt: Lifetime) {
+    protected fun viewSession(pid: Int, session: TSession, lt: Lifetime) {
         if (session.duration != null) {
             val timerLifetime =
                 lt.createTerminatedAfter(Duration.ofSeconds(session.duration.toLong()), Dispatchers.Main)

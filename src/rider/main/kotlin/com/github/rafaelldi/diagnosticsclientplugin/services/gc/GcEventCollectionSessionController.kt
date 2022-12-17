@@ -25,6 +25,12 @@ class GcEventCollectionSessionController(project: Project) :
 
     override val sessions = project.solution.diagnosticsHostModel.gcEventCollectionSessions
 
+    init {
+        sessions.view(projectComponentLifetime) { lt, pid, session ->
+            viewSession(pid, session, lt)
+        }
+    }
+
     override fun createSession(model: CollectGcEventsModel): GcEventCollectionSession {
         val filePath = Path(model.path, "${model.filename}.csv").pathString
         val duration =

@@ -20,13 +20,18 @@ import kotlin.io.path.pathString
 @Service
 class CounterCollectionSessionController(project: Project) :
     CollectionSessionController<CounterCollectionSession, CollectCountersModel>(project) {
-
     companion object {
         fun getInstance(project: Project): CounterCollectionSessionController = project.service()
         private const val COUNTERS = "Counters"
     }
 
     override val sessions = project.solution.diagnosticsHostModel.counterCollectionSessions
+
+    init {
+        sessions.view(projectComponentLifetime) { lt, pid, session ->
+            viewSession(pid, session, lt)
+        }
+    }
 
     override fun createSession(model: CollectCountersModel): CounterCollectionSession {
         val filePath = calculateFilePath(model)
