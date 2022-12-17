@@ -9,6 +9,7 @@ import com.jetbrains.rd.util.lifetime.*
 import com.jetbrains.rd.util.reactive.*
 import com.jetbrains.rd.util.string.*
 import com.jetbrains.rd.util.*
+import kotlin.time.Duration
 import kotlin.reflect.KClass
 import kotlin.jvm.JvmStatic
 
@@ -37,13 +38,13 @@ class DiagnosticsHostModel private constructor(
             serializers.register(ProcessInfo)
             serializers.register(ProcessList)
             serializers.register(CounterCollectionSession)
-            serializers.register(CounterMonitoringSession)
-            serializers.register(Counter)
             serializers.register(GcEventCollectionSession)
-            serializers.register(GcEventMonitoringSession)
-            serializers.register(GcEvent)
             serializers.register(TraceCollectionSession)
+            serializers.register(CounterMonitoringSession)
+            serializers.register(GcEventMonitoringSession)
             serializers.register(TraceMonitoringSession)
+            serializers.register(Counter)
+            serializers.register(GcEvent)
             serializers.register(PredefinedProvider.marshaller)
             serializers.register(Trace)
             serializers.register(CollectDumpCommand)
@@ -52,13 +53,15 @@ class DiagnosticsHostModel private constructor(
             serializers.register(CounterFileFormat.marshaller)
             serializers.register(TracingProfile.marshaller)
             serializers.register(DumpType.marshaller)
+            serializers.register(CollectionSession_Unknown)
+            serializers.register(MonitoringSession_Unknown)
         }
         
         
         
         
         
-        const val serializationHash = -5026178112067600123L
+        const val serializationHash = -2616174011368273991L
         
     }
     override val serializersOwner: ISerializersOwner get() = DiagnosticsHostModel
@@ -145,7 +148,7 @@ val com.jetbrains.rd.ide.model.Solution.diagnosticsHostModel get() = getOrCreate
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:142]
+ * #### Generated from [DiagnosticsHostModel.kt:139]
  */
 data class CollectDumpCommand (
     val pid: Int,
@@ -226,7 +229,7 @@ data class CollectDumpCommand (
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:159]
+ * #### Generated from [DiagnosticsHostModel.kt:156]
  */
 data class CollectStackTraceCommand (
     val pid: Int
@@ -283,7 +286,97 @@ data class CollectStackTraceCommand (
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:52]
+ * #### Generated from [DiagnosticsHostModel.kt:26]
+ */
+abstract class CollectionSession (
+    val duration: Int?,
+    val filePath: String
+) : RdBindableBase() {
+    //companion
+    
+    companion object : IAbstractDeclaration<CollectionSession> {
+        override fun readUnknownInstance(ctx: SerializationCtx, buffer: AbstractBuffer, unknownId: RdId, size: Int): CollectionSession  {
+            val objectStartPosition = buffer.position
+            val _id = RdId.read(buffer)
+            val duration = buffer.readNullable { buffer.readInt() }
+            val filePath = buffer.readString()
+            val unknownBytes = ByteArray(objectStartPosition + size - buffer.position)
+            buffer.readByteArrayRaw(unknownBytes)
+            return CollectionSession_Unknown(duration, filePath, unknownId, unknownBytes).withId(_id)
+        }
+        
+        
+    }
+    //fields
+    //methods
+    //initializer
+    //secondary constructor
+    //equals trait
+    //hash code trait
+    //pretty print
+    //deepClone
+    //contexts
+}
+
+
+class CollectionSession_Unknown (
+    duration: Int?,
+    filePath: String,
+    override val unknownId: RdId,
+    val unknownBytes: ByteArray
+) : CollectionSession (
+    duration,
+    filePath
+), IUnknownInstance {
+    //companion
+    
+    companion object : IMarshaller<CollectionSession_Unknown> {
+        override val _type: KClass<CollectionSession_Unknown> = CollectionSession_Unknown::class
+        
+        @Suppress("UNCHECKED_CAST")
+        override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): CollectionSession_Unknown  {
+            throw NotImplementedError("Unknown instances should not be read via serializer")
+        }
+        
+        override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: CollectionSession_Unknown)  {
+            value.rdid.write(buffer)
+            buffer.writeNullable(value.duration) { buffer.writeInt(it) }
+            buffer.writeString(value.filePath)
+            buffer.writeByteArrayRaw(value.unknownBytes)
+        }
+        
+        
+    }
+    //fields
+    //methods
+    //initializer
+    //secondary constructor
+    //equals trait
+    //hash code trait
+    //pretty print
+    override fun print(printer: PrettyPrinter)  {
+        printer.println("CollectionSession_Unknown (")
+        printer.indent {
+            print("duration = "); duration.print(printer); println()
+            print("filePath = "); filePath.print(printer); println()
+        }
+        printer.print(")")
+    }
+    //deepClone
+    override fun deepClone(): CollectionSession_Unknown   {
+        return CollectionSession_Unknown(
+            duration,
+            filePath,
+            unknownId,
+            unknownBytes
+        )
+    }
+    //contexts
+}
+
+
+/**
+ * #### Generated from [DiagnosticsHostModel.kt:80]
  */
 data class Counter (
     val name: String,
@@ -352,18 +445,21 @@ data class Counter (
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:26]
+ * #### Generated from [DiagnosticsHostModel.kt:31]
  */
 class CounterCollectionSession (
-    val filePath: String,
     val format: CounterFileFormat,
     val refreshInterval: Int,
     val providers: String,
     val metrics: String?,
     val maxTimeSeries: Int,
     val maxHistograms: Int,
-    val duration: Int?
-) : RdBindableBase() {
+    duration: Int?,
+    filePath: String
+) : CollectionSession (
+    duration,
+    filePath
+) {
     //companion
     
     companion object : IMarshaller<CounterCollectionSession> {
@@ -372,6 +468,7 @@ class CounterCollectionSession (
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): CounterCollectionSession  {
             val _id = RdId.read(buffer)
+            val duration = buffer.readNullable { buffer.readInt() }
             val filePath = buffer.readString()
             val format = buffer.readEnum<CounterFileFormat>()
             val refreshInterval = buffer.readInt()
@@ -379,12 +476,12 @@ class CounterCollectionSession (
             val metrics = buffer.readNullable { buffer.readString() }
             val maxTimeSeries = buffer.readInt()
             val maxHistograms = buffer.readInt()
-            val duration = buffer.readNullable { buffer.readInt() }
-            return CounterCollectionSession(filePath, format, refreshInterval, providers, metrics, maxTimeSeries, maxHistograms, duration).withId(_id)
+            return CounterCollectionSession(format, refreshInterval, providers, metrics, maxTimeSeries, maxHistograms, duration, filePath).withId(_id)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: CounterCollectionSession)  {
             value.rdid.write(buffer)
+            buffer.writeNullable(value.duration) { buffer.writeInt(it) }
             buffer.writeString(value.filePath)
             buffer.writeEnum(value.format)
             buffer.writeInt(value.refreshInterval)
@@ -392,7 +489,6 @@ class CounterCollectionSession (
             buffer.writeNullable(value.metrics) { buffer.writeString(it) }
             buffer.writeInt(value.maxTimeSeries)
             buffer.writeInt(value.maxHistograms)
-            buffer.writeNullable(value.duration) { buffer.writeInt(it) }
         }
         
         
@@ -407,7 +503,6 @@ class CounterCollectionSession (
     override fun print(printer: PrettyPrinter)  {
         printer.println("CounterCollectionSession (")
         printer.indent {
-            print("filePath = "); filePath.print(printer); println()
             print("format = "); format.print(printer); println()
             print("refreshInterval = "); refreshInterval.print(printer); println()
             print("providers = "); providers.print(printer); println()
@@ -415,20 +510,21 @@ class CounterCollectionSession (
             print("maxTimeSeries = "); maxTimeSeries.print(printer); println()
             print("maxHistograms = "); maxHistograms.print(printer); println()
             print("duration = "); duration.print(printer); println()
+            print("filePath = "); filePath.print(printer); println()
         }
         printer.print(")")
     }
     //deepClone
     override fun deepClone(): CounterCollectionSession   {
         return CounterCollectionSession(
-            filePath,
             format,
             refreshInterval,
             providers,
             metrics,
             maxTimeSeries,
             maxHistograms,
-            duration
+            duration,
+            filePath
         )
     }
     //contexts
@@ -436,7 +532,7 @@ class CounterCollectionSession (
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:28]
+ * #### Generated from [DiagnosticsHostModel.kt:32]
  */
 enum class CounterFileFormat {
     Csv, 
@@ -450,18 +546,21 @@ enum class CounterFileFormat {
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:40]
+ * #### Generated from [DiagnosticsHostModel.kt:62]
  */
 class CounterMonitoringSession private constructor(
-    private val _active: RdOptionalProperty<Boolean>,
-    private val _duration: RdProperty<Int?>,
     private val _counters: RdMap<String, Counter>,
     val refreshInterval: Int,
     val providers: String,
     val metrics: String?,
     val maxTimeSeries: Int,
-    val maxHistograms: Int
-) : RdBindableBase() {
+    val maxHistograms: Int,
+    _active: RdOptionalProperty<Boolean>,
+    _duration: RdProperty<Int?>
+) : MonitoringSession (
+    _active,
+    _duration
+) {
     //companion
     
     companion object : IMarshaller<CounterMonitoringSession> {
@@ -478,7 +577,7 @@ class CounterMonitoringSession private constructor(
             val metrics = buffer.readNullable { buffer.readString() }
             val maxTimeSeries = buffer.readInt()
             val maxHistograms = buffer.readInt()
-            return CounterMonitoringSession(_active, _duration, _counters, refreshInterval, providers, metrics, maxTimeSeries, maxHistograms).withId(_id)
+            return CounterMonitoringSession(_counters, refreshInterval, providers, metrics, maxTimeSeries, maxHistograms, _active, _duration).withId(_id)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: CounterMonitoringSession)  {
@@ -497,14 +596,10 @@ class CounterMonitoringSession private constructor(
         
     }
     //fields
-    val active: IOptProperty<Boolean> get() = _active
-    val duration: IProperty<Int?> get() = _duration
     val counters: IMutableViewableMap<String, Counter> get() = _counters
     //methods
     //initializer
     init {
-        _active.optimizeNested = true
-        _duration.optimizeNested = true
         _counters.optimizeNested = true
     }
     
@@ -513,8 +608,6 @@ class CounterMonitoringSession private constructor(
     }
     
     init {
-        bindableChildren.add("active" to _active)
-        bindableChildren.add("duration" to _duration)
         bindableChildren.add("counters" to _counters)
     }
     
@@ -526,14 +619,14 @@ class CounterMonitoringSession private constructor(
         maxTimeSeries: Int,
         maxHistograms: Int
     ) : this(
-        RdOptionalProperty<Boolean>(FrameworkMarshallers.Bool),
-        RdProperty<Int?>(null, __IntNullableSerializer),
         RdMap<String, Counter>(FrameworkMarshallers.String, Counter),
         refreshInterval,
         providers,
         metrics,
         maxTimeSeries,
-        maxHistograms
+        maxHistograms,
+        RdOptionalProperty<Boolean>(FrameworkMarshallers.Bool),
+        RdProperty<Int?>(null, __IntNullableSerializer)
     )
     
     //equals trait
@@ -542,28 +635,28 @@ class CounterMonitoringSession private constructor(
     override fun print(printer: PrettyPrinter)  {
         printer.println("CounterMonitoringSession (")
         printer.indent {
-            print("active = "); _active.print(printer); println()
-            print("duration = "); _duration.print(printer); println()
             print("counters = "); _counters.print(printer); println()
             print("refreshInterval = "); refreshInterval.print(printer); println()
             print("providers = "); providers.print(printer); println()
             print("metrics = "); metrics.print(printer); println()
             print("maxTimeSeries = "); maxTimeSeries.print(printer); println()
             print("maxHistograms = "); maxHistograms.print(printer); println()
+            print("active = "); _active.print(printer); println()
+            print("duration = "); _duration.print(printer); println()
         }
         printer.print(")")
     }
     //deepClone
     override fun deepClone(): CounterMonitoringSession   {
         return CounterMonitoringSession(
-            _active.deepClonePolymorphic(),
-            _duration.deepClonePolymorphic(),
             _counters.deepClonePolymorphic(),
             refreshInterval,
             providers,
             metrics,
             maxTimeSeries,
-            maxHistograms
+            maxHistograms,
+            _active.deepClonePolymorphic(),
+            _duration.deepClonePolymorphic()
         )
     }
     //contexts
@@ -571,7 +664,7 @@ class CounterMonitoringSession private constructor(
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:153]
+ * #### Generated from [DiagnosticsHostModel.kt:150]
  */
 data class DumpCollectionResult (
     val filePath: String
@@ -628,7 +721,7 @@ data class DumpCollectionResult (
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:144]
+ * #### Generated from [DiagnosticsHostModel.kt:141]
  */
 enum class DumpType {
     Full, 
@@ -644,7 +737,7 @@ enum class DumpType {
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:69]
+ * #### Generated from [DiagnosticsHostModel.kt:86]
  */
 data class GcEvent (
     val number: Int,
@@ -785,12 +878,15 @@ data class GcEvent (
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:58]
+ * #### Generated from [DiagnosticsHostModel.kt:43]
  */
 class GcEventCollectionSession (
-    val filePath: String,
-    val duration: Int?
-) : RdBindableBase() {
+    duration: Int?,
+    filePath: String
+) : CollectionSession (
+    duration,
+    filePath
+) {
     //companion
     
     companion object : IMarshaller<GcEventCollectionSession> {
@@ -799,15 +895,15 @@ class GcEventCollectionSession (
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): GcEventCollectionSession  {
             val _id = RdId.read(buffer)
-            val filePath = buffer.readString()
             val duration = buffer.readNullable { buffer.readInt() }
-            return GcEventCollectionSession(filePath, duration).withId(_id)
+            val filePath = buffer.readString()
+            return GcEventCollectionSession(duration, filePath).withId(_id)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: GcEventCollectionSession)  {
             value.rdid.write(buffer)
-            buffer.writeString(value.filePath)
             buffer.writeNullable(value.duration) { buffer.writeInt(it) }
+            buffer.writeString(value.filePath)
         }
         
         
@@ -822,16 +918,16 @@ class GcEventCollectionSession (
     override fun print(printer: PrettyPrinter)  {
         printer.println("GcEventCollectionSession (")
         printer.indent {
-            print("filePath = "); filePath.print(printer); println()
             print("duration = "); duration.print(printer); println()
+            print("filePath = "); filePath.print(printer); println()
         }
         printer.print(")")
     }
     //deepClone
     override fun deepClone(): GcEventCollectionSession   {
         return GcEventCollectionSession(
-            filePath,
-            duration
+            duration,
+            filePath
         )
     }
     //contexts
@@ -839,13 +935,16 @@ class GcEventCollectionSession (
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:63]
+ * #### Generated from [DiagnosticsHostModel.kt:71]
  */
 class GcEventMonitoringSession private constructor(
-    private val _active: RdOptionalProperty<Boolean>,
-    private val _duration: RdProperty<Int?>,
-    private val _gcHappened: RdSignal<GcEvent>
-) : RdBindableBase() {
+    private val _gcHappened: RdSignal<GcEvent>,
+    _active: RdOptionalProperty<Boolean>,
+    _duration: RdProperty<Int?>
+) : MonitoringSession (
+    _active,
+    _duration
+) {
     //companion
     
     companion object : IMarshaller<GcEventMonitoringSession> {
@@ -857,7 +956,7 @@ class GcEventMonitoringSession private constructor(
             val _active = RdOptionalProperty.read(ctx, buffer, FrameworkMarshallers.Bool)
             val _duration = RdProperty.read(ctx, buffer, __IntNullableSerializer)
             val _gcHappened = RdSignal.read(ctx, buffer, GcEvent)
-            return GcEventMonitoringSession(_active, _duration, _gcHappened).withId(_id)
+            return GcEventMonitoringSession(_gcHappened, _active, _duration).withId(_id)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: GcEventMonitoringSession)  {
@@ -871,32 +970,23 @@ class GcEventMonitoringSession private constructor(
         
     }
     //fields
-    val active: IOptProperty<Boolean> get() = _active
-    val duration: IProperty<Int?> get() = _duration
     val gcHappened: IAsyncSignal<GcEvent> get() = _gcHappened
     //methods
     //initializer
-    init {
-        _active.optimizeNested = true
-        _duration.optimizeNested = true
-    }
-    
     init {
         _gcHappened.async = true
     }
     
     init {
-        bindableChildren.add("active" to _active)
-        bindableChildren.add("duration" to _duration)
         bindableChildren.add("gcHappened" to _gcHappened)
     }
     
     //secondary constructor
     constructor(
     ) : this(
+        RdSignal<GcEvent>(GcEvent),
         RdOptionalProperty<Boolean>(FrameworkMarshallers.Bool),
-        RdProperty<Int?>(null, __IntNullableSerializer),
-        RdSignal<GcEvent>(GcEvent)
+        RdProperty<Int?>(null, __IntNullableSerializer)
     )
     
     //equals trait
@@ -905,18 +995,18 @@ class GcEventMonitoringSession private constructor(
     override fun print(printer: PrettyPrinter)  {
         printer.println("GcEventMonitoringSession (")
         printer.indent {
+            print("gcHappened = "); _gcHappened.print(printer); println()
             print("active = "); _active.print(printer); println()
             print("duration = "); _duration.print(printer); println()
-            print("gcHappened = "); _gcHappened.print(printer); println()
         }
         printer.print(")")
     }
     //deepClone
     override fun deepClone(): GcEventMonitoringSession   {
         return GcEventMonitoringSession(
+            _gcHappened.deepClonePolymorphic(),
             _active.deepClonePolymorphic(),
-            _duration.deepClonePolymorphic(),
-            _gcHappened.deepClonePolymorphic()
+            _duration.deepClonePolymorphic()
         )
     }
     //contexts
@@ -924,7 +1014,121 @@ class GcEventMonitoringSession private constructor(
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:107]
+ * #### Generated from [DiagnosticsHostModel.kt:57]
+ */
+abstract class MonitoringSession (
+    protected val _active: RdOptionalProperty<Boolean>,
+    protected val _duration: RdProperty<Int?>
+) : RdBindableBase() {
+    //companion
+    
+    companion object : IAbstractDeclaration<MonitoringSession> {
+        override fun readUnknownInstance(ctx: SerializationCtx, buffer: AbstractBuffer, unknownId: RdId, size: Int): MonitoringSession  {
+            val objectStartPosition = buffer.position
+            val _id = RdId.read(buffer)
+            val _active = RdOptionalProperty.read(ctx, buffer, FrameworkMarshallers.Bool)
+            val _duration = RdProperty.read(ctx, buffer, __IntNullableSerializer)
+            val unknownBytes = ByteArray(objectStartPosition + size - buffer.position)
+            buffer.readByteArrayRaw(unknownBytes)
+            return MonitoringSession_Unknown(_active, _duration, unknownId, unknownBytes).withId(_id)
+        }
+        
+        private val __IntNullableSerializer = FrameworkMarshallers.Int.nullable()
+        
+    }
+    //fields
+    val active: IOptProperty<Boolean> get() = _active
+    val duration: IProperty<Int?> get() = _duration
+    //methods
+    //initializer
+    init {
+        _active.optimizeNested = true
+        _duration.optimizeNested = true
+    }
+    
+    init {
+        bindableChildren.add("active" to _active)
+        bindableChildren.add("duration" to _duration)
+    }
+    
+    //secondary constructor
+    //equals trait
+    //hash code trait
+    //pretty print
+    //deepClone
+    //contexts
+}
+
+
+class MonitoringSession_Unknown (
+    _active: RdOptionalProperty<Boolean>,
+    _duration: RdProperty<Int?>,
+    override val unknownId: RdId,
+    val unknownBytes: ByteArray
+) : MonitoringSession (
+    _active,
+    _duration
+), IUnknownInstance {
+    //companion
+    
+    companion object : IMarshaller<MonitoringSession_Unknown> {
+        override val _type: KClass<MonitoringSession_Unknown> = MonitoringSession_Unknown::class
+        
+        @Suppress("UNCHECKED_CAST")
+        override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): MonitoringSession_Unknown  {
+            throw NotImplementedError("Unknown instances should not be read via serializer")
+        }
+        
+        override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: MonitoringSession_Unknown)  {
+            value.rdid.write(buffer)
+            RdOptionalProperty.write(ctx, buffer, value._active)
+            RdProperty.write(ctx, buffer, value._duration)
+            buffer.writeByteArrayRaw(value.unknownBytes)
+        }
+        
+        private val __IntNullableSerializer = FrameworkMarshallers.Int.nullable()
+        
+    }
+    //fields
+    //methods
+    //initializer
+    //secondary constructor
+    constructor(
+        unknownId: RdId,
+        unknownBytes: ByteArray
+    ) : this(
+        RdOptionalProperty<Boolean>(FrameworkMarshallers.Bool),
+        RdProperty<Int?>(null, __IntNullableSerializer),
+        unknownId,
+        unknownBytes
+    )
+    
+    //equals trait
+    //hash code trait
+    //pretty print
+    override fun print(printer: PrettyPrinter)  {
+        printer.println("MonitoringSession_Unknown (")
+        printer.indent {
+            print("active = "); _active.print(printer); println()
+            print("duration = "); _duration.print(printer); println()
+        }
+        printer.print(")")
+    }
+    //deepClone
+    override fun deepClone(): MonitoringSession_Unknown   {
+        return MonitoringSession_Unknown(
+            _active.deepClonePolymorphic(),
+            _duration.deepClonePolymorphic(),
+            unknownId,
+            unknownBytes
+        )
+    }
+    //contexts
+}
+
+
+/**
+ * #### Generated from [DiagnosticsHostModel.kt:104]
  */
 enum class PredefinedProvider {
     Http, 
@@ -1108,7 +1312,7 @@ class ProcessList private constructor(
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:118]
+ * #### Generated from [DiagnosticsHostModel.kt:115]
  */
 data class Trace (
     val eventName: String,
@@ -1183,15 +1387,18 @@ data class Trace (
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:87]
+ * #### Generated from [DiagnosticsHostModel.kt:46]
  */
 class TraceCollectionSession (
-    val filePath: String,
     val profile: TracingProfile,
     val providers: String,
     val predefinedProviders: List<PredefinedProvider>,
-    val duration: Int?
-) : RdBindableBase() {
+    duration: Int?,
+    filePath: String
+) : CollectionSession (
+    duration,
+    filePath
+) {
     //companion
     
     companion object : IMarshaller<TraceCollectionSession> {
@@ -1200,21 +1407,21 @@ class TraceCollectionSession (
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): TraceCollectionSession  {
             val _id = RdId.read(buffer)
+            val duration = buffer.readNullable { buffer.readInt() }
             val filePath = buffer.readString()
             val profile = buffer.readEnum<TracingProfile>()
             val providers = buffer.readString()
             val predefinedProviders = buffer.readList { buffer.readEnum<PredefinedProvider>() }
-            val duration = buffer.readNullable { buffer.readInt() }
-            return TraceCollectionSession(filePath, profile, providers, predefinedProviders, duration).withId(_id)
+            return TraceCollectionSession(profile, providers, predefinedProviders, duration, filePath).withId(_id)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: TraceCollectionSession)  {
             value.rdid.write(buffer)
+            buffer.writeNullable(value.duration) { buffer.writeInt(it) }
             buffer.writeString(value.filePath)
             buffer.writeEnum(value.profile)
             buffer.writeString(value.providers)
             buffer.writeList(value.predefinedProviders) { v -> buffer.writeEnum(v) }
-            buffer.writeNullable(value.duration) { buffer.writeInt(it) }
         }
         
         
@@ -1229,22 +1436,22 @@ class TraceCollectionSession (
     override fun print(printer: PrettyPrinter)  {
         printer.println("TraceCollectionSession (")
         printer.indent {
-            print("filePath = "); filePath.print(printer); println()
             print("profile = "); profile.print(printer); println()
             print("providers = "); providers.print(printer); println()
             print("predefinedProviders = "); predefinedProviders.print(printer); println()
             print("duration = "); duration.print(printer); println()
+            print("filePath = "); filePath.print(printer); println()
         }
         printer.print(")")
     }
     //deepClone
     override fun deepClone(): TraceCollectionSession   {
         return TraceCollectionSession(
-            filePath,
             profile,
             providers,
             predefinedProviders,
-            duration
+            duration,
+            filePath
         )
     }
     //contexts
@@ -1252,14 +1459,17 @@ class TraceCollectionSession (
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:100]
+ * #### Generated from [DiagnosticsHostModel.kt:75]
  */
 class TraceMonitoringSession private constructor(
+    private val _traceReceived: RdSignal<Trace>,
     val predefinedProviders: List<PredefinedProvider>,
-    private val _active: RdOptionalProperty<Boolean>,
-    private val _duration: RdProperty<Int?>,
-    private val _traceReceived: RdSignal<Trace>
-) : RdBindableBase() {
+    _active: RdOptionalProperty<Boolean>,
+    _duration: RdProperty<Int?>
+) : MonitoringSession (
+    _active,
+    _duration
+) {
     //companion
     
     companion object : IMarshaller<TraceMonitoringSession> {
@@ -1268,42 +1478,33 @@ class TraceMonitoringSession private constructor(
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): TraceMonitoringSession  {
             val _id = RdId.read(buffer)
-            val predefinedProviders = buffer.readList { buffer.readEnum<PredefinedProvider>() }
             val _active = RdOptionalProperty.read(ctx, buffer, FrameworkMarshallers.Bool)
             val _duration = RdProperty.read(ctx, buffer, __IntNullableSerializer)
             val _traceReceived = RdSignal.read(ctx, buffer, Trace)
-            return TraceMonitoringSession(predefinedProviders, _active, _duration, _traceReceived).withId(_id)
+            val predefinedProviders = buffer.readList { buffer.readEnum<PredefinedProvider>() }
+            return TraceMonitoringSession(_traceReceived, predefinedProviders, _active, _duration).withId(_id)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: TraceMonitoringSession)  {
             value.rdid.write(buffer)
-            buffer.writeList(value.predefinedProviders) { v -> buffer.writeEnum(v) }
             RdOptionalProperty.write(ctx, buffer, value._active)
             RdProperty.write(ctx, buffer, value._duration)
             RdSignal.write(ctx, buffer, value._traceReceived)
+            buffer.writeList(value.predefinedProviders) { v -> buffer.writeEnum(v) }
         }
         
         private val __IntNullableSerializer = FrameworkMarshallers.Int.nullable()
         
     }
     //fields
-    val active: IOptProperty<Boolean> get() = _active
-    val duration: IProperty<Int?> get() = _duration
     val traceReceived: IAsyncSignal<Trace> get() = _traceReceived
     //methods
     //initializer
-    init {
-        _active.optimizeNested = true
-        _duration.optimizeNested = true
-    }
-    
     init {
         _traceReceived.async = true
     }
     
     init {
-        bindableChildren.add("active" to _active)
-        bindableChildren.add("duration" to _duration)
         bindableChildren.add("traceReceived" to _traceReceived)
     }
     
@@ -1311,10 +1512,10 @@ class TraceMonitoringSession private constructor(
     constructor(
         predefinedProviders: List<PredefinedProvider>
     ) : this(
+        RdSignal<Trace>(Trace),
         predefinedProviders,
         RdOptionalProperty<Boolean>(FrameworkMarshallers.Bool),
-        RdProperty<Int?>(null, __IntNullableSerializer),
-        RdSignal<Trace>(Trace)
+        RdProperty<Int?>(null, __IntNullableSerializer)
     )
     
     //equals trait
@@ -1323,20 +1524,20 @@ class TraceMonitoringSession private constructor(
     override fun print(printer: PrettyPrinter)  {
         printer.println("TraceMonitoringSession (")
         printer.indent {
+            print("traceReceived = "); _traceReceived.print(printer); println()
             print("predefinedProviders = "); predefinedProviders.print(printer); println()
             print("active = "); _active.print(printer); println()
             print("duration = "); _duration.print(printer); println()
-            print("traceReceived = "); _traceReceived.print(printer); println()
         }
         printer.print(")")
     }
     //deepClone
     override fun deepClone(): TraceMonitoringSession   {
         return TraceMonitoringSession(
+            _traceReceived.deepClonePolymorphic(),
             predefinedProviders,
             _active.deepClonePolymorphic(),
-            _duration.deepClonePolymorphic(),
-            _traceReceived.deepClonePolymorphic()
+            _duration.deepClonePolymorphic()
         )
     }
     //contexts
@@ -1344,7 +1545,7 @@ class TraceMonitoringSession private constructor(
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:89]
+ * #### Generated from [DiagnosticsHostModel.kt:47]
  */
 enum class TracingProfile {
     None, 

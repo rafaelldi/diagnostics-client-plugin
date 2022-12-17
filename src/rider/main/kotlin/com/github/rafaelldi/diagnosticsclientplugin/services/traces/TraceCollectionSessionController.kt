@@ -6,67 +6,41 @@ import com.github.rafaelldi.diagnosticsclientplugin.common.collectionSessionStar
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.CollectTracesModel
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.StoppingType
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.map
-import com.github.rafaelldi.diagnosticsclientplugin.generated.DiagnosticsHostModel
 import com.github.rafaelldi.diagnosticsclientplugin.generated.PredefinedProvider
 import com.github.rafaelldi.diagnosticsclientplugin.generated.TraceCollectionSession
 import com.github.rafaelldi.diagnosticsclientplugin.generated.diagnosticsHostModel
+import com.github.rafaelldi.diagnosticsclientplugin.services.common.CollectionSessionController
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
-import com.jetbrains.rd.framework.util.createTerminatedAfter
-import com.jetbrains.rd.platform.util.idea.ProtocolSubscribedProjectComponent
-import com.jetbrains.rd.util.addUnique
-import com.jetbrains.rd.util.lifetime.Lifetime
 import com.jetbrains.rider.projectView.solution
-import kotlinx.coroutines.Dispatchers
-import java.time.Duration
 import kotlin.io.path.Path
 import kotlin.io.path.pathString
 
 @Service
-class TraceCollectionSessionController(project: Project) : ProtocolSubscribedProjectComponent(project) {
+class TraceCollectionSessionController(project: Project) :
+    CollectionSessionController<TraceCollectionSession, CollectTracesModel>(project) {
     companion object {
         fun getInstance(project: Project): TraceCollectionSessionController = project.service()
         private const val TRACES = "Traces"
     }
 
-    private val hostModel: DiagnosticsHostModel = project.solution.diagnosticsHostModel
+    override val sessions = project.solution.diagnosticsHostModel.traceCollectionSessions
 
-    init {
-        hostModel.traceCollectionSessions.view(projectComponentLifetime) { lt, pid, session ->
-            viewSession(pid, session, lt)
-        }
-    }
-
-    fun startSession(pid: Int, model: CollectTracesModel) {
-        if (hostModel.traceCollectionSessions.contains(pid)) {
-            collectionSessionAlreadyExists(TRACES, pid, project)
-            return
-        }
-
+    override fun createSession(model: CollectTracesModel): TraceCollectionSession {
         val filePath = Path(model.path, model.filename).pathString
         val duration =
             if (model.stoppingType == StoppingType.AfterPeriod) model.duration
             else null
         val predefinedProvider = getPredefinedProviders(model)
 
-        val session = TraceCollectionSession(
-            filePath,
+        return TraceCollectionSession(
             model.profile.map(),
             model.providers,
             predefinedProvider,
-            duration
+            duration,
+            filePath
         )
-
-        try {
-            hostModel.traceCollectionSessions.addUnique(projectComponentLifetime, pid, session)
-        } catch (e: IllegalArgumentException) {
-            collectionSessionAlreadyExists(TRACES, pid, project)
-        }
-    }
-
-    fun stopSession(pid: Int) {
-        hostModel.traceCollectionSessions.remove(pid)
     }
 
     private fun getPredefinedProviders(model: CollectTracesModel): List<PredefinedProvider> {
@@ -92,20 +66,9 @@ class TraceCollectionSessionController(project: Project) : ProtocolSubscribedPro
         return providers
     }
 
-    private fun viewSession(pid: Int, session: TraceCollectionSession, lt: Lifetime) {
-        if (session.duration != null) {
-            val timerLifetime =
-                lt.createTerminatedAfter(Duration.ofSeconds(session.duration.toLong()), Dispatchers.Main)
-            timerLifetime.onTermination {
-                if (hostModel.traceCollectionSessions.containsKey(pid)) {
-                    hostModel.traceCollectionSessions.remove(pid)
-                }
-            }
-        }
+    override fun sessionAlreadyExists(pid: Int) = collectionSessionAlreadyExists(TRACES, pid, project)
+    override fun sessionStarted(pid: Int) = collectionSessionStarted(TRACES, pid, project)
+    override fun sessionFinished(pid: Int, session: TraceCollectionSession) =
+        collectionSessionFinished(TRACES, pid, session.filePath, false, project)
 
-        lt.bracketIfAlive(
-            { collectionSessionStarted(TRACES, pid, project) },
-            { collectionSessionFinished(TRACES, pid, session.filePath, false, project) }
-        )
-    }
 }

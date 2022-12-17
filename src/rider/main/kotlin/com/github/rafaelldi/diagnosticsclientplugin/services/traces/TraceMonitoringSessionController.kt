@@ -1,61 +1,31 @@
 package com.github.rafaelldi.diagnosticsclientplugin.services.traces
 
+import com.github.rafaelldi.diagnosticsclientplugin.common.monitoringSessionFinished
 import com.github.rafaelldi.diagnosticsclientplugin.common.monitoringSessionNotFound
 import com.github.rafaelldi.diagnosticsclientplugin.common.monitoringSessionStarted
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.MonitorTracesModel
-import com.github.rafaelldi.diagnosticsclientplugin.dialogs.StoppingType
-import com.github.rafaelldi.diagnosticsclientplugin.generated.DiagnosticsHostModel
 import com.github.rafaelldi.diagnosticsclientplugin.generated.PredefinedProvider
 import com.github.rafaelldi.diagnosticsclientplugin.generated.TraceMonitoringSession
 import com.github.rafaelldi.diagnosticsclientplugin.generated.diagnosticsHostModel
+import com.github.rafaelldi.diagnosticsclientplugin.services.common.MonitoringSessionController
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
-import com.jetbrains.rd.framework.util.createTerminatedAfter
-import com.jetbrains.rd.platform.util.idea.ProtocolSubscribedProjectComponent
-import com.jetbrains.rd.util.addUnique
-import com.jetbrains.rd.util.lifetime.Lifetime
-import com.jetbrains.rd.util.reactive.whenTrue
 import com.jetbrains.rider.projectView.solution
-import kotlinx.coroutines.Dispatchers
-import java.time.Duration
 
 @Service
-class TraceMonitoringSessionController(project: Project) : ProtocolSubscribedProjectComponent(project) {
+class TraceMonitoringSessionController(project: Project) :
+    MonitoringSessionController<TraceMonitoringSession, MonitorTracesModel>(project) {
     companion object {
         fun getInstance(project: Project): TraceMonitoringSessionController = project.service()
         private const val TRACES = "Traces"
     }
 
-    private val hostModel: DiagnosticsHostModel = project.solution.diagnosticsHostModel
+    override val sessions = project.solution.diagnosticsHostModel.traceMonitoringSessions
 
-    init {
-        hostModel.traceMonitoringSessions.view(projectComponentLifetime) { lt, pid, session ->
-            viewSession(pid, session, lt)
-        }
-    }
-
-    fun startSession(pid: Int, model: MonitorTracesModel) {
-        if (!hostModel.traceMonitoringSessions.contains(pid)) {
-            createNewSession(pid, model)
-        }
-
-        startExistingSession(pid, model.stoppingType, model.duration)
-    }
-
-    private fun createNewSession(pid: Int, model: MonitorTracesModel) {
-        if (hostModel.traceMonitoringSessions.contains(pid)) {
-            return
-        }
-
+    override fun createSession(model: MonitorTracesModel): TraceMonitoringSession {
         val providers = getPredefinedProviders(model)
-        val session = TraceMonitoringSession(providers)
-
-        try {
-            hostModel.traceMonitoringSessions.addUnique(projectComponentLifetime, pid, session)
-        } catch (e: IllegalArgumentException) {
-            // do nothing
-        }
+        return TraceMonitoringSession(providers)
     }
 
     private fun getPredefinedProviders(model: MonitorTracesModel): List<PredefinedProvider> {
@@ -81,61 +51,7 @@ class TraceMonitoringSessionController(project: Project) : ProtocolSubscribedPro
         return providers
     }
 
-    fun startExistingSession(pid: Int, stoppingType: StoppingType, duration: Int) {
-        val session = hostModel.traceMonitoringSessions[pid]
-        if (session == null) {
-            monitoringSessionNotFound(TRACES, pid, project)
-            return
-        }
-
-        if (session.active.valueOrNull == true) {
-            return
-        }
-
-        if (stoppingType == StoppingType.AfterPeriod) {
-            session.duration.set(duration)
-        } else {
-            session.duration.set(null)
-        }
-
-        session.active.set(true)
-    }
-
-    fun stopSession(pid: Int) {
-        val session = hostModel.traceMonitoringSessions[pid]
-        if (session == null) {
-            monitoringSessionNotFound(TRACES, pid, project)
-            return
-        }
-
-        if (session.active.valueOrNull == true) {
-            session.active.set(false)
-        }
-    }
-
-    fun closeSession(pid: Int) {
-        hostModel.traceMonitoringSessions.remove(pid)
-    }
-
-    private fun viewSession(pid: Int, session: TraceMonitoringSession, lifetime: Lifetime) {
-        session.active.whenTrue(lifetime) { lt -> viewActiveStatus(pid, session, lt) }
-    }
-
-    private fun viewActiveStatus(pid: Int, session: TraceMonitoringSession, lifetime: Lifetime) {
-        val duration = session.duration.value
-        if (duration != null) {
-            val timerLifetime =
-                lifetime.createTerminatedAfter(Duration.ofSeconds(duration.toLong()), Dispatchers.Main)
-            timerLifetime.onTermination {
-                if (session.active.valueOrNull == true) {
-                    session.active.set(false)
-                }
-            }
-        }
-
-        lifetime.bracketIfAlive(
-            { monitoringSessionStarted(TRACES, pid, project) },
-            { monitoringSessionStarted(TRACES, pid, project) }
-        )
-    }
+    override fun sessionNotFound(pid: Int) = monitoringSessionNotFound(TRACES, pid, project)
+    override fun sessionStarted(pid: Int) = monitoringSessionStarted(TRACES, pid, project)
+    override fun sessionFinished(pid: Int) = monitoringSessionFinished(TRACES, pid, project)
 }

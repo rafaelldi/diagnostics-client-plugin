@@ -23,8 +23,12 @@ object DiagnosticsHostModel : Ext(SolutionModel.Solution) {
         source("refresh", void)
     }
 
-    private val CounterCollectionSession = classdef("CounterCollectionSession") {
+    private val CollectionSession = baseclass {
+        field("duration", int.nullable)
         field("filePath", string)
+    }
+
+    private val CounterCollectionSession = classdef extends CollectionSession {
         field("format", enum("CounterFileFormat") {
             +"Csv"
             +"Json"
@@ -34,14 +38,29 @@ object DiagnosticsHostModel : Ext(SolutionModel.Solution) {
         field("metrics", string.nullable)
         field("maxTimeSeries", int)
         field("maxHistograms", int)
-        field("duration", int.nullable)
     }
 
-    private val CounterMonitoringSession = classdef("CounterMonitoringSession") {
+    private val GcEventCollectionSession = classdef extends CollectionSession {
+    }
+
+    private val TraceCollectionSession = classdef extends CollectionSession {
+        field("profile", enum("TracingProfile") {
+            +"None"
+            +"CpuSampling"
+            +"GcVerbose"
+            +"GcCollect"
+        })
+        field("providers", string)
+        field("predefinedProviders", immutableList(PredefinedProvider))
+    }
+
+    private val MonitoringSession = baseclass {
         property("active", bool)
         property("duration", int.nullable)
-        map("counters", string, Counter).async
+    }
 
+    private val CounterMonitoringSession = classdef extends MonitoringSession {
+        map("counters", string, Counter).async
         field("refreshInterval", int)
         field("providers", string)
         field("metrics", string.nullable)
@@ -49,21 +68,19 @@ object DiagnosticsHostModel : Ext(SolutionModel.Solution) {
         field("maxHistograms", int)
     }
 
+    private val GcEventMonitoringSession = classdef extends MonitoringSession {
+        source("gcHappened", GcEvent).async
+    }
+
+    private val TraceMonitoringSession = classdef extends MonitoringSession {
+        source("traceReceived", Trace).async
+        field("predefinedProviders", immutableList(PredefinedProvider))
+    }
+
     private val Counter = structdef {
         field("name", string)
         field("tags", string.nullable)
         field("value", double)
-    }
-
-    private val GcEventCollectionSession = classdef("GcEventCollectionSession") {
-        field("filePath", string)
-        field("duration", int.nullable)
-    }
-
-    private val GcEventMonitoringSession = classdef("GcEventMonitoringSession") {
-        property("active", bool)
-        property("duration", int.nullable)
-        source("gcHappened", GcEvent).async
     }
 
     private val GcEvent = structdef {
@@ -82,26 +99,6 @@ object DiagnosticsHostModel : Ext(SolutionModel.Solution) {
         field("sizeGen2", double)
         field("sizeLoh", double)
         field("pinnedObjects", int)
-    }
-
-    private val TraceCollectionSession = classdef("TraceCollectionSession") {
-        field("filePath", string)
-        field("profile", enum("TracingProfile") {
-            +"None"
-            +"CpuSampling"
-            +"GcVerbose"
-            +"GcCollect"
-        })
-        field("providers", string)
-        field("predefinedProviders", immutableList(PredefinedProvider))
-        field("duration", int.nullable)
-    }
-
-    private val TraceMonitoringSession = classdef("TraceMonitoringSession") {
-        field("predefinedProviders", immutableList(PredefinedProvider))
-        property("active", bool)
-        property("duration", int.nullable)
-        source("traceReceived", Trace).async
     }
 
     private val PredefinedProvider = enum("PredefinedProvider") {

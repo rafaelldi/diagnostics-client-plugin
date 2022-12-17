@@ -129,11 +129,19 @@ namespace DiagnosticsClientPlugin.Generated
     
     
     
-    protected override long SerializationHash => -5026178112067600123L;
+    protected override long SerializationHash => -2616174011368273991L;
     
     protected override Action<ISerializers> Register => RegisterDeclaredTypesSerializers;
     public static void RegisterDeclaredTypesSerializers(ISerializers serializers)
     {
+      serializers.Register(CounterCollectionSession.Read, CounterCollectionSession.Write);
+      serializers.Register(GcEventCollectionSession.Read, GcEventCollectionSession.Write);
+      serializers.Register(TraceCollectionSession.Read, TraceCollectionSession.Write);
+      serializers.Register(CounterMonitoringSession.Read, CounterMonitoringSession.Write);
+      serializers.Register(GcEventMonitoringSession.Read, GcEventMonitoringSession.Write);
+      serializers.Register(TraceMonitoringSession.Read, TraceMonitoringSession.Write);
+      serializers.Register(CollectionSession_Unknown.Read, CollectionSession_Unknown.Write);
+      serializers.Register(MonitoringSession_Unknown.Read, MonitoringSession_Unknown.Write);
       
       serializers.RegisterToplevelOnce(typeof(JetBrains.Rider.Model.IdeRoot), JetBrains.Rider.Model.IdeRoot.RegisterDeclaredTypesSerializers);
     }
@@ -181,7 +189,7 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:142</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:139</p>
   /// </summary>
   public sealed class CollectDumpCommand : IPrintable, IEquatable<CollectDumpCommand>
   {
@@ -299,7 +307,7 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:159</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:156</p>
   /// </summary>
   public sealed class CollectStackTraceCommand : IPrintable, IEquatable<CollectStackTraceCommand>
   {
@@ -382,7 +390,112 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:52</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:26</p>
+  /// </summary>
+  public abstract class CollectionSession : RdBindableBase
+  {
+    //fields
+    //public fields
+    [CanBeNull] public int? Duration {get; private set;}
+    [NotNull] public string FilePath {get; private set;}
+    
+    //private fields
+    //primary constructor
+    protected CollectionSession(
+      [CanBeNull] int? duration,
+      [NotNull] string filePath
+    )
+    {
+      if (filePath == null) throw new ArgumentNullException("filePath");
+      
+      Duration = duration;
+      FilePath = filePath;
+    }
+    //secondary constructor
+    //deconstruct trait
+    //statics
+    
+    public static CtxReadDelegate<CollectionSession> Read = Polymorphic<CollectionSession>.ReadAbstract(CollectionSession_Unknown.Read);
+    
+    public static CtxWriteDelegate<CollectionSession> Write = Polymorphic<CollectionSession>.Write;
+    
+    //constants
+    
+    //custom body
+    //methods
+    //equals trait
+    //hash code trait
+    //pretty print
+    //toString
+  }
+  
+  
+  public sealed class CollectionSession_Unknown : CollectionSession
+  {
+    //fields
+    //public fields
+    
+    //private fields
+    //primary constructor
+    public CollectionSession_Unknown(
+      [CanBeNull] int? duration,
+      [NotNull] string filePath
+    ) : base (
+      duration,
+      filePath
+     ) 
+    {
+    }
+    //secondary constructor
+    //deconstruct trait
+    //statics
+    
+    public static new CtxReadDelegate<CollectionSession_Unknown> Read = (ctx, reader) => 
+    {
+      var _id = RdId.Read(reader);
+      var duration = ReadIntNullable(ctx, reader);
+      var filePath = reader.ReadString();
+      var _result = new CollectionSession_Unknown(duration, filePath).WithId(_id);
+      return _result;
+    };
+    public static CtxReadDelegate<int?> ReadIntNullable = JetBrains.Rd.Impl.Serializers.ReadInt.NullableStruct();
+    
+    public static new CtxWriteDelegate<CollectionSession_Unknown> Write = (ctx, writer, value) => 
+    {
+      value.RdId.Write(writer);
+      WriteIntNullable(ctx, writer, value.Duration);
+      writer.Write(value.FilePath);
+    };
+    public static  CtxWriteDelegate<int?> WriteIntNullable = JetBrains.Rd.Impl.Serializers.WriteInt.NullableStruct();
+    
+    //constants
+    
+    //custom body
+    //methods
+    //equals trait
+    //hash code trait
+    //pretty print
+    public override void Print(PrettyPrinter printer)
+    {
+      printer.Println("CollectionSession_Unknown (");
+      using (printer.IndentCookie()) {
+        printer.Print("duration = "); Duration.PrintEx(printer); printer.Println();
+        printer.Print("filePath = "); FilePath.PrintEx(printer); printer.Println();
+      }
+      printer.Print(")");
+    }
+    //toString
+    public override string ToString()
+    {
+      var printer = new SingleLinePrettyPrinter();
+      Print(printer);
+      return printer.ToString();
+    }
+  }
+  
+  
+  /// <summary>
+  /// <p>Generated from: DiagnosticsHostModel.kt:80</p>
   /// </summary>
   public sealed class Counter : IPrintable, IEquatable<Counter>
   {
@@ -485,53 +598,52 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:26</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:31</p>
   /// </summary>
-  public sealed class CounterCollectionSession : RdBindableBase
+  public sealed class CounterCollectionSession : CollectionSession
   {
     //fields
     //public fields
-    [NotNull] public string FilePath {get; private set;}
     public CounterFileFormat Format {get; private set;}
     public int RefreshInterval {get; private set;}
     [NotNull] public string Providers {get; private set;}
     [CanBeNull] public string Metrics {get; private set;}
     public int MaxTimeSeries {get; private set;}
     public int MaxHistograms {get; private set;}
-    [CanBeNull] public int? Duration {get; private set;}
     
     //private fields
     //primary constructor
     public CounterCollectionSession(
-      [NotNull] string filePath,
       CounterFileFormat format,
       int refreshInterval,
       [NotNull] string providers,
       [CanBeNull] string metrics,
       int maxTimeSeries,
       int maxHistograms,
-      [CanBeNull] int? duration
-    )
+      [CanBeNull] int? duration,
+      [NotNull] string filePath
+    ) : base (
+      duration,
+      filePath
+     ) 
     {
-      if (filePath == null) throw new ArgumentNullException("filePath");
       if (providers == null) throw new ArgumentNullException("providers");
       
-      FilePath = filePath;
       Format = format;
       RefreshInterval = refreshInterval;
       Providers = providers;
       Metrics = metrics;
       MaxTimeSeries = maxTimeSeries;
       MaxHistograms = maxHistograms;
-      Duration = duration;
     }
     //secondary constructor
     //deconstruct trait
     //statics
     
-    public static CtxReadDelegate<CounterCollectionSession> Read = (ctx, reader) => 
+    public static new CtxReadDelegate<CounterCollectionSession> Read = (ctx, reader) => 
     {
       var _id = RdId.Read(reader);
+      var duration = ReadIntNullable(ctx, reader);
       var filePath = reader.ReadString();
       var format = (CounterFileFormat)reader.ReadInt();
       var refreshInterval = reader.ReadInt();
@@ -539,16 +651,16 @@ namespace DiagnosticsClientPlugin.Generated
       var metrics = ReadStringNullable(ctx, reader);
       var maxTimeSeries = reader.ReadInt();
       var maxHistograms = reader.ReadInt();
-      var duration = ReadIntNullable(ctx, reader);
-      var _result = new CounterCollectionSession(filePath, format, refreshInterval, providers, metrics, maxTimeSeries, maxHistograms, duration).WithId(_id);
+      var _result = new CounterCollectionSession(format, refreshInterval, providers, metrics, maxTimeSeries, maxHistograms, duration, filePath).WithId(_id);
       return _result;
     };
     public static CtxReadDelegate<string> ReadStringNullable = JetBrains.Rd.Impl.Serializers.ReadString.NullableClass();
     public static CtxReadDelegate<int?> ReadIntNullable = JetBrains.Rd.Impl.Serializers.ReadInt.NullableStruct();
     
-    public static CtxWriteDelegate<CounterCollectionSession> Write = (ctx, writer, value) => 
+    public static new CtxWriteDelegate<CounterCollectionSession> Write = (ctx, writer, value) => 
     {
       value.RdId.Write(writer);
+      WriteIntNullable(ctx, writer, value.Duration);
       writer.Write(value.FilePath);
       writer.Write((int)value.Format);
       writer.Write(value.RefreshInterval);
@@ -556,7 +668,6 @@ namespace DiagnosticsClientPlugin.Generated
       WriteStringNullable(ctx, writer, value.Metrics);
       writer.Write(value.MaxTimeSeries);
       writer.Write(value.MaxHistograms);
-      WriteIntNullable(ctx, writer, value.Duration);
     };
     public static  CtxWriteDelegate<string> WriteStringNullable = JetBrains.Rd.Impl.Serializers.WriteString.NullableClass();
     public static  CtxWriteDelegate<int?> WriteIntNullable = JetBrains.Rd.Impl.Serializers.WriteInt.NullableStruct();
@@ -572,7 +683,6 @@ namespace DiagnosticsClientPlugin.Generated
     {
       printer.Println("CounterCollectionSession (");
       using (printer.IndentCookie()) {
-        printer.Print("filePath = "); FilePath.PrintEx(printer); printer.Println();
         printer.Print("format = "); Format.PrintEx(printer); printer.Println();
         printer.Print("refreshInterval = "); RefreshInterval.PrintEx(printer); printer.Println();
         printer.Print("providers = "); Providers.PrintEx(printer); printer.Println();
@@ -580,6 +690,7 @@ namespace DiagnosticsClientPlugin.Generated
         printer.Print("maxTimeSeries = "); MaxTimeSeries.PrintEx(printer); printer.Println();
         printer.Print("maxHistograms = "); MaxHistograms.PrintEx(printer); printer.Println();
         printer.Print("duration = "); Duration.PrintEx(printer); printer.Println();
+        printer.Print("filePath = "); FilePath.PrintEx(printer); printer.Println();
       }
       printer.Print(")");
     }
@@ -594,7 +705,7 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:28</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:32</p>
   /// </summary>
   public enum CounterFileFormat {
     Csv,
@@ -603,14 +714,12 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:40</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:62</p>
   /// </summary>
-  public sealed class CounterMonitoringSession : RdBindableBase
+  public sealed class CounterMonitoringSession : MonitoringSession
   {
     //fields
     //public fields
-    [NotNull] public IViewableProperty<bool> Active => _Active;
-    [NotNull] public IViewableProperty<int?> Duration => _Duration;
     [NotNull] public IViewableMap<string, Counter> Counters => _Counters;
     public int RefreshInterval {get; private set;}
     [NotNull] public string Providers {get; private set;}
@@ -619,42 +728,34 @@ namespace DiagnosticsClientPlugin.Generated
     public int MaxHistograms {get; private set;}
     
     //private fields
-    [NotNull] private readonly RdProperty<bool> _Active;
-    [NotNull] private readonly RdProperty<int?> _Duration;
     [NotNull] private readonly RdMap<string, Counter> _Counters;
     
     //primary constructor
     private CounterMonitoringSession(
-      [NotNull] RdProperty<bool> active,
-      [NotNull] RdProperty<int?> duration,
       [NotNull] RdMap<string, Counter> counters,
       int refreshInterval,
       [NotNull] string providers,
       [CanBeNull] string metrics,
       int maxTimeSeries,
-      int maxHistograms
-    )
+      int maxHistograms,
+      [NotNull] RdProperty<bool> active,
+      [NotNull] RdProperty<int?> duration
+    ) : base (
+      active,
+      duration
+     ) 
     {
-      if (active == null) throw new ArgumentNullException("active");
-      if (duration == null) throw new ArgumentNullException("duration");
       if (counters == null) throw new ArgumentNullException("counters");
       if (providers == null) throw new ArgumentNullException("providers");
       
-      _Active = active;
-      _Duration = duration;
       _Counters = counters;
       RefreshInterval = refreshInterval;
       Providers = providers;
       Metrics = metrics;
       MaxTimeSeries = maxTimeSeries;
       MaxHistograms = maxHistograms;
-      _Active.OptimizeNested = true;
-      _Duration.OptimizeNested = true;
       _Counters.OptimizeNested = true;
       _Counters.Async = true;
-      _Duration.ValueCanBeNull = true;
-      BindableChildren.Add(new KeyValuePair<string, object>("active", _Active));
-      BindableChildren.Add(new KeyValuePair<string, object>("duration", _Duration));
       BindableChildren.Add(new KeyValuePair<string, object>("counters", _Counters));
     }
     //secondary constructor
@@ -665,19 +766,19 @@ namespace DiagnosticsClientPlugin.Generated
       int maxTimeSeries,
       int maxHistograms
     ) : this (
-      new RdProperty<bool>(JetBrains.Rd.Impl.Serializers.ReadBool, JetBrains.Rd.Impl.Serializers.WriteBool),
-      new RdProperty<int?>(ReadIntNullable, WriteIntNullable),
       new RdMap<string, Counter>(JetBrains.Rd.Impl.Serializers.ReadString, JetBrains.Rd.Impl.Serializers.WriteString, Counter.Read, Counter.Write),
       refreshInterval,
       providers,
       metrics,
       maxTimeSeries,
-      maxHistograms
+      maxHistograms,
+      new RdProperty<bool>(JetBrains.Rd.Impl.Serializers.ReadBool, JetBrains.Rd.Impl.Serializers.WriteBool),
+      new RdProperty<int?>(ReadIntNullable, WriteIntNullable)
     ) {}
     //deconstruct trait
     //statics
     
-    public static CtxReadDelegate<CounterMonitoringSession> Read = (ctx, reader) => 
+    public static new CtxReadDelegate<CounterMonitoringSession> Read = (ctx, reader) => 
     {
       var _id = RdId.Read(reader);
       var active = RdProperty<bool>.Read(ctx, reader, JetBrains.Rd.Impl.Serializers.ReadBool, JetBrains.Rd.Impl.Serializers.WriteBool);
@@ -688,13 +789,13 @@ namespace DiagnosticsClientPlugin.Generated
       var metrics = ReadStringNullable(ctx, reader);
       var maxTimeSeries = reader.ReadInt();
       var maxHistograms = reader.ReadInt();
-      var _result = new CounterMonitoringSession(active, duration, counters, refreshInterval, providers, metrics, maxTimeSeries, maxHistograms).WithId(_id);
+      var _result = new CounterMonitoringSession(counters, refreshInterval, providers, metrics, maxTimeSeries, maxHistograms, active, duration).WithId(_id);
       return _result;
     };
-    public static CtxReadDelegate<int?> ReadIntNullable = JetBrains.Rd.Impl.Serializers.ReadInt.NullableStruct();
     public static CtxReadDelegate<string> ReadStringNullable = JetBrains.Rd.Impl.Serializers.ReadString.NullableClass();
+    public static CtxReadDelegate<int?> ReadIntNullable = JetBrains.Rd.Impl.Serializers.ReadInt.NullableStruct();
     
-    public static CtxWriteDelegate<CounterMonitoringSession> Write = (ctx, writer, value) => 
+    public static new CtxWriteDelegate<CounterMonitoringSession> Write = (ctx, writer, value) => 
     {
       value.RdId.Write(writer);
       RdProperty<bool>.Write(ctx, writer, value._Active);
@@ -706,8 +807,8 @@ namespace DiagnosticsClientPlugin.Generated
       writer.Write(value.MaxTimeSeries);
       writer.Write(value.MaxHistograms);
     };
-    public static  CtxWriteDelegate<int?> WriteIntNullable = JetBrains.Rd.Impl.Serializers.WriteInt.NullableStruct();
     public static  CtxWriteDelegate<string> WriteStringNullable = JetBrains.Rd.Impl.Serializers.WriteString.NullableClass();
+    public static  CtxWriteDelegate<int?> WriteIntNullable = JetBrains.Rd.Impl.Serializers.WriteInt.NullableStruct();
     
     //constants
     
@@ -720,14 +821,14 @@ namespace DiagnosticsClientPlugin.Generated
     {
       printer.Println("CounterMonitoringSession (");
       using (printer.IndentCookie()) {
-        printer.Print("active = "); _Active.PrintEx(printer); printer.Println();
-        printer.Print("duration = "); _Duration.PrintEx(printer); printer.Println();
         printer.Print("counters = "); _Counters.PrintEx(printer); printer.Println();
         printer.Print("refreshInterval = "); RefreshInterval.PrintEx(printer); printer.Println();
         printer.Print("providers = "); Providers.PrintEx(printer); printer.Println();
         printer.Print("metrics = "); Metrics.PrintEx(printer); printer.Println();
         printer.Print("maxTimeSeries = "); MaxTimeSeries.PrintEx(printer); printer.Println();
         printer.Print("maxHistograms = "); MaxHistograms.PrintEx(printer); printer.Println();
+        printer.Print("active = "); _Active.PrintEx(printer); printer.Println();
+        printer.Print("duration = "); _Duration.PrintEx(printer); printer.Println();
       }
       printer.Print(")");
     }
@@ -742,7 +843,7 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:153</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:150</p>
   /// </summary>
   public sealed class DumpCollectionResult : IPrintable, IEquatable<DumpCollectionResult>
   {
@@ -827,7 +928,7 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:144</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:141</p>
   /// </summary>
   public enum DumpType {
     Full,
@@ -838,7 +939,7 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:69</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:86</p>
   /// </summary>
   public sealed class GcEvent : IPrintable, IEquatable<GcEvent>
   {
@@ -1036,46 +1137,43 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:58</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:43</p>
   /// </summary>
-  public sealed class GcEventCollectionSession : RdBindableBase
+  public sealed class GcEventCollectionSession : CollectionSession
   {
     //fields
     //public fields
-    [NotNull] public string FilePath {get; private set;}
-    [CanBeNull] public int? Duration {get; private set;}
     
     //private fields
     //primary constructor
     public GcEventCollectionSession(
-      [NotNull] string filePath,
-      [CanBeNull] int? duration
-    )
+      [CanBeNull] int? duration,
+      [NotNull] string filePath
+    ) : base (
+      duration,
+      filePath
+     ) 
     {
-      if (filePath == null) throw new ArgumentNullException("filePath");
-      
-      FilePath = filePath;
-      Duration = duration;
     }
     //secondary constructor
     //deconstruct trait
     //statics
     
-    public static CtxReadDelegate<GcEventCollectionSession> Read = (ctx, reader) => 
+    public static new CtxReadDelegate<GcEventCollectionSession> Read = (ctx, reader) => 
     {
       var _id = RdId.Read(reader);
-      var filePath = reader.ReadString();
       var duration = ReadIntNullable(ctx, reader);
-      var _result = new GcEventCollectionSession(filePath, duration).WithId(_id);
+      var filePath = reader.ReadString();
+      var _result = new GcEventCollectionSession(duration, filePath).WithId(_id);
       return _result;
     };
     public static CtxReadDelegate<int?> ReadIntNullable = JetBrains.Rd.Impl.Serializers.ReadInt.NullableStruct();
     
-    public static CtxWriteDelegate<GcEventCollectionSession> Write = (ctx, writer, value) => 
+    public static new CtxWriteDelegate<GcEventCollectionSession> Write = (ctx, writer, value) => 
     {
       value.RdId.Write(writer);
-      writer.Write(value.FilePath);
       WriteIntNullable(ctx, writer, value.Duration);
+      writer.Write(value.FilePath);
     };
     public static  CtxWriteDelegate<int?> WriteIntNullable = JetBrains.Rd.Impl.Serializers.WriteInt.NullableStruct();
     
@@ -1090,8 +1188,8 @@ namespace DiagnosticsClientPlugin.Generated
     {
       printer.Println("GcEventCollectionSession (");
       using (printer.IndentCookie()) {
-        printer.Print("filePath = "); FilePath.PrintEx(printer); printer.Println();
         printer.Print("duration = "); Duration.PrintEx(printer); printer.Println();
+        printer.Print("filePath = "); FilePath.PrintEx(printer); printer.Println();
       }
       printer.Print(")");
     }
@@ -1106,65 +1204,55 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:63</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:71</p>
   /// </summary>
-  public sealed class GcEventMonitoringSession : RdBindableBase
+  public sealed class GcEventMonitoringSession : MonitoringSession
   {
     //fields
     //public fields
-    [NotNull] public IViewableProperty<bool> Active => _Active;
-    [NotNull] public IViewableProperty<int?> Duration => _Duration;
     [NotNull] public ISignal<GcEvent> GcHappened => _GcHappened;
     
     //private fields
-    [NotNull] private readonly RdProperty<bool> _Active;
-    [NotNull] private readonly RdProperty<int?> _Duration;
     [NotNull] private readonly RdSignal<GcEvent> _GcHappened;
     
     //primary constructor
     private GcEventMonitoringSession(
+      [NotNull] RdSignal<GcEvent> gcHappened,
       [NotNull] RdProperty<bool> active,
-      [NotNull] RdProperty<int?> duration,
-      [NotNull] RdSignal<GcEvent> gcHappened
-    )
+      [NotNull] RdProperty<int?> duration
+    ) : base (
+      active,
+      duration
+     ) 
     {
-      if (active == null) throw new ArgumentNullException("active");
-      if (duration == null) throw new ArgumentNullException("duration");
       if (gcHappened == null) throw new ArgumentNullException("gcHappened");
       
-      _Active = active;
-      _Duration = duration;
       _GcHappened = gcHappened;
-      _Active.OptimizeNested = true;
-      _Duration.OptimizeNested = true;
       _GcHappened.Async = true;
-      _Duration.ValueCanBeNull = true;
-      BindableChildren.Add(new KeyValuePair<string, object>("active", _Active));
-      BindableChildren.Add(new KeyValuePair<string, object>("duration", _Duration));
       BindableChildren.Add(new KeyValuePair<string, object>("gcHappened", _GcHappened));
     }
     //secondary constructor
     public GcEventMonitoringSession (
     ) : this (
+      new RdSignal<GcEvent>(GcEvent.Read, GcEvent.Write),
       new RdProperty<bool>(JetBrains.Rd.Impl.Serializers.ReadBool, JetBrains.Rd.Impl.Serializers.WriteBool),
-      new RdProperty<int?>(ReadIntNullable, WriteIntNullable),
-      new RdSignal<GcEvent>(GcEvent.Read, GcEvent.Write)
+      new RdProperty<int?>(ReadIntNullable, WriteIntNullable)
     ) {}
     //deconstruct trait
     //statics
     
-    public static CtxReadDelegate<GcEventMonitoringSession> Read = (ctx, reader) => 
+    public static new CtxReadDelegate<GcEventMonitoringSession> Read = (ctx, reader) => 
     {
       var _id = RdId.Read(reader);
       var active = RdProperty<bool>.Read(ctx, reader, JetBrains.Rd.Impl.Serializers.ReadBool, JetBrains.Rd.Impl.Serializers.WriteBool);
       var duration = RdProperty<int?>.Read(ctx, reader, ReadIntNullable, WriteIntNullable);
       var gcHappened = RdSignal<GcEvent>.Read(ctx, reader, GcEvent.Read, GcEvent.Write);
-      var _result = new GcEventMonitoringSession(active, duration, gcHappened).WithId(_id);
+      var _result = new GcEventMonitoringSession(gcHappened, active, duration).WithId(_id);
       return _result;
     };
     public static CtxReadDelegate<int?> ReadIntNullable = JetBrains.Rd.Impl.Serializers.ReadInt.NullableStruct();
     
-    public static CtxWriteDelegate<GcEventMonitoringSession> Write = (ctx, writer, value) => 
+    public static new CtxWriteDelegate<GcEventMonitoringSession> Write = (ctx, writer, value) => 
     {
       value.RdId.Write(writer);
       RdProperty<bool>.Write(ctx, writer, value._Active);
@@ -1184,9 +1272,9 @@ namespace DiagnosticsClientPlugin.Generated
     {
       printer.Println("GcEventMonitoringSession (");
       using (printer.IndentCookie()) {
+        printer.Print("gcHappened = "); _GcHappened.PrintEx(printer); printer.Println();
         printer.Print("active = "); _Active.PrintEx(printer); printer.Println();
         printer.Print("duration = "); _Duration.PrintEx(printer); printer.Println();
-        printer.Print("gcHappened = "); _GcHappened.PrintEx(printer); printer.Println();
       }
       printer.Print(")");
     }
@@ -1201,7 +1289,126 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:107</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:57</p>
+  /// </summary>
+  public abstract class MonitoringSession : RdBindableBase
+  {
+    //fields
+    //public fields
+    [NotNull] public IViewableProperty<bool> Active => _Active;
+    [NotNull] public IViewableProperty<int?> Duration => _Duration;
+    
+    //private fields
+    [NotNull] protected readonly RdProperty<bool> _Active;
+    [NotNull] protected readonly RdProperty<int?> _Duration;
+    
+    //primary constructor
+    protected MonitoringSession(
+      [NotNull] RdProperty<bool> active,
+      [NotNull] RdProperty<int?> duration
+    )
+    {
+      if (active == null) throw new ArgumentNullException("active");
+      if (duration == null) throw new ArgumentNullException("duration");
+      
+      _Active = active;
+      _Duration = duration;
+      _Active.OptimizeNested = true;
+      _Duration.OptimizeNested = true;
+      _Duration.ValueCanBeNull = true;
+      BindableChildren.Add(new KeyValuePair<string, object>("active", _Active));
+      BindableChildren.Add(new KeyValuePair<string, object>("duration", _Duration));
+    }
+    //secondary constructor
+    //deconstruct trait
+    //statics
+    
+    public static CtxReadDelegate<MonitoringSession> Read = Polymorphic<MonitoringSession>.ReadAbstract(MonitoringSession_Unknown.Read);
+    
+    public static CtxWriteDelegate<MonitoringSession> Write = Polymorphic<MonitoringSession>.Write;
+    
+    //constants
+    
+    //custom body
+    //methods
+    //equals trait
+    //hash code trait
+    //pretty print
+    //toString
+  }
+  
+  
+  public sealed class MonitoringSession_Unknown : MonitoringSession
+  {
+    //fields
+    //public fields
+    
+    //private fields
+    //primary constructor
+    private MonitoringSession_Unknown(
+      [NotNull] RdProperty<bool> active,
+      [NotNull] RdProperty<int?> duration
+    ) : base (
+      active,
+      duration
+     ) 
+    {
+    }
+    //secondary constructor
+    public MonitoringSession_Unknown (
+    ) : this (
+      new RdProperty<bool>(JetBrains.Rd.Impl.Serializers.ReadBool, JetBrains.Rd.Impl.Serializers.WriteBool),
+      new RdProperty<int?>(ReadIntNullable, WriteIntNullable)
+    ) {}
+    //deconstruct trait
+    //statics
+    
+    public static new CtxReadDelegate<MonitoringSession_Unknown> Read = (ctx, reader) => 
+    {
+      var _id = RdId.Read(reader);
+      var active = RdProperty<bool>.Read(ctx, reader, JetBrains.Rd.Impl.Serializers.ReadBool, JetBrains.Rd.Impl.Serializers.WriteBool);
+      var duration = RdProperty<int?>.Read(ctx, reader, ReadIntNullable, WriteIntNullable);
+      var _result = new MonitoringSession_Unknown(active, duration).WithId(_id);
+      return _result;
+    };
+    public static CtxReadDelegate<int?> ReadIntNullable = JetBrains.Rd.Impl.Serializers.ReadInt.NullableStruct();
+    
+    public static new CtxWriteDelegate<MonitoringSession_Unknown> Write = (ctx, writer, value) => 
+    {
+      value.RdId.Write(writer);
+      RdProperty<bool>.Write(ctx, writer, value._Active);
+      RdProperty<int?>.Write(ctx, writer, value._Duration);
+    };
+    public static  CtxWriteDelegate<int?> WriteIntNullable = JetBrains.Rd.Impl.Serializers.WriteInt.NullableStruct();
+    
+    //constants
+    
+    //custom body
+    //methods
+    //equals trait
+    //hash code trait
+    //pretty print
+    public override void Print(PrettyPrinter printer)
+    {
+      printer.Println("MonitoringSession_Unknown (");
+      using (printer.IndentCookie()) {
+        printer.Print("active = "); _Active.PrintEx(printer); printer.Println();
+        printer.Print("duration = "); _Duration.PrintEx(printer); printer.Println();
+      }
+      printer.Print(")");
+    }
+    //toString
+    public override string ToString()
+    {
+      var printer = new SingleLinePrettyPrinter();
+      Print(printer);
+      return printer.ToString();
+    }
+  }
+  
+  
+  /// <summary>
+  /// <p>Generated from: DiagnosticsHostModel.kt:104</p>
   /// </summary>
   public enum PredefinedProvider {
     Http,
@@ -1431,7 +1638,7 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:118</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:115</p>
   /// </summary>
   public sealed class Trace : IPrintable, IEquatable<Trace>
   {
@@ -1541,64 +1748,62 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:87</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:46</p>
   /// </summary>
-  public sealed class TraceCollectionSession : RdBindableBase
+  public sealed class TraceCollectionSession : CollectionSession
   {
     //fields
     //public fields
-    [NotNull] public string FilePath {get; private set;}
     public TracingProfile Profile {get; private set;}
     [NotNull] public string Providers {get; private set;}
     [NotNull] public List<PredefinedProvider> PredefinedProviders {get; private set;}
-    [CanBeNull] public int? Duration {get; private set;}
     
     //private fields
     //primary constructor
     public TraceCollectionSession(
-      [NotNull] string filePath,
       TracingProfile profile,
       [NotNull] string providers,
       [NotNull] List<PredefinedProvider> predefinedProviders,
-      [CanBeNull] int? duration
-    )
+      [CanBeNull] int? duration,
+      [NotNull] string filePath
+    ) : base (
+      duration,
+      filePath
+     ) 
     {
-      if (filePath == null) throw new ArgumentNullException("filePath");
       if (providers == null) throw new ArgumentNullException("providers");
       if (predefinedProviders == null) throw new ArgumentNullException("predefinedProviders");
       
-      FilePath = filePath;
       Profile = profile;
       Providers = providers;
       PredefinedProviders = predefinedProviders;
-      Duration = duration;
     }
     //secondary constructor
     //deconstruct trait
     //statics
     
-    public static CtxReadDelegate<TraceCollectionSession> Read = (ctx, reader) => 
+    public static new CtxReadDelegate<TraceCollectionSession> Read = (ctx, reader) => 
     {
       var _id = RdId.Read(reader);
+      var duration = ReadIntNullable(ctx, reader);
       var filePath = reader.ReadString();
       var profile = (TracingProfile)reader.ReadInt();
       var providers = reader.ReadString();
       var predefinedProviders = ReadPredefinedProviderList(ctx, reader);
-      var duration = ReadIntNullable(ctx, reader);
-      var _result = new TraceCollectionSession(filePath, profile, providers, predefinedProviders, duration).WithId(_id);
+      var _result = new TraceCollectionSession(profile, providers, predefinedProviders, duration, filePath).WithId(_id);
       return _result;
     };
     public static CtxReadDelegate<List<PredefinedProvider>> ReadPredefinedProviderList = new CtxReadDelegate<PredefinedProvider>(JetBrains.Rd.Impl.Serializers.ReadEnum<PredefinedProvider>).List();
     public static CtxReadDelegate<int?> ReadIntNullable = JetBrains.Rd.Impl.Serializers.ReadInt.NullableStruct();
     
-    public static CtxWriteDelegate<TraceCollectionSession> Write = (ctx, writer, value) => 
+    public static new CtxWriteDelegate<TraceCollectionSession> Write = (ctx, writer, value) => 
     {
       value.RdId.Write(writer);
+      WriteIntNullable(ctx, writer, value.Duration);
       writer.Write(value.FilePath);
       writer.Write((int)value.Profile);
       writer.Write(value.Providers);
       WritePredefinedProviderList(ctx, writer, value.PredefinedProviders);
-      WriteIntNullable(ctx, writer, value.Duration);
     };
     public static  CtxWriteDelegate<List<PredefinedProvider>> WritePredefinedProviderList = new CtxWriteDelegate<PredefinedProvider>(JetBrains.Rd.Impl.Serializers.WriteEnum<PredefinedProvider>).List();
     public static  CtxWriteDelegate<int?> WriteIntNullable = JetBrains.Rd.Impl.Serializers.WriteInt.NullableStruct();
@@ -1614,11 +1819,11 @@ namespace DiagnosticsClientPlugin.Generated
     {
       printer.Println("TraceCollectionSession (");
       using (printer.IndentCookie()) {
-        printer.Print("filePath = "); FilePath.PrintEx(printer); printer.Println();
         printer.Print("profile = "); Profile.PrintEx(printer); printer.Println();
         printer.Print("providers = "); Providers.PrintEx(printer); printer.Println();
         printer.Print("predefinedProviders = "); PredefinedProviders.PrintEx(printer); printer.Println();
         printer.Print("duration = "); Duration.PrintEx(printer); printer.Println();
+        printer.Print("filePath = "); FilePath.PrintEx(printer); printer.Println();
       }
       printer.Print(")");
     }
@@ -1633,79 +1838,69 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:100</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:75</p>
   /// </summary>
-  public sealed class TraceMonitoringSession : RdBindableBase
+  public sealed class TraceMonitoringSession : MonitoringSession
   {
     //fields
     //public fields
-    [NotNull] public List<PredefinedProvider> PredefinedProviders {get; private set;}
-    [NotNull] public IViewableProperty<bool> Active => _Active;
-    [NotNull] public IViewableProperty<int?> Duration => _Duration;
     [NotNull] public ISignal<Trace> TraceReceived => _TraceReceived;
+    [NotNull] public List<PredefinedProvider> PredefinedProviders {get; private set;}
     
     //private fields
-    [NotNull] private readonly RdProperty<bool> _Active;
-    [NotNull] private readonly RdProperty<int?> _Duration;
     [NotNull] private readonly RdSignal<Trace> _TraceReceived;
     
     //primary constructor
     private TraceMonitoringSession(
+      [NotNull] RdSignal<Trace> traceReceived,
       [NotNull] List<PredefinedProvider> predefinedProviders,
       [NotNull] RdProperty<bool> active,
-      [NotNull] RdProperty<int?> duration,
-      [NotNull] RdSignal<Trace> traceReceived
-    )
+      [NotNull] RdProperty<int?> duration
+    ) : base (
+      active,
+      duration
+     ) 
     {
-      if (predefinedProviders == null) throw new ArgumentNullException("predefinedProviders");
-      if (active == null) throw new ArgumentNullException("active");
-      if (duration == null) throw new ArgumentNullException("duration");
       if (traceReceived == null) throw new ArgumentNullException("traceReceived");
+      if (predefinedProviders == null) throw new ArgumentNullException("predefinedProviders");
       
-      PredefinedProviders = predefinedProviders;
-      _Active = active;
-      _Duration = duration;
       _TraceReceived = traceReceived;
-      _Active.OptimizeNested = true;
-      _Duration.OptimizeNested = true;
+      PredefinedProviders = predefinedProviders;
       _TraceReceived.Async = true;
-      _Duration.ValueCanBeNull = true;
-      BindableChildren.Add(new KeyValuePair<string, object>("active", _Active));
-      BindableChildren.Add(new KeyValuePair<string, object>("duration", _Duration));
       BindableChildren.Add(new KeyValuePair<string, object>("traceReceived", _TraceReceived));
     }
     //secondary constructor
     public TraceMonitoringSession (
       [NotNull] List<PredefinedProvider> predefinedProviders
     ) : this (
+      new RdSignal<Trace>(Trace.Read, Trace.Write),
       predefinedProviders,
       new RdProperty<bool>(JetBrains.Rd.Impl.Serializers.ReadBool, JetBrains.Rd.Impl.Serializers.WriteBool),
-      new RdProperty<int?>(ReadIntNullable, WriteIntNullable),
-      new RdSignal<Trace>(Trace.Read, Trace.Write)
+      new RdProperty<int?>(ReadIntNullable, WriteIntNullable)
     ) {}
     //deconstruct trait
     //statics
     
-    public static CtxReadDelegate<TraceMonitoringSession> Read = (ctx, reader) => 
+    public static new CtxReadDelegate<TraceMonitoringSession> Read = (ctx, reader) => 
     {
       var _id = RdId.Read(reader);
-      var predefinedProviders = ReadPredefinedProviderList(ctx, reader);
       var active = RdProperty<bool>.Read(ctx, reader, JetBrains.Rd.Impl.Serializers.ReadBool, JetBrains.Rd.Impl.Serializers.WriteBool);
       var duration = RdProperty<int?>.Read(ctx, reader, ReadIntNullable, WriteIntNullable);
       var traceReceived = RdSignal<Trace>.Read(ctx, reader, Trace.Read, Trace.Write);
-      var _result = new TraceMonitoringSession(predefinedProviders, active, duration, traceReceived).WithId(_id);
+      var predefinedProviders = ReadPredefinedProviderList(ctx, reader);
+      var _result = new TraceMonitoringSession(traceReceived, predefinedProviders, active, duration).WithId(_id);
       return _result;
     };
     public static CtxReadDelegate<List<PredefinedProvider>> ReadPredefinedProviderList = new CtxReadDelegate<PredefinedProvider>(JetBrains.Rd.Impl.Serializers.ReadEnum<PredefinedProvider>).List();
     public static CtxReadDelegate<int?> ReadIntNullable = JetBrains.Rd.Impl.Serializers.ReadInt.NullableStruct();
     
-    public static CtxWriteDelegate<TraceMonitoringSession> Write = (ctx, writer, value) => 
+    public static new CtxWriteDelegate<TraceMonitoringSession> Write = (ctx, writer, value) => 
     {
       value.RdId.Write(writer);
-      WritePredefinedProviderList(ctx, writer, value.PredefinedProviders);
       RdProperty<bool>.Write(ctx, writer, value._Active);
       RdProperty<int?>.Write(ctx, writer, value._Duration);
       RdSignal<Trace>.Write(ctx, writer, value._TraceReceived);
+      WritePredefinedProviderList(ctx, writer, value.PredefinedProviders);
     };
     public static  CtxWriteDelegate<List<PredefinedProvider>> WritePredefinedProviderList = new CtxWriteDelegate<PredefinedProvider>(JetBrains.Rd.Impl.Serializers.WriteEnum<PredefinedProvider>).List();
     public static  CtxWriteDelegate<int?> WriteIntNullable = JetBrains.Rd.Impl.Serializers.WriteInt.NullableStruct();
@@ -1721,10 +1916,10 @@ namespace DiagnosticsClientPlugin.Generated
     {
       printer.Println("TraceMonitoringSession (");
       using (printer.IndentCookie()) {
+        printer.Print("traceReceived = "); _TraceReceived.PrintEx(printer); printer.Println();
         printer.Print("predefinedProviders = "); PredefinedProviders.PrintEx(printer); printer.Println();
         printer.Print("active = "); _Active.PrintEx(printer); printer.Println();
         printer.Print("duration = "); _Duration.PrintEx(printer); printer.Println();
-        printer.Print("traceReceived = "); _TraceReceived.PrintEx(printer); printer.Println();
       }
       printer.Print(")");
     }
@@ -1739,7 +1934,7 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:89</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:47</p>
   /// </summary>
   public enum TracingProfile {
     None,
