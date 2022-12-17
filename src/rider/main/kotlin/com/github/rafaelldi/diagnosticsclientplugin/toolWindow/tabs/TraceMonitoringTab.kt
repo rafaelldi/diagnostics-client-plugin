@@ -21,12 +21,12 @@ import java.text.SimpleDateFormat
 import javax.swing.JPanel
 
 class TraceMonitoringTab(
-    val pid: Int,
+    override val pid: Int,
     session: TraceMonitoringSession,
     private val manager: TraceTabManager,
     project: Project,
     lt: Lifetime
-) : SimpleToolWindowPanel(false), Disposable {
+) : SimpleToolWindowPanel(false), MonitoringTab, Disposable {
     companion object {
         val TRACE_MONITORING_TAB: DataKey<TraceMonitoringTab> =
             DataKey.create("DiagnosticsClient.ToolWindow.TraceMonitoringTab")

@@ -1,41 +1,29 @@
 package com.github.rafaelldi.diagnosticsclientplugin.actions.gc
 
+import com.github.rafaelldi.diagnosticsclientplugin.actions.common.StartMonitoringSessionAction
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.MonitoringTimerDialog
+import com.github.rafaelldi.diagnosticsclientplugin.generated.GcEventMonitoringSession
 import com.github.rafaelldi.diagnosticsclientplugin.generated.diagnosticsHostModel
 import com.github.rafaelldi.diagnosticsclientplugin.services.gc.GcEventMonitoringSessionController
+import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.GcEventMonitoringTab
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.GcEventMonitoringTab.Companion.GC_EVENT_MONITORING_TAB
-import com.intellij.openapi.actionSystem.ActionUpdateThread
-import com.intellij.openapi.actionSystem.AnAction
-import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.project.Project
 import com.jetbrains.rider.projectView.solution
 
-class StartGcEventMonitoringSessionAction : AnAction() {
-    override fun actionPerformed(event: AnActionEvent) {
-        val project = event.project ?: return
-        val tab = event.getData(GC_EVENT_MONITORING_TAB) ?: return
+class StartGcEventMonitoringSessionAction :
+    StartMonitoringSessionAction<GcEventMonitoringSession, GcEventMonitoringTab>() {
+    override val tabDatKey = GC_EVENT_MONITORING_TAB
+
+    override fun startSession(pid: Int, project: Project) {
         val dialog = MonitoringTimerDialog(project)
         if (dialog.showAndGet()) {
             val model = dialog.getModel()
-            val pid = tab.pid
             GcEventMonitoringSessionController
                 .getInstance(project)
                 .startExistingSession(pid, model.stoppingType, model.duration)
         }
     }
 
-    override fun update(event: AnActionEvent) {
-        val tab = event.getData(GC_EVENT_MONITORING_TAB)
-        val project = event.project
-        if (tab == null || project == null) {
-            event.presentation.isEnabled = false
-        } else {
-            val pid = tab.pid
-            val model = project.solution.diagnosticsHostModel
-            val session = model.gcEventMonitoringSessions[pid]
-            val isActive = session?.active?.valueOrNull ?: false
-            event.presentation.isEnabled = !isActive
-        }
-    }
-
-    override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.EDT
+    override fun getSession(pid: Int, project: Project) =
+        project.solution.diagnosticsHostModel.gcEventMonitoringSessions[pid]
 }

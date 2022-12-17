@@ -15,11 +15,11 @@ import java.awt.BorderLayout
 import javax.swing.JPanel
 
 class GcEventMonitoringTab(
-    val pid: Int,
+    override val pid: Int,
     session: GcEventMonitoringSession,
     private val manager: GcEventTabManager,
     lt: Lifetime
-) : SimpleToolWindowPanel(false), Disposable {
+) : SimpleToolWindowPanel(false), MonitoringTab, Disposable {
 
     companion object {
         val GC_EVENT_MONITORING_TAB: DataKey<GcEventMonitoringTab> =

@@ -16,11 +16,11 @@ import java.awt.BorderLayout
 import javax.swing.JPanel
 
 class CounterMonitoringTab(
-    val pid: Int,
+    override val pid: Int,
     session: CounterMonitoringSession,
     private val manager: CounterTabManager,
     lt: Lifetime
-) : SimpleToolWindowPanel(false), Disposable {
+) : SimpleToolWindowPanel(false), MonitoringTab, Disposable {
 
     companion object {
         val COUNTER_MONITORING_TAB: DataKey<CounterMonitoringTab> =
