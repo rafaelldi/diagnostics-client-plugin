@@ -5,6 +5,7 @@
 ## [Unreleased]
 ### Added
 - Action to monitor traces
+- Update dependencies
 
 ## [2022.3.0]
 ### Added
