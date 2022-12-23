@@ -5,6 +5,9 @@
 ## [Unreleased]
 ### Added
 - Action to monitor traces
+- Auto refresh for process tree
+
+### Changed
 - Update dependencies
 
 ## [2022.3.0]

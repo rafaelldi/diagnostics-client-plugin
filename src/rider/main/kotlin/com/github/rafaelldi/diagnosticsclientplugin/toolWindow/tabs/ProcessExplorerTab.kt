@@ -9,6 +9,7 @@ import com.intellij.openapi.actionSystem.DataKey
 import com.intellij.openapi.ui.SimpleToolWindowPanel
 import com.intellij.ui.OnePixelSplitter
 import com.intellij.ui.components.JBScrollPane
+import com.intellij.util.ui.JBUI
 import com.jetbrains.rd.util.lifetime.Lifetime
 import com.jetbrains.rd.util.reactive.AddRemove
 import javax.swing.event.ListSelectionEvent
@@ -30,9 +31,14 @@ class ProcessExplorerTab(private val processList: ProcessList, lt: Lifetime) :
     private val processPanelComponent: ProcessTablePanel = ProcessTablePanel()
 
     init {
+        val listPanel = JBScrollPane(processListComponent)
+        listPanel.border = JBUI.Borders.emptyTop(7)
+        val processPanel = JBScrollPane(processPanelComponent)
+        processPanel.border = JBUI.Borders.empty()
+
         val splitter = OnePixelSplitter(false, SPLITTER_PROPORTION).apply {
-            firstComponent = JBScrollPane(processListComponent)
-            secondComponent = JBScrollPane(processPanelComponent)
+            firstComponent = listPanel
+            secondComponent = processPanel
         }
 
         setContent(splitter)
@@ -43,10 +49,10 @@ class ProcessExplorerTab(private val processList: ProcessList, lt: Lifetime) :
             { processListComponent.removeListSelectionListener(this) }
         )
 
-        processList.items.adviseAddRemove(lt) { action, _, processInfo ->
+        processList.items.adviseAddRemove(lt) { action, pid, processInfo ->
             when (action) {
-                AddRemove.Add -> processListComponent.add(processInfo)
-                AddRemove.Remove -> processListComponent.remove(processInfo)
+                AddRemove.Add -> processListComponent.add(pid, processInfo)
+                AddRemove.Remove -> processListComponent.remove(pid, processInfo)
             }
         }
     }
@@ -72,8 +78,8 @@ class ProcessExplorerTab(private val processList: ProcessList, lt: Lifetime) :
         selectedProcessId = selectedPid
 
         if (selectedPid != null) {
-            val process = processList.items.firstOrNull { it.processId == selectedPid } ?: return
-            processPanelComponent.update(process)
+            val process = processList.items[selectedPid] ?: return
+            processPanelComponent.update(selectedPid, process)
         } else {
             processPanelComponent.clear()
         }

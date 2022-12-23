@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
+using System.Threading.Tasks;
 using DiagnosticsClientPlugin.Common;
 using DiagnosticsClientPlugin.Generated;
+using JetBrains.Collections.Viewable;
 using JetBrains.Lifetimes;
 using JetBrains.ProjectModel;
 using JetBrains.RdBackend.Common.Features;
@@ -20,16 +22,43 @@ internal sealed class ProcessHandler
     public ProcessHandler(ISolution solution, Lifetime lifetime)
     {
         _model = solution.GetProtocolSolution().GetDiagnosticsHostModel();
-        _model.ProcessList.Refresh.Advise(lifetime, _ => Refresh());
+        _model.ProcessList.Active.WhenTrue(lifetime, lt => Handle(lt));
     }
 
-    private void Refresh()
+    private void Handle(Lifetime lt)
+    {
+        lt.StartAttachedAsync(TaskScheduler.Default, async () => await RefreshAsync());
+    }
+
+    private async Task RefreshAsync()
+    {
+        try
+        {
+            while (true)
+            {
+                RefreshProcessList();
+                await Task.Delay(TimeSpan.FromSeconds(3), Lifetime.AsyncLocal.Value);
+            }
+        }
+        catch (OperationCanceledException)
+        {
+            _model.ProcessList.Items.Clear();
+        }
+    }
+
+    private void RefreshProcessList()
     {
         var processes = DiagnosticsClient.GetPublishedProcesses().ToList();
 
-        var processInfos = new List<ProcessInfo>(processes.Count);
+        var existingProcesses = _model.ProcessList.Items.Keys.ToArray();
+        var newProcesses = new Dictionary<int, ProcessInfo>(processes.Count);
         foreach (var pid in processes)
         {
+            if (existingProcesses.Contains(pid))
+            {
+                continue;
+            }
+
             try
             {
                 var process = Process.GetProcessById(pid);
@@ -38,16 +67,15 @@ internal sealed class ProcessHandler
                 var filename = process.MainModule?.FileName;
                 var startTime = process.StartTime.ToString(CultureInfo.CurrentCulture);
 
-                var pi = new ProcessInfo(
-                    process.Id, 
-                    process.ProcessName, 
-                    filename, 
+                var processInfo = new ProcessInfo(
+                    process.ProcessName,
+                    filename,
                     startTime,
                     additionalProcessInfo.CommandLine,
                     additionalProcessInfo.OperatingSystem,
                     additionalProcessInfo.ProcessArchitecture);
 
-                processInfos.Add(pi);
+                newProcesses[pid] = processInfo;
             }
             catch (ArgumentException)
             {
@@ -55,11 +83,14 @@ internal sealed class ProcessHandler
             }
         }
 
-        _model.ProcessList.Items.Clear();
-
-        foreach (var process in processInfos.OrderBy(it => it.ProcessId))
+        foreach (var createdProcess in newProcesses)
         {
-            _model.ProcessList.Items.Add(process);
+            _model.ProcessList.Items.Add(createdProcess);
+        }
+
+        foreach (var removedProcess in existingProcesses.Except(processes))
+        {
+            _model.ProcessList.Items.Remove(removedProcess);
         }
     }
 }

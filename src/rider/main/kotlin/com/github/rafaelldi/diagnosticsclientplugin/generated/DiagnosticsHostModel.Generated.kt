@@ -61,7 +61,7 @@ class DiagnosticsHostModel private constructor(
         
         
         
-        const val serializationHash = -2616174011368273991L
+        const val serializationHash = -9122463597509515190L
         
     }
     override val serializersOwner: ISerializersOwner get() = DiagnosticsHostModel
@@ -148,7 +148,7 @@ val com.jetbrains.rd.ide.model.Solution.diagnosticsHostModel get() = getOrCreate
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:139]
+ * #### Generated from [DiagnosticsHostModel.kt:138]
  */
 data class CollectDumpCommand (
     val pid: Int,
@@ -229,7 +229,7 @@ data class CollectDumpCommand (
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:156]
+ * #### Generated from [DiagnosticsHostModel.kt:155]
  */
 data class CollectStackTraceCommand (
     val pid: Int
@@ -286,7 +286,7 @@ data class CollectStackTraceCommand (
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:26]
+ * #### Generated from [DiagnosticsHostModel.kt:25]
  */
 abstract class CollectionSession (
     val duration: Int?,
@@ -376,7 +376,7 @@ class CollectionSession_Unknown (
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:80]
+ * #### Generated from [DiagnosticsHostModel.kt:79]
  */
 data class Counter (
     val name: String,
@@ -445,7 +445,7 @@ data class Counter (
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:31]
+ * #### Generated from [DiagnosticsHostModel.kt:30]
  */
 class CounterCollectionSession (
     val format: CounterFileFormat,
@@ -532,7 +532,7 @@ class CounterCollectionSession (
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:32]
+ * #### Generated from [DiagnosticsHostModel.kt:31]
  */
 enum class CounterFileFormat {
     Csv, 
@@ -546,7 +546,7 @@ enum class CounterFileFormat {
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:62]
+ * #### Generated from [DiagnosticsHostModel.kt:61]
  */
 class CounterMonitoringSession private constructor(
     private val _counters: RdMap<String, Counter>,
@@ -664,7 +664,7 @@ class CounterMonitoringSession private constructor(
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:150]
+ * #### Generated from [DiagnosticsHostModel.kt:149]
  */
 data class DumpCollectionResult (
     val filePath: String
@@ -721,7 +721,7 @@ data class DumpCollectionResult (
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:141]
+ * #### Generated from [DiagnosticsHostModel.kt:140]
  */
 enum class DumpType {
     Full, 
@@ -737,7 +737,7 @@ enum class DumpType {
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:86]
+ * #### Generated from [DiagnosticsHostModel.kt:85]
  */
 data class GcEvent (
     val number: Int,
@@ -878,7 +878,7 @@ data class GcEvent (
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:43]
+ * #### Generated from [DiagnosticsHostModel.kt:42]
  */
 class GcEventCollectionSession (
     duration: Int?,
@@ -935,7 +935,7 @@ class GcEventCollectionSession (
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:71]
+ * #### Generated from [DiagnosticsHostModel.kt:70]
  */
 class GcEventMonitoringSession private constructor(
     private val _gcHappened: RdSignal<GcEvent>,
@@ -1014,7 +1014,7 @@ class GcEventMonitoringSession private constructor(
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:57]
+ * #### Generated from [DiagnosticsHostModel.kt:56]
  */
 abstract class MonitoringSession (
     protected val _active: RdOptionalProperty<Boolean>,
@@ -1128,7 +1128,7 @@ class MonitoringSession_Unknown (
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:104]
+ * #### Generated from [DiagnosticsHostModel.kt:103]
  */
 enum class PredefinedProvider {
     Http, 
@@ -1151,7 +1151,6 @@ enum class PredefinedProvider {
  * #### Generated from [DiagnosticsHostModel.kt:11]
  */
 data class ProcessInfo (
-    val processId: Int,
     val processName: String,
     val filename: String?,
     val startTime: String?,
@@ -1166,18 +1165,16 @@ data class ProcessInfo (
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): ProcessInfo  {
-            val processId = buffer.readInt()
             val processName = buffer.readString()
             val filename = buffer.readNullable { buffer.readString() }
             val startTime = buffer.readNullable { buffer.readString() }
             val commandLine = buffer.readNullable { buffer.readString() }
             val operatingSystem = buffer.readNullable { buffer.readString() }
             val processArchitecture = buffer.readNullable { buffer.readString() }
-            return ProcessInfo(processId, processName, filename, startTime, commandLine, operatingSystem, processArchitecture)
+            return ProcessInfo(processName, filename, startTime, commandLine, operatingSystem, processArchitecture)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: ProcessInfo)  {
-            buffer.writeInt(value.processId)
             buffer.writeString(value.processName)
             buffer.writeNullable(value.filename) { buffer.writeString(it) }
             buffer.writeNullable(value.startTime) { buffer.writeString(it) }
@@ -1199,7 +1196,6 @@ data class ProcessInfo (
         
         other as ProcessInfo
         
-        if (processId != other.processId) return false
         if (processName != other.processName) return false
         if (filename != other.filename) return false
         if (startTime != other.startTime) return false
@@ -1212,7 +1208,6 @@ data class ProcessInfo (
     //hash code trait
     override fun hashCode(): Int  {
         var __r = 0
-        __r = __r*31 + processId.hashCode()
         __r = __r*31 + processName.hashCode()
         __r = __r*31 + if (filename != null) filename.hashCode() else 0
         __r = __r*31 + if (startTime != null) startTime.hashCode() else 0
@@ -1225,7 +1220,6 @@ data class ProcessInfo (
     override fun print(printer: PrettyPrinter)  {
         printer.println("ProcessInfo (")
         printer.indent {
-            print("processId = "); processId.print(printer); println()
             print("processName = "); processName.print(printer); println()
             print("filename = "); filename.print(printer); println()
             print("startTime = "); startTime.print(printer); println()
@@ -1241,11 +1235,11 @@ data class ProcessInfo (
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:21]
+ * #### Generated from [DiagnosticsHostModel.kt:20]
  */
 class ProcessList private constructor(
-    private val _items: RdList<ProcessInfo>,
-    private val _refresh: RdSignal<Unit>
+    private val _active: RdOptionalProperty<Boolean>,
+    private val _items: RdMap<Int, ProcessInfo>
 ) : RdBindableBase() {
     //companion
     
@@ -1255,38 +1249,43 @@ class ProcessList private constructor(
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): ProcessList  {
             val _id = RdId.read(buffer)
-            val _items = RdList.read(ctx, buffer, ProcessInfo)
-            val _refresh = RdSignal.read(ctx, buffer, FrameworkMarshallers.Void)
-            return ProcessList(_items, _refresh).withId(_id)
+            val _active = RdOptionalProperty.read(ctx, buffer, FrameworkMarshallers.Bool)
+            val _items = RdMap.read(ctx, buffer, FrameworkMarshallers.Int, ProcessInfo)
+            return ProcessList(_active, _items).withId(_id)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: ProcessList)  {
             value.rdid.write(buffer)
-            RdList.write(ctx, buffer, value._items)
-            RdSignal.write(ctx, buffer, value._refresh)
+            RdOptionalProperty.write(ctx, buffer, value._active)
+            RdMap.write(ctx, buffer, value._items)
         }
         
         
     }
     //fields
-    val items: IMutableViewableList<ProcessInfo> get() = _items
-    val refresh: ISignal<Unit> get() = _refresh
+    val active: IOptProperty<Boolean> get() = _active
+    val items: IMutableViewableMap<Int, ProcessInfo> get() = _items
     //methods
     //initializer
     init {
+        _active.optimizeNested = true
         _items.optimizeNested = true
     }
     
     init {
+        _items.async = true
+    }
+    
+    init {
+        bindableChildren.add("active" to _active)
         bindableChildren.add("items" to _items)
-        bindableChildren.add("refresh" to _refresh)
     }
     
     //secondary constructor
     constructor(
     ) : this(
-        RdList<ProcessInfo>(ProcessInfo),
-        RdSignal<Unit>(FrameworkMarshallers.Void)
+        RdOptionalProperty<Boolean>(FrameworkMarshallers.Bool),
+        RdMap<Int, ProcessInfo>(FrameworkMarshallers.Int, ProcessInfo)
     )
     
     //equals trait
@@ -1295,16 +1294,16 @@ class ProcessList private constructor(
     override fun print(printer: PrettyPrinter)  {
         printer.println("ProcessList (")
         printer.indent {
+            print("active = "); _active.print(printer); println()
             print("items = "); _items.print(printer); println()
-            print("refresh = "); _refresh.print(printer); println()
         }
         printer.print(")")
     }
     //deepClone
     override fun deepClone(): ProcessList   {
         return ProcessList(
-            _items.deepClonePolymorphic(),
-            _refresh.deepClonePolymorphic()
+            _active.deepClonePolymorphic(),
+            _items.deepClonePolymorphic()
         )
     }
     //contexts
@@ -1312,7 +1311,7 @@ class ProcessList private constructor(
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:115]
+ * #### Generated from [DiagnosticsHostModel.kt:114]
  */
 data class Trace (
     val eventName: String,
@@ -1387,7 +1386,7 @@ data class Trace (
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:46]
+ * #### Generated from [DiagnosticsHostModel.kt:45]
  */
 class TraceCollectionSession (
     val profile: TracingProfile,
@@ -1459,7 +1458,7 @@ class TraceCollectionSession (
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:75]
+ * #### Generated from [DiagnosticsHostModel.kt:74]
  */
 class TraceMonitoringSession private constructor(
     private val _traceReceived: RdSignal<Trace>,
@@ -1545,7 +1544,7 @@ class TraceMonitoringSession private constructor(
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:47]
+ * #### Generated from [DiagnosticsHostModel.kt:46]
  */
 enum class TracingProfile {
     None, 

@@ -48,8 +48,8 @@ class ProcessTablePanel : BorderLayoutPanel() {
         add(panel)
     }
 
-    fun update(processInfo: ProcessInfo) {
-        processId.component.text = processInfo.processId.toString()
+    fun update(pid: Int, processInfo: ProcessInfo) {
+        processId.component.text = pid.toString()
         processName.component.text = processInfo.processName
         filename.component.text = processInfo.filename
         startTime.component.text = processInfo.startTime

@@ -8,7 +8,9 @@
     <depends>com.intellij.modules.rider</depends>
 
     <extensions defaultExtensionNs="com.intellij">
-        <toolWindow id="Diagnostics Client" anchor="bottom" icon="DiagnosticsClientIcons.ToolWindow"
+        <toolWindow id="Diagnostics Client"
+                    anchor="bottom"
+                    icon="DiagnosticsClientIcons.ToolWindow"
                     canCloseContents="true"
                     factoryClass="com.github.rafaelldi.diagnosticsclientplugin.toolWindow.DiagnosticsToolWindowFactory"/>
         <webHelpProvider implementation="com.github.rafaelldi.diagnosticsclientplugin.DiagnosticsClientHelpProvider"/>
@@ -23,17 +25,12 @@
                   topic="com.github.rafaelldi.diagnosticsclientplugin.services.gc.GcEventSessionListener"/>
         <listener class="com.github.rafaelldi.diagnosticsclientplugin.services.traces.TraceSessionListenerService"
                   topic="com.github.rafaelldi.diagnosticsclientplugin.services.traces.TraceSessionListener"/>
+        <listener class="com.github.rafaelldi.diagnosticsclientplugin.toolWindow.DiagnosticsToolWindowListener"
+                  topic="com.intellij.openapi.wm.ex.ToolWindowManagerListener" />
     </projectListeners>
 
     <actions>
         <group id="DiagnosticsClient.ToolWindow.Explorer">
-            <action id="DiagnosticsClient.ToolWindow.Explorer.RefreshList"
-                    class="com.github.rafaelldi.diagnosticsclientplugin.actions.RefreshListAction"
-                    text="Refresh"
-                    description="Refresh process list"
-                    icon="AllIcons.Actions.Refresh">
-            </action>
-            <separator/>
             <group id="DiagnosticsClient.ToolWindow.Explorer.Counters"
                    icon="DiagnosticsClientIcons.Counters"
                    text="Counters"

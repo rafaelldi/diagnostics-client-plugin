@@ -9,7 +9,6 @@ import com.jetbrains.rider.model.nova.ide.SolutionModel
 @Suppress("unused")
 object DiagnosticsHostModel : Ext(SolutionModel.Solution) {
     private val ProcessInfo = structdef {
-        field("processId", int)
         field("processName", string)
         field("filename", string.nullable)
         field("startTime", string.nullable)
@@ -19,8 +18,8 @@ object DiagnosticsHostModel : Ext(SolutionModel.Solution) {
     }
 
     private val ProcessList = aggregatedef("ProcessList") {
-        list("items", ProcessInfo)
-        source("refresh", void)
+        property("active", bool)
+        map("items", int, ProcessInfo).async
     }
 
     private val CollectionSession = baseclass {
