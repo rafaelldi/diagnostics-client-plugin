@@ -1,18 +1,24 @@
 package com.github.rafaelldi.diagnosticsclientplugin.dialogs
 
 import com.github.rafaelldi.diagnosticsclientplugin.services.traces.TraceSettings
+import com.github.rafaelldi.diagnosticsclientplugin.utils.DotNetProcess
 import com.github.rafaelldi.diagnosticsclientplugin.utils.isValidFilename
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.ComboBox
 import com.intellij.openapi.ui.DialogWrapper
+import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.components.JBRadioButton
 import com.intellij.ui.components.fields.ExpandableTextField
 import com.intellij.ui.dsl.builder.*
 import javax.swing.JComponent
 
-class CollectTracesDialog(private val project: Project) : DialogWrapper(project) {
-    private val model = TraceSettings.getInstance(project).getCollectModel()
+class CollectTracesDialog(
+    private val project: Project,
+    selected: DotNetProcess,
+    private val processes: List<DotNetProcess>
+) : DialogWrapper(project) {
+    private val model = TraceSettings.getInstance(project).getCollectModel(selected)
 
     init {
         init()
@@ -24,6 +30,13 @@ class CollectTracesDialog(private val project: Project) : DialogWrapper(project)
         lateinit var periodStoppingType: Cell<JBRadioButton>
         lateinit var profileComboBox: Cell<ComboBox<TracingProfile>>
         lateinit var providerTextField: Cell<ExpandableTextField>
+
+        val ps = processes.sortedBy { it.pid }.toList()
+        row {
+            comboBox(ps, SimpleListCellRenderer.create("") { "${it.pid} - ${it.name}" })
+                .align(Align.FILL)
+                .bindItemNullable(model::selectedProcess)
+        }.bottomGap(BottomGap.SMALL)
 
         buttonsGroup {
             row("Stop collection:") {
@@ -62,30 +75,35 @@ class CollectTracesDialog(private val project: Project) : DialogWrapper(project)
             }
         }
         collapsibleGroup("Predefined Providers") {
-            row {
+            threeColumnsRow({
                 checkBox("Http")
                     .bindSelected(model::http)
+            }, {
                 @Suppress("DialogTitleCapitalization")
                 checkBox("ASP.NET Core")
                     .bindSelected(model::aspNet)
+            }, {
                 @Suppress("DialogTitleCapitalization")
                 checkBox("EF Core")
                     .bindSelected(model::ef)
-            }.layout(RowLayout.PARENT_GRID)
-            row {
-                checkBox("Exceptions")
-                    .bindSelected(model::exceptions)
-                checkBox("Threads")
-                    .bindSelected(model::threads)
-                checkBox("Contentions")
-                    .bindSelected(model::contentions)
-            }.layout(RowLayout.PARENT_GRID)
-            row {
+            })
+            threeColumnsRow({
                 checkBox("Tasks")
                     .bindSelected(model::tasks)
+            }, {
+                checkBox("Threads")
+                    .bindSelected(model::threads)
+            }, {
+                checkBox("Contentions")
+                    .bindSelected(model::contentions)
+            })
+            twoColumnsRow({
+                checkBox("Exceptions")
+                    .bindSelected(model::exceptions)
+            }, {
                 checkBox("Loader")
                     .bindSelected(model::loader)
-            }.layout(RowLayout.PARENT_GRID)
+            })
         }
         group("File Settings") {
             row("Output filename:") {

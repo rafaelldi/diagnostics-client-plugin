@@ -1,16 +1,22 @@
 package com.github.rafaelldi.diagnosticsclientplugin.dialogs
 
 import com.github.rafaelldi.diagnosticsclientplugin.services.gc.GcEventSettings
+import com.github.rafaelldi.diagnosticsclientplugin.utils.DotNetProcess
 import com.github.rafaelldi.diagnosticsclientplugin.utils.isValidFilename
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogWrapper
+import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.components.JBRadioButton
 import com.intellij.ui.dsl.builder.*
 import javax.swing.JComponent
 
-class CollectGcEventsDialog(private val project: Project) : DialogWrapper(project) {
-    private val model = GcEventSettings.getInstance(project).getCollectModel()
+class CollectGcEventsDialog(
+    private val project: Project,
+    selected: DotNetProcess,
+    private val processes: List<DotNetProcess>
+) : DialogWrapper(project) {
+    private val model = GcEventSettings.getInstance(project).getCollectModel(selected)
 
     init {
         init()
@@ -20,6 +26,13 @@ class CollectGcEventsDialog(private val project: Project) : DialogWrapper(projec
 
     override fun createCenterPanel(): JComponent = panel {
         lateinit var periodStoppingType: Cell<JBRadioButton>
+
+        val ps = processes.sortedBy { it.pid }.toList()
+        row {
+            comboBox(ps, SimpleListCellRenderer.create("") { "${it.pid} - ${it.name}" })
+                .align(Align.FILL)
+                .bindItemNullable(model::selectedProcess)
+        }.bottomGap(BottomGap.SMALL)
 
         buttonsGroup {
             row("Stop collection:") {

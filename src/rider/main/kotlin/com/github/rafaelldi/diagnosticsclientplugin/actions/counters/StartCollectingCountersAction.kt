@@ -5,19 +5,20 @@ import com.github.rafaelldi.diagnosticsclientplugin.dialogs.CollectCountersDialo
 import com.github.rafaelldi.diagnosticsclientplugin.generated.diagnosticsHostModel
 import com.github.rafaelldi.diagnosticsclientplugin.services.counters.CounterCollectionSessionController
 import com.github.rafaelldi.diagnosticsclientplugin.services.counters.CounterSettings
+import com.github.rafaelldi.diagnosticsclientplugin.utils.DotNetProcess
 import com.intellij.openapi.project.Project
 import com.jetbrains.rider.projectView.solution
 
 class StartCollectingCountersAction : StartCollectingAction() {
-    override fun startSession(pid: Int, project: Project) {
-        val dialog = CollectCountersDialog(project)
+    override fun startSession(selected: DotNetProcess, processes: List<DotNetProcess>, project: Project) {
+        val dialog = CollectCountersDialog(project, selected, processes)
         if (dialog.showAndGet()) {
             val model = dialog.getModel()
             CounterSettings.getInstance(project).update(model)
-            CounterCollectionSessionController.getInstance(project).startSession(pid, model)
+            CounterCollectionSessionController.getInstance(project).startSession(model)
         }
     }
 
-    override fun containsSession(pid: Int, project: Project) =
-        project.solution.diagnosticsHostModel.counterCollectionSessions.contains(pid)
+    override fun containsSession(selected: DotNetProcess, project: Project) =
+        project.solution.diagnosticsHostModel.counterCollectionSessions.contains(selected.pid)
 }

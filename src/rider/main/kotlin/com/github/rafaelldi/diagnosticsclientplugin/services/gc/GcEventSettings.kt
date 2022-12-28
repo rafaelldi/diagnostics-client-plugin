@@ -3,6 +3,7 @@ package com.github.rafaelldi.diagnosticsclientplugin.services.gc
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.CollectGcEventsModel
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.MonitorGcEventsModel
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.StoppingType
+import com.github.rafaelldi.diagnosticsclientplugin.utils.DotNetProcess
 import com.intellij.openapi.components.*
 import com.intellij.openapi.project.Project
 import com.jetbrains.rider.projectView.solutionDirectoryPath
@@ -16,9 +17,14 @@ class GcEventSettings(project: Project) : SimplePersistentStateComponent<GcEvent
         fun getInstance(project: Project): GcEventSettings = project.service()
     }
 
-    fun getMonitorModel() = MonitorGcEventsModel(state.stoppingType, state.duration)
+    fun getMonitorModel(selected: DotNetProcess) = MonitorGcEventsModel(
+        selected,
+        state.stoppingType,
+        state.duration
+    )
 
-    fun getCollectModel() = CollectGcEventsModel(
+    fun getCollectModel(selected: DotNetProcess) = CollectGcEventsModel(
+        selected,
         state.path ?: "",
         state.filename ?: "",
         state.stoppingType,

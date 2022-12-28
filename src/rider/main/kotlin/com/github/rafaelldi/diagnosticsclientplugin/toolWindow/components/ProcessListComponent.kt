@@ -19,14 +19,17 @@ class ProcessListComponent : JBList<Pair<Int, ProcessInfo>>(), CopyProvider {
 
     init {
         model = listModel
-        emptyText.text = "No processes to display"
+        emptyText.text = "Loading..."
         selectionMode = ListSelectionModel.SINGLE_SELECTION
         cellRenderer = CellRenderer()
         ListSpeedSearch(this) { it.second.processName }
     }
 
-    val selectedProcessId: Int?
-        get() = selectedValue?.first
+    val selectedProcess: Pair<Int, String>?
+        get() = selectedValue?.let { it.first to it.second.processName }
+
+    val processes: List<Pair<Int, String>>
+        get() = listModel.items.map { it.first to it.second.processName }.toList()
 
     fun add(pid: Int, item: ProcessInfo) {
         listModel.add(pid to item)

@@ -6,19 +6,20 @@ import com.github.rafaelldi.diagnosticsclientplugin.generated.CounterMonitoringS
 import com.github.rafaelldi.diagnosticsclientplugin.generated.diagnosticsHostModel
 import com.github.rafaelldi.diagnosticsclientplugin.services.counters.CounterMonitoringSessionController
 import com.github.rafaelldi.diagnosticsclientplugin.services.counters.CounterSettings
+import com.github.rafaelldi.diagnosticsclientplugin.utils.DotNetProcess
 import com.intellij.openapi.project.Project
 import com.jetbrains.rider.projectView.solution
 
 class StartMonitoringCountersAction : StartMonitoringAction<CounterMonitoringSession>() {
-    override fun startSession(pid: Int, project: Project) {
-        val dialog = MonitorCountersDialog(project)
+    override fun startSession(selected: DotNetProcess, processes: List<DotNetProcess>, project: Project) {
+        val dialog = MonitorCountersDialog(project, selected, processes)
         if (dialog.showAndGet()) {
             val model = dialog.getModel()
             CounterSettings.getInstance(project).update(model)
-            CounterMonitoringSessionController.getInstance(project).startSession(pid, model)
+            CounterMonitoringSessionController.getInstance(project).startSession(model)
         }
     }
 
-    override fun getSession(pid: Int, project: Project) =
-        project.solution.diagnosticsHostModel.counterMonitoringSessions[pid]
+    override fun getSession(selected: DotNetProcess, project: Project) =
+        project.solution.diagnosticsHostModel.counterMonitoringSessions[selected.pid]
 }

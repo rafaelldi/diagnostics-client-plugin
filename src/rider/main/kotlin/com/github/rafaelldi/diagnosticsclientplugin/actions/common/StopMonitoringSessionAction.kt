@@ -14,8 +14,7 @@ abstract class StopMonitoringSessionAction<TSession : MonitoringSession, TTab : 
     override fun actionPerformed(event: AnActionEvent) {
         val project = event.project ?: return
         val tab = event.getData(tabDatKey) ?: return
-        val pid = tab.pid
-        stopSession(pid, project)
+        stopSession(tab.pid, project)
     }
 
     protected abstract fun stopSession(pid: Int, project: Project)
@@ -26,8 +25,7 @@ abstract class StopMonitoringSessionAction<TSession : MonitoringSession, TTab : 
         if (project == null || tab == null) {
             event.presentation.isEnabled = false
         } else {
-            val pid = tab.pid
-            val session = getSession(pid, project)
+            val session = getSession(tab.pid, project)
             val isActive = session?.active?.valueOrNull ?: false
             event.presentation.isEnabled = isActive
         }

@@ -2,6 +2,7 @@ package com.github.rafaelldi.diagnosticsclientplugin.actions.common
 
 import com.github.rafaelldi.diagnosticsclientplugin.generated.MonitoringSession
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.ProcessExplorerTab
+import com.github.rafaelldi.diagnosticsclientplugin.utils.DotNetProcess
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
@@ -11,11 +12,11 @@ abstract class StartMonitoringAction<TSession : MonitoringSession> : AnAction() 
     override fun actionPerformed(event: AnActionEvent) {
         val project = event.project ?: return
         val tab = event.getData(ProcessExplorerTab.PROCESS_EXPLORE_TAB) ?: return
-        val pid = tab.selectedProcessId ?: return
-        startSession(pid, project)
+        val selected = tab.selectedProcess ?: return
+        startSession(selected, tab.processes, project)
     }
 
-    protected abstract fun startSession(pid: Int, project: Project)
+    protected abstract fun startSession(selected: DotNetProcess, processes: List<DotNetProcess>, project: Project)
 
     override fun update(event: AnActionEvent) {
         val project = event.project
@@ -23,7 +24,7 @@ abstract class StartMonitoringAction<TSession : MonitoringSession> : AnAction() 
         if (project == null || tab == null) {
             event.presentation.isEnabled = false
         } else {
-            val selected = tab.selectedProcessId
+            val selected = tab.selectedProcess
             if (selected == null) {
                 event.presentation.isEnabled = false
             } else {
@@ -34,7 +35,7 @@ abstract class StartMonitoringAction<TSession : MonitoringSession> : AnAction() 
         }
     }
 
-    protected abstract fun getSession(pid: Int, project: Project): TSession?
+    protected abstract fun getSession(selected: DotNetProcess, project: Project): TSession?
 
     override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.EDT
 }

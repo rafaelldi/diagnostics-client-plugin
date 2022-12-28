@@ -1,16 +1,22 @@
 package com.github.rafaelldi.diagnosticsclientplugin.dialogs
 
 import com.github.rafaelldi.diagnosticsclientplugin.services.traces.TraceSettings
+import com.github.rafaelldi.diagnosticsclientplugin.utils.DotNetProcess
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.openapi.ui.ValidationInfo
+import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.components.JBRadioButton
 import com.intellij.ui.dsl.builder.*
 import javax.swing.JComponent
 
-class MonitorTracesDialog(project: Project) : DialogWrapper(project) {
-    private val model = TraceSettings.getInstance(project).getMonitorModel()
+class MonitorTracesDialog(
+    project: Project,
+    selected: DotNetProcess,
+    private val processes: List<DotNetProcess>
+) : DialogWrapper(project) {
+    private val model = TraceSettings.getInstance(project).getMonitorModel(selected)
     private lateinit var httpCheckBox: Cell<JBCheckBox>
     private lateinit var aspNetCheckBox: Cell<JBCheckBox>
     private lateinit var efCheckBox: Cell<JBCheckBox>
@@ -29,6 +35,13 @@ class MonitorTracesDialog(project: Project) : DialogWrapper(project) {
     override fun createCenterPanel(): JComponent = panel {
         lateinit var periodStoppingType: Cell<JBRadioButton>
 
+        val ps = processes.sortedBy { it.pid }.toList()
+        row {
+            comboBox(ps, SimpleListCellRenderer.create("") { "${it.pid} - ${it.name}" })
+                .align(Align.FILL)
+                .bindItemNullable(model::selectedProcess)
+        }.bottomGap(BottomGap.SMALL)
+
         buttonsGroup {
             row("Stop collection:") {
                 periodStoppingType = radioButton(StoppingType.AfterPeriod.label, StoppingType.AfterPeriod)
@@ -41,30 +54,35 @@ class MonitorTracesDialog(project: Project) : DialogWrapper(project) {
                 .enabledIf(periodStoppingType.selected)
         }
         group("Providers") {
-            row {
-                httpCheckBox = checkBox("Http")
+            threeColumnsRow({
+                checkBox("Http")
                     .bindSelected(model::http)
+            }, {
                 @Suppress("DialogTitleCapitalization")
-                aspNetCheckBox = checkBox("ASP.NET Core")
+                checkBox("ASP.NET Core")
                     .bindSelected(model::aspNet)
+            }, {
                 @Suppress("DialogTitleCapitalization")
-                efCheckBox = checkBox("EF Core")
+                checkBox("EF Core")
                     .bindSelected(model::ef)
-            }.layout(RowLayout.PARENT_GRID)
-            row {
-                exceptionsCheckBox = checkBox("Exceptions")
-                    .bindSelected(model::exceptions)
-                threadsCheckBox = checkBox("Threads")
-                    .bindSelected(model::threads)
-                contentionsCheckBox = checkBox("Contentions")
-                    .bindSelected(model::contentions)
-            }.layout(RowLayout.PARENT_GRID)
-            row {
-                tasksCheckBox = checkBox("Tasks")
+            })
+            threeColumnsRow({
+                checkBox("Tasks")
                     .bindSelected(model::tasks)
-                loaderCheckBox = checkBox("Loader")
+            }, {
+                checkBox("Threads")
+                    .bindSelected(model::threads)
+            }, {
+                checkBox("Contentions")
+                    .bindSelected(model::contentions)
+            })
+            twoColumnsRow({
+                checkBox("Exceptions")
+                    .bindSelected(model::exceptions)
+            }, {
+                checkBox("Loader")
                     .bindSelected(model::loader)
-            }.layout(RowLayout.PARENT_GRID)
+            })
         }
     }
 

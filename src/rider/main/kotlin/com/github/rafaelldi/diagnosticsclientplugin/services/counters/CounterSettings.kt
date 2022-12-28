@@ -4,6 +4,7 @@ import com.github.rafaelldi.diagnosticsclientplugin.dialogs.CollectCountersModel
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.CounterFileFormat
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.MonitorCountersModel
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.StoppingType
+import com.github.rafaelldi.diagnosticsclientplugin.utils.DotNetProcess
 import com.intellij.openapi.components.*
 import com.intellij.openapi.project.Project
 import com.jetbrains.rider.projectView.solutionDirectoryPath
@@ -17,7 +18,8 @@ class CounterSettings(project: Project) : SimplePersistentStateComponent<Counter
         fun getInstance(project: Project): CounterSettings = project.service()
     }
 
-    fun getCollectModel() = CollectCountersModel(
+    fun getCollectModel(selected: DotNetProcess) = CollectCountersModel(
+        selected,
         state.path ?: "",
         state.filename ?: "",
         state.format,
@@ -30,7 +32,8 @@ class CounterSettings(project: Project) : SimplePersistentStateComponent<Counter
         state.maxHistograms
     )
 
-    fun getMonitorModel() = MonitorCountersModel(
+    fun getMonitorModel(selected: DotNetProcess) = MonitorCountersModel(
+        selected,
         state.interval,
         state.stoppingType,
         state.duration,

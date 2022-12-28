@@ -12,8 +12,7 @@ class TriggerGcCollectionSessionAction : AnAction() {
     override fun actionPerformed(event: AnActionEvent) {
         val project = event.project ?: return
         val tab = event.getData(GC_EVENT_MONITORING_TAB) ?: return
-        val pid = tab.pid
-        TriggerGcCollectionController.getInstance(project).triggerGc(pid)
+        TriggerGcCollectionController.getInstance(project).triggerGc(tab.pid)
     }
 
     override fun update(event: AnActionEvent) {
@@ -22,9 +21,8 @@ class TriggerGcCollectionSessionAction : AnAction() {
         if (tab == null || project == null) {
             event.presentation.isEnabled = false
         } else {
-            val pid = tab.pid
             val model = project.solution.diagnosticsHostModel
-            val session = model.gcEventMonitoringSessions[pid]
+            val session = model.gcEventMonitoringSessions[tab.pid]
             event.presentation.isEnabled = session != null
         }
     }

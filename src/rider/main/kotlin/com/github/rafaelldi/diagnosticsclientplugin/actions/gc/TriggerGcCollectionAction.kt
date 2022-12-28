@@ -10,8 +10,8 @@ class TriggerGcCollectionAction : AnAction() {
     override fun actionPerformed(event: AnActionEvent) {
         val project = event.project ?: return
         val tab = event.getData(ProcessExplorerTab.PROCESS_EXPLORE_TAB) ?: return
-        val pid = tab.selectedProcessId ?: return
-        TriggerGcCollectionController.getInstance(project).triggerGc(pid)
+        val process = tab.selectedProcess ?: return
+        TriggerGcCollectionController.getInstance(project).triggerGc(process.pid)
     }
 
     override fun update(event: AnActionEvent) {
@@ -20,7 +20,7 @@ class TriggerGcCollectionAction : AnAction() {
         if (project == null || tab == null) {
             event.presentation.isEnabled = false
         } else {
-            event.presentation.isEnabled = tab.selectedProcessId != null
+            event.presentation.isEnabled = tab.selectedProcess != null
         }
     }
 

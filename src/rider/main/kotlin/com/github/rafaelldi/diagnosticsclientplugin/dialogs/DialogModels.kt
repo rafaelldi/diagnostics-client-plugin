@@ -1,15 +1,21 @@
 package com.github.rafaelldi.diagnosticsclientplugin.dialogs
 
+import com.github.rafaelldi.diagnosticsclientplugin.utils.DotNetProcess
+
 data class CollectDumpModel(var type: DumpType, var path: String, var filename: String, var diag: Boolean)
 
 interface MonitoringModel {
+    var selectedProcess: DotNetProcess?
     var stoppingType: StoppingType
     var duration: Int
 }
 
-interface CollectionModel
+interface CollectionModel {
+    var selectedProcess: DotNetProcess?
+}
 
 data class MonitorCountersModel(
+    override var selectedProcess: DotNetProcess?,
     var interval: Int,
     override var stoppingType: StoppingType,
     override var duration: Int,
@@ -20,6 +26,7 @@ data class MonitorCountersModel(
 ) : MonitoringModel
 
 data class CollectCountersModel(
+    override var selectedProcess: DotNetProcess?,
     var path: String,
     var filename: String,
     var format: CounterFileFormat,
@@ -32,9 +39,14 @@ data class CollectCountersModel(
     var maxHistograms: Int
 ) : CollectionModel
 
-data class MonitorGcEventsModel(override var stoppingType: StoppingType, override var duration: Int) : MonitoringModel
+data class MonitorGcEventsModel(
+    override var selectedProcess: DotNetProcess?,
+    override var stoppingType: StoppingType,
+    override var duration: Int
+) : MonitoringModel
 
 data class CollectGcEventsModel(
+    override var selectedProcess: DotNetProcess?,
     var path: String,
     var filename: String,
     var stoppingType: StoppingType,
@@ -42,6 +54,7 @@ data class CollectGcEventsModel(
 ) : CollectionModel
 
 data class MonitorTracesModel(
+    override var selectedProcess: DotNetProcess?,
     override var stoppingType: StoppingType,
     override var duration: Int,
     var http: Boolean,
@@ -55,6 +68,7 @@ data class MonitorTracesModel(
 ) : MonitoringModel
 
 data class CollectTracesModel(
+    override var selectedProcess: DotNetProcess?,
     var path: String,
     var filename: String,
     var stoppingType: StoppingType,

@@ -1,9 +1,12 @@
+@file:Suppress("BooleanLiteralArgument")
+
 package com.github.rafaelldi.diagnosticsclientplugin.services.traces
 
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.CollectTracesModel
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.MonitorTracesModel
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.StoppingType
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.TracingProfile
+import com.github.rafaelldi.diagnosticsclientplugin.utils.DotNetProcess
 import com.intellij.openapi.components.*
 import com.intellij.openapi.project.Project
 import com.jetbrains.rider.projectView.solutionDirectoryPath
@@ -26,7 +29,8 @@ class TraceSettings(project: Project) : SimplePersistentStateComponent<TraceSett
         }
     }
 
-    fun getCollectModel() = CollectTracesModel(
+    fun getCollectModel(selected: DotNetProcess) = CollectTracesModel(
+        selected,
         state.path ?: "",
         state.filename ?: "",
         state.stoppingType,
@@ -43,7 +47,8 @@ class TraceSettings(project: Project) : SimplePersistentStateComponent<TraceSett
         false
     )
 
-    fun getMonitorModel() = MonitorTracesModel(
+    fun getMonitorModel(selected: DotNetProcess) = MonitorTracesModel(
+        selected,
         state.stoppingType,
         state.duration,
         false,

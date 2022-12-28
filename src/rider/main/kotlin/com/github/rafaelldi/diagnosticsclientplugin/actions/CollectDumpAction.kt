@@ -14,13 +14,13 @@ class CollectDumpAction : AnAction() {
     override fun actionPerformed(event: AnActionEvent) {
         val project = event.project ?: return
         val tab = event.getData(ProcessExplorerTab.PROCESS_EXPLORE_TAB) ?: return
-        val pid = tab.selectedProcessId ?: return
+        val selected = tab.selectedProcess ?: return
         val dialog = CollectDumpDialog(project)
         if (dialog.showAndGet()) {
             val model = dialog.getModel()
             DumpSettings.getInstance(project).update(model)
             project.lifetime.launchOnUi {
-                DumpCollectionController.getInstance(project).collectDump(pid, model)
+                DumpCollectionController.getInstance(project).collectDump(selected.pid, model)
             }
         }
     }
@@ -31,7 +31,7 @@ class CollectDumpAction : AnAction() {
         if (project == null || tab == null) {
             event.presentation.isEnabled = false
         } else {
-            event.presentation.isEnabled = tab.selectedProcessId != null
+            event.presentation.isEnabled = tab.selectedProcess != null
         }
     }
 

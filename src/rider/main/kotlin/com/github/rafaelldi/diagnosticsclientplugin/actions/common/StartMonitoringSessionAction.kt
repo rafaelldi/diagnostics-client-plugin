@@ -25,8 +25,7 @@ abstract class StartMonitoringSessionAction<TSession : MonitoringSession, TTab :
         if (project == null || tab == null) {
             event.presentation.isEnabled = false
         } else {
-            val pid = tab.pid
-            val session = getSession(pid, project)
+            val session = getSession(tab.pid, project)
             val isActive = session?.active?.valueOrNull ?: false
             event.presentation.isEnabled = !isActive
         }

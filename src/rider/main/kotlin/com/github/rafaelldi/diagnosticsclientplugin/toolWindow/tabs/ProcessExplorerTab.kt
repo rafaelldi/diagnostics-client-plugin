@@ -3,6 +3,7 @@ package com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs
 import com.github.rafaelldi.diagnosticsclientplugin.generated.ProcessList
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.components.ProcessListComponent
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.components.ProcessTablePanel
+import com.github.rafaelldi.diagnosticsclientplugin.utils.DotNetProcess
 import com.intellij.openapi.actionSystem.ActionGroup
 import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.actionSystem.DataKey
@@ -24,11 +25,14 @@ class ProcessExplorerTab(private val processList: ProcessList, lt: Lifetime) :
             DataKey.create("DiagnosticsClient.ToolWindow.ProcessExplorerTab")
     }
 
-    var selectedProcessId: Int? = null
-        private set
-
     private val processListComponent: ProcessListComponent = ProcessListComponent()
     private val processPanelComponent: ProcessTablePanel = ProcessTablePanel()
+
+    var selectedProcess: DotNetProcess? = null
+        private set
+
+    val processes: List<DotNetProcess>
+        get() = processListComponent.processes.map { DotNetProcess(it.first, it.second) }
 
     init {
         val listPanel = JBScrollPane(processListComponent)
@@ -74,13 +78,13 @@ class ProcessExplorerTab(private val processList: ProcessList, lt: Lifetime) :
             return
         }
 
-        val selectedPid = processListComponent.selectedProcessId
-        selectedProcessId = selectedPid
-
-        if (selectedPid != null) {
-            val process = processList.items[selectedPid] ?: return
-            processPanelComponent.update(selectedPid, process)
+        val selected = processListComponent.selectedProcess
+        if (selected != null) {
+            selectedProcess = DotNetProcess(selected.first, selected.second)
+            val process = processList.items[selected.first] ?: return
+            processPanelComponent.update(selected.first, process)
         } else {
+            selectedProcess = null
             processPanelComponent.clear()
         }
     }

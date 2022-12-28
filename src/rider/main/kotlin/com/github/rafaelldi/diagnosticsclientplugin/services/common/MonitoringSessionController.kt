@@ -18,7 +18,9 @@ abstract class MonitoringSessionController<TSession : MonitoringSession, TModel 
 
     protected abstract val sessions: IMutableViewableMap<Int, TSession>
 
-    fun startSession(pid: Int, model: TModel) {
+    fun startSession(model: TModel) {
+        val pid = model.selectedProcess?.pid ?: return
+
         if (!sessions.contains(pid)) {
             createNewSession(pid, model)
         }

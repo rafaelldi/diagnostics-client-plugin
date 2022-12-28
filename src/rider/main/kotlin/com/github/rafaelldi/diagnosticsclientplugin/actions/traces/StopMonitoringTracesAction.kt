@@ -4,14 +4,15 @@ import com.github.rafaelldi.diagnosticsclientplugin.actions.common.StopMonitorin
 import com.github.rafaelldi.diagnosticsclientplugin.generated.TraceMonitoringSession
 import com.github.rafaelldi.diagnosticsclientplugin.generated.diagnosticsHostModel
 import com.github.rafaelldi.diagnosticsclientplugin.services.traces.TraceMonitoringSessionController
+import com.github.rafaelldi.diagnosticsclientplugin.utils.DotNetProcess
 import com.intellij.openapi.project.Project
 import com.jetbrains.rider.projectView.solution
 
 class StopMonitoringTracesAction : StopMonitoringAction<TraceMonitoringSession>() {
-    override fun stopSession(pid: Int, project: Project) {
-        TraceMonitoringSessionController.getInstance(project).stopSession(pid)
+    override fun stopSession(selected: DotNetProcess, project: Project) {
+        TraceMonitoringSessionController.getInstance(project).stopSession(selected.pid)
     }
 
-    override fun getSession(pid: Int, project: Project) =
-        project.solution.diagnosticsHostModel.traceMonitoringSessions[pid]
+    override fun getSession(selected: DotNetProcess, project: Project) =
+        project.solution.diagnosticsHostModel.traceMonitoringSessions[selected.pid]
 }

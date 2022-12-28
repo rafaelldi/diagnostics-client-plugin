@@ -1,14 +1,20 @@
 package com.github.rafaelldi.diagnosticsclientplugin.dialogs
 
 import com.github.rafaelldi.diagnosticsclientplugin.services.gc.GcEventSettings
+import com.github.rafaelldi.diagnosticsclientplugin.utils.DotNetProcess
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogWrapper
+import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.components.JBRadioButton
 import com.intellij.ui.dsl.builder.*
 import javax.swing.JComponent
 
-class MonitorGcEventsDialog(project: Project) : DialogWrapper(project) {
-    private val model = GcEventSettings.getInstance(project).getMonitorModel()
+class MonitorGcEventsDialog(
+    project: Project,
+    selected: DotNetProcess,
+    private val processes: List<DotNetProcess>
+) : DialogWrapper(project) {
+    private val model = GcEventSettings.getInstance(project).getMonitorModel(selected)
 
     init {
         init()
@@ -18,6 +24,13 @@ class MonitorGcEventsDialog(project: Project) : DialogWrapper(project) {
 
     override fun createCenterPanel(): JComponent = panel {
         lateinit var periodStoppingType: Cell<JBRadioButton>
+
+        val ps = processes.sortedBy { it.pid }.toList()
+        row {
+            comboBox(ps, SimpleListCellRenderer.create("") { "${it.pid} - ${it.name}" })
+                .align(Align.FILL)
+                .bindItemNullable(model::selectedProcess)
+        }.bottomGap(BottomGap.SMALL)
 
         buttonsGroup {
             row("Stop monitoring:") {

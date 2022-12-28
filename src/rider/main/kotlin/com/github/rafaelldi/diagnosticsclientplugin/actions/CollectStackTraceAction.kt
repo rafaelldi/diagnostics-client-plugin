@@ -13,10 +13,10 @@ class CollectStackTraceAction : AnAction() {
     override fun actionPerformed(event: AnActionEvent) {
         val project = event.project ?: return
         val tab = event.getData(ProcessExplorerTab.PROCESS_EXPLORE_TAB) ?: return
-        val pid = tab.selectedProcessId ?: return
+        val selected = tab.selectedProcess ?: return
         project.lifetime.launchOnUi {
-            val stackTrace = StackTraceCollectionController.getInstance(project).collectStackTrace(pid)
-            RiderStacktraceUtil.addAnalyzeExceptionTab(project, stackTrace, "Stack Trace for $pid")
+            val stackTrace = StackTraceCollectionController.getInstance(project).collectStackTrace(selected.pid)
+            RiderStacktraceUtil.addAnalyzeExceptionTab(project, stackTrace, "Stack Trace for ${selected.pid}")
         }
     }
 
@@ -26,7 +26,7 @@ class CollectStackTraceAction : AnAction() {
         if (project == null || tab == null) {
             event.presentation.isEnabled = false
         } else {
-            event.presentation.isEnabled = tab.selectedProcessId != null
+            event.presentation.isEnabled = tab.selectedProcess != null
         }
     }
 
