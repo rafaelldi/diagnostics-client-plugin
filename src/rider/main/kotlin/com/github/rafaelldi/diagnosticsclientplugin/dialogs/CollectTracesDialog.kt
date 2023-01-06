@@ -2,6 +2,7 @@ package com.github.rafaelldi.diagnosticsclientplugin.dialogs
 
 import com.github.rafaelldi.diagnosticsclientplugin.services.traces.TraceSettings
 import com.github.rafaelldi.diagnosticsclientplugin.utils.DotNetProcess
+import com.github.rafaelldi.diagnosticsclientplugin.utils.createExecutableDescription
 import com.github.rafaelldi.diagnosticsclientplugin.utils.isValidFilename
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
 import com.intellij.openapi.project.Project
@@ -27,21 +28,55 @@ class CollectTracesDialog(
     }
 
     override fun createCenterPanel(): JComponent = panel {
+        lateinit var attachToProcess: Cell<JBRadioButton>
+        lateinit var launchNewProcess: Cell<JBRadioButton>
         lateinit var periodStoppingType: Cell<JBRadioButton>
         lateinit var profileComboBox: Cell<ComboBox<TracingProfile>>
         lateinit var providerTextField: Cell<ExpandableTextField>
 
         val ps = processes.sortedBy { it.pid }.toList()
-        row {
+
+        buttonsGroup {
+            row {
+                attachToProcess = radioButton(SourceProcessType.Attach.label, SourceProcessType.Attach)
+                launchNewProcess = radioButton(SourceProcessType.Launch.label, SourceProcessType.Launch)
+            }
+        }.bind(model::sourceProcessType)
+
+        row("Process:") {
             comboBox(ps, SimpleListCellRenderer.create("") { "${it.pid} - ${it.name}" })
                 .align(Align.FILL)
                 .bindItemNullable(model::selectedProcess)
-        }.bottomGap(BottomGap.SMALL)
+        }.visibleIf(attachToProcess.selected)
+            .bottomGap(BottomGap.SMALL)
+
+        row("Executable path:") {
+            textFieldWithBrowseButton(
+                "Select Path",
+                project,
+                createExecutableDescription()
+            )
+                .align(Align.FILL)
+                .validationOnApply {
+                    if (launchNewProcess.component.isSelected && it.text.isEmpty()) {
+                        return@validationOnApply error("Please select an executable")
+                    } else {
+                        return@validationOnApply null
+                    }
+                }
+                .bindText(model::executablePath)
+        }.visibleIf(launchNewProcess.selected)
+        row("Arguments:") {
+            expandableTextField()
+                .align(Align.FILL)
+                .bindText(model::executableArgs)
+        }.visibleIf(launchNewProcess.selected)
+            .bottomGap(BottomGap.SMALL)
 
         buttonsGroup {
             row("Stop collection:") {
-                periodStoppingType = radioButton(StoppingType.AfterPeriod.label, StoppingType.AfterPeriod)
                 radioButton(StoppingType.Manually.label, StoppingType.Manually)
+                periodStoppingType = radioButton(StoppingType.AfterPeriod.label, StoppingType.AfterPeriod)
             }
         }.bind(model::stoppingType)
         row("Duration (sec.):") {
@@ -49,6 +84,7 @@ class CollectTracesDialog(
                 .bindIntValue(model::duration)
                 .enabledIf(periodStoppingType.selected)
         }
+
         group("Providers") {
             row("Profile:") {
                 profileComboBox = comboBox(TracingProfile.values().toList())
@@ -63,7 +99,7 @@ class CollectTracesDialog(
             }
             row("Providers:") {
                 providerTextField = expandableTextField()
-                    .columns(COLUMNS_MEDIUM)
+                    .align(Align.FILL)
                     .validationOnApply {
                         if (it.text.isNullOrEmpty() && profileComboBox.component.item == TracingProfile.None) {
                             return@validationOnApply error("Please select a profile or fill in the providers field")
@@ -74,6 +110,7 @@ class CollectTracesDialog(
                     .bindText(model::providers)
             }
         }
+
         collapsibleGroup("Predefined Providers") {
             threeColumnsRow({
                 checkBox("Http")
@@ -105,9 +142,11 @@ class CollectTracesDialog(
                     .bindSelected(model::loader)
             })
         }
+
         group("File Settings") {
             row("Output filename:") {
                 textField()
+                    .align(Align.FILL)
                     .validationOnInput {
                         if (isValidFilename(it.text)) {
                             return@validationOnInput null
@@ -122,7 +161,16 @@ class CollectTracesDialog(
                     "Select Path",
                     project,
                     FileChooserDescriptorFactory.createSingleFolderDescriptor()
-                ).bindText(model::path)
+                )
+                    .align(Align.FILL)
+                    .validationOnApply {
+                        if (it.text.isEmpty()) {
+                            return@validationOnApply error("Please choose a folder")
+                        } else {
+                            return@validationOnApply null
+                        }
+                    }
+                    .bindText(model::path)
             }
         }
     }

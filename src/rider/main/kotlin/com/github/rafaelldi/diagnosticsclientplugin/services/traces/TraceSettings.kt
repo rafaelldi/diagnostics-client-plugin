@@ -2,10 +2,7 @@
 
 package com.github.rafaelldi.diagnosticsclientplugin.services.traces
 
-import com.github.rafaelldi.diagnosticsclientplugin.dialogs.CollectTracesModel
-import com.github.rafaelldi.diagnosticsclientplugin.dialogs.MonitorTracesModel
-import com.github.rafaelldi.diagnosticsclientplugin.dialogs.StoppingType
-import com.github.rafaelldi.diagnosticsclientplugin.dialogs.TracingProfile
+import com.github.rafaelldi.diagnosticsclientplugin.dialogs.*
 import com.github.rafaelldi.diagnosticsclientplugin.utils.DotNetProcess
 import com.intellij.openapi.components.*
 import com.intellij.openapi.project.Project
@@ -30,7 +27,10 @@ class TraceSettings(project: Project) : SimplePersistentStateComponent<TraceSett
     }
 
     fun getCollectModel(selected: DotNetProcess) = CollectTracesModel(
+        SourceProcessType.Attach,
         selected,
+        "",
+        "",
         state.path ?: "",
         state.filename ?: "",
         state.stoppingType,
@@ -48,7 +48,10 @@ class TraceSettings(project: Project) : SimplePersistentStateComponent<TraceSett
     )
 
     fun getMonitorModel(selected: DotNetProcess) = MonitorTracesModel(
+        SourceProcessType.Attach,
         selected,
+        "",
+        "",
         state.stoppingType,
         state.duration,
         false,

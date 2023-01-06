@@ -1,11 +1,8 @@
 package com.github.rafaelldi.diagnosticsclientplugin.dialogs
 
 import com.github.rafaelldi.diagnosticsclientplugin.services.counters.CounterSettings
-import com.github.rafaelldi.diagnosticsclientplugin.utils.DotNetProcess
-import com.github.rafaelldi.diagnosticsclientplugin.utils.isValidCounterProviderList
-import com.github.rafaelldi.diagnosticsclientplugin.utils.isValidFilename
-import com.github.rafaelldi.diagnosticsclientplugin.utils.isValidMetricList
-import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
+import com.github.rafaelldi.diagnosticsclientplugin.utils.*
+import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory.createSingleFolderDescriptor
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.ui.SimpleListCellRenderer
@@ -28,15 +25,49 @@ class CollectCountersDialog(
     }
 
     override fun createCenterPanel(): JComponent = panel {
+        lateinit var attachToProcess: Cell<JBRadioButton>
+        lateinit var launchNewProcess: Cell<JBRadioButton>
         lateinit var periodStoppingType: Cell<JBRadioButton>
         lateinit var metricsEnablingFlag: Cell<JBCheckBox>
 
         val ps = processes.sortedBy { it.pid }.toList()
-        row {
+
+        buttonsGroup {
+            row {
+                attachToProcess = radioButton(SourceProcessType.Attach.label, SourceProcessType.Attach)
+                launchNewProcess = radioButton(SourceProcessType.Launch.label, SourceProcessType.Launch)
+            }
+        }.bind(model::sourceProcessType)
+
+        row("Process:") {
             comboBox(ps, SimpleListCellRenderer.create("") { "${it.pid} - ${it.name}" })
                 .align(Align.FILL)
                 .bindItemNullable(model::selectedProcess)
-        }.bottomGap(BottomGap.SMALL)
+        }.visibleIf(attachToProcess.selected)
+            .bottomGap(BottomGap.SMALL)
+
+        row("Executable path:") {
+            textFieldWithBrowseButton(
+                "Select Path",
+                project,
+                createExecutableDescription()
+            )
+                .align(Align.FILL)
+                .validationOnApply {
+                    if (launchNewProcess.component.isSelected && it.text.isEmpty()) {
+                        return@validationOnApply error("Please select an executable")
+                    } else {
+                        return@validationOnApply null
+                    }
+                }
+                .bindText(model::executablePath)
+        }.visibleIf(launchNewProcess.selected)
+        row("Arguments:") {
+            expandableTextField()
+                .align(Align.FILL)
+                .bindText(model::executableArgs)
+        }.visibleIf(launchNewProcess.selected)
+            .bottomGap(BottomGap.SMALL)
 
         row("Refresh interval (sec.):") {
             spinner(1..3600, 1)
@@ -45,8 +76,8 @@ class CollectCountersDialog(
 
         buttonsGroup {
             row("Stop collection:") {
-                periodStoppingType = radioButton(StoppingType.AfterPeriod.label, StoppingType.AfterPeriod)
                 radioButton(StoppingType.Manually.label, StoppingType.Manually)
+                periodStoppingType = radioButton(StoppingType.AfterPeriod.label, StoppingType.AfterPeriod)
             }
         }.bind(model::stoppingType)
         row("Duration (sec.):") {
@@ -57,7 +88,7 @@ class CollectCountersDialog(
 
         row("Providers:") {
             expandableTextField()
-                .columns(COLUMNS_MEDIUM)
+                .align(Align.FILL)
                 .validationOnInput {
                     if (isValidCounterProviderList(it.text)) {
                         return@validationOnInput null
@@ -73,7 +104,7 @@ class CollectCountersDialog(
             }
             row("List of metrics:") {
                 expandableTextField()
-                    .columns(COLUMNS_MEDIUM)
+                    .align(Align.FILL)
                     .validationOnInput {
                         if (isValidMetricList(it.text)) {
                             return@validationOnInput null
@@ -105,6 +136,7 @@ class CollectCountersDialog(
             }.bind(model::format)
             row("Output filename:") {
                 textField()
+                    .align(Align.FILL)
                     .validationOnInput {
                         if (isValidFilename(it.text)) {
                             return@validationOnInput null
@@ -118,8 +150,17 @@ class CollectCountersDialog(
                 textFieldWithBrowseButton(
                     "Select Path",
                     project,
-                    FileChooserDescriptorFactory.createSingleFolderDescriptor()
-                ).bindText(model::path)
+                    createSingleFolderDescriptor()
+                )
+                    .align(Align.FILL)
+                    .validationOnApply {
+                        if (it.text.isEmpty()) {
+                            return@validationOnApply error("Please choose a folder")
+                        } else {
+                            return@validationOnApply null
+                        }
+                    }
+                    .bindText(model::path)
             }
         }
     }

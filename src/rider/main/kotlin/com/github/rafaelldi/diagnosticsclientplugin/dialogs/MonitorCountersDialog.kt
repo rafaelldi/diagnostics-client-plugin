@@ -2,6 +2,7 @@ package com.github.rafaelldi.diagnosticsclientplugin.dialogs
 
 import com.github.rafaelldi.diagnosticsclientplugin.services.counters.CounterSettings
 import com.github.rafaelldi.diagnosticsclientplugin.utils.DotNetProcess
+import com.github.rafaelldi.diagnosticsclientplugin.utils.createExecutableDescription
 import com.github.rafaelldi.diagnosticsclientplugin.utils.isValidCounterProviderList
 import com.github.rafaelldi.diagnosticsclientplugin.utils.isValidMetricList
 import com.intellij.openapi.project.Project
@@ -13,7 +14,7 @@ import com.intellij.ui.dsl.builder.*
 import javax.swing.JComponent
 
 class MonitorCountersDialog(
-    project: Project,
+    private val project: Project,
     selected: DotNetProcess,
     private val processes: List<DotNetProcess>
 ) : DialogWrapper(project) {
@@ -26,15 +27,49 @@ class MonitorCountersDialog(
     }
 
     override fun createCenterPanel(): JComponent = panel {
+        lateinit var attachToProcess: Cell<JBRadioButton>
+        lateinit var launchNewProcess: Cell<JBRadioButton>
         lateinit var periodStoppingType: Cell<JBRadioButton>
         lateinit var metricsEnablingFlag: Cell<JBCheckBox>
 
         val ps = processes.sortedBy { it.pid }.toList()
-        row {
+
+        buttonsGroup {
+            row {
+                attachToProcess = radioButton(SourceProcessType.Attach.label, SourceProcessType.Attach)
+                launchNewProcess = radioButton(SourceProcessType.Launch.label, SourceProcessType.Launch)
+            }
+        }.bind(model::sourceProcessType)
+
+        row("Process:") {
             comboBox(ps, SimpleListCellRenderer.create("") { "${it.pid} - ${it.name}" })
                 .align(Align.FILL)
                 .bindItemNullable(model::selectedProcess)
-        }.bottomGap(BottomGap.SMALL)
+        }.visibleIf(attachToProcess.selected)
+            .bottomGap(BottomGap.SMALL)
+
+        row("Executable path:") {
+            textFieldWithBrowseButton(
+                "Select Path",
+                project,
+                createExecutableDescription()
+            )
+                .align(Align.FILL)
+                .validationOnApply {
+                    if (launchNewProcess.component.isSelected && it.text.isEmpty()) {
+                        return@validationOnApply error("Please select an executable")
+                    } else {
+                        return@validationOnApply null
+                    }
+                }
+                .bindText(model::executablePath)
+        }.visibleIf(launchNewProcess.selected)
+        row("Arguments:") {
+            expandableTextField()
+                .align(Align.FILL)
+                .bindText(model::executableArgs)
+        }.visibleIf(launchNewProcess.selected)
+            .bottomGap(BottomGap.SMALL)
 
         row("Refresh interval (sec.):") {
             spinner(1..3600, 1)
@@ -43,8 +78,8 @@ class MonitorCountersDialog(
 
         buttonsGroup {
             row("Stop monitoring:") {
-                periodStoppingType = radioButton(StoppingType.AfterPeriod.label, StoppingType.AfterPeriod)
                 radioButton(StoppingType.Manually.label, StoppingType.Manually)
+                periodStoppingType = radioButton(StoppingType.AfterPeriod.label, StoppingType.AfterPeriod)
             }
         }.bind(model::stoppingType)
         row("Duration (sec.):") {
@@ -55,7 +90,7 @@ class MonitorCountersDialog(
 
         row("Providers:") {
             expandableTextField()
-                .columns(COLUMNS_MEDIUM)
+                .align(Align.FILL)
                 .validationOnInput {
                     if (isValidCounterProviderList(it.text)) {
                         return@validationOnInput null
@@ -71,7 +106,7 @@ class MonitorCountersDialog(
             }
             row("List of metrics:") {
                 expandableTextField()
-                    .columns(COLUMNS_MEDIUM)
+                    .align(Align.FILL)
                     .validationOnInput {
                         if (isValidMetricList(it.text)) {
                             return@validationOnInput null

@@ -20,8 +20,8 @@ class MonitoringTimerDialog(project: Project) : DialogWrapper(project) {
 
         buttonsGroup {
             row("Stop monitoring:") {
-                periodStoppingType = radioButton(StoppingType.AfterPeriod.label, StoppingType.AfterPeriod)
                 radioButton(StoppingType.Manually.label, StoppingType.Manually)
+                periodStoppingType = radioButton(StoppingType.AfterPeriod.label, StoppingType.AfterPeriod)
             }
         }.bind(model::stoppingType)
         row("Duration (sec.):") {

@@ -25,7 +25,9 @@ class DumpCollectionController(project: Project) : ProtocolSubscribedProjectComp
 
     private val hostModel: DiagnosticsHostModel = project.solution.diagnosticsHostModel
 
-    suspend fun collectDump(pid: Int, model: CollectDumpModel) {
+    suspend fun collectDump(model: CollectDumpModel) {
+        val pid = model.selectedProcess?.pid ?: return
+
         val command = CollectDumpCommand(pid, model.type.map(), model.path, model.filename, model.diag)
         withBackgroundProgressIndicator(project, "Collecting memory dump") {
             val result = hostModel.collectDump.startSuspending(command)

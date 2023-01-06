@@ -2,7 +2,13 @@ package com.github.rafaelldi.diagnosticsclientplugin.dialogs
 
 import com.github.rafaelldi.diagnosticsclientplugin.utils.DotNetProcess
 
-data class CollectDumpModel(var type: DumpType, var path: String, var filename: String, var diag: Boolean)
+data class CollectDumpModel(
+    var selectedProcess: DotNetProcess?,
+    var type: DumpType,
+    var path: String,
+    var filename: String,
+    var diag: Boolean
+)
 
 interface MonitoringModel {
     var selectedProcess: DotNetProcess?
@@ -15,7 +21,10 @@ interface CollectionModel {
 }
 
 data class MonitorCountersModel(
+    var sourceProcessType: SourceProcessType,
     override var selectedProcess: DotNetProcess?,
+    var executablePath: String,
+    var executableArgs: String,
     var interval: Int,
     override var stoppingType: StoppingType,
     override var duration: Int,
@@ -26,7 +35,10 @@ data class MonitorCountersModel(
 ) : MonitoringModel
 
 data class CollectCountersModel(
+    var sourceProcessType: SourceProcessType,
     override var selectedProcess: DotNetProcess?,
+    var executablePath: String,
+    var executableArgs: String,
     var path: String,
     var filename: String,
     var format: CounterFileFormat,
@@ -40,13 +52,19 @@ data class CollectCountersModel(
 ) : CollectionModel
 
 data class MonitorGcEventsModel(
+    var sourceProcessType: SourceProcessType,
     override var selectedProcess: DotNetProcess?,
+    var executablePath: String,
+    var executableArgs: String,
     override var stoppingType: StoppingType,
     override var duration: Int
 ) : MonitoringModel
 
 data class CollectGcEventsModel(
+    var sourceProcessType: SourceProcessType,
     override var selectedProcess: DotNetProcess?,
+    var executablePath: String,
+    var executableArgs: String,
     var path: String,
     var filename: String,
     var stoppingType: StoppingType,
@@ -54,7 +72,10 @@ data class CollectGcEventsModel(
 ) : CollectionModel
 
 data class MonitorTracesModel(
+    var sourceProcessType: SourceProcessType,
     override var selectedProcess: DotNetProcess?,
+    var executablePath: String,
+    var executableArgs: String,
     override var stoppingType: StoppingType,
     override var duration: Int,
     var http: Boolean,
@@ -68,7 +89,10 @@ data class MonitorTracesModel(
 ) : MonitoringModel
 
 data class CollectTracesModel(
+    var sourceProcessType: SourceProcessType,
     override var selectedProcess: DotNetProcess?,
+    var executablePath: String,
+    var executableArgs: String,
     var path: String,
     var filename: String,
     var stoppingType: StoppingType,

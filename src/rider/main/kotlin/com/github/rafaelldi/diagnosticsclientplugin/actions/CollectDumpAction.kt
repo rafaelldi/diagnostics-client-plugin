@@ -15,12 +15,12 @@ class CollectDumpAction : AnAction() {
         val project = event.project ?: return
         val tab = event.getData(ProcessExplorerTab.PROCESS_EXPLORE_TAB) ?: return
         val selected = tab.selectedProcess ?: return
-        val dialog = CollectDumpDialog(project)
+        val dialog = CollectDumpDialog(project, selected, tab.processes)
         if (dialog.showAndGet()) {
             val model = dialog.getModel()
             DumpSettings.getInstance(project).update(model)
             project.lifetime.launchOnUi {
-                DumpCollectionController.getInstance(project).collectDump(selected.pid, model)
+                DumpCollectionController.getInstance(project).collectDump(model)
             }
         }
     }
