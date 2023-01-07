@@ -4,7 +4,7 @@ import com.github.rafaelldi.diagnosticsclientplugin.actions.common.StartMonitori
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.MonitoringTimerDialog
 import com.github.rafaelldi.diagnosticsclientplugin.generated.TraceMonitoringSession
 import com.github.rafaelldi.diagnosticsclientplugin.generated.diagnosticsHostModel
-import com.github.rafaelldi.diagnosticsclientplugin.services.traces.TraceMonitoringSessionController
+import com.github.rafaelldi.diagnosticsclientplugin.services.traces.TraceLiveSessionController
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.TraceMonitoringTab
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.TraceMonitoringTab.Companion.TRACE_MONITORING_TAB
 import com.intellij.openapi.project.Project
@@ -18,7 +18,7 @@ class StartTraceMonitoringSessionAction :
         val dialog = MonitoringTimerDialog(project)
         if (dialog.showAndGet()) {
             val model = dialog.getModel()
-            TraceMonitoringSessionController
+            TraceLiveSessionController
                 .getInstance(project)
                 .startExistingSession(pid, model.stoppingType, model.duration)
         }

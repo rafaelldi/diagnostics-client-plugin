@@ -26,7 +26,7 @@ class TraceSettings(project: Project) : SimplePersistentStateComponent<TraceSett
         }
     }
 
-    fun getCollectModel(selected: DotNetProcess) = CollectTracesModel(
+    fun getModel(selected: DotNetProcess) = TraceModel(
         SourceProcessType.Attach,
         selected,
         "",
@@ -47,24 +47,7 @@ class TraceSettings(project: Project) : SimplePersistentStateComponent<TraceSett
         false
     )
 
-    fun getMonitorModel(selected: DotNetProcess) = MonitorTracesModel(
-        SourceProcessType.Attach,
-        selected,
-        "",
-        "",
-        state.stoppingType,
-        state.duration,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false
-    )
-
-    fun update(model: CollectTracesModel) {
+    fun update(model: TraceModel) {
         state.apply {
             path = model.path
             filename = model.filename
@@ -72,13 +55,6 @@ class TraceSettings(project: Project) : SimplePersistentStateComponent<TraceSett
             duration = model.duration
             profile = model.profile
             providers = model.providers
-        }
-    }
-
-    fun update(model: MonitorTracesModel) {
-        state.apply {
-            stoppingType = model.stoppingType
-            duration = model.duration
         }
     }
 

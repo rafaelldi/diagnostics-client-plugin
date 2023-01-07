@@ -15,7 +15,7 @@ class CounterSettings(project: Project) : SimplePersistentStateComponent<Counter
         fun getInstance(project: Project): CounterSettings = project.service()
     }
 
-    fun getCollectModel(selected: DotNetProcess) = CollectCountersModel(
+    fun getModel(selected: DotNetProcess) = CounterModel(
         SourceProcessType.Attach,
         selected,
         "",
@@ -32,37 +32,11 @@ class CounterSettings(project: Project) : SimplePersistentStateComponent<Counter
         state.maxHistograms
     )
 
-    fun getMonitorModel(selected: DotNetProcess) = MonitorCountersModel(
-        SourceProcessType.Attach,
-        selected,
-        "",
-        "",
-        state.interval,
-        state.stoppingType,
-        state.duration,
-        state.providers ?: "",
-        state.metrics ?: "",
-        state.maxTimeSeries,
-        state.maxHistograms
-    )
-
-    fun update(model: CollectCountersModel) {
+    fun update(model: CounterModel) {
         state.apply {
             path = model.path
             filename = model.filename
             format = model.format
-            interval = model.interval
-            stoppingType = model.stoppingType
-            duration = model.duration
-            providers = model.providers
-            metrics = model.metrics
-            maxTimeSeries = model.maxTimeSeries
-            maxHistograms = model.maxHistograms
-        }
-    }
-
-    fun update(model: MonitorCountersModel) {
-        state.apply {
             interval = model.interval
             stoppingType = model.stoppingType
             duration = model.duration

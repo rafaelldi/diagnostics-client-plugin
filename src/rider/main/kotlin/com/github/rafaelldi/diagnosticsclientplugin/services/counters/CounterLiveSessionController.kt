@@ -3,20 +3,20 @@ package com.github.rafaelldi.diagnosticsclientplugin.services.counters
 import com.github.rafaelldi.diagnosticsclientplugin.common.monitoringSessionFinished
 import com.github.rafaelldi.diagnosticsclientplugin.common.monitoringSessionNotFound
 import com.github.rafaelldi.diagnosticsclientplugin.common.monitoringSessionStarted
-import com.github.rafaelldi.diagnosticsclientplugin.dialogs.MonitorCountersModel
+import com.github.rafaelldi.diagnosticsclientplugin.dialogs.CounterModel
 import com.github.rafaelldi.diagnosticsclientplugin.generated.CounterMonitoringSession
 import com.github.rafaelldi.diagnosticsclientplugin.generated.diagnosticsHostModel
-import com.github.rafaelldi.diagnosticsclientplugin.services.common.MonitoringSessionController
+import com.github.rafaelldi.diagnosticsclientplugin.services.common.LiveSessionController
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.jetbrains.rider.projectView.solution
 
 @Service
-class CounterMonitoringSessionController(project: Project) :
-    MonitoringSessionController<CounterMonitoringSession, MonitorCountersModel>(project) {
+class CounterLiveSessionController(project: Project) :
+    LiveSessionController<CounterMonitoringSession, CounterModel>(project) {
     companion object {
-        fun getInstance(project: Project): CounterMonitoringSessionController = project.service()
+        fun getInstance(project: Project): CounterLiveSessionController = project.service()
         private const val COUNTERS = "Counters"
     }
 
@@ -28,7 +28,7 @@ class CounterMonitoringSessionController(project: Project) :
         }
     }
 
-    override fun createSession(model: MonitorCountersModel): CounterMonitoringSession {
+    override fun createSession(model: CounterModel): CounterMonitoringSession {
         val metrics = model.metrics.ifEmpty { null }
         return CounterMonitoringSession(
             model.interval,

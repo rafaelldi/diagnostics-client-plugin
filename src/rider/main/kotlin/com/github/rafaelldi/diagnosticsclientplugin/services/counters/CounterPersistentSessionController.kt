@@ -3,13 +3,10 @@ package com.github.rafaelldi.diagnosticsclientplugin.services.counters
 import com.github.rafaelldi.diagnosticsclientplugin.common.collectionSessionAlreadyExists
 import com.github.rafaelldi.diagnosticsclientplugin.common.collectionSessionFinished
 import com.github.rafaelldi.diagnosticsclientplugin.common.collectionSessionStarted
-import com.github.rafaelldi.diagnosticsclientplugin.dialogs.CollectCountersModel
-import com.github.rafaelldi.diagnosticsclientplugin.dialogs.CounterFileFormat
-import com.github.rafaelldi.diagnosticsclientplugin.dialogs.StoppingType
-import com.github.rafaelldi.diagnosticsclientplugin.dialogs.map
+import com.github.rafaelldi.diagnosticsclientplugin.dialogs.*
 import com.github.rafaelldi.diagnosticsclientplugin.generated.CounterCollectionSession
 import com.github.rafaelldi.diagnosticsclientplugin.generated.diagnosticsHostModel
-import com.github.rafaelldi.diagnosticsclientplugin.services.common.CollectionSessionController
+import com.github.rafaelldi.diagnosticsclientplugin.services.common.PersistentSessionController
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
@@ -18,10 +15,10 @@ import kotlin.io.path.Path
 import kotlin.io.path.pathString
 
 @Service
-class CounterCollectionSessionController(project: Project) :
-    CollectionSessionController<CounterCollectionSession, CollectCountersModel>(project) {
+class CounterPersistentSessionController(project: Project) :
+    PersistentSessionController<CounterCollectionSession, CounterModel>(project) {
     companion object {
-        fun getInstance(project: Project): CounterCollectionSessionController = project.service()
+        fun getInstance(project: Project): CounterPersistentSessionController = project.service()
         private const val COUNTERS = "Counters"
     }
 
@@ -33,7 +30,7 @@ class CounterCollectionSessionController(project: Project) :
         }
     }
 
-    override fun createSession(model: CollectCountersModel): CounterCollectionSession {
+    override fun createSession(model: CounterModel): CounterCollectionSession {
         val filePath = calculateFilePath(model)
         val metrics = model.metrics.ifEmpty { null }
         val duration =
@@ -52,7 +49,7 @@ class CounterCollectionSessionController(project: Project) :
         )
     }
 
-    private fun calculateFilePath(model: CollectCountersModel): String {
+    private fun calculateFilePath(model: CounterModel): String {
         val filename = when (model.format) {
             CounterFileFormat.Csv -> {
                 if (model.filename.endsWith(".csv"))

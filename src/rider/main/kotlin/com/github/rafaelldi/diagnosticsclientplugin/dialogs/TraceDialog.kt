@@ -3,21 +3,30 @@ package com.github.rafaelldi.diagnosticsclientplugin.dialogs
 import com.github.rafaelldi.diagnosticsclientplugin.services.traces.TraceSettings
 import com.github.rafaelldi.diagnosticsclientplugin.utils.DotNetProcess
 import com.github.rafaelldi.diagnosticsclientplugin.utils.createExecutableDescription
+import com.github.rafaelldi.diagnosticsclientplugin.utils.isValidFilename
+import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.ui.ComboBox
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.openapi.ui.ValidationInfo
 import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.components.JBRadioButton
+import com.intellij.ui.components.fields.ExpandableTextField
 import com.intellij.ui.dsl.builder.*
 import javax.swing.JComponent
 
-class MonitorTracesDialog(
+class TraceDialog(
     private val project: Project,
     selected: DotNetProcess,
-    private val processes: List<DotNetProcess>
+    private val processes: List<DotNetProcess>,
+    private val persistent: Boolean
 ) : DialogWrapper(project) {
-    private val model = TraceSettings.getInstance(project).getMonitorModel(selected)
+
+    private val model = TraceSettings.getInstance(project).getModel(selected)
+
+    private lateinit var profileComboBox: Cell<ComboBox<TracingProfile>>
+    private lateinit var providerTextField: Cell<ExpandableTextField>
     private lateinit var httpCheckBox: Cell<JBCheckBox>
     private lateinit var aspNetCheckBox: Cell<JBCheckBox>
     private lateinit var efCheckBox: Cell<JBCheckBox>
@@ -29,8 +38,9 @@ class MonitorTracesDialog(
 
     init {
         init()
-        title = "Monitor Traces"
-        setOKButtonText("Start")
+        val action = if (persistent) "Collect" else "Monitor"
+        title = "$action Traces"
+        setOKButtonText(action)
     }
 
     override fun createCenterPanel(): JComponent = panel {
@@ -50,6 +60,13 @@ class MonitorTracesDialog(
         row("Process:") {
             comboBox(ps, SimpleListCellRenderer.create("") { "${it.pid} - ${it.name}" })
                 .align(Align.FILL)
+                .validationOnApply {
+                    if (attachToProcess.component.isSelected && it.selectedItem == null) {
+                        return@validationOnApply error("Please select a process")
+                    } else {
+                        return@validationOnApply null
+                    }
+                }
                 .bindItemNullable(model::selectedProcess)
         }.visibleIf(attachToProcess.selected)
             .bottomGap(BottomGap.SMALL)
@@ -90,54 +107,103 @@ class MonitorTracesDialog(
         }
 
         group("Providers") {
+            row("Profile:") {
+                profileComboBox = comboBox(TracingProfile.values().toList())
+                    .bindItem(model::profile.toNullableProperty())
+            }
+            row("Providers:") {
+                providerTextField = expandableTextField()
+                    .align(Align.FILL)
+                    .bindText(model::providers)
+            }
+        }.visible(persistent)
+
+        collapsibleGroup("Predefined Providers") {
             threeColumnsRow({
-                checkBox("Http")
+                httpCheckBox = checkBox("Http")
                     .bindSelected(model::http)
             }, {
                 @Suppress("DialogTitleCapitalization")
-                checkBox("ASP.NET Core")
+                aspNetCheckBox = checkBox("ASP.NET Core")
                     .bindSelected(model::aspNet)
             }, {
                 @Suppress("DialogTitleCapitalization")
-                checkBox("EF Core")
+                efCheckBox = checkBox("EF Core")
                     .bindSelected(model::ef)
             })
             threeColumnsRow({
-                checkBox("Tasks")
+                tasksCheckBox = checkBox("Tasks")
                     .bindSelected(model::tasks)
             }, {
-                checkBox("Threads")
+                threadsCheckBox = checkBox("Threads")
                     .bindSelected(model::threads)
             }, {
-                checkBox("Contentions")
+                contentionsCheckBox = checkBox("Contentions")
                     .bindSelected(model::contentions)
             })
             twoColumnsRow({
-                checkBox("Exceptions")
+                exceptionsCheckBox = checkBox("Exceptions")
                     .bindSelected(model::exceptions)
             }, {
-                checkBox("Loader")
+                loaderCheckBox = checkBox("Loader")
                     .bindSelected(model::loader)
             })
+        }.apply {
+            expanded = !persistent
         }
+
+        group("File Settings") {
+            row("Output filename:") {
+                textField()
+                    .align(Align.FILL)
+                    .validationOnInput {
+                        if (isValidFilename(it.text)) {
+                            return@validationOnInput null
+                        } else {
+                            return@validationOnInput error("Invalid filename")
+                        }
+                    }
+                    .bindText(model::filename)
+            }
+            row("Output folder:") {
+                textFieldWithBrowseButton(
+                    "Select Path",
+                    project,
+                    FileChooserDescriptorFactory.createSingleFolderDescriptor()
+                )
+                    .align(Align.FILL)
+                    .validationOnApply {
+                        if (persistent && it.text.isEmpty()) {
+                            return@validationOnApply error("Please choose a folder")
+                        } else {
+                            return@validationOnApply null
+                        }
+                    }
+                    .bindText(model::path)
+            }
+        }.visible(persistent)
     }
 
-    fun getModel(): MonitorTracesModel = model
+    fun getModel(): TraceModel = model
 
     override fun doValidate(): ValidationInfo? {
-        return if (
-            httpCheckBox.component.isSelected ||
-            aspNetCheckBox.component.isSelected ||
-            efCheckBox.component.isSelected ||
-            exceptionsCheckBox.component.isSelected ||
-            threadsCheckBox.component.isSelected ||
-            contentionsCheckBox.component.isSelected ||
-            tasksCheckBox.component.isSelected ||
-            loaderCheckBox.component.isSelected
-        ) {
-            null
+        val isProviderSelected = providerTextField.component.text.isNullOrEmpty().not()
+        val isProfileSelected = profileComboBox.component.item != TracingProfile.None
+        val isPredefinedProviderSelected = httpCheckBox.component.isSelected ||
+                aspNetCheckBox.component.isSelected ||
+                efCheckBox.component.isSelected ||
+                exceptionsCheckBox.component.isSelected ||
+                threadsCheckBox.component.isSelected ||
+                contentionsCheckBox.component.isSelected ||
+                tasksCheckBox.component.isSelected ||
+                loaderCheckBox.component.isSelected
+
+        return if (persistent) {
+            if (isProviderSelected || isProfileSelected || isPredefinedProviderSelected) null
+            else ValidationInfo("Please specify a provider or select a profile")
         } else {
-            ValidationInfo("No provider selected")
+            if (isPredefinedProviderSelected) null
+            else ValidationInfo("Please select a provider")
         }
     }
 

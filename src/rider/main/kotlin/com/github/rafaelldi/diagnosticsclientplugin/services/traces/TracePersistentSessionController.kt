@@ -3,13 +3,13 @@ package com.github.rafaelldi.diagnosticsclientplugin.services.traces
 import com.github.rafaelldi.diagnosticsclientplugin.common.collectionSessionAlreadyExists
 import com.github.rafaelldi.diagnosticsclientplugin.common.collectionSessionFinished
 import com.github.rafaelldi.diagnosticsclientplugin.common.collectionSessionStarted
-import com.github.rafaelldi.diagnosticsclientplugin.dialogs.CollectTracesModel
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.StoppingType
+import com.github.rafaelldi.diagnosticsclientplugin.dialogs.TraceModel
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.map
 import com.github.rafaelldi.diagnosticsclientplugin.generated.PredefinedProvider
 import com.github.rafaelldi.diagnosticsclientplugin.generated.TraceCollectionSession
 import com.github.rafaelldi.diagnosticsclientplugin.generated.diagnosticsHostModel
-import com.github.rafaelldi.diagnosticsclientplugin.services.common.CollectionSessionController
+import com.github.rafaelldi.diagnosticsclientplugin.services.common.PersistentSessionController
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
@@ -18,10 +18,10 @@ import kotlin.io.path.Path
 import kotlin.io.path.pathString
 
 @Service
-class TraceCollectionSessionController(project: Project) :
-    CollectionSessionController<TraceCollectionSession, CollectTracesModel>(project) {
+class TracePersistentSessionController(project: Project) :
+    PersistentSessionController<TraceCollectionSession, TraceModel>(project) {
     companion object {
-        fun getInstance(project: Project): TraceCollectionSessionController = project.service()
+        fun getInstance(project: Project): TracePersistentSessionController = project.service()
         private const val TRACES = "Traces"
     }
 
@@ -33,7 +33,7 @@ class TraceCollectionSessionController(project: Project) :
         }
     }
 
-    override fun createSession(model: CollectTracesModel): TraceCollectionSession {
+    override fun createSession(model: TraceModel): TraceCollectionSession {
         val filePath = Path(model.path, model.filename).pathString
         val duration =
             if (model.stoppingType == StoppingType.AfterPeriod) model.duration
@@ -49,7 +49,7 @@ class TraceCollectionSessionController(project: Project) :
         )
     }
 
-    private fun getPredefinedProviders(model: CollectTracesModel): List<PredefinedProvider> {
+    private fun getPredefinedProviders(model: TraceModel): List<PredefinedProvider> {
         val providers = mutableListOf<PredefinedProvider>()
 
         if (model.http)

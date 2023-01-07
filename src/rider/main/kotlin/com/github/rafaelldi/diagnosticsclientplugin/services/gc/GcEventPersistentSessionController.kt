@@ -3,11 +3,11 @@ package com.github.rafaelldi.diagnosticsclientplugin.services.gc
 import com.github.rafaelldi.diagnosticsclientplugin.common.collectionSessionAlreadyExists
 import com.github.rafaelldi.diagnosticsclientplugin.common.collectionSessionFinished
 import com.github.rafaelldi.diagnosticsclientplugin.common.collectionSessionStarted
-import com.github.rafaelldi.diagnosticsclientplugin.dialogs.CollectGcEventsModel
+import com.github.rafaelldi.diagnosticsclientplugin.dialogs.GcEventModel
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.StoppingType
 import com.github.rafaelldi.diagnosticsclientplugin.generated.GcEventCollectionSession
 import com.github.rafaelldi.diagnosticsclientplugin.generated.diagnosticsHostModel
-import com.github.rafaelldi.diagnosticsclientplugin.services.common.CollectionSessionController
+import com.github.rafaelldi.diagnosticsclientplugin.services.common.PersistentSessionController
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
@@ -16,10 +16,10 @@ import kotlin.io.path.Path
 import kotlin.io.path.pathString
 
 @Service
-class GcEventCollectionSessionController(project: Project) :
-    CollectionSessionController<GcEventCollectionSession, CollectGcEventsModel>(project) {
+class GcEventPersistentSessionController(project: Project) :
+    PersistentSessionController<GcEventCollectionSession, GcEventModel>(project) {
     companion object {
-        fun getInstance(project: Project): GcEventCollectionSessionController = project.service()
+        fun getInstance(project: Project): GcEventPersistentSessionController = project.service()
         private const val GC_EVENTS = "GC events"
     }
 
@@ -31,7 +31,7 @@ class GcEventCollectionSessionController(project: Project) :
         }
     }
 
-    override fun createSession(model: CollectGcEventsModel): GcEventCollectionSession {
+    override fun createSession(model: GcEventModel): GcEventCollectionSession {
         val filePath = Path(model.path, "${model.filename}.csv").pathString
         val duration =
             if (model.stoppingType == StoppingType.AfterPeriod) model.duration

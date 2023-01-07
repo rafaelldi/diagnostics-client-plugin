@@ -1,9 +1,6 @@
 package com.github.rafaelldi.diagnosticsclientplugin.services.gc
 
-import com.github.rafaelldi.diagnosticsclientplugin.dialogs.CollectGcEventsModel
-import com.github.rafaelldi.diagnosticsclientplugin.dialogs.MonitorGcEventsModel
-import com.github.rafaelldi.diagnosticsclientplugin.dialogs.SourceProcessType
-import com.github.rafaelldi.diagnosticsclientplugin.dialogs.StoppingType
+import com.github.rafaelldi.diagnosticsclientplugin.dialogs.*
 import com.github.rafaelldi.diagnosticsclientplugin.utils.DotNetProcess
 import com.intellij.openapi.components.*
 import com.intellij.openapi.project.Project
@@ -18,16 +15,7 @@ class GcEventSettings(project: Project) : SimplePersistentStateComponent<GcEvent
         fun getInstance(project: Project): GcEventSettings = project.service()
     }
 
-    fun getMonitorModel(selected: DotNetProcess) = MonitorGcEventsModel(
-        SourceProcessType.Attach,
-        selected,
-        "",
-        "",
-        state.stoppingType,
-        state.duration
-    )
-
-    fun getCollectModel(selected: DotNetProcess) = CollectGcEventsModel(
+    fun getModel(selected: DotNetProcess) = GcEventModel(
         SourceProcessType.Attach,
         selected,
         "",
@@ -38,14 +26,7 @@ class GcEventSettings(project: Project) : SimplePersistentStateComponent<GcEvent
         state.duration
     )
 
-    fun update(model: MonitorGcEventsModel) {
-        state.apply {
-            stoppingType = model.stoppingType
-            duration = model.duration
-        }
-    }
-
-    fun update(model: CollectGcEventsModel) {
+    fun update(model: GcEventModel) {
         state.apply {
             path = model.path
             filename = model.filename

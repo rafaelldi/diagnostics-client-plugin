@@ -10,93 +10,61 @@ data class CollectDumpModel(
     var diag: Boolean
 )
 
-interface MonitoringModel {
+interface LiveModel {
+    var sourceProcessType: SourceProcessType
     var selectedProcess: DotNetProcess?
+    var executablePath: String
+    var executableArgs: String
     var stoppingType: StoppingType
     var duration: Int
 }
 
-interface CollectionModel {
+interface PersistentModel {
+    var sourceProcessType: SourceProcessType
     var selectedProcess: DotNetProcess?
+    var executablePath: String
+    var executableArgs: String
+    var path: String
+    var filename: String
 }
 
-data class MonitorCountersModel(
-    var sourceProcessType: SourceProcessType,
+data class CounterModel(
+    override var sourceProcessType: SourceProcessType,
     override var selectedProcess: DotNetProcess?,
-    var executablePath: String,
-    var executableArgs: String,
-    var interval: Int,
-    override var stoppingType: StoppingType,
-    override var duration: Int,
-    var providers: String,
-    var metrics: String,
-    var maxTimeSeries: Int,
-    var maxHistograms: Int
-) : MonitoringModel
-
-data class CollectCountersModel(
-    var sourceProcessType: SourceProcessType,
-    override var selectedProcess: DotNetProcess?,
-    var executablePath: String,
-    var executableArgs: String,
-    var path: String,
-    var filename: String,
+    override var executablePath: String,
+    override var executableArgs: String,
+    override var path: String,
+    override var filename: String,
     var format: CounterFileFormat,
     var interval: Int,
-    var stoppingType: StoppingType,
-    var duration: Int,
+    override var stoppingType: StoppingType,
+    override var duration: Int,
     var providers: String,
     var metrics: String,
     var maxTimeSeries: Int,
     var maxHistograms: Int
-) : CollectionModel
+) : LiveModel, PersistentModel
 
-data class MonitorGcEventsModel(
-    var sourceProcessType: SourceProcessType,
+data class GcEventModel(
+    override var sourceProcessType: SourceProcessType,
     override var selectedProcess: DotNetProcess?,
-    var executablePath: String,
-    var executableArgs: String,
+    override var executablePath: String,
+    override var executableArgs: String,
+    override var path: String,
+    override var filename: String,
     override var stoppingType: StoppingType,
     override var duration: Int
-) : MonitoringModel
+) : LiveModel, PersistentModel
 
-data class CollectGcEventsModel(
-    var sourceProcessType: SourceProcessType,
+data class TraceModel(
+    override var sourceProcessType: SourceProcessType,
     override var selectedProcess: DotNetProcess?,
-    var executablePath: String,
-    var executableArgs: String,
-    var path: String,
-    var filename: String,
-    var stoppingType: StoppingType,
-    var duration: Int
-) : CollectionModel
-
-data class MonitorTracesModel(
-    var sourceProcessType: SourceProcessType,
-    override var selectedProcess: DotNetProcess?,
-    var executablePath: String,
-    var executableArgs: String,
+    override var executablePath: String,
+    override var executableArgs: String,
+    override var path: String,
+    override var filename: String,
     override var stoppingType: StoppingType,
     override var duration: Int,
-    var http: Boolean,
-    var aspNet: Boolean,
-    var ef: Boolean,
-    var exceptions: Boolean,
-    var threads: Boolean,
-    var contentions: Boolean,
-    var tasks: Boolean,
-    var loader: Boolean
-) : MonitoringModel
-
-data class CollectTracesModel(
-    var sourceProcessType: SourceProcessType,
-    override var selectedProcess: DotNetProcess?,
-    var executablePath: String,
-    var executableArgs: String,
-    var path: String,
-    var filename: String,
-    var stoppingType: StoppingType,
-    var duration: Int,
     var profile: TracingProfile,
     var providers: String,
     var http: Boolean,
@@ -107,6 +75,6 @@ data class CollectTracesModel(
     var contentions: Boolean,
     var tasks: Boolean,
     var loader: Boolean
-) : CollectionModel
+) : LiveModel, PersistentModel
 
 data class MonitoringTimerModel(var stoppingType: StoppingType, var duration: Int)

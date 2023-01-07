@@ -4,7 +4,7 @@ import com.intellij.openapi.project.Project
 
 class CounterSessionListenerService(private val project: Project) : CounterSessionListener {
     override fun sessionClosed(pid: Int) {
-        val controller = CounterMonitoringSessionController.getInstance(project)
+        val controller = CounterLiveSessionController.getInstance(project)
         controller.closeSession(pid)
     }
 }

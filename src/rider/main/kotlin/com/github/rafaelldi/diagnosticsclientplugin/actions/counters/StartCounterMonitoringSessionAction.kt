@@ -4,7 +4,7 @@ import com.github.rafaelldi.diagnosticsclientplugin.actions.common.StartMonitori
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.MonitoringTimerDialog
 import com.github.rafaelldi.diagnosticsclientplugin.generated.CounterMonitoringSession
 import com.github.rafaelldi.diagnosticsclientplugin.generated.diagnosticsHostModel
-import com.github.rafaelldi.diagnosticsclientplugin.services.counters.CounterMonitoringSessionController
+import com.github.rafaelldi.diagnosticsclientplugin.services.counters.CounterLiveSessionController
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.CounterMonitoringTab
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.CounterMonitoringTab.Companion.COUNTER_MONITORING_TAB
 import com.intellij.openapi.project.Project
@@ -18,7 +18,7 @@ class StartCounterMonitoringSessionAction :
         val dialog = MonitoringTimerDialog(project)
         if (dialog.showAndGet()) {
             val model = dialog.getModel()
-            CounterMonitoringSessionController
+            CounterLiveSessionController
                 .getInstance(project)
                 .startExistingSession(pid, model.stoppingType, model.duration)
         }

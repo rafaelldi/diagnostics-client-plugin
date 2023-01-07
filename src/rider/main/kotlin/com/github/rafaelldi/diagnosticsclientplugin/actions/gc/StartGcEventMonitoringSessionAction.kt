@@ -4,7 +4,7 @@ import com.github.rafaelldi.diagnosticsclientplugin.actions.common.StartMonitori
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.MonitoringTimerDialog
 import com.github.rafaelldi.diagnosticsclientplugin.generated.GcEventMonitoringSession
 import com.github.rafaelldi.diagnosticsclientplugin.generated.diagnosticsHostModel
-import com.github.rafaelldi.diagnosticsclientplugin.services.gc.GcEventMonitoringSessionController
+import com.github.rafaelldi.diagnosticsclientplugin.services.gc.GcEventLiveSessionController
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.GcEventMonitoringTab
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.GcEventMonitoringTab.Companion.GC_EVENT_MONITORING_TAB
 import com.intellij.openapi.project.Project
@@ -18,7 +18,7 @@ class StartGcEventMonitoringSessionAction :
         val dialog = MonitoringTimerDialog(project)
         if (dialog.showAndGet()) {
             val model = dialog.getModel()
-            GcEventMonitoringSessionController
+            GcEventLiveSessionController
                 .getInstance(project)
                 .startExistingSession(pid, model.stoppingType, model.duration)
         }

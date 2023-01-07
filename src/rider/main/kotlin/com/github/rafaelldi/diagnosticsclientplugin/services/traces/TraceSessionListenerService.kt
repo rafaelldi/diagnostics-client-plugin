@@ -4,7 +4,7 @@ import com.intellij.openapi.project.Project
 
 class TraceSessionListenerService(private val project: Project) : TraceSessionListener {
     override fun sessionClosed(pid: Int) {
-        val controller = TraceMonitoringSessionController.getInstance(project)
+        val controller = TraceLiveSessionController.getInstance(project)
         controller.closeSession(pid)
     }
 }
