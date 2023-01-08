@@ -3,8 +3,11 @@ package com.github.rafaelldi.diagnosticsclientplugin.services.counters
 import com.github.rafaelldi.diagnosticsclientplugin.common.collectionSessionAlreadyExists
 import com.github.rafaelldi.diagnosticsclientplugin.common.collectionSessionFinished
 import com.github.rafaelldi.diagnosticsclientplugin.common.collectionSessionStarted
-import com.github.rafaelldi.diagnosticsclientplugin.dialogs.*
-import com.github.rafaelldi.diagnosticsclientplugin.generated.CounterCollectionSession
+import com.github.rafaelldi.diagnosticsclientplugin.dialogs.CounterFileFormat
+import com.github.rafaelldi.diagnosticsclientplugin.dialogs.CounterModel
+import com.github.rafaelldi.diagnosticsclientplugin.dialogs.StoppingType
+import com.github.rafaelldi.diagnosticsclientplugin.dialogs.map
+import com.github.rafaelldi.diagnosticsclientplugin.generated.PersistentCounterSession
 import com.github.rafaelldi.diagnosticsclientplugin.generated.diagnosticsHostModel
 import com.github.rafaelldi.diagnosticsclientplugin.services.common.PersistentSessionController
 import com.intellij.openapi.components.Service
@@ -15,14 +18,14 @@ import kotlin.io.path.Path
 import kotlin.io.path.pathString
 
 @Service
-class CounterPersistentSessionController(project: Project) :
-    PersistentSessionController<CounterCollectionSession, CounterModel>(project) {
+class PersistentCounterSessionController(project: Project) :
+    PersistentSessionController<PersistentCounterSession, CounterModel>(project) {
     companion object {
-        fun getInstance(project: Project): CounterPersistentSessionController = project.service()
+        fun getInstance(project: Project): PersistentCounterSessionController = project.service()
         private const val COUNTERS = "Counters"
     }
 
-    override val sessions = project.solution.diagnosticsHostModel.counterCollectionSessions
+    override val sessions = project.solution.diagnosticsHostModel.persistentCounterSessions
 
     init {
         sessions.view(projectComponentLifetime) { lt, pid, session ->
@@ -30,14 +33,14 @@ class CounterPersistentSessionController(project: Project) :
         }
     }
 
-    override fun createSession(model: CounterModel): CounterCollectionSession {
+    override fun createSession(model: CounterModel): PersistentCounterSession {
         val filePath = calculateFilePath(model)
         val metrics = model.metrics.ifEmpty { null }
         val duration =
             if (model.stoppingType == StoppingType.AfterPeriod) model.duration
             else null
 
-        return CounterCollectionSession(
+        return PersistentCounterSession(
             model.format.map(),
             model.interval,
             model.providers,
@@ -71,6 +74,6 @@ class CounterPersistentSessionController(project: Project) :
 
     override fun sessionAlreadyExists(pid: Int) = collectionSessionAlreadyExists(COUNTERS, pid, project)
     override fun sessionStarted(pid: Int) = collectionSessionStarted(COUNTERS, pid, project)
-    override fun sessionFinished(pid: Int, session: CounterCollectionSession) =
+    override fun sessionFinished(pid: Int, session: PersistentCounterSession) =
         collectionSessionFinished(COUNTERS, pid, session.filePath, true, project)
 }

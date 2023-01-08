@@ -3,7 +3,7 @@ package com.github.rafaelldi.diagnosticsclientplugin.actions.gc
 import com.github.rafaelldi.diagnosticsclientplugin.actions.common.StartCollectingAction
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.GcEventDialog
 import com.github.rafaelldi.diagnosticsclientplugin.generated.diagnosticsHostModel
-import com.github.rafaelldi.diagnosticsclientplugin.services.gc.GcEventPersistentSessionController
+import com.github.rafaelldi.diagnosticsclientplugin.services.gc.PersistentGcEventSessionController
 import com.github.rafaelldi.diagnosticsclientplugin.services.gc.GcEventSettings
 import com.github.rafaelldi.diagnosticsclientplugin.utils.DotNetProcess
 import com.intellij.openapi.project.Project
@@ -14,11 +14,11 @@ class StartCollectingGcEventsAction : StartCollectingAction() {
         val dialog = GcEventDialog(project, selected, processes, true)
         if (dialog.showAndGet()) {
             val model = dialog.getModel()
-            GcEventSettings.getInstance(project).update(model)
-            GcEventPersistentSessionController.getInstance(project).startSession(model)
+            GcEventSettings.getInstance(project).update(model, true)
+            PersistentGcEventSessionController.getInstance(project).startSession(model)
         }
     }
 
     override fun containsSession(selected: DotNetProcess, project: Project) =
-        project.solution.diagnosticsHostModel.gcEventCollectionSessions.contains(selected.pid)
+        project.solution.diagnosticsHostModel.persistentGcEventSessions.contains(selected.pid)
 }

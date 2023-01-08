@@ -1,8 +1,8 @@
 package com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs
 
+import com.github.rafaelldi.diagnosticsclientplugin.generated.LiveTraceSession
 import com.github.rafaelldi.diagnosticsclientplugin.generated.PredefinedProvider
 import com.github.rafaelldi.diagnosticsclientplugin.generated.Trace
-import com.github.rafaelldi.diagnosticsclientplugin.generated.TraceMonitoringSession
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.TraceTabManager
 import com.intellij.execution.filters.TextConsoleBuilderFactory
 import com.intellij.execution.impl.ConsoleViewImpl
@@ -22,7 +22,7 @@ import javax.swing.JPanel
 
 class TraceMonitoringTab(
     override val pid: Int,
-    session: TraceMonitoringSession,
+    session: LiveTraceSession,
     private val manager: TraceTabManager,
     project: Project,
     lt: Lifetime

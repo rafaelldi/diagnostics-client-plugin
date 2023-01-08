@@ -4,8 +4,8 @@ import com.github.rafaelldi.diagnosticsclientplugin.common.monitoringSessionFini
 import com.github.rafaelldi.diagnosticsclientplugin.common.monitoringSessionNotFound
 import com.github.rafaelldi.diagnosticsclientplugin.common.monitoringSessionStarted
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.TraceModel
+import com.github.rafaelldi.diagnosticsclientplugin.generated.LiveTraceSession
 import com.github.rafaelldi.diagnosticsclientplugin.generated.PredefinedProvider
-import com.github.rafaelldi.diagnosticsclientplugin.generated.TraceMonitoringSession
 import com.github.rafaelldi.diagnosticsclientplugin.generated.diagnosticsHostModel
 import com.github.rafaelldi.diagnosticsclientplugin.services.common.LiveSessionController
 import com.intellij.openapi.components.Service
@@ -14,14 +14,14 @@ import com.intellij.openapi.project.Project
 import com.jetbrains.rider.projectView.solution
 
 @Service
-class TraceLiveSessionController(project: Project) :
-    LiveSessionController<TraceMonitoringSession, TraceModel>(project) {
+class LiveTraceSessionController(project: Project) :
+    LiveSessionController<LiveTraceSession, TraceModel>(project) {
     companion object {
-        fun getInstance(project: Project): TraceLiveSessionController = project.service()
+        fun getInstance(project: Project): LiveTraceSessionController = project.service()
         private const val TRACES = "Traces"
     }
 
-    override val sessions = project.solution.diagnosticsHostModel.traceMonitoringSessions
+    override val sessions = project.solution.diagnosticsHostModel.liveTraceSessions
 
     init {
         sessions.view(projectComponentLifetime) { lt, pid, session ->
@@ -29,9 +29,9 @@ class TraceLiveSessionController(project: Project) :
         }
     }
 
-    override fun createSession(model: TraceModel): TraceMonitoringSession {
+    override fun createSession(model: TraceModel): LiveTraceSession {
         val providers = getPredefinedProviders(model)
-        return TraceMonitoringSession(providers)
+        return LiveTraceSession(providers)
     }
 
     private fun getPredefinedProviders(model: TraceModel): List<PredefinedProvider> {

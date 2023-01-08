@@ -11,7 +11,7 @@ internal sealed class TraceMonitoringSessionEnvelope
     private readonly TraceProtocolExporter _exporter;
     private readonly TraceProducer _producer;
 
-    internal TraceMonitoringSessionEnvelope(int pid, TraceMonitoringSession session, Lifetime lifetime)
+    internal TraceMonitoringSessionEnvelope(int pid, LiveTraceSession session, Lifetime lifetime)
     {
         var channel = Channel.CreateBounded<ValueTrace>(new BoundedChannelOptions(100)
         {

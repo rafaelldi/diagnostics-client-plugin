@@ -1,6 +1,6 @@
 package com.github.rafaelldi.diagnosticsclientplugin.toolWindow
 
-import com.github.rafaelldi.diagnosticsclientplugin.generated.GcEventMonitoringSession
+import com.github.rafaelldi.diagnosticsclientplugin.generated.LiveGcEventSession
 import com.github.rafaelldi.diagnosticsclientplugin.generated.diagnosticsHostModel
 import com.github.rafaelldi.diagnosticsclientplugin.services.gc.GcEventSessionListener
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.GcEventMonitoringTab
@@ -24,12 +24,12 @@ class GcEventTabManager(project: Project) : ProtocolSubscribedProjectComponent(p
 
     init {
         val model = project.solution.diagnosticsHostModel
-        model.gcEventMonitoringSessions.view(projectComponentLifetime) { lt, pid, session ->
+        model.liveGcEventSessions.view(projectComponentLifetime) { lt, pid, session ->
             addGcEventSessionTab(lt, pid, session)
         }
     }
 
-    private fun addGcEventSessionTab(lt: Lifetime, pid: Int, session: GcEventMonitoringSession) {
+    private fun addGcEventSessionTab(lt: Lifetime, pid: Int, session: LiveGcEventSession) {
         val toolWindow = DiagnosticsTabManager.getToolWindow(project) ?: return
         val contentFactory = ContentFactory.getInstance()
         val gcEventMonitoringTab = GcEventMonitoringTab(pid, session, this, lt)

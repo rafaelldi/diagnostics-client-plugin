@@ -6,8 +6,8 @@ import com.github.rafaelldi.diagnosticsclientplugin.common.collectionSessionStar
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.StoppingType
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.TraceModel
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.map
+import com.github.rafaelldi.diagnosticsclientplugin.generated.PersistentTraceSession
 import com.github.rafaelldi.diagnosticsclientplugin.generated.PredefinedProvider
-import com.github.rafaelldi.diagnosticsclientplugin.generated.TraceCollectionSession
 import com.github.rafaelldi.diagnosticsclientplugin.generated.diagnosticsHostModel
 import com.github.rafaelldi.diagnosticsclientplugin.services.common.PersistentSessionController
 import com.intellij.openapi.components.Service
@@ -18,14 +18,14 @@ import kotlin.io.path.Path
 import kotlin.io.path.pathString
 
 @Service
-class TracePersistentSessionController(project: Project) :
-    PersistentSessionController<TraceCollectionSession, TraceModel>(project) {
+class PersistentTraceSessionController(project: Project) :
+    PersistentSessionController<PersistentTraceSession, TraceModel>(project) {
     companion object {
-        fun getInstance(project: Project): TracePersistentSessionController = project.service()
+        fun getInstance(project: Project): PersistentTraceSessionController = project.service()
         private const val TRACES = "Traces"
     }
 
-    override val sessions = project.solution.diagnosticsHostModel.traceCollectionSessions
+    override val sessions = project.solution.diagnosticsHostModel.persistentTraceSessions
 
     init {
         sessions.view(projectComponentLifetime) { lt, pid, session ->
@@ -33,14 +33,14 @@ class TracePersistentSessionController(project: Project) :
         }
     }
 
-    override fun createSession(model: TraceModel): TraceCollectionSession {
+    override fun createSession(model: TraceModel): PersistentTraceSession {
         val filePath = Path(model.path, model.filename).pathString
         val duration =
             if (model.stoppingType == StoppingType.AfterPeriod) model.duration
             else null
         val predefinedProvider = getPredefinedProviders(model)
 
-        return TraceCollectionSession(
+        return PersistentTraceSession(
             model.profile.map(),
             model.providers,
             predefinedProvider,
@@ -74,7 +74,7 @@ class TracePersistentSessionController(project: Project) :
 
     override fun sessionAlreadyExists(pid: Int) = collectionSessionAlreadyExists(TRACES, pid, project)
     override fun sessionStarted(pid: Int) = collectionSessionStarted(TRACES, pid, project)
-    override fun sessionFinished(pid: Int, session: TraceCollectionSession) =
+    override fun sessionFinished(pid: Int, session: PersistentTraceSession) =
         collectionSessionFinished(TRACES, pid, session.filePath, false, project)
 
 }

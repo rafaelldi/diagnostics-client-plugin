@@ -1,6 +1,6 @@
 package com.github.rafaelldi.diagnosticsclientplugin.toolWindow
 
-import com.github.rafaelldi.diagnosticsclientplugin.generated.TraceMonitoringSession
+import com.github.rafaelldi.diagnosticsclientplugin.generated.LiveTraceSession
 import com.github.rafaelldi.diagnosticsclientplugin.generated.diagnosticsHostModel
 import com.github.rafaelldi.diagnosticsclientplugin.services.traces.TraceSessionListener
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.TraceMonitoringTab
@@ -24,12 +24,12 @@ class TraceTabManager(project: Project) : ProtocolSubscribedProjectComponent(pro
 
     init {
         val model = project.solution.diagnosticsHostModel
-        model.traceMonitoringSessions.view(projectComponentLifetime) { lt, pid, session ->
+        model.liveTraceSessions.view(projectComponentLifetime) { lt, pid, session ->
             addTraceSessionTab(lt, pid, session)
         }
     }
 
-    private fun addTraceSessionTab(lt: Lifetime, pid: Int, session: TraceMonitoringSession) {
+    private fun addTraceSessionTab(lt: Lifetime, pid: Int, session: LiveTraceSession) {
         val toolWindow = DiagnosticsTabManager.getToolWindow(project) ?: return
         val contentFactory = ContentFactory.getInstance()
         val traceMonitoringTab = TraceMonitoringTab(pid, session, this, project, lt)

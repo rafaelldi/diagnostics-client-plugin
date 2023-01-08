@@ -8,10 +8,10 @@ namespace DiagnosticsClientPlugin.Traces;
 
 internal sealed class TraceProtocolExporter
 {
-    private readonly TraceMonitoringSession _session;
+    private readonly LiveTraceSession _session;
     private readonly ChannelReader<ValueTrace> _reader;
 
-    internal TraceProtocolExporter(TraceMonitoringSession session, ChannelReader<ValueTrace> reader)
+    internal TraceProtocolExporter(LiveTraceSession session, ChannelReader<ValueTrace> reader)
     {
         _session = session;
         _reader = reader;

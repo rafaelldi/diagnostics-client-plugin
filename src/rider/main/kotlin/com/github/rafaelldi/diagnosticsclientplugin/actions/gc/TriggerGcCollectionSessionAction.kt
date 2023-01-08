@@ -22,7 +22,7 @@ class TriggerGcCollectionSessionAction : AnAction() {
             event.presentation.isEnabled = false
         } else {
             val model = project.solution.diagnosticsHostModel
-            val session = model.gcEventMonitoringSessions[tab.pid]
+            val session = model.liveGcEventSessions[tab.pid]
             event.presentation.isEnabled = session != null
         }
     }

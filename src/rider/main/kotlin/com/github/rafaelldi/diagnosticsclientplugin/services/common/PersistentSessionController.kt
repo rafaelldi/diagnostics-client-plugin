@@ -1,7 +1,7 @@
 package com.github.rafaelldi.diagnosticsclientplugin.services.common
 
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.PersistentModel
-import com.github.rafaelldi.diagnosticsclientplugin.generated.CollectionSession
+import com.github.rafaelldi.diagnosticsclientplugin.generated.PersistentSession
 import com.intellij.openapi.project.Project
 import com.jetbrains.rd.framework.util.createTerminatedAfter
 import com.jetbrains.rd.platform.util.idea.ProtocolSubscribedProjectComponent
@@ -11,7 +11,7 @@ import com.jetbrains.rd.util.reactive.IMutableViewableMap
 import kotlinx.coroutines.Dispatchers
 import java.time.Duration
 
-abstract class PersistentSessionController<TSession : CollectionSession, TModel : PersistentModel>(project: Project) :
+abstract class PersistentSessionController<TSession : PersistentSession, TModel : PersistentModel>(project: Project) :
     ProtocolSubscribedProjectComponent(project) {
 
     protected abstract val sessions: IMutableViewableMap<Int, TSession>

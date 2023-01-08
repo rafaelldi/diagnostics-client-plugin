@@ -2,7 +2,7 @@ package com.github.rafaelldi.diagnosticsclientplugin.services.common
 
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.LiveModel
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.StoppingType
-import com.github.rafaelldi.diagnosticsclientplugin.generated.MonitoringSession
+import com.github.rafaelldi.diagnosticsclientplugin.generated.LiveSession
 import com.intellij.openapi.project.Project
 import com.jetbrains.rd.framework.util.createTerminatedAfter
 import com.jetbrains.rd.platform.util.idea.ProtocolSubscribedProjectComponent
@@ -13,7 +13,7 @@ import com.jetbrains.rd.util.reactive.whenTrue
 import kotlinx.coroutines.Dispatchers
 import java.time.Duration
 
-abstract class LiveSessionController<TSession : MonitoringSession, TModel : LiveModel>(project: Project) :
+abstract class LiveSessionController<TSession : LiveSession, TModel : LiveModel>(project: Project) :
     ProtocolSubscribedProjectComponent(project) {
 
     protected abstract val sessions: IMutableViewableMap<Int, TSession>

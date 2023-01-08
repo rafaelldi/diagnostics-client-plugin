@@ -8,10 +8,10 @@ namespace DiagnosticsClientPlugin.Gc;
 
 internal sealed class GcEventProtocolExporter
 {
-    private readonly GcEventMonitoringSession _session;
+    private readonly LiveGcEventSession _session;
     private readonly ChannelReader<ValueGcEvent> _reader;
 
-    internal GcEventProtocolExporter(GcEventMonitoringSession session, ChannelReader<ValueGcEvent> reader)
+    internal GcEventProtocolExporter(LiveGcEventSession session, ChannelReader<ValueGcEvent> reader)
     {
         _session = session;
         _reader = reader;

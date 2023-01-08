@@ -4,7 +4,7 @@ import com.github.rafaelldi.diagnosticsclientplugin.common.monitoringSessionFini
 import com.github.rafaelldi.diagnosticsclientplugin.common.monitoringSessionNotFound
 import com.github.rafaelldi.diagnosticsclientplugin.common.monitoringSessionStarted
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.CounterModel
-import com.github.rafaelldi.diagnosticsclientplugin.generated.CounterMonitoringSession
+import com.github.rafaelldi.diagnosticsclientplugin.generated.LiveCounterSession
 import com.github.rafaelldi.diagnosticsclientplugin.generated.diagnosticsHostModel
 import com.github.rafaelldi.diagnosticsclientplugin.services.common.LiveSessionController
 import com.intellij.openapi.components.Service
@@ -13,14 +13,14 @@ import com.intellij.openapi.project.Project
 import com.jetbrains.rider.projectView.solution
 
 @Service
-class CounterLiveSessionController(project: Project) :
-    LiveSessionController<CounterMonitoringSession, CounterModel>(project) {
+class LiveCounterSessionController(project: Project) :
+    LiveSessionController<LiveCounterSession, CounterModel>(project) {
     companion object {
-        fun getInstance(project: Project): CounterLiveSessionController = project.service()
+        fun getInstance(project: Project): LiveCounterSessionController = project.service()
         private const val COUNTERS = "Counters"
     }
 
-    override val sessions = project.solution.diagnosticsHostModel.counterMonitoringSessions
+    override val sessions = project.solution.diagnosticsHostModel.liveCounterSessions
 
     init {
         sessions.view(projectComponentLifetime) { lt, pid, session ->
@@ -28,9 +28,9 @@ class CounterLiveSessionController(project: Project) :
         }
     }
 
-    override fun createSession(model: CounterModel): CounterMonitoringSession {
+    override fun createSession(model: CounterModel): LiveCounterSession {
         val metrics = model.metrics.ifEmpty { null }
-        return CounterMonitoringSession(
+        return LiveCounterSession(
             model.interval,
             model.providers,
             metrics,

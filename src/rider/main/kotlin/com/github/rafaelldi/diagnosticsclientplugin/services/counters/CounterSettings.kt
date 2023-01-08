@@ -32,11 +32,13 @@ class CounterSettings(project: Project) : SimplePersistentStateComponent<Counter
         state.maxHistograms
     )
 
-    fun update(model: CounterModel) {
+    fun update(model: CounterModel, persistent: Boolean) {
         state.apply {
-            path = model.path
-            filename = model.filename
-            format = model.format
+            if (persistent) {
+                path = model.path
+                filename = model.filename
+                format = model.format
+            }
             interval = model.interval
             stoppingType = model.stoppingType
             duration = model.duration

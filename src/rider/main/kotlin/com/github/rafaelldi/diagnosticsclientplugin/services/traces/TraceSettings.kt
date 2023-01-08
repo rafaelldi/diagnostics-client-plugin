@@ -47,10 +47,12 @@ class TraceSettings(project: Project) : SimplePersistentStateComponent<TraceSett
         false
     )
 
-    fun update(model: TraceModel) {
+    fun update(model: TraceModel, persistent: Boolean) {
         state.apply {
-            path = model.path
-            filename = model.filename
+            if (persistent) {
+                path = model.path
+                filename = model.filename
+            }
             stoppingType = model.stoppingType
             duration = model.duration
             profile = model.profile

@@ -26,10 +26,12 @@ class GcEventSettings(project: Project) : SimplePersistentStateComponent<GcEvent
         state.duration
     )
 
-    fun update(model: GcEventModel) {
+    fun update(model: GcEventModel, persistent: Boolean) {
         state.apply {
-            path = model.path
-            filename = model.filename
+            if (persistent) {
+                path = model.path
+                filename = model.filename
+            }
             stoppingType = model.stoppingType
             duration = model.duration
         }

@@ -1,6 +1,6 @@
 package com.github.rafaelldi.diagnosticsclientplugin.actions.common
 
-import com.github.rafaelldi.diagnosticsclientplugin.generated.MonitoringSession
+import com.github.rafaelldi.diagnosticsclientplugin.generated.LiveSession
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.MonitoringTab
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
@@ -8,7 +8,7 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.DataKey
 import com.intellij.openapi.project.Project
 
-abstract class StopMonitoringSessionAction<TSession : MonitoringSession, TTab : MonitoringTab> : AnAction() {
+abstract class StopMonitoringSessionAction<TSession : LiveSession, TTab : MonitoringTab> : AnAction() {
     protected abstract val tabDatKey: DataKey<TTab>
 
     override fun actionPerformed(event: AnActionEvent) {

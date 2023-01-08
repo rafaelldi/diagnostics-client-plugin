@@ -5,7 +5,7 @@ import com.github.rafaelldi.diagnosticsclientplugin.common.collectionSessionFini
 import com.github.rafaelldi.diagnosticsclientplugin.common.collectionSessionStarted
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.GcEventModel
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.StoppingType
-import com.github.rafaelldi.diagnosticsclientplugin.generated.GcEventCollectionSession
+import com.github.rafaelldi.diagnosticsclientplugin.generated.PersistentGcEventSession
 import com.github.rafaelldi.diagnosticsclientplugin.generated.diagnosticsHostModel
 import com.github.rafaelldi.diagnosticsclientplugin.services.common.PersistentSessionController
 import com.intellij.openapi.components.Service
@@ -16,14 +16,14 @@ import kotlin.io.path.Path
 import kotlin.io.path.pathString
 
 @Service
-class GcEventPersistentSessionController(project: Project) :
-    PersistentSessionController<GcEventCollectionSession, GcEventModel>(project) {
+class PersistentGcEventSessionController(project: Project) :
+    PersistentSessionController<PersistentGcEventSession, GcEventModel>(project) {
     companion object {
-        fun getInstance(project: Project): GcEventPersistentSessionController = project.service()
+        fun getInstance(project: Project): PersistentGcEventSessionController = project.service()
         private const val GC_EVENTS = "GC events"
     }
 
-    override val sessions = project.solution.diagnosticsHostModel.gcEventCollectionSessions
+    override val sessions = project.solution.diagnosticsHostModel.persistentGcEventSessions
 
     init {
         sessions.view(projectComponentLifetime) { lt, pid, session ->
@@ -31,17 +31,17 @@ class GcEventPersistentSessionController(project: Project) :
         }
     }
 
-    override fun createSession(model: GcEventModel): GcEventCollectionSession {
+    override fun createSession(model: GcEventModel): PersistentGcEventSession {
         val filePath = Path(model.path, "${model.filename}.csv").pathString
         val duration =
             if (model.stoppingType == StoppingType.AfterPeriod) model.duration
             else null
 
-        return GcEventCollectionSession(duration, filePath)
+        return PersistentGcEventSession(duration, filePath)
     }
 
     override fun sessionAlreadyExists(pid: Int) = collectionSessionAlreadyExists(GC_EVENTS, pid, project)
     override fun sessionStarted(pid: Int) = collectionSessionStarted(GC_EVENTS, pid, project)
-    override fun sessionFinished(pid: Int, session: GcEventCollectionSession) =
+    override fun sessionFinished(pid: Int, session: PersistentGcEventSession) =
         collectionSessionFinished(GC_EVENTS, pid, session.filePath, true, project)
 }
