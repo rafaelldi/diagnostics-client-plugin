@@ -22,12 +22,12 @@ object DiagnosticsHostModel : Ext(SolutionModel.Solution) {
         map("items", int, ProcessInfo).async
     }
 
-    private val CollectionSession = baseclass {
+    private val PersistentSession = baseclass {
         field("duration", int.nullable)
         field("filePath", string)
     }
 
-    private val CounterCollectionSession = classdef extends CollectionSession {
+    private val PersistentCounterSession = classdef extends PersistentSession {
         field("format", enum("CounterFileFormat") {
             +"Csv"
             +"Json"
@@ -39,10 +39,10 @@ object DiagnosticsHostModel : Ext(SolutionModel.Solution) {
         field("maxHistograms", int)
     }
 
-    private val GcEventCollectionSession = classdef extends CollectionSession {
+    private val PersistentGcEventSession = classdef extends PersistentSession {
     }
 
-    private val TraceCollectionSession = classdef extends CollectionSession {
+    private val PersistentTraceSession = classdef extends PersistentSession {
         field("profile", enum("TracingProfile") {
             +"None"
             +"CpuSampling"
@@ -53,12 +53,12 @@ object DiagnosticsHostModel : Ext(SolutionModel.Solution) {
         field("predefinedProviders", immutableList(PredefinedProvider))
     }
 
-    private val MonitoringSession = baseclass {
+    private val LiveSession = baseclass {
         property("active", bool)
         property("duration", int.nullable)
     }
 
-    private val CounterMonitoringSession = classdef extends MonitoringSession {
+    private val LiveCounterSession = classdef extends LiveSession {
         map("counters", string, Counter).async
         field("refreshInterval", int)
         field("providers", string)
@@ -67,11 +67,11 @@ object DiagnosticsHostModel : Ext(SolutionModel.Solution) {
         field("maxHistograms", int)
     }
 
-    private val GcEventMonitoringSession = classdef extends MonitoringSession {
+    private val LiveGcEventSession = classdef extends LiveSession {
         source("gcHappened", GcEvent).async
     }
 
-    private val TraceMonitoringSession = classdef extends MonitoringSession {
+    private val LiveTraceSession = classdef extends LiveSession {
         source("traceReceived", Trace).async
         field("predefinedProviders", immutableList(PredefinedProvider))
     }
@@ -124,15 +124,15 @@ object DiagnosticsHostModel : Ext(SolutionModel.Solution) {
 
         field("processList", ProcessList)
 
-        map("counterCollectionSessions", int, CounterCollectionSession)
-        map("counterMonitoringSessions", int, CounterMonitoringSession)
+        map("persistentCounterSessions", int, PersistentCounterSession)
+        map("liveCounterSessions", int, LiveCounterSession)
 
-        map("gcEventCollectionSessions", int, GcEventCollectionSession)
-        map("gcEventMonitoringSessions", int, GcEventMonitoringSession)
+        map("persistentGcEventSessions", int, PersistentGcEventSession)
+        map("liveGcEventSessions", int, LiveGcEventSession)
         source("triggerGc", int)
 
-        map("traceCollectionSessions", int, TraceCollectionSession)
-        map("traceMonitoringSessions", int, TraceMonitoringSession)
+        map("persistentTraceSessions", int, PersistentTraceSession)
+        map("liveTraceSessions", int, LiveTraceSession)
 
         call("collectDump",
             structdef("CollectDumpCommand") {

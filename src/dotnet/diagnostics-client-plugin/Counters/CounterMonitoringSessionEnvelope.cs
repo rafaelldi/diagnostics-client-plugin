@@ -14,7 +14,7 @@ internal sealed class CounterMonitoringSessionEnvelope
     private readonly CounterProtocolExporter _exporter;
     private readonly CounterProducer _producer;
 
-    internal CounterMonitoringSessionEnvelope(int pid, CounterMonitoringSession session, Lifetime lifetime)
+    internal CounterMonitoringSessionEnvelope(int pid, LiveCounterSession session, Lifetime lifetime)
     {
         var channel = Channel.CreateBounded<ValueCounter>(new BoundedChannelOptions(100)
         {
@@ -35,12 +35,12 @@ internal sealed class CounterMonitoringSessionEnvelope
         lt.StartAttachedAsync(TaskScheduler.Default, async () => await _producer.Produce());
     }
 
-    private static CounterProtocolExporter CreateExporter(CounterMonitoringSession session,
+    private static CounterProtocolExporter CreateExporter(LiveCounterSession session,
         Channel<ValueCounter> channel) => new(session, channel.Reader);
 
     private static CounterProducer CreateProducer(
         int pid,
-        CounterMonitoringSession session,
+        LiveCounterSession session,
         Channel<ValueCounter> channel,
         Lifetime lt)
     {

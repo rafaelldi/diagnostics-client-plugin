@@ -1,7 +1,7 @@
 package com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs
 
 import com.github.rafaelldi.diagnosticsclientplugin.generated.GcEvent
-import com.github.rafaelldi.diagnosticsclientplugin.generated.GcEventMonitoringSession
+import com.github.rafaelldi.diagnosticsclientplugin.generated.LiveGcEventSession
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.GcEventTabManager
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.components.GcEventTableComponent
 import com.intellij.openapi.Disposable
@@ -16,7 +16,7 @@ import javax.swing.JPanel
 
 class GcEventMonitoringTab(
     override val pid: Int,
-    session: GcEventMonitoringSession,
+    session: LiveGcEventSession,
     private val manager: GcEventTabManager,
     lt: Lifetime
 ) : SimpleToolWindowPanel(false), MonitoringTab, Disposable {

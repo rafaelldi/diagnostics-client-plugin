@@ -1,6 +1,6 @@
 package com.github.rafaelldi.diagnosticsclientplugin.toolWindow
 
-import com.github.rafaelldi.diagnosticsclientplugin.generated.CounterMonitoringSession
+import com.github.rafaelldi.diagnosticsclientplugin.generated.LiveCounterSession
 import com.github.rafaelldi.diagnosticsclientplugin.generated.diagnosticsHostModel
 import com.github.rafaelldi.diagnosticsclientplugin.services.counters.CounterSessionListener
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.CounterMonitoringTab
@@ -24,12 +24,12 @@ class CounterTabManager(project: Project) : ProtocolSubscribedProjectComponent(p
 
     init {
         val model = project.solution.diagnosticsHostModel
-        model.counterMonitoringSessions.view(projectComponentLifetime) { lt, pid, session ->
+        model.liveCounterSessions.view(projectComponentLifetime) { lt, pid, session ->
             addCounterSessionTab(lt, pid, session)
         }
     }
 
-    private fun addCounterSessionTab(lt: Lifetime, pid: Int, session: CounterMonitoringSession) {
+    private fun addCounterSessionTab(lt: Lifetime, pid: Int, session: LiveCounterSession) {
         val toolWindow = DiagnosticsTabManager.getToolWindow(project) ?: return
         val contentFactory = ContentFactory.getInstance()
         val counterMonitoringTab = CounterMonitoringTab(pid, session, this, lt)

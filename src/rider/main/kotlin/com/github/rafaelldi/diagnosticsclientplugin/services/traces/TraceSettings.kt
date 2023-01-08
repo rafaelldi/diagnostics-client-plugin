@@ -1,9 +1,9 @@
+@file:Suppress("BooleanLiteralArgument")
+
 package com.github.rafaelldi.diagnosticsclientplugin.services.traces
 
-import com.github.rafaelldi.diagnosticsclientplugin.dialogs.CollectTracesModel
-import com.github.rafaelldi.diagnosticsclientplugin.dialogs.MonitorTracesModel
-import com.github.rafaelldi.diagnosticsclientplugin.dialogs.StoppingType
-import com.github.rafaelldi.diagnosticsclientplugin.dialogs.TracingProfile
+import com.github.rafaelldi.diagnosticsclientplugin.dialogs.*
+import com.github.rafaelldi.diagnosticsclientplugin.utils.DotNetProcess
 import com.intellij.openapi.components.*
 import com.intellij.openapi.project.Project
 import com.jetbrains.rider.projectView.solutionDirectoryPath
@@ -26,7 +26,8 @@ class TraceSettings(project: Project) : SimplePersistentStateComponent<TraceSett
         }
     }
 
-    fun getCollectModel() = CollectTracesModel(
+    fun getModel(selected: DotNetProcess) = TraceModel(
+        selected,
         state.path ?: "",
         state.filename ?: "",
         state.stoppingType,
@@ -43,34 +44,16 @@ class TraceSettings(project: Project) : SimplePersistentStateComponent<TraceSett
         false
     )
 
-    fun getMonitorModel() = MonitorTracesModel(
-        state.stoppingType,
-        state.duration,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false
-    )
-
-    fun update(model: CollectTracesModel) {
+    fun update(model: TraceModel, persistent: Boolean) {
         state.apply {
-            path = model.path
-            filename = model.filename
+            if (persistent) {
+                path = model.path
+                filename = model.filename
+            }
             stoppingType = model.stoppingType
             duration = model.duration
             profile = model.profile
             providers = model.providers
-        }
-    }
-
-    fun update(model: MonitorTracesModel) {
-        state.apply {
-            stoppingType = model.stoppingType
-            duration = model.duration
         }
     }
 

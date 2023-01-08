@@ -11,7 +11,7 @@ internal sealed class GcEventMonitoringSessionEnvelope
     private readonly GcEventProducer _producer;
     private readonly GcEventProtocolExporter _exporter;
 
-    internal GcEventMonitoringSessionEnvelope(int pid, GcEventMonitoringSession session, Lifetime lifetime)
+    internal GcEventMonitoringSessionEnvelope(int pid, LiveGcEventSession session, Lifetime lifetime)
     {
         var channel = Channel.CreateBounded<ValueGcEvent>(new BoundedChannelOptions(100)
         {

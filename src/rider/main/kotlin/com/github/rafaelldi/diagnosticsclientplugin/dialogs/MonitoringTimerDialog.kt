@@ -12,7 +12,7 @@ class MonitoringTimerDialog(project: Project) : DialogWrapper(project) {
     init {
         init()
         title = "Monitor"
-        setOKButtonText("Start")
+        setOKButtonText("Monitor")
     }
 
     override fun createCenterPanel(): JComponent = panel {

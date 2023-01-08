@@ -15,10 +15,10 @@ internal sealed class TraceCollectionHandler
     public TraceCollectionHandler(ISolution solution, Lifetime lifetime)
     {
         var hostModel = solution.GetProtocolSolution().GetDiagnosticsHostModel();
-        hostModel.TraceCollectionSessions.View(lifetime, (lt, pid, session) => Handle(lt, pid, session));
+        hostModel.PersistentTraceSessions.View(lifetime, (lt, pid, session) => Handle(lt, pid, session));
     }
 
-    private static void Handle(Lifetime lt, int pid, TraceCollectionSession session)
+    private static void Handle(Lifetime lt, int pid, PersistentTraceSession session)
     {
         var providers = new TraceProviderCollection(session.Providers, session.Profile, session.PredefinedProviders);
         var sessionManager = new EventPipeSessionManager(pid);

@@ -17,10 +17,10 @@ internal sealed class CounterCollectionHandler
     public CounterCollectionHandler(ISolution solution, Lifetime lifetime)
     {
         var hostModel = solution.GetProtocolSolution().GetDiagnosticsHostModel();
-        hostModel.CounterCollectionSessions.View(lifetime, (lt, pid, session) => Handle(lt, pid, session));
+        hostModel.PersistentCounterSessions.View(lifetime, (lt, pid, session) => Handle(lt, pid, session));
     }
 
-    private static void Handle(Lifetime lt, int pid, CounterCollectionSession session)
+    private static void Handle(Lifetime lt, int pid, PersistentCounterSession session)
     {
         var channel = Channel.CreateBounded<ValueCounter>(new BoundedChannelOptions(100)
         {
@@ -37,13 +37,13 @@ internal sealed class CounterCollectionHandler
     }
 
     private static FileCounterExporter CreateExporter(
-        CounterCollectionSession session,
+        PersistentCounterSession session,
         Channel<ValueCounter> channel) =>
         FileCounterExporter.Create(session.FilePath, session.Format, channel.Reader);
 
     private static CounterProducer CreateProducer(
         int pid,
-        CounterCollectionSession session,
+        PersistentCounterSession session,
         Channel<ValueCounter> channel,
         Lifetime lt)
     {

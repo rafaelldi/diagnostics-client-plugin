@@ -2,6 +2,7 @@ package com.github.rafaelldi.diagnosticsclientplugin.services
 
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.CollectDumpModel
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.DumpType
+import com.github.rafaelldi.diagnosticsclientplugin.utils.DotNetProcess
 import com.intellij.openapi.components.*
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.SystemInfo
@@ -33,7 +34,8 @@ class DumpSettings(project: Project) :
         }
     }
 
-    fun getModel() = CollectDumpModel(
+    fun getModel(selected: DotNetProcess) = CollectDumpModel(
+        selected,
         state.type,
         state.path ?: "",
         state.filename ?: "",

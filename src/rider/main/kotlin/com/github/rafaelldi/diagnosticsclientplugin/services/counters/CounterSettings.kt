@@ -1,9 +1,7 @@
 package com.github.rafaelldi.diagnosticsclientplugin.services.counters
 
-import com.github.rafaelldi.diagnosticsclientplugin.dialogs.CollectCountersModel
-import com.github.rafaelldi.diagnosticsclientplugin.dialogs.CounterFileFormat
-import com.github.rafaelldi.diagnosticsclientplugin.dialogs.MonitorCountersModel
-import com.github.rafaelldi.diagnosticsclientplugin.dialogs.StoppingType
+import com.github.rafaelldi.diagnosticsclientplugin.dialogs.*
+import com.github.rafaelldi.diagnosticsclientplugin.utils.DotNetProcess
 import com.intellij.openapi.components.*
 import com.intellij.openapi.project.Project
 import com.jetbrains.rider.projectView.solutionDirectoryPath
@@ -17,7 +15,8 @@ class CounterSettings(project: Project) : SimplePersistentStateComponent<Counter
         fun getInstance(project: Project): CounterSettings = project.service()
     }
 
-    fun getCollectModel() = CollectCountersModel(
+    fun getModel(selected: DotNetProcess) = CounterModel(
+        selected,
         state.path ?: "",
         state.filename ?: "",
         state.format,
@@ -30,33 +29,13 @@ class CounterSettings(project: Project) : SimplePersistentStateComponent<Counter
         state.maxHistograms
     )
 
-    fun getMonitorModel() = MonitorCountersModel(
-        state.interval,
-        state.stoppingType,
-        state.duration,
-        state.providers ?: "",
-        state.metrics ?: "",
-        state.maxTimeSeries,
-        state.maxHistograms
-    )
-
-    fun update(model: CollectCountersModel) {
+    fun update(model: CounterModel, persistent: Boolean) {
         state.apply {
-            path = model.path
-            filename = model.filename
-            format = model.format
-            interval = model.interval
-            stoppingType = model.stoppingType
-            duration = model.duration
-            providers = model.providers
-            metrics = model.metrics
-            maxTimeSeries = model.maxTimeSeries
-            maxHistograms = model.maxHistograms
-        }
-    }
-
-    fun update(model: MonitorCountersModel) {
-        state.apply {
+            if (persistent) {
+                path = model.path
+                filename = model.filename
+                format = model.format
+            }
             interval = model.interval
             stoppingType = model.stoppingType
             duration = model.duration
