@@ -1,7 +1,6 @@
 package com.github.rafaelldi.diagnosticsclientplugin.actions.gc
 
-import com.github.rafaelldi.diagnosticsclientplugin.actions.common.StartMonitoringSessionAction
-import com.github.rafaelldi.diagnosticsclientplugin.dialogs.MonitoringTimerDialog
+import com.github.rafaelldi.diagnosticsclientplugin.actions.common.PauseLiveSessionAction
 import com.github.rafaelldi.diagnosticsclientplugin.generated.LiveGcEventSession
 import com.github.rafaelldi.diagnosticsclientplugin.generated.diagnosticsHostModel
 import com.github.rafaelldi.diagnosticsclientplugin.services.gc.LiveGcEventSessionController
@@ -10,18 +9,11 @@ import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.GcEventMonit
 import com.intellij.openapi.project.Project
 import com.jetbrains.rider.projectView.solution
 
-class StartGcEventMonitoringSessionAction :
-    StartMonitoringSessionAction<LiveGcEventSession, GcEventMonitoringTab>() {
+class PauseLiveGcEventSessionAction : PauseLiveSessionAction<LiveGcEventSession, GcEventMonitoringTab>() {
     override val tabDatKey = GC_EVENT_MONITORING_TAB
 
-    override fun startSession(pid: Int, project: Project) {
-        val dialog = MonitoringTimerDialog(project)
-        if (dialog.showAndGet()) {
-            val model = dialog.getModel()
-            LiveGcEventSessionController
-                .getInstance(project)
-                .startExistingSession(pid, model.stoppingType, model.duration)
-        }
+    override fun pauseSession(pid: Int, project: Project) {
+        LiveGcEventSessionController.getInstance(project).stopSession(pid)
     }
 
     override fun getSession(pid: Int, project: Project) =

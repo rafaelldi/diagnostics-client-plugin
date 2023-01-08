@@ -1,6 +1,6 @@
 package com.github.rafaelldi.diagnosticsclientplugin.actions.traces
 
-import com.github.rafaelldi.diagnosticsclientplugin.actions.common.StartMonitoringAction
+import com.github.rafaelldi.diagnosticsclientplugin.actions.common.StartLiveSessionAction
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.TraceDialog
 import com.github.rafaelldi.diagnosticsclientplugin.generated.LiveTraceSession
 import com.github.rafaelldi.diagnosticsclientplugin.generated.diagnosticsHostModel
@@ -10,7 +10,7 @@ import com.github.rafaelldi.diagnosticsclientplugin.utils.DotNetProcess
 import com.intellij.openapi.project.Project
 import com.jetbrains.rider.projectView.solution
 
-class StartMonitoringTracesAction : StartMonitoringAction<LiveTraceSession>() {
+class StartLiveTraceSessionAction : StartLiveSessionAction<LiveTraceSession>() {
     override fun startSession(selected: DotNetProcess, processes: List<DotNetProcess>, project: Project) {
         val dialog = TraceDialog(project, selected, processes, false)
         if (dialog.showAndGet()) {

@@ -1,6 +1,6 @@
 package com.github.rafaelldi.diagnosticsclientplugin.actions.counters
 
-import com.github.rafaelldi.diagnosticsclientplugin.actions.common.StartCollectingAction
+import com.github.rafaelldi.diagnosticsclientplugin.actions.common.StartPersistentSessionAction
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.CountersDialog
 import com.github.rafaelldi.diagnosticsclientplugin.generated.diagnosticsHostModel
 import com.github.rafaelldi.diagnosticsclientplugin.services.counters.PersistentCounterSessionController
@@ -9,7 +9,7 @@ import com.github.rafaelldi.diagnosticsclientplugin.utils.DotNetProcess
 import com.intellij.openapi.project.Project
 import com.jetbrains.rider.projectView.solution
 
-class StartCollectingCountersAction : StartCollectingAction() {
+class StartPersistentCounterSessionAction : StartPersistentSessionAction() {
     override fun startSession(selected: DotNetProcess, processes: List<DotNetProcess>, project: Project) {
         val dialog = CountersDialog(project, selected, processes, true)
         if (dialog.showAndGet()) {

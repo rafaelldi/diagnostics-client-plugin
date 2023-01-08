@@ -1,6 +1,6 @@
 package com.github.rafaelldi.diagnosticsclientplugin.actions.counters
 
-import com.github.rafaelldi.diagnosticsclientplugin.actions.common.StartMonitoringSessionAction
+import com.github.rafaelldi.diagnosticsclientplugin.actions.common.ResumeLiveSessionAction
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.MonitoringTimerDialog
 import com.github.rafaelldi.diagnosticsclientplugin.generated.LiveCounterSession
 import com.github.rafaelldi.diagnosticsclientplugin.generated.diagnosticsHostModel
@@ -10,11 +10,10 @@ import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.CounterMonit
 import com.intellij.openapi.project.Project
 import com.jetbrains.rider.projectView.solution
 
-class StartCounterMonitoringSessionAction :
-    StartMonitoringSessionAction<LiveCounterSession, CounterMonitoringTab>() {
+class ResumeLiveCounterSessionAction : ResumeLiveSessionAction<LiveCounterSession, CounterMonitoringTab>() {
     override val tabDatKey = COUNTER_MONITORING_TAB
 
-    override fun startSession(pid: Int, project: Project) {
+    override fun resumeSession(pid: Int, project: Project) {
         val dialog = MonitoringTimerDialog(project)
         if (dialog.showAndGet()) {
             val model = dialog.getModel()

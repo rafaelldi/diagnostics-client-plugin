@@ -8,7 +8,7 @@ import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.project.Project
 
-abstract class StopMonitoringAction<TSession : LiveSession> : AnAction() {
+abstract class StopLiveSessionAction<TSession : LiveSession> : AnAction() {
     override fun actionPerformed(event: AnActionEvent) {
         val project = event.project ?: return
         val tab = event.getData(ProcessExplorerTab.PROCESS_EXPLORE_TAB) ?: return

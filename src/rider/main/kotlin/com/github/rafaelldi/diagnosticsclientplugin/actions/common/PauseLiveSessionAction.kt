@@ -8,16 +8,16 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.DataKey
 import com.intellij.openapi.project.Project
 
-abstract class StartMonitoringSessionAction<TSession : LiveSession, TTab : MonitoringTab> : AnAction() {
+abstract class PauseLiveSessionAction<TSession : LiveSession, TTab : MonitoringTab> : AnAction() {
     protected abstract val tabDatKey: DataKey<TTab>
 
     override fun actionPerformed(event: AnActionEvent) {
         val project = event.project ?: return
         val tab = event.getData(tabDatKey) ?: return
-        startSession(tab.pid, project)
+        pauseSession(tab.pid, project)
     }
 
-    protected abstract fun startSession(pid: Int, project: Project)
+    protected abstract fun pauseSession(pid: Int, project: Project)
 
     override fun update(event: AnActionEvent) {
         val project = event.project
@@ -27,7 +27,7 @@ abstract class StartMonitoringSessionAction<TSession : LiveSession, TTab : Monit
         } else {
             val session = getSession(tab.pid, project)
             val isActive = session?.active?.valueOrNull ?: false
-            event.presentation.isEnabled = !isActive
+            event.presentation.isEnabled = isActive
         }
     }
 

@@ -1,6 +1,6 @@
 package com.github.rafaelldi.diagnosticsclientplugin.actions.gc
 
-import com.github.rafaelldi.diagnosticsclientplugin.actions.common.StartMonitoringAction
+import com.github.rafaelldi.diagnosticsclientplugin.actions.common.StartLiveSessionAction
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.GcEventDialog
 import com.github.rafaelldi.diagnosticsclientplugin.generated.LiveGcEventSession
 import com.github.rafaelldi.diagnosticsclientplugin.generated.diagnosticsHostModel
@@ -10,7 +10,7 @@ import com.github.rafaelldi.diagnosticsclientplugin.utils.DotNetProcess
 import com.intellij.openapi.project.Project
 import com.jetbrains.rider.projectView.solution
 
-class StartMonitoringGcEventsAction : StartMonitoringAction<LiveGcEventSession>() {
+class StartLiveGcEventSessionAction : StartLiveSessionAction<LiveGcEventSession>() {
     override fun startSession(selected: DotNetProcess, processes: List<DotNetProcess>, project: Project) {
         val dialog = GcEventDialog(project, selected, processes, false)
         if (dialog.showAndGet()) {

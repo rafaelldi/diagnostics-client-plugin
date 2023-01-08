@@ -1,5 +1,6 @@
 package com.github.rafaelldi.diagnosticsclientplugin.actions.common
 
+import com.github.rafaelldi.diagnosticsclientplugin.generated.LiveSession
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.ProcessExplorerTab
 import com.github.rafaelldi.diagnosticsclientplugin.utils.DotNetProcess
 import com.intellij.openapi.actionSystem.ActionUpdateThread
@@ -7,7 +8,7 @@ import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.project.Project
 
-abstract class StartCollectingAction : AnAction() {
+abstract class StartLiveSessionAction<TSession : LiveSession> : AnAction() {
     override fun actionPerformed(event: AnActionEvent) {
         val project = event.project ?: return
         val tab = event.getData(ProcessExplorerTab.PROCESS_EXPLORE_TAB) ?: return
@@ -27,12 +28,14 @@ abstract class StartCollectingAction : AnAction() {
             if (selected == null) {
                 event.presentation.isEnabled = false
             } else {
-                event.presentation.isEnabledAndVisible = !containsSession(selected, project)
+                val session = getSession(selected, project)
+                val isActive = session?.active?.valueOrNull ?: false
+                event.presentation.isEnabledAndVisible = !isActive
             }
         }
     }
 
-    protected abstract fun containsSession(selected: DotNetProcess, project: Project): Boolean
+    protected abstract fun getSession(selected: DotNetProcess, project: Project): TSession?
 
     override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.EDT
 }

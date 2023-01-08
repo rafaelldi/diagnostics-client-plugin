@@ -12,7 +12,7 @@ class MonitoringTimerDialog(project: Project) : DialogWrapper(project) {
     init {
         init()
         title = "Monitor"
-        setOKButtonText("Start")
+        setOKButtonText("Monitor")
     }
 
     override fun createCenterPanel(): JComponent = panel {
@@ -20,8 +20,8 @@ class MonitoringTimerDialog(project: Project) : DialogWrapper(project) {
 
         buttonsGroup {
             row("Stop monitoring:") {
-                radioButton(StoppingType.Manually.label, StoppingType.Manually)
                 periodStoppingType = radioButton(StoppingType.AfterPeriod.label, StoppingType.AfterPeriod)
+                radioButton(StoppingType.Manually.label, StoppingType.Manually)
             }
         }.bind(model::stoppingType)
         row("Duration (sec.):") {
