@@ -16,10 +16,7 @@ class GcEventSettings(project: Project) : SimplePersistentStateComponent<GcEvent
     }
 
     fun getModel(selected: DotNetProcess) = GcEventModel(
-        SourceProcessType.Attach,
         selected,
-        "",
-        "",
         state.path ?: "",
         state.filename ?: "",
         state.stoppingType,

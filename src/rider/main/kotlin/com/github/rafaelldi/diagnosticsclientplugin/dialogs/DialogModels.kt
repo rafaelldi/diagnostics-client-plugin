@@ -11,28 +11,19 @@ data class CollectDumpModel(
 )
 
 interface LiveModel {
-    var sourceProcessType: SourceProcessType
     var selectedProcess: DotNetProcess?
-    var executablePath: String
-    var executableArgs: String
     var stoppingType: StoppingType
     var duration: Int
 }
 
 interface PersistentModel {
-    var sourceProcessType: SourceProcessType
     var selectedProcess: DotNetProcess?
-    var executablePath: String
-    var executableArgs: String
     var path: String
     var filename: String
 }
 
 data class CounterModel(
-    override var sourceProcessType: SourceProcessType,
     override var selectedProcess: DotNetProcess?,
-    override var executablePath: String,
-    override var executableArgs: String,
     override var path: String,
     override var filename: String,
     var format: CounterFileFormat,
@@ -46,10 +37,7 @@ data class CounterModel(
 ) : LiveModel, PersistentModel
 
 data class GcEventModel(
-    override var sourceProcessType: SourceProcessType,
     override var selectedProcess: DotNetProcess?,
-    override var executablePath: String,
-    override var executableArgs: String,
     override var path: String,
     override var filename: String,
     override var stoppingType: StoppingType,
@@ -57,10 +45,7 @@ data class GcEventModel(
 ) : LiveModel, PersistentModel
 
 data class TraceModel(
-    override var sourceProcessType: SourceProcessType,
     override var selectedProcess: DotNetProcess?,
-    override var executablePath: String,
-    override var executableArgs: String,
     override var path: String,
     override var filename: String,
     override var stoppingType: StoppingType,

@@ -16,10 +16,7 @@ class CounterSettings(project: Project) : SimplePersistentStateComponent<Counter
     }
 
     fun getModel(selected: DotNetProcess) = CounterModel(
-        SourceProcessType.Attach,
         selected,
-        "",
-        "",
         state.path ?: "",
         state.filename ?: "",
         state.format,

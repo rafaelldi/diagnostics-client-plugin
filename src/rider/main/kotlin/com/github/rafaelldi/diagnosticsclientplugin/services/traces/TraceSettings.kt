@@ -27,10 +27,7 @@ class TraceSettings(project: Project) : SimplePersistentStateComponent<TraceSett
     }
 
     fun getModel(selected: DotNetProcess) = TraceModel(
-        SourceProcessType.Attach,
         selected,
-        "",
-        "",
         state.path ?: "",
         state.filename ?: "",
         state.stoppingType,

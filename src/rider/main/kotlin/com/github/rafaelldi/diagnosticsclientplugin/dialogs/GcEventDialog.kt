@@ -2,7 +2,6 @@ package com.github.rafaelldi.diagnosticsclientplugin.dialogs
 
 import com.github.rafaelldi.diagnosticsclientplugin.services.gc.GcEventSettings
 import com.github.rafaelldi.diagnosticsclientplugin.utils.DotNetProcess
-import com.github.rafaelldi.diagnosticsclientplugin.utils.createExecutableDescription
 import com.github.rafaelldi.diagnosticsclientplugin.utils.isValidFilename
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
 import com.intellij.openapi.project.Project
@@ -29,55 +28,22 @@ class GcEventDialog(
     }
 
     override fun createCenterPanel(): JComponent = panel {
-        lateinit var attachToProcess: Cell<JBRadioButton>
-        lateinit var launchNewProcess: Cell<JBRadioButton>
         lateinit var periodStoppingType: Cell<JBRadioButton>
 
         val ps = processes.sortedBy { it.pid }.toList()
-
-        buttonsGroup {
-            row {
-                attachToProcess = radioButton(SourceProcessType.Attach.label, SourceProcessType.Attach)
-                launchNewProcess = radioButton(SourceProcessType.Launch.label, SourceProcessType.Launch)
-            }
-        }.bind(model::sourceProcessType)
 
         row("Process:") {
             comboBox(ps, SimpleListCellRenderer.create("") { "${it.pid} - ${it.name}" })
                 .align(Align.FILL)
                 .validationOnApply {
-                    if (attachToProcess.component.isSelected && it.selectedItem == null) {
+                    if (it.selectedItem == null) {
                         return@validationOnApply error("Please select a process")
                     } else {
                         return@validationOnApply null
                     }
                 }
                 .bindItemNullable(model::selectedProcess)
-        }.visibleIf(attachToProcess.selected)
-            .bottomGap(BottomGap.SMALL)
-
-        row("Executable path:") {
-            textFieldWithBrowseButton(
-                "Select Path",
-                project,
-                createExecutableDescription()
-            )
-                .align(Align.FILL)
-                .validationOnApply {
-                    if (launchNewProcess.component.isSelected && it.text.isEmpty()) {
-                        return@validationOnApply error("Please select an executable")
-                    } else {
-                        return@validationOnApply null
-                    }
-                }
-                .bindText(model::executablePath)
-        }.visibleIf(launchNewProcess.selected)
-        row("Arguments:") {
-            expandableTextField()
-                .align(Align.FILL)
-                .bindText(model::executableArgs)
-        }.visibleIf(launchNewProcess.selected)
-            .bottomGap(BottomGap.SMALL)
+        }.bottomGap(BottomGap.SMALL)
 
         buttonsGroup {
             row("Stop collection:") {
