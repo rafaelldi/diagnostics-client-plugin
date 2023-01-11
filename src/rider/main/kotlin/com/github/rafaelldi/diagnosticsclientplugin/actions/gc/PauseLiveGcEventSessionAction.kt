@@ -4,12 +4,12 @@ import com.github.rafaelldi.diagnosticsclientplugin.actions.common.PauseLiveSess
 import com.github.rafaelldi.diagnosticsclientplugin.generated.LiveGcEventSession
 import com.github.rafaelldi.diagnosticsclientplugin.generated.diagnosticsHostModel
 import com.github.rafaelldi.diagnosticsclientplugin.services.gc.LiveGcEventSessionController
-import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.GcEventMonitoringTab
-import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.GcEventMonitoringTab.Companion.GC_EVENT_MONITORING_TAB
+import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.LiveGcEventSessionTab
+import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.LiveGcEventSessionTab.Companion.GC_EVENT_MONITORING_TAB
 import com.intellij.openapi.project.Project
 import com.jetbrains.rider.projectView.solution
 
-class PauseLiveGcEventSessionAction : PauseLiveSessionAction<LiveGcEventSession, GcEventMonitoringTab>() {
+class PauseLiveGcEventSessionAction : PauseLiveSessionAction<LiveGcEventSession, LiveGcEventSessionTab>() {
     override val tabDatKey = GC_EVENT_MONITORING_TAB
 
     override fun pauseSession(pid: Int, project: Project) {

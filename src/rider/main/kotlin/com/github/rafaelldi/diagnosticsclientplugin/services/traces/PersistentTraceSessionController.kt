@@ -1,8 +1,8 @@
 package com.github.rafaelldi.diagnosticsclientplugin.services.traces
 
-import com.github.rafaelldi.diagnosticsclientplugin.common.collectionSessionAlreadyExists
-import com.github.rafaelldi.diagnosticsclientplugin.common.collectionSessionFinished
-import com.github.rafaelldi.diagnosticsclientplugin.common.collectionSessionStarted
+import com.github.rafaelldi.diagnosticsclientplugin.common.persistentSessionAlreadyExists
+import com.github.rafaelldi.diagnosticsclientplugin.common.persistentSessionFinished
+import com.github.rafaelldi.diagnosticsclientplugin.common.persistentSessionStarted
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.StoppingType
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.TraceModel
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.map
@@ -72,9 +72,9 @@ class PersistentTraceSessionController(project: Project) :
         return providers
     }
 
-    override fun sessionAlreadyExists(pid: Int) = collectionSessionAlreadyExists(TRACES, pid, project)
-    override fun sessionStarted(pid: Int) = collectionSessionStarted(TRACES, pid, project)
+    override fun sessionAlreadyExists(pid: Int) = persistentSessionAlreadyExists(TRACES, pid, project)
+    override fun sessionStarted(pid: Int) = persistentSessionStarted(TRACES, pid, project)
     override fun sessionFinished(pid: Int, session: PersistentTraceSession) =
-        collectionSessionFinished(TRACES, pid, session.filePath, false, project)
+        persistentSessionFinished(TRACES, pid, session.filePath, false, project)
 
 }

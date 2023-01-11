@@ -1,8 +1,8 @@
 package com.github.rafaelldi.diagnosticsclientplugin.services.traces
 
-import com.github.rafaelldi.diagnosticsclientplugin.common.monitoringSessionFinished
-import com.github.rafaelldi.diagnosticsclientplugin.common.monitoringSessionNotFound
-import com.github.rafaelldi.diagnosticsclientplugin.common.monitoringSessionStarted
+import com.github.rafaelldi.diagnosticsclientplugin.common.liveSessionFinished
+import com.github.rafaelldi.diagnosticsclientplugin.common.liveSessionNotFound
+import com.github.rafaelldi.diagnosticsclientplugin.common.liveSessionStarted
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.TraceModel
 import com.github.rafaelldi.diagnosticsclientplugin.generated.LiveTraceSession
 import com.github.rafaelldi.diagnosticsclientplugin.generated.PredefinedProvider
@@ -57,7 +57,7 @@ class LiveTraceSessionController(project: Project) :
         return providers
     }
 
-    override fun sessionNotFound(pid: Int) = monitoringSessionNotFound(TRACES, pid, project)
-    override fun sessionStarted(pid: Int) = monitoringSessionStarted(TRACES, pid, project)
-    override fun sessionFinished(pid: Int) = monitoringSessionFinished(TRACES, pid, project)
+    override fun sessionNotFound(pid: Int) = liveSessionNotFound(TRACES, pid, project)
+    override fun sessionStarted(pid: Int) = liveSessionStarted(TRACES, pid, project)
+    override fun sessionFinished(pid: Int) = liveSessionFinished(TRACES, pid, project)
 }

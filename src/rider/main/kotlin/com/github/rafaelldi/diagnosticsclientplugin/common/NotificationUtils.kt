@@ -6,18 +6,18 @@ import com.intellij.notification.Notification
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.project.Project
 
-fun collectionSessionStarted(type: String, pid: Int, project: Project) = Notification(
+fun persistentSessionStarted(type: String, pid: Int, project: Project) = Notification(
     "Diagnostics Client",
-    "$type collection started 🚀",
+    "$type collection started",
     "Session for process $pid started",
     NotificationType.INFORMATION
 )
     .notify(project)
 
-fun collectionSessionFinished(type: String, pid: Int, filePath: String, openFile: Boolean, project: Project) =
+fun persistentSessionFinished(type: String, pid: Int, filePath: String, openFile: Boolean, project: Project) =
     Notification(
         "Diagnostics Client",
-        "$type collection finished 🎉",
+        "$type collection finished",
         "Session for process $pid finished",
         NotificationType.INFORMATION
     )
@@ -27,7 +27,7 @@ fun collectionSessionFinished(type: String, pid: Int, filePath: String, openFile
         )
         .notify(project)
 
-fun collectionSessionAlreadyExists(type: String, pid: Int, project: Project) = Notification(
+fun persistentSessionAlreadyExists(type: String, pid: Int, project: Project) = Notification(
     "Diagnostics Client",
     "$type collection session for $pid already exists",
     "",
@@ -35,7 +35,7 @@ fun collectionSessionAlreadyExists(type: String, pid: Int, project: Project) = N
 )
     .notify(project)
 
-fun monitoringSessionStarted(type: String, pid: Int, project: Project) = Notification(
+fun liveSessionStarted(type: String, pid: Int, project: Project) = Notification(
     "Diagnostics Client",
     "$type monitoring started",
     "Session for process $pid started",
@@ -43,7 +43,7 @@ fun monitoringSessionStarted(type: String, pid: Int, project: Project) = Notific
 )
     .notify(project)
 
-fun monitoringSessionFinished(type: String, pid: Int, project: Project) = Notification(
+fun liveSessionFinished(type: String, pid: Int, project: Project) = Notification(
     "Diagnostics Client",
     "$type monitoring finished",
     "Session for process $pid finished",
@@ -51,7 +51,7 @@ fun monitoringSessionFinished(type: String, pid: Int, project: Project) = Notifi
 )
     .notify(project)
 
-fun monitoringSessionNotFound(type: String, pid: Int, project: Project) = Notification(
+fun liveSessionNotFound(type: String, pid: Int, project: Project) = Notification(
     "Diagnostics Client",
     "$type monitoring session for $pid not found",
     "",

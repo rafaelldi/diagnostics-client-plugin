@@ -1,14 +1,15 @@
 package com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs
 
 import com.github.rafaelldi.diagnosticsclientplugin.generated.ProcessList
+import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.components.ProcessInfoPanel
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.components.ProcessListComponent
-import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.components.ProcessTablePanel
 import com.github.rafaelldi.diagnosticsclientplugin.utils.DotNetProcess
 import com.intellij.openapi.actionSystem.ActionGroup
 import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.actionSystem.DataKey
 import com.intellij.openapi.ui.SimpleToolWindowPanel
 import com.intellij.ui.OnePixelSplitter
+import com.intellij.ui.components.JBPanelWithEmptyText
 import com.intellij.ui.components.JBScrollPane
 import com.intellij.util.ui.JBUI
 import com.jetbrains.rd.util.lifetime.Lifetime
@@ -25,8 +26,8 @@ class ProcessExplorerTab(private val processList: ProcessList, lt: Lifetime) :
             DataKey.create("DiagnosticsClient.ToolWindow.ProcessExplorerTab")
     }
 
+    private val splitter: OnePixelSplitter
     private val processListComponent: ProcessListComponent = ProcessListComponent()
-    private val processPanelComponent: ProcessTablePanel = ProcessTablePanel()
 
     var selectedProcess: DotNetProcess? = null
         private set
@@ -37,12 +38,10 @@ class ProcessExplorerTab(private val processList: ProcessList, lt: Lifetime) :
     init {
         val listPanel = JBScrollPane(processListComponent)
         listPanel.border = JBUI.Borders.emptyTop(7)
-        val processPanel = JBScrollPane(processPanelComponent)
-        processPanel.border = JBUI.Borders.empty()
 
-        val splitter = OnePixelSplitter(false, SPLITTER_PROPORTION).apply {
+        splitter = OnePixelSplitter(false, SPLITTER_PROPORTION).apply {
             firstComponent = listPanel
-            secondComponent = processPanel
+            secondComponent = JBPanelWithEmptyText()
         }
 
         setContent(splitter)
@@ -80,12 +79,16 @@ class ProcessExplorerTab(private val processList: ProcessList, lt: Lifetime) :
 
         val selected = processListComponent.selectedProcess
         if (selected != null) {
-            selectedProcess = DotNetProcess(selected.first, selected.second)
             val process = processList.items[selected.first] ?: return
-            processPanelComponent.update(selected.first, process)
+
+            selectedProcess = DotNetProcess(selected.first, selected.second)
+
+            val processInfoPanel = JBScrollPane(ProcessInfoPanel(selected.first, process))
+            processInfoPanel.border = JBUI.Borders.empty()
+            splitter.secondComponent = processInfoPanel
         } else {
             selectedProcess = null
-            processPanelComponent.clear()
+            splitter.secondComponent = JBPanelWithEmptyText()
         }
     }
 

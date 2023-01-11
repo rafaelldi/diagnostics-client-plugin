@@ -1,8 +1,8 @@
 package com.github.rafaelldi.diagnosticsclientplugin.services.gc
 
-import com.github.rafaelldi.diagnosticsclientplugin.common.monitoringSessionFinished
-import com.github.rafaelldi.diagnosticsclientplugin.common.monitoringSessionNotFound
-import com.github.rafaelldi.diagnosticsclientplugin.common.monitoringSessionStarted
+import com.github.rafaelldi.diagnosticsclientplugin.common.liveSessionFinished
+import com.github.rafaelldi.diagnosticsclientplugin.common.liveSessionNotFound
+import com.github.rafaelldi.diagnosticsclientplugin.common.liveSessionStarted
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.GcEventModel
 import com.github.rafaelldi.diagnosticsclientplugin.generated.LiveGcEventSession
 import com.github.rafaelldi.diagnosticsclientplugin.generated.diagnosticsHostModel
@@ -32,7 +32,7 @@ class LiveGcEventSessionController(project: Project) :
         return LiveGcEventSession()
     }
 
-    override fun sessionNotFound(pid: Int) = monitoringSessionNotFound(GC_EVENTS, pid, project)
-    override fun sessionStarted(pid: Int) = monitoringSessionStarted(GC_EVENTS, pid, project)
-    override fun sessionFinished(pid: Int) = monitoringSessionFinished(GC_EVENTS, pid, project)
+    override fun sessionNotFound(pid: Int) = liveSessionNotFound(GC_EVENTS, pid, project)
+    override fun sessionStarted(pid: Int) = liveSessionStarted(GC_EVENTS, pid, project)
+    override fun sessionFinished(pid: Int) = liveSessionFinished(GC_EVENTS, pid, project)
 }

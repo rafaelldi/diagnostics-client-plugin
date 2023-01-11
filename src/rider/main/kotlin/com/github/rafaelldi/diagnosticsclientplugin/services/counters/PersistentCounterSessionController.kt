@@ -1,8 +1,8 @@
 package com.github.rafaelldi.diagnosticsclientplugin.services.counters
 
-import com.github.rafaelldi.diagnosticsclientplugin.common.collectionSessionAlreadyExists
-import com.github.rafaelldi.diagnosticsclientplugin.common.collectionSessionFinished
-import com.github.rafaelldi.diagnosticsclientplugin.common.collectionSessionStarted
+import com.github.rafaelldi.diagnosticsclientplugin.common.persistentSessionAlreadyExists
+import com.github.rafaelldi.diagnosticsclientplugin.common.persistentSessionFinished
+import com.github.rafaelldi.diagnosticsclientplugin.common.persistentSessionStarted
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.CounterFileFormat
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.CounterModel
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.StoppingType
@@ -72,8 +72,8 @@ class PersistentCounterSessionController(project: Project) :
         return Path(model.path, filename).pathString
     }
 
-    override fun sessionAlreadyExists(pid: Int) = collectionSessionAlreadyExists(COUNTERS, pid, project)
-    override fun sessionStarted(pid: Int) = collectionSessionStarted(COUNTERS, pid, project)
+    override fun sessionAlreadyExists(pid: Int) = persistentSessionAlreadyExists(COUNTERS, pid, project)
+    override fun sessionStarted(pid: Int) = persistentSessionStarted(COUNTERS, pid, project)
     override fun sessionFinished(pid: Int, session: PersistentCounterSession) =
-        collectionSessionFinished(COUNTERS, pid, session.filePath, true, project)
+        persistentSessionFinished(COUNTERS, pid, session.filePath, true, project)
 }

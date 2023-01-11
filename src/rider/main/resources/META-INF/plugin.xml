@@ -96,7 +96,7 @@
                 </action>
             </group>
             <group id="DiagnosticsClient.ToolWindow.Explorer.Traces"
-                   icon="DiagnosticsClientIcons.Traces"
+                   icon="AllIcons.Toolwindows.ToolWindowMessages"
                    text="Traces"
                    popup="true">
                 <action id="DiagnosticsClient.ToolWindow.Explorer.LiveTraceSession.Start"

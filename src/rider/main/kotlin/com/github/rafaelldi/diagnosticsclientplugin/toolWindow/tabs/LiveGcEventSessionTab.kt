@@ -14,7 +14,7 @@ import com.jetbrains.rd.util.lifetime.Lifetime
 import java.awt.BorderLayout
 import javax.swing.JPanel
 
-class GcEventMonitoringTab(
+class LiveGcEventSessionTab(
     override val pid: Int,
     session: LiveGcEventSession,
     private val manager: GcEventTabManager,
@@ -22,7 +22,7 @@ class GcEventMonitoringTab(
 ) : SimpleToolWindowPanel(false), MonitoringTab, Disposable {
 
     companion object {
-        val GC_EVENT_MONITORING_TAB: DataKey<GcEventMonitoringTab> =
+        val GC_EVENT_MONITORING_TAB: DataKey<LiveGcEventSessionTab> =
             DataKey.create("DiagnosticsClient.ToolWindow.GcEventMonitoringTab")
     }
 

@@ -1,8 +1,8 @@
 package com.github.rafaelldi.diagnosticsclientplugin.services.counters
 
-import com.github.rafaelldi.diagnosticsclientplugin.common.monitoringSessionFinished
-import com.github.rafaelldi.diagnosticsclientplugin.common.monitoringSessionNotFound
-import com.github.rafaelldi.diagnosticsclientplugin.common.monitoringSessionStarted
+import com.github.rafaelldi.diagnosticsclientplugin.common.liveSessionFinished
+import com.github.rafaelldi.diagnosticsclientplugin.common.liveSessionNotFound
+import com.github.rafaelldi.diagnosticsclientplugin.common.liveSessionStarted
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.CounterModel
 import com.github.rafaelldi.diagnosticsclientplugin.generated.LiveCounterSession
 import com.github.rafaelldi.diagnosticsclientplugin.generated.diagnosticsHostModel
@@ -39,7 +39,7 @@ class LiveCounterSessionController(project: Project) :
         )
     }
 
-    override fun sessionNotFound(pid: Int) = monitoringSessionNotFound(COUNTERS, pid, project)
-    override fun sessionStarted(pid: Int) =  monitoringSessionStarted(COUNTERS, pid, project)
-    override fun sessionFinished(pid: Int) = monitoringSessionFinished(COUNTERS, pid, project)
+    override fun sessionNotFound(pid: Int) = liveSessionNotFound(COUNTERS, pid, project)
+    override fun sessionStarted(pid: Int) =  liveSessionStarted(COUNTERS, pid, project)
+    override fun sessionFinished(pid: Int) = liveSessionFinished(COUNTERS, pid, project)
 }

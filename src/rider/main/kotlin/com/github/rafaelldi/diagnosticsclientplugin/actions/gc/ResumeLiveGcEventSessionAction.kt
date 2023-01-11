@@ -5,12 +5,12 @@ import com.github.rafaelldi.diagnosticsclientplugin.dialogs.MonitoringTimerDialo
 import com.github.rafaelldi.diagnosticsclientplugin.generated.LiveGcEventSession
 import com.github.rafaelldi.diagnosticsclientplugin.generated.diagnosticsHostModel
 import com.github.rafaelldi.diagnosticsclientplugin.services.gc.LiveGcEventSessionController
-import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.GcEventMonitoringTab
-import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.GcEventMonitoringTab.Companion.GC_EVENT_MONITORING_TAB
+import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.LiveGcEventSessionTab
+import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.LiveGcEventSessionTab.Companion.GC_EVENT_MONITORING_TAB
 import com.intellij.openapi.project.Project
 import com.jetbrains.rider.projectView.solution
 
-class ResumeLiveGcEventSessionAction : ResumeLiveSessionAction<LiveGcEventSession, GcEventMonitoringTab>() {
+class ResumeLiveGcEventSessionAction : ResumeLiveSessionAction<LiveGcEventSession, LiveGcEventSessionTab>() {
     override val tabDatKey = GC_EVENT_MONITORING_TAB
 
     override fun resumeSession(pid: Int, project: Project) {

@@ -15,7 +15,7 @@ import com.jetbrains.rd.util.reactive.IViewableMap
 import java.awt.BorderLayout
 import javax.swing.JPanel
 
-class CounterMonitoringTab(
+class LiveCounterSessionTab(
     override val pid: Int,
     session: LiveCounterSession,
     private val manager: CounterTabManager,
@@ -23,7 +23,7 @@ class CounterMonitoringTab(
 ) : SimpleToolWindowPanel(false), MonitoringTab, Disposable {
 
     companion object {
-        val COUNTER_MONITORING_TAB: DataKey<CounterMonitoringTab> =
+        val COUNTER_MONITORING_TAB: DataKey<LiveCounterSessionTab> =
             DataKey.create("DiagnosticsClient.ToolWindow.CounterMonitoringTab")
     }
 

@@ -3,8 +3,9 @@ package com.github.rafaelldi.diagnosticsclientplugin.toolWindow
 import com.github.rafaelldi.diagnosticsclientplugin.generated.LiveTraceSession
 import com.github.rafaelldi.diagnosticsclientplugin.generated.diagnosticsHostModel
 import com.github.rafaelldi.diagnosticsclientplugin.services.traces.TraceSessionListener
-import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.TraceMonitoringTab
+import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.LiveTraceSessionTab
 import com.intellij.execution.runners.ExecutionUtil
+import com.intellij.icons.AllIcons
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
@@ -14,7 +15,6 @@ import com.intellij.ui.content.ContentFactory
 import com.jetbrains.rd.platform.util.idea.ProtocolSubscribedProjectComponent
 import com.jetbrains.rd.util.lifetime.Lifetime
 import com.jetbrains.rider.projectView.solution
-import icons.DiagnosticsClientIcons
 
 @Service
 class TraceTabManager(project: Project) : ProtocolSubscribedProjectComponent(project) {
@@ -32,9 +32,9 @@ class TraceTabManager(project: Project) : ProtocolSubscribedProjectComponent(pro
     private fun addTraceSessionTab(lt: Lifetime, pid: Int, session: LiveTraceSession) {
         val toolWindow = DiagnosticsTabManager.getToolWindow(project) ?: return
         val contentFactory = ContentFactory.getInstance()
-        val traceMonitoringTab = TraceMonitoringTab(pid, session, this, project, lt)
-        val content = contentFactory.createContent(traceMonitoringTab, "Traces for $pid", true)
-        content.icon = DiagnosticsClientIcons.Traces
+        val liveTraceSessionTab = LiveTraceSessionTab(pid, session, this, project, lt)
+        val content = contentFactory.createContent(liveTraceSessionTab, "Traces for $pid", true)
+        content.icon = AllIcons.Toolwindows.ToolWindowMessages
         content.putUserData(ToolWindow.SHOW_CONTENT_ICON, true)
         lt.bracketIfAlive(
             { toolWindow.contentManager.addContent(content) },
@@ -45,11 +45,11 @@ class TraceTabManager(project: Project) : ProtocolSubscribedProjectComponent(pro
 
     private fun sessionStatusChanged(isActive: Boolean, content: Content) {
         if (isActive) {
-            content.icon = ExecutionUtil.getLiveIndicator(DiagnosticsClientIcons.Traces)
+            content.icon = ExecutionUtil.getLiveIndicator(AllIcons.Toolwindows.ToolWindowMessages)
             val toolWindow = DiagnosticsTabManager.getToolWindow(project) ?: return
             toolWindow.contentManager.setSelectedContent(content, true, true)
         } else {
-            content.icon = DiagnosticsClientIcons.Traces
+            content.icon = AllIcons.Toolwindows.ToolWindowMessages
         }
     }
 

@@ -9,6 +9,7 @@
 
 ### Changed
 - Update dependencies
+- Process dashboard UI improvements
 
 ## [2022.3.0]
 ### Added

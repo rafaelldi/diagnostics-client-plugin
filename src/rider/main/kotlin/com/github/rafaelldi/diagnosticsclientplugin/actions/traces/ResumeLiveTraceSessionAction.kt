@@ -5,12 +5,12 @@ import com.github.rafaelldi.diagnosticsclientplugin.dialogs.MonitoringTimerDialo
 import com.github.rafaelldi.diagnosticsclientplugin.generated.LiveTraceSession
 import com.github.rafaelldi.diagnosticsclientplugin.generated.diagnosticsHostModel
 import com.github.rafaelldi.diagnosticsclientplugin.services.traces.LiveTraceSessionController
-import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.TraceMonitoringTab
-import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.TraceMonitoringTab.Companion.TRACE_MONITORING_TAB
+import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.LiveTraceSessionTab
+import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.LiveTraceSessionTab.Companion.TRACE_MONITORING_TAB
 import com.intellij.openapi.project.Project
 import com.jetbrains.rider.projectView.solution
 
-class ResumeLiveTraceSessionAction : ResumeLiveSessionAction<LiveTraceSession, TraceMonitoringTab>() {
+class ResumeLiveTraceSessionAction : ResumeLiveSessionAction<LiveTraceSession, LiveTraceSessionTab>() {
     override val tabDatKey = TRACE_MONITORING_TAB
 
     override fun resumeSession(pid: Int, project: Project) {
