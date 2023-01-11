@@ -68,9 +68,8 @@ internal sealed class ProcessHandler
                 var startTime = process.StartTime.ToString(CultureInfo.CurrentCulture);
                 var environment = client
                                       .GetProcessEnvironment()
-                                      ?.Select(it => new ProcessEnvironmentVariable(it.Key, it.Value))
-                                      ?.ToArray()
-                                  ?? Array.Empty<ProcessEnvironmentVariable>();
+                                      .Select(it => new ProcessEnvironmentVariable(it.Key, it.Value))
+                                      .ToArray();
 
                 var processInfo = new ProcessInfo(
                     process.ProcessName,
