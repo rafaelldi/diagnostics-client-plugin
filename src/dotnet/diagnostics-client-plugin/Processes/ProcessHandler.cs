@@ -66,6 +66,11 @@ internal sealed class ProcessHandler
                 var additionalProcessInfo = client.GetProcessInfo();
                 var filename = process.MainModule?.FileName;
                 var startTime = process.StartTime.ToString(CultureInfo.CurrentCulture);
+                var environment = client
+                                      .GetProcessEnvironment()
+                                      ?.Select(it => new ProcessEnvironmentVariable(it.Key, it.Value))
+                                      ?.ToArray()
+                                  ?? Array.Empty<ProcessEnvironmentVariable>();
 
                 var processInfo = new ProcessInfo(
                     process.ProcessName,
@@ -73,7 +78,9 @@ internal sealed class ProcessHandler
                     startTime,
                     additionalProcessInfo.CommandLine,
                     additionalProcessInfo.OperatingSystem,
-                    additionalProcessInfo.ProcessArchitecture);
+                    additionalProcessInfo.ProcessArchitecture,
+                    environment
+                );
 
                 newProcesses[pid] = processInfo;
             }

@@ -6,6 +6,7 @@
 ### Added
 - Action to monitor traces
 - Auto refresh for process tree
+- Environment variables to the process dashboard
 
 ### Changed
 - Update dependencies

@@ -1,7 +1,7 @@
 package com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs
 
 import com.github.rafaelldi.diagnosticsclientplugin.generated.ProcessList
-import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.components.ProcessInfoPanel
+import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.components.ProcessDashboardPanel
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.components.ProcessListComponent
 import com.github.rafaelldi.diagnosticsclientplugin.utils.DotNetProcess
 import com.intellij.openapi.actionSystem.ActionGroup
@@ -83,7 +83,7 @@ class ProcessExplorerTab(private val processList: ProcessList, lt: Lifetime) :
 
             selectedProcess = DotNetProcess(selected.first, selected.second)
 
-            val processInfoPanel = JBScrollPane(ProcessInfoPanel(selected.first, process))
+            val processInfoPanel = JBScrollPane(ProcessDashboardPanel(selected.first, process))
             processInfoPanel.border = JBUI.Borders.empty()
             splitter.secondComponent = processInfoPanel
         } else {

@@ -13,7 +13,7 @@ import icons.RiderIcons
 import java.awt.datatransfer.StringSelection
 import kotlin.io.path.Path
 
-class ProcessInfoPanel(
+class ProcessDashboardPanel(
     pid: Int,
     processInfo: ProcessInfo
 ) : BorderLayoutPanel() {
@@ -84,6 +84,16 @@ class ProcessInfoPanel(
                 }
             }
             separator()
+            if (processInfo.environmentVariables.isNotEmpty()) {
+                row {
+                    label("Environment variables").bold()
+                }.bottomGap(BottomGap.SMALL)
+                for (envVar in processInfo.environmentVariables) {
+                    row {
+                        copyableLabel("${envVar.key} = ${envVar.value}")
+                    }
+                }
+            }
         }
 
         add(panel)

@@ -129,7 +129,7 @@ namespace DiagnosticsClientPlugin.Generated
     
     
     
-    protected override long SerializationHash => -5703539916225151275L;
+    protected override long SerializationHash => -9062585593263317337L;
     
     protected override Action<ISerializers> Register => RegisterDeclaredTypesSerializers;
     public static void RegisterDeclaredTypesSerializers(ISerializers serializers)
@@ -189,7 +189,7 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:138</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:144</p>
   /// </summary>
   public sealed class CollectDumpCommand : IPrintable, IEquatable<CollectDumpCommand>
   {
@@ -307,7 +307,7 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:155</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:161</p>
   /// </summary>
   public sealed class CollectStackTraceCommand : IPrintable, IEquatable<CollectStackTraceCommand>
   {
@@ -390,7 +390,7 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:79</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:85</p>
   /// </summary>
   public sealed class Counter : IPrintable, IEquatable<Counter>
   {
@@ -493,7 +493,7 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:31</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:37</p>
   /// </summary>
   public enum CounterFileFormat {
     Csv,
@@ -502,7 +502,7 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:149</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:155</p>
   /// </summary>
   public sealed class DumpCollectionResult : IPrintable, IEquatable<DumpCollectionResult>
   {
@@ -587,7 +587,7 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:140</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:146</p>
   /// </summary>
   public enum DumpType {
     Full,
@@ -598,7 +598,7 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:85</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:91</p>
   /// </summary>
   public sealed class GcEvent : IPrintable, IEquatable<GcEvent>
   {
@@ -796,7 +796,7 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:61</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:67</p>
   /// </summary>
   public sealed class LiveCounterSession : LiveSession
   {
@@ -925,7 +925,7 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:70</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:76</p>
   /// </summary>
   public sealed class LiveGcEventSession : LiveSession
   {
@@ -1010,7 +1010,7 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:56</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:62</p>
   /// </summary>
   public abstract class LiveSession : RdBindableBase
   {
@@ -1129,7 +1129,7 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:74</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:80</p>
   /// </summary>
   public sealed class LiveTraceSession : LiveSession
   {
@@ -1225,7 +1225,7 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:30</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:36</p>
   /// </summary>
   public sealed class PersistentCounterSession : PersistentSession
   {
@@ -1332,7 +1332,7 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:42</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:48</p>
   /// </summary>
   public sealed class PersistentGcEventSession : PersistentSession
   {
@@ -1399,7 +1399,7 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:25</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:31</p>
   /// </summary>
   public abstract class PersistentSession : RdBindableBase
   {
@@ -1504,7 +1504,7 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:45</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:51</p>
   /// </summary>
   public sealed class PersistentTraceSession : PersistentSession
   {
@@ -1594,7 +1594,7 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:103</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:109</p>
   /// </summary>
   public enum PredefinedProvider {
     Http,
@@ -1611,6 +1611,100 @@ namespace DiagnosticsClientPlugin.Generated
   /// <summary>
   /// <p>Generated from: DiagnosticsHostModel.kt:11</p>
   /// </summary>
+  public sealed class ProcessEnvironmentVariable : IPrintable, IEquatable<ProcessEnvironmentVariable>
+  {
+    //fields
+    //public fields
+    [NotNull] public string Key {get; private set;}
+    [NotNull] public string Value {get; private set;}
+    
+    //private fields
+    //primary constructor
+    public ProcessEnvironmentVariable(
+      [NotNull] string key,
+      [NotNull] string value
+    )
+    {
+      if (key == null) throw new ArgumentNullException("key");
+      if (value == null) throw new ArgumentNullException("value");
+      
+      Key = key;
+      Value = value;
+    }
+    //secondary constructor
+    //deconstruct trait
+    public void Deconstruct([NotNull] out string key, [NotNull] out string value)
+    {
+      key = Key;
+      value = Value;
+    }
+    //statics
+    
+    public static CtxReadDelegate<ProcessEnvironmentVariable> Read = (ctx, reader) => 
+    {
+      var key = reader.ReadString();
+      var value = reader.ReadString();
+      var _result = new ProcessEnvironmentVariable(key, value);
+      return _result;
+    };
+    
+    public static CtxWriteDelegate<ProcessEnvironmentVariable> Write = (ctx, writer, value) => 
+    {
+      writer.Write(value.Key);
+      writer.Write(value.Value);
+    };
+    
+    //constants
+    
+    //custom body
+    //methods
+    //equals trait
+    public override bool Equals(object obj)
+    {
+      if (ReferenceEquals(null, obj)) return false;
+      if (ReferenceEquals(this, obj)) return true;
+      if (obj.GetType() != GetType()) return false;
+      return Equals((ProcessEnvironmentVariable) obj);
+    }
+    public bool Equals(ProcessEnvironmentVariable other)
+    {
+      if (ReferenceEquals(null, other)) return false;
+      if (ReferenceEquals(this, other)) return true;
+      return Key == other.Key && Value == other.Value;
+    }
+    //hash code trait
+    public override int GetHashCode()
+    {
+      unchecked {
+        var hash = 0;
+        hash = hash * 31 + Key.GetHashCode();
+        hash = hash * 31 + Value.GetHashCode();
+        return hash;
+      }
+    }
+    //pretty print
+    public void Print(PrettyPrinter printer)
+    {
+      printer.Println("ProcessEnvironmentVariable (");
+      using (printer.IndentCookie()) {
+        printer.Print("key = "); Key.PrintEx(printer); printer.Println();
+        printer.Print("value = "); Value.PrintEx(printer); printer.Println();
+      }
+      printer.Print(")");
+    }
+    //toString
+    public override string ToString()
+    {
+      var printer = new SingleLinePrettyPrinter();
+      Print(printer);
+      return printer.ToString();
+    }
+  }
+  
+  
+  /// <summary>
+  /// <p>Generated from: DiagnosticsHostModel.kt:16</p>
+  /// </summary>
   public sealed class ProcessInfo : IPrintable, IEquatable<ProcessInfo>
   {
     //fields
@@ -1621,6 +1715,7 @@ namespace DiagnosticsClientPlugin.Generated
     [CanBeNull] public string CommandLine {get; private set;}
     [CanBeNull] public string OperatingSystem {get; private set;}
     [CanBeNull] public string ProcessArchitecture {get; private set;}
+    [NotNull] public ProcessEnvironmentVariable[] EnvironmentVariables {get; private set;}
     
     //private fields
     //primary constructor
@@ -1630,10 +1725,12 @@ namespace DiagnosticsClientPlugin.Generated
       [CanBeNull] string startTime,
       [CanBeNull] string commandLine,
       [CanBeNull] string operatingSystem,
-      [CanBeNull] string processArchitecture
+      [CanBeNull] string processArchitecture,
+      [NotNull] ProcessEnvironmentVariable[] environmentVariables
     )
     {
       if (processName == null) throw new ArgumentNullException("processName");
+      if (environmentVariables == null) throw new ArgumentNullException("environmentVariables");
       
       ProcessName = processName;
       Filename = filename;
@@ -1641,10 +1738,11 @@ namespace DiagnosticsClientPlugin.Generated
       CommandLine = commandLine;
       OperatingSystem = operatingSystem;
       ProcessArchitecture = processArchitecture;
+      EnvironmentVariables = environmentVariables;
     }
     //secondary constructor
     //deconstruct trait
-    public void Deconstruct([NotNull] out string processName, [CanBeNull] out string filename, [CanBeNull] out string startTime, [CanBeNull] out string commandLine, [CanBeNull] out string operatingSystem, [CanBeNull] out string processArchitecture)
+    public void Deconstruct([NotNull] out string processName, [CanBeNull] out string filename, [CanBeNull] out string startTime, [CanBeNull] out string commandLine, [CanBeNull] out string operatingSystem, [CanBeNull] out string processArchitecture, [NotNull] out ProcessEnvironmentVariable[] environmentVariables)
     {
       processName = ProcessName;
       filename = Filename;
@@ -1652,6 +1750,7 @@ namespace DiagnosticsClientPlugin.Generated
       commandLine = CommandLine;
       operatingSystem = OperatingSystem;
       processArchitecture = ProcessArchitecture;
+      environmentVariables = EnvironmentVariables;
     }
     //statics
     
@@ -1663,10 +1762,12 @@ namespace DiagnosticsClientPlugin.Generated
       var commandLine = ReadStringNullable(ctx, reader);
       var operatingSystem = ReadStringNullable(ctx, reader);
       var processArchitecture = ReadStringNullable(ctx, reader);
-      var _result = new ProcessInfo(processName, filename, startTime, commandLine, operatingSystem, processArchitecture);
+      var environmentVariables = ReadProcessEnvironmentVariableArray(ctx, reader);
+      var _result = new ProcessInfo(processName, filename, startTime, commandLine, operatingSystem, processArchitecture, environmentVariables);
       return _result;
     };
     public static CtxReadDelegate<string> ReadStringNullable = JetBrains.Rd.Impl.Serializers.ReadString.NullableClass();
+    public static CtxReadDelegate<ProcessEnvironmentVariable[]> ReadProcessEnvironmentVariableArray = ProcessEnvironmentVariable.Read.Array();
     
     public static CtxWriteDelegate<ProcessInfo> Write = (ctx, writer, value) => 
     {
@@ -1676,8 +1777,10 @@ namespace DiagnosticsClientPlugin.Generated
       WriteStringNullable(ctx, writer, value.CommandLine);
       WriteStringNullable(ctx, writer, value.OperatingSystem);
       WriteStringNullable(ctx, writer, value.ProcessArchitecture);
+      WriteProcessEnvironmentVariableArray(ctx, writer, value.EnvironmentVariables);
     };
     public static  CtxWriteDelegate<string> WriteStringNullable = JetBrains.Rd.Impl.Serializers.WriteString.NullableClass();
+    public static  CtxWriteDelegate<ProcessEnvironmentVariable[]> WriteProcessEnvironmentVariableArray = ProcessEnvironmentVariable.Write.Array();
     
     //constants
     
@@ -1695,7 +1798,7 @@ namespace DiagnosticsClientPlugin.Generated
     {
       if (ReferenceEquals(null, other)) return false;
       if (ReferenceEquals(this, other)) return true;
-      return ProcessName == other.ProcessName && Equals(Filename, other.Filename) && Equals(StartTime, other.StartTime) && Equals(CommandLine, other.CommandLine) && Equals(OperatingSystem, other.OperatingSystem) && Equals(ProcessArchitecture, other.ProcessArchitecture);
+      return ProcessName == other.ProcessName && Equals(Filename, other.Filename) && Equals(StartTime, other.StartTime) && Equals(CommandLine, other.CommandLine) && Equals(OperatingSystem, other.OperatingSystem) && Equals(ProcessArchitecture, other.ProcessArchitecture) && EnvironmentVariables.SequenceEqual(other.EnvironmentVariables);
     }
     //hash code trait
     public override int GetHashCode()
@@ -1708,6 +1811,7 @@ namespace DiagnosticsClientPlugin.Generated
         hash = hash * 31 + (CommandLine != null ? CommandLine.GetHashCode() : 0);
         hash = hash * 31 + (OperatingSystem != null ? OperatingSystem.GetHashCode() : 0);
         hash = hash * 31 + (ProcessArchitecture != null ? ProcessArchitecture.GetHashCode() : 0);
+        hash = hash * 31 + EnvironmentVariables.ContentHashCode();
         return hash;
       }
     }
@@ -1722,6 +1826,7 @@ namespace DiagnosticsClientPlugin.Generated
         printer.Print("commandLine = "); CommandLine.PrintEx(printer); printer.Println();
         printer.Print("operatingSystem = "); OperatingSystem.PrintEx(printer); printer.Println();
         printer.Print("processArchitecture = "); ProcessArchitecture.PrintEx(printer); printer.Println();
+        printer.Print("environmentVariables = "); EnvironmentVariables.PrintEx(printer); printer.Println();
       }
       printer.Print(")");
     }
@@ -1736,7 +1841,7 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:20</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:26</p>
   /// </summary>
   public sealed class ProcessList : RdBindableBase
   {
@@ -1818,7 +1923,7 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:114</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:120</p>
   /// </summary>
   public sealed class Trace : IPrintable, IEquatable<Trace>
   {
@@ -1928,7 +2033,7 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:46</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:52</p>
   /// </summary>
   public enum TracingProfile {
     None,

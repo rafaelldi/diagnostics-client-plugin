@@ -8,6 +8,11 @@ import com.jetbrains.rider.model.nova.ide.SolutionModel
 
 @Suppress("unused")
 object DiagnosticsHostModel : Ext(SolutionModel.Solution) {
+    private val ProcessEnvironmentVariable = structdef {
+        field("key", string)
+        field("value", string)
+    }
+
     private val ProcessInfo = structdef {
         field("processName", string)
         field("filename", string.nullable)
@@ -15,6 +20,7 @@ object DiagnosticsHostModel : Ext(SolutionModel.Solution) {
         field("commandLine", string.nullable)
         field("operatingSystem", string.nullable)
         field("processArchitecture", string.nullable)
+        field("environmentVariables", array(ProcessEnvironmentVariable))
     }
 
     private val ProcessList = aggregatedef("ProcessList") {

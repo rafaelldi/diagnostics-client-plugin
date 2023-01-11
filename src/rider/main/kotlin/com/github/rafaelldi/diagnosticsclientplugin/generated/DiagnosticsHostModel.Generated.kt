@@ -35,6 +35,7 @@ class DiagnosticsHostModel private constructor(
     companion object : ISerializersOwner {
         
         override fun registerSerializersCore(serializers: ISerializers)  {
+            serializers.register(ProcessEnvironmentVariable)
             serializers.register(ProcessInfo)
             serializers.register(ProcessList)
             serializers.register(PersistentCounterSession)
@@ -61,7 +62,7 @@ class DiagnosticsHostModel private constructor(
         
         
         
-        const val serializationHash = -5703539916225151275L
+        const val serializationHash = -9062585593263317337L
         
     }
     override val serializersOwner: ISerializersOwner get() = DiagnosticsHostModel
@@ -148,7 +149,7 @@ val com.jetbrains.rd.ide.model.Solution.diagnosticsHostModel get() = getOrCreate
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:138]
+ * #### Generated from [DiagnosticsHostModel.kt:144]
  */
 data class CollectDumpCommand (
     val pid: Int,
@@ -229,7 +230,7 @@ data class CollectDumpCommand (
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:155]
+ * #### Generated from [DiagnosticsHostModel.kt:161]
  */
 data class CollectStackTraceCommand (
     val pid: Int
@@ -286,7 +287,7 @@ data class CollectStackTraceCommand (
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:79]
+ * #### Generated from [DiagnosticsHostModel.kt:85]
  */
 data class Counter (
     val name: String,
@@ -355,7 +356,7 @@ data class Counter (
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:31]
+ * #### Generated from [DiagnosticsHostModel.kt:37]
  */
 enum class CounterFileFormat {
     Csv, 
@@ -369,7 +370,7 @@ enum class CounterFileFormat {
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:149]
+ * #### Generated from [DiagnosticsHostModel.kt:155]
  */
 data class DumpCollectionResult (
     val filePath: String
@@ -426,7 +427,7 @@ data class DumpCollectionResult (
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:140]
+ * #### Generated from [DiagnosticsHostModel.kt:146]
  */
 enum class DumpType {
     Full, 
@@ -442,7 +443,7 @@ enum class DumpType {
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:85]
+ * #### Generated from [DiagnosticsHostModel.kt:91]
  */
 data class GcEvent (
     val number: Int,
@@ -583,7 +584,7 @@ data class GcEvent (
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:61]
+ * #### Generated from [DiagnosticsHostModel.kt:67]
  */
 class LiveCounterSession private constructor(
     private val _counters: RdMap<String, Counter>,
@@ -701,7 +702,7 @@ class LiveCounterSession private constructor(
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:70]
+ * #### Generated from [DiagnosticsHostModel.kt:76]
  */
 class LiveGcEventSession private constructor(
     private val _gcHappened: RdSignal<GcEvent>,
@@ -780,7 +781,7 @@ class LiveGcEventSession private constructor(
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:56]
+ * #### Generated from [DiagnosticsHostModel.kt:62]
  */
 abstract class LiveSession (
     protected val _active: RdOptionalProperty<Boolean>,
@@ -894,7 +895,7 @@ class LiveSession_Unknown (
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:74]
+ * #### Generated from [DiagnosticsHostModel.kt:80]
  */
 class LiveTraceSession private constructor(
     private val _traceReceived: RdSignal<Trace>,
@@ -980,7 +981,7 @@ class LiveTraceSession private constructor(
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:30]
+ * #### Generated from [DiagnosticsHostModel.kt:36]
  */
 class PersistentCounterSession (
     val format: CounterFileFormat,
@@ -1067,7 +1068,7 @@ class PersistentCounterSession (
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:42]
+ * #### Generated from [DiagnosticsHostModel.kt:48]
  */
 class PersistentGcEventSession (
     duration: Int?,
@@ -1124,7 +1125,7 @@ class PersistentGcEventSession (
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:25]
+ * #### Generated from [DiagnosticsHostModel.kt:31]
  */
 abstract class PersistentSession (
     val duration: Int?,
@@ -1214,7 +1215,7 @@ class PersistentSession_Unknown (
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:45]
+ * #### Generated from [DiagnosticsHostModel.kt:51]
  */
 class PersistentTraceSession (
     val profile: TracingProfile,
@@ -1286,7 +1287,7 @@ class PersistentTraceSession (
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:103]
+ * #### Generated from [DiagnosticsHostModel.kt:109]
  */
 enum class PredefinedProvider {
     Http, 
@@ -1308,13 +1309,77 @@ enum class PredefinedProvider {
 /**
  * #### Generated from [DiagnosticsHostModel.kt:11]
  */
+data class ProcessEnvironmentVariable (
+    val key: String,
+    val value: String
+) : IPrintable {
+    //companion
+    
+    companion object : IMarshaller<ProcessEnvironmentVariable> {
+        override val _type: KClass<ProcessEnvironmentVariable> = ProcessEnvironmentVariable::class
+        
+        @Suppress("UNCHECKED_CAST")
+        override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): ProcessEnvironmentVariable  {
+            val key = buffer.readString()
+            val value = buffer.readString()
+            return ProcessEnvironmentVariable(key, value)
+        }
+        
+        override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: ProcessEnvironmentVariable)  {
+            buffer.writeString(value.key)
+            buffer.writeString(value.value)
+        }
+        
+        
+    }
+    //fields
+    //methods
+    //initializer
+    //secondary constructor
+    //equals trait
+    override fun equals(other: Any?): Boolean  {
+        if (this === other) return true
+        if (other == null || other::class != this::class) return false
+        
+        other as ProcessEnvironmentVariable
+        
+        if (key != other.key) return false
+        if (value != other.value) return false
+        
+        return true
+    }
+    //hash code trait
+    override fun hashCode(): Int  {
+        var __r = 0
+        __r = __r*31 + key.hashCode()
+        __r = __r*31 + value.hashCode()
+        return __r
+    }
+    //pretty print
+    override fun print(printer: PrettyPrinter)  {
+        printer.println("ProcessEnvironmentVariable (")
+        printer.indent {
+            print("key = "); key.print(printer); println()
+            print("value = "); value.print(printer); println()
+        }
+        printer.print(")")
+    }
+    //deepClone
+    //contexts
+}
+
+
+/**
+ * #### Generated from [DiagnosticsHostModel.kt:16]
+ */
 data class ProcessInfo (
     val processName: String,
     val filename: String?,
     val startTime: String?,
     val commandLine: String?,
     val operatingSystem: String?,
-    val processArchitecture: String?
+    val processArchitecture: String?,
+    val environmentVariables: Array<ProcessEnvironmentVariable>
 ) : IPrintable {
     //companion
     
@@ -1329,7 +1394,8 @@ data class ProcessInfo (
             val commandLine = buffer.readNullable { buffer.readString() }
             val operatingSystem = buffer.readNullable { buffer.readString() }
             val processArchitecture = buffer.readNullable { buffer.readString() }
-            return ProcessInfo(processName, filename, startTime, commandLine, operatingSystem, processArchitecture)
+            val environmentVariables = buffer.readArray {ProcessEnvironmentVariable.read(ctx, buffer)}
+            return ProcessInfo(processName, filename, startTime, commandLine, operatingSystem, processArchitecture, environmentVariables)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: ProcessInfo)  {
@@ -1339,6 +1405,7 @@ data class ProcessInfo (
             buffer.writeNullable(value.commandLine) { buffer.writeString(it) }
             buffer.writeNullable(value.operatingSystem) { buffer.writeString(it) }
             buffer.writeNullable(value.processArchitecture) { buffer.writeString(it) }
+            buffer.writeArray(value.environmentVariables) { ProcessEnvironmentVariable.write(ctx, buffer, it) }
         }
         
         
@@ -1360,6 +1427,7 @@ data class ProcessInfo (
         if (commandLine != other.commandLine) return false
         if (operatingSystem != other.operatingSystem) return false
         if (processArchitecture != other.processArchitecture) return false
+        if (!(environmentVariables contentDeepEquals other.environmentVariables)) return false
         
         return true
     }
@@ -1372,6 +1440,7 @@ data class ProcessInfo (
         __r = __r*31 + if (commandLine != null) commandLine.hashCode() else 0
         __r = __r*31 + if (operatingSystem != null) operatingSystem.hashCode() else 0
         __r = __r*31 + if (processArchitecture != null) processArchitecture.hashCode() else 0
+        __r = __r*31 + environmentVariables.contentDeepHashCode()
         return __r
     }
     //pretty print
@@ -1384,6 +1453,7 @@ data class ProcessInfo (
             print("commandLine = "); commandLine.print(printer); println()
             print("operatingSystem = "); operatingSystem.print(printer); println()
             print("processArchitecture = "); processArchitecture.print(printer); println()
+            print("environmentVariables = "); environmentVariables.print(printer); println()
         }
         printer.print(")")
     }
@@ -1393,7 +1463,7 @@ data class ProcessInfo (
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:20]
+ * #### Generated from [DiagnosticsHostModel.kt:26]
  */
 class ProcessList private constructor(
     private val _active: RdOptionalProperty<Boolean>,
@@ -1469,7 +1539,7 @@ class ProcessList private constructor(
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:114]
+ * #### Generated from [DiagnosticsHostModel.kt:120]
  */
 data class Trace (
     val eventName: String,
@@ -1544,7 +1614,7 @@ data class Trace (
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:46]
+ * #### Generated from [DiagnosticsHostModel.kt:52]
  */
 enum class TracingProfile {
     None, 
