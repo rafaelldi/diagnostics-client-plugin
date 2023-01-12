@@ -5,26 +5,24 @@ import com.github.rafaelldi.diagnosticsclientplugin.generated.diagnosticsHostMod
 import com.github.rafaelldi.diagnosticsclientplugin.services.counters.CounterSessionListener
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.LiveCounterSessionTab
 import com.intellij.execution.runners.ExecutionUtil
-import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.wm.ToolWindow
 import com.intellij.ui.content.Content
 import com.intellij.ui.content.ContentFactory
-import com.jetbrains.rd.platform.util.idea.ProtocolSubscribedProjectComponent
+import com.jetbrains.rd.platform.util.idea.LifetimedService
 import com.jetbrains.rd.util.lifetime.Lifetime
 import com.jetbrains.rider.projectView.solution
 import icons.DiagnosticsClientIcons
 
-@Service
-class CounterTabManager(project: Project) : ProtocolSubscribedProjectComponent(project) {
+class CounterTabManager(private val project: Project) : LifetimedService() {
     companion object {
         fun getInstance(project: Project): CounterTabManager = project.service()
     }
 
     init {
         val model = project.solution.diagnosticsHostModel
-        model.liveCounterSessions.view(projectComponentLifetime) { lt, pid, session ->
+        model.liveCounterSessions.view(serviceLifetime) { lt, pid, session ->
             addCounterSessionTab(lt, pid, session)
         }
     }

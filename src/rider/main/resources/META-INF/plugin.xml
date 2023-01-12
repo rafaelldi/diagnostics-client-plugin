@@ -15,6 +15,10 @@
                     factoryClass="com.github.rafaelldi.diagnosticsclientplugin.toolWindow.DiagnosticsToolWindowFactory"/>
         <webHelpProvider implementation="com.github.rafaelldi.diagnosticsclientplugin.DiagnosticsClientHelpProvider"/>
 
+        <projectService serviceImplementation="com.github.rafaelldi.diagnosticsclientplugin.toolWindow.CounterTabManager" preload="true"/>
+        <projectService serviceImplementation="com.github.rafaelldi.diagnosticsclientplugin.toolWindow.GcEventTabManager" preload="true"/>
+        <projectService serviceImplementation="com.github.rafaelldi.diagnosticsclientplugin.toolWindow.TraceTabManager" preload="true"/>
+
         <notificationGroup id="Diagnostics Client" displayType="BALLOON"/>
     </extensions>
 
