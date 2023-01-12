@@ -166,13 +166,13 @@
         <group id="DiagnosticsClient.ToolWindow.CounterSession">
             <action id="DiagnosticsClient.ToolWindow.LiveCounterSession.Resume"
                     class="com.github.rafaelldi.diagnosticsclientplugin.actions.counters.ResumeLiveCounterSessionAction"
-                    text="Resume Counter Monitoring Session"
+                    text="Resume Session"
                     description="Resume counter monitoring session"
                     icon="AllIcons.Actions.Resume">
             </action>
             <action id="DiagnosticsClient.ToolWindow.LiveCounterSession.Pause"
                     class="com.github.rafaelldi.diagnosticsclientplugin.actions.counters.PauseLiveCounterSessionAction"
-                    text="Pause Counter Monitoring Session"
+                    text="Pause Session"
                     description="Pause counter monitoring session"
                     icon="AllIcons.Actions.Pause">
             </action>
@@ -180,13 +180,13 @@
         <group id="DiagnosticsClient.ToolWindow.GcEventSession">
             <action id="DiagnosticsClient.ToolWindow.LiveGcEventSession.Resume"
                     class="com.github.rafaelldi.diagnosticsclientplugin.actions.gc.ResumeLiveGcEventSessionAction"
-                    text="Resume GC Event Monitoring Session"
+                    text="Resume Session"
                     description="Resume GC event monitoring session"
                     icon="AllIcons.Actions.Resume">
             </action>
             <action id="DiagnosticsClient.ToolWindow.LiveGcEventSession.Pause"
                     class="com.github.rafaelldi.diagnosticsclientplugin.actions.gc.PauseLiveGcEventSessionAction"
-                    text="Pause GC Event Monitoring Session"
+                    text="Pause Session"
                     description="Pause GC event monitoring session"
                     icon="AllIcons.Actions.Pause">
             </action>
@@ -200,13 +200,13 @@
         <group id="DiagnosticsClient.ToolWindow.TraceSession">
             <action id="DiagnosticsClient.ToolWindow.LiveTraceSession.Resume"
                     class="com.github.rafaelldi.diagnosticsclientplugin.actions.traces.ResumeLiveTraceSessionAction"
-                    text="Resume Trace Monitoring Session"
+                    text="Resume Session"
                     description="Resume trace monitoring session"
                     icon="AllIcons.Actions.Resume">
             </action>
             <action id="DiagnosticsClient.ToolWindow.LiveTraceSession.Pause"
                     class="com.github.rafaelldi.diagnosticsclientplugin.actions.traces.PauseLiveTraceSessionAction"
-                    text="Pause Trace Monitoring Session"
+                    text="Pause Session"
                     description="Pause trace monitoring session"
                     icon="AllIcons.Actions.Pause">
             </action>
