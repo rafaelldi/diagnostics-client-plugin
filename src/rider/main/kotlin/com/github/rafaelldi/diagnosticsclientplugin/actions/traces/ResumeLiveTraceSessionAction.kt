@@ -19,7 +19,7 @@ class ResumeLiveTraceSessionAction : ResumeLiveSessionAction<LiveTraceSession, L
             val model = dialog.getModel()
             LiveTraceSessionController
                 .getInstance(project)
-                .startExistingSession(pid, model.stoppingType, model.duration)
+                .resumeSession(pid, model.stoppingType, model.duration)
         }
     }
 

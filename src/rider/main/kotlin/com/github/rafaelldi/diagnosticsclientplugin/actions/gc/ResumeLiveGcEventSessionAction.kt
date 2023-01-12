@@ -19,7 +19,7 @@ class ResumeLiveGcEventSessionAction : ResumeLiveSessionAction<LiveGcEventSessio
             val model = dialog.getModel()
             LiveGcEventSessionController
                 .getInstance(project)
-                .startExistingSession(pid, model.stoppingType, model.duration)
+                .resumeSession(pid, model.stoppingType, model.duration)
         }
     }
 

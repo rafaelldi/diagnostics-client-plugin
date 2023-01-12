@@ -13,7 +13,7 @@ class PauseLiveTraceSessionAction : PauseLiveSessionAction<LiveTraceSession, Liv
     override val tabDatKey = TRACE_MONITORING_TAB
 
     override fun pauseSession(pid: Int, project: Project) {
-        LiveTraceSessionController.getInstance(project).stopSession(pid)
+        LiveTraceSessionController.getInstance(project).pauseSession(pid)
     }
 
     override fun getSession(pid: Int, project: Project) =

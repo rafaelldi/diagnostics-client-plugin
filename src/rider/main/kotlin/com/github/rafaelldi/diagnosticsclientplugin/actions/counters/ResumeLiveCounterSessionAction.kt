@@ -19,7 +19,7 @@ class ResumeLiveCounterSessionAction : ResumeLiveSessionAction<LiveCounterSessio
             val model = dialog.getModel()
             LiveCounterSessionController
                 .getInstance(project)
-                .startExistingSession(pid, model.stoppingType, model.duration)
+                .resumeSession(pid, model.stoppingType, model.duration)
         }
     }
 

@@ -13,7 +13,7 @@ class PauseLiveGcEventSessionAction : PauseLiveSessionAction<LiveGcEventSession,
     override val tabDatKey = GC_EVENT_MONITORING_TAB
 
     override fun pauseSession(pid: Int, project: Project) {
-        LiveGcEventSessionController.getInstance(project).stopSession(pid)
+        LiveGcEventSessionController.getInstance(project).pauseSession(pid)
     }
 
     override fun getSession(pid: Int, project: Project) =

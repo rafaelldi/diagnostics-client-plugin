@@ -43,7 +43,11 @@ abstract class LiveSessionController<TSession : LiveSession, TModel : LiveModel>
 
     protected abstract fun createSession(model: TModel): TSession
 
-    fun startExistingSession(pid: Int, stoppingType: StoppingType, duration: Int) {
+    fun resumeSession(pid: Int, stoppingType: StoppingType, duration: Int) {
+        startExistingSession(pid, stoppingType, duration)
+    }
+
+    private fun startExistingSession(pid: Int, stoppingType: StoppingType, duration: Int) {
         val session = sessions[pid]
         if (session == null) {
             sessionNotFound(pid)
@@ -63,7 +67,7 @@ abstract class LiveSessionController<TSession : LiveSession, TModel : LiveModel>
         session.active.set(true)
     }
 
-    fun stopSession(pid: Int) {
+    fun pauseSession(pid: Int) {
         val session = sessions[pid]
         if (session == null) {
             sessionNotFound(pid)

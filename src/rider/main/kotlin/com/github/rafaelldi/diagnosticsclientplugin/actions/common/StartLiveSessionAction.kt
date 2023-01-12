@@ -29,8 +29,7 @@ abstract class StartLiveSessionAction<TSession : LiveSession> : AnAction() {
                 event.presentation.isEnabled = false
             } else {
                 val session = getSession(selected, project)
-                val isActive = session?.active?.valueOrNull ?: false
-                event.presentation.isEnabledAndVisible = !isActive
+                event.presentation.isEnabledAndVisible = session == null
             }
         }
     }

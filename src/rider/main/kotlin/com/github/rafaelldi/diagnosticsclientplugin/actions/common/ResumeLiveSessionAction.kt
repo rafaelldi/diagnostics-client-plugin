@@ -2,6 +2,7 @@ package com.github.rafaelldi.diagnosticsclientplugin.actions.common
 
 import com.github.rafaelldi.diagnosticsclientplugin.generated.LiveSession
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.MonitoringTab
+import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.ProcessExplorerTab
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
@@ -13,22 +14,36 @@ abstract class ResumeLiveSessionAction<TSession : LiveSession, TTab : Monitoring
 
     override fun actionPerformed(event: AnActionEvent) {
         val project = event.project ?: return
-        val tab = event.getData(tabDatKey) ?: return
-        resumeSession(tab.pid, project)
+        val pid = getProcessId(event) ?: return
+        resumeSession(pid, project)
     }
 
     protected abstract fun resumeSession(pid: Int, project: Project)
 
     override fun update(event: AnActionEvent) {
         val project = event.project
-        val tab = event.getData(tabDatKey)
-        if (project == null || tab == null) {
+        val pid = getProcessId(event)
+        if (project == null || pid == null) {
             event.presentation.isEnabled = false
         } else {
-            val session = getSession(tab.pid, project)
-            val isActive = session?.active?.valueOrNull ?: false
-            event.presentation.isEnabled = !isActive
+            val session = getSession(pid, project)
+            val isActive = session?.active?.valueOrNull
+            if (isActive == null) {
+                event.presentation.isEnabledAndVisible = false
+            } else {
+                event.presentation.isEnabledAndVisible = !isActive
+            }
         }
+    }
+
+    private fun getProcessId(event: AnActionEvent): Int? {
+        val tab = event.getData(tabDatKey)
+        if (tab != null) return tab.pid
+
+        val explorer = event.getData(ProcessExplorerTab.PROCESS_EXPLORE_TAB)
+        if (explorer != null) return explorer.selectedProcess?.pid
+
+        return null
     }
 
     protected abstract fun getSession(pid: Int, project: Project): TSession?

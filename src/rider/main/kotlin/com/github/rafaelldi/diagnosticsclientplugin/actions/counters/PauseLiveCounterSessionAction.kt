@@ -13,7 +13,7 @@ class PauseLiveCounterSessionAction : PauseLiveSessionAction<LiveCounterSession,
     override val tabDatKey = COUNTER_MONITORING_TAB
 
     override fun pauseSession(pid: Int, project: Project) {
-        LiveCounterSessionController.getInstance(project).stopSession(pid)
+        LiveCounterSessionController.getInstance(project).pauseSession(pid)
     }
 
     override fun getSession(pid: Int, project: Project) =
