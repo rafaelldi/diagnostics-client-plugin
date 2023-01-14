@@ -5,7 +5,7 @@ fun properties(key: String) = project.findProperty(key).toString()
 
 plugins {
     id("org.jetbrains.kotlin.jvm") version "1.8.0"
-    id("org.jetbrains.intellij") version "1.11.0"
+    id("org.jetbrains.intellij") version "1.12.0"
     id("org.jetbrains.changelog") version "2.0.0"
     id("org.jetbrains.qodana") version "0.1.13"
     id("com.jetbrains.rdgen") version "2023.1.1" // https://search.maven.org/artifact/com.jetbrains.rd/rd-gen
@@ -132,7 +132,8 @@ tasks {
         changeNotes.set(provider {
             with(changelog) {
                 renderItem(
-                    getOrNull(properties("pluginVersion")) ?: getLatest(),
+                    getOrNull(properties("pluginVersion"))
+                        ?: runCatching { getLatest() }.getOrElse { getUnreleased() },
                     Changelog.OutputType.HTML
                 )
             }
