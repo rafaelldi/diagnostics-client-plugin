@@ -46,7 +46,7 @@ class GcEventDialog(
         }.bottomGap(BottomGap.SMALL)
 
         buttonsGroup {
-            row("Stop collection:") {
+            row("Stop:") {
                 radioButton(StoppingType.Manually.label, StoppingType.Manually)
                 periodStoppingType = radioButton(StoppingType.AfterPeriod.label, StoppingType.AfterPeriod)
             }

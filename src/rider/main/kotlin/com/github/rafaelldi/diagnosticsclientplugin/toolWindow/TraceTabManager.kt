@@ -54,4 +54,10 @@ class TraceTabManager(private val project: Project) : LifetimedService() {
     fun tabClosed(pid: Int) {
         project.messageBus.syncPublisher(TraceSessionListener.TOPIC).sessionClosed(pid)
     }
+
+    fun activateTab(pid: Int) {
+        val toolWindow = DiagnosticsTabManager.getToolWindow(project) ?: return
+        val content = toolWindow.contentManager.findContent("Traces for $pid") ?: return
+        toolWindow.contentManager.setSelectedContent(content, true, true)
+    }
 }

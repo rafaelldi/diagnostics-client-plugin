@@ -3,12 +3,14 @@ package com.github.rafaelldi.diagnosticsclientplugin.toolWindow.components
 import com.github.rafaelldi.diagnosticsclientplugin.generated.ProcessInfo
 import com.intellij.icons.AllIcons
 import com.intellij.ide.actions.RevealFileAction
+import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.ide.CopyPasteManager
 import com.intellij.ui.dsl.builder.BottomGap
 import com.intellij.ui.dsl.builder.RightGap
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.util.ui.JBUI
 import com.intellij.util.ui.components.BorderLayoutPanel
+import icons.DiagnosticsClientIcons
 import icons.RiderIcons
 import java.awt.datatransfer.StringSelection
 import kotlin.io.path.Path
@@ -29,6 +31,21 @@ class ProcessDashboardPanel(
                     .bold()
                     .gap(RightGap.SMALL)
                 copyableLabel(pid.toString())
+                    .gap(RightGap.COLUMNS)
+                val startCounterSession =
+                    ActionManager.getInstance().getAction("DiagnosticsClient.ToolWindow.QuickActions.Counters")
+                button("Monitor Counters", startCounterSession)
+                    .applyToComponent { icon = DiagnosticsClientIcons.Counters }
+                    .gap(RightGap.SMALL)
+                val startGcEventSession =
+                    ActionManager.getInstance().getAction("DiagnosticsClient.ToolWindow.QuickActions.GcEvents")
+                button("Monitor GC Events", startGcEventSession)
+                    .applyToComponent { icon = AllIcons.Actions.GC }
+                    .gap(RightGap.SMALL)
+                val startTraceSession =
+                    ActionManager.getInstance().getAction("DiagnosticsClient.ToolWindow.QuickActions.Traces")
+                button("Monitor Traces", startTraceSession)
+                    .applyToComponent { icon = AllIcons.Toolwindows.ToolWindowMessages }
             }
             separator()
             row {
@@ -69,7 +86,11 @@ class ProcessDashboardPanel(
                 val operatingSystem = processInfo.operatingSystem ?: ""
                 copyableLabel("Operating System = $operatingSystem")
                 if (processInfo.operatingSystem.isNullOrEmpty().not()) {
-                    inlineIconButton(AllIcons.General.InlineCopyHover, AllIcons.General.InlineCopy, operatingSystem) {
+                    inlineIconButton(
+                        AllIcons.General.InlineCopyHover,
+                        AllIcons.General.InlineCopy,
+                        operatingSystem
+                    ) {
                         CopyPasteManager.getInstance().setContents(StringSelection(it))
                     }
                 }

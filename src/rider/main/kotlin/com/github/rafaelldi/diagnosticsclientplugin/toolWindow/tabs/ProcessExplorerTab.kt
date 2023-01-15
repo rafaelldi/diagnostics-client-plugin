@@ -83,9 +83,9 @@ class ProcessExplorerTab(private val processList: ProcessList, lt: Lifetime) :
 
             selectedProcess = DotNetProcess(selected.first, selected.second)
 
-            val processInfoPanel = JBScrollPane(ProcessDashboardPanel(selected.first, process))
-            processInfoPanel.border = JBUI.Borders.empty()
-            splitter.secondComponent = processInfoPanel
+            val processDashboardPanel = JBScrollPane(ProcessDashboardPanel(selected.first, process))
+            processDashboardPanel.border = JBUI.Borders.empty()
+            splitter.secondComponent = processDashboardPanel
         } else {
             selectedProcess = null
             splitter.secondComponent = JBPanelWithEmptyText()

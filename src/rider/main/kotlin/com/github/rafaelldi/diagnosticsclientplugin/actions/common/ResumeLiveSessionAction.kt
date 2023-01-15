@@ -24,7 +24,7 @@ abstract class ResumeLiveSessionAction<TSession : LiveSession, TTab : Monitoring
         val project = event.project
         val pid = getProcessId(event)
         if (project == null || pid == null) {
-            event.presentation.isEnabled = false
+            event.presentation.isEnabledAndVisible = false
         } else {
             val session = getSession(pid, project)
             val isActive = session?.active?.valueOrNull

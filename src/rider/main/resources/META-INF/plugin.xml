@@ -34,6 +34,26 @@
     </projectListeners>
 
     <actions>
+        <group id="DiagnosticsClient.ToolWindow.QuickActions">
+            <action id="DiagnosticsClient.ToolWindow.QuickActions.Counters"
+                    class="com.github.rafaelldi.diagnosticsclientplugin.actions.quick.StartLiveCounterSessionQuickAction"
+                    text="Monitor Counters"
+                    description="Start monitoring counters"
+                    icon="DiagnosticsClientIcons.Counters">
+            </action>
+            <action id="DiagnosticsClient.ToolWindow.QuickActions.GcEvents"
+                    class="com.github.rafaelldi.diagnosticsclientplugin.actions.quick.StartLiveGcEventSessionQuickAction"
+                    text="Monitor GC Events"
+                    description="Start monitoring GC events"
+                    icon="AllIcons.Actions.GC">
+            </action>
+            <action id="DiagnosticsClient.ToolWindow.QuickActions.Traces"
+                    class="com.github.rafaelldi.diagnosticsclientplugin.actions.quick.StartLiveTraceSessionQuickAction"
+                    text="Monitor Traces"
+                    description="Start monitoring traces"
+                    icon="AllIcons.Toolwindows.ToolWindowMessages">
+            </action>
+        </group>
         <group id="DiagnosticsClient.ToolWindow.Explorer">
             <group id="DiagnosticsClient.ToolWindow.Explorer.Counters"
                    icon="DiagnosticsClientIcons.Counters"

@@ -7,7 +7,7 @@ import com.intellij.ui.dsl.builder.*
 import javax.swing.JComponent
 
 class MonitoringTimerDialog(project: Project) : DialogWrapper(project) {
-    private val model: MonitoringTimerModel = MonitoringTimerModel(StoppingType.AfterPeriod,30)
+    private val model: MonitoringTimerModel = MonitoringTimerModel(StoppingType.Manually,30)
 
     init {
         init()
@@ -20,8 +20,8 @@ class MonitoringTimerDialog(project: Project) : DialogWrapper(project) {
 
         buttonsGroup {
             row("Stop monitoring:") {
-                periodStoppingType = radioButton(StoppingType.AfterPeriod.label, StoppingType.AfterPeriod)
                 radioButton(StoppingType.Manually.label, StoppingType.Manually)
+                periodStoppingType = radioButton(StoppingType.AfterPeriod.label, StoppingType.AfterPeriod)
             }
         }.bind(model::stoppingType)
         row("Duration (sec.):") {
