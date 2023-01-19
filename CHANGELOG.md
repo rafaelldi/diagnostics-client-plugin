@@ -7,6 +7,7 @@
 - Action to monitor traces
 - Auto refresh for process tree
 - Environment variables to the process dashboard
+- Compatibility with Rider 2023.1
 
 ### Changed
 - Update dependencies
