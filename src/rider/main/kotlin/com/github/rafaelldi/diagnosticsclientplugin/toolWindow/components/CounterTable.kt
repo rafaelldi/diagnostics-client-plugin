@@ -4,7 +4,7 @@ import com.github.rafaelldi.diagnosticsclientplugin.generated.Counter
 import com.intellij.ui.table.JBTable
 import javax.swing.table.DefaultTableModel
 
-class CounterTableComponent : JBTable() {
+class CounterTable : JBTable() {
     companion object {
         private const val COUNTER_COLUMN_TITLE = "Counter"
         private const val TAGS_COLUMN_TITLE = "Tags"

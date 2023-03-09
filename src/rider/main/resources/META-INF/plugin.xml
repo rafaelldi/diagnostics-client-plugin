@@ -18,6 +18,7 @@
         <projectService serviceImplementation="com.github.rafaelldi.diagnosticsclientplugin.toolWindow.CounterTabManager" preload="true"/>
         <projectService serviceImplementation="com.github.rafaelldi.diagnosticsclientplugin.toolWindow.GcEventTabManager" preload="true"/>
         <projectService serviceImplementation="com.github.rafaelldi.diagnosticsclientplugin.toolWindow.TraceTabManager" preload="true"/>
+        <projectService serviceImplementation="com.github.rafaelldi.diagnosticsclientplugin.toolWindow.ChartTabManager" preload="true"/>
 
         <notificationGroup id="Diagnostics Client" displayType="BALLOON"/>
     </extensions>
@@ -29,6 +30,8 @@
                   topic="com.github.rafaelldi.diagnosticsclientplugin.services.gc.GcEventSessionListener"/>
         <listener class="com.github.rafaelldi.diagnosticsclientplugin.services.traces.TraceSessionListenerService"
                   topic="com.github.rafaelldi.diagnosticsclientplugin.services.traces.TraceSessionListener"/>
+        <listener class="com.github.rafaelldi.diagnosticsclientplugin.services.chart.ChartSessionListenerService"
+                  topic="com.github.rafaelldi.diagnosticsclientplugin.services.chart.ChartSessionListener" />
         <listener class="com.github.rafaelldi.diagnosticsclientplugin.toolWindow.DiagnosticsToolWindowListener"
                   topic="com.intellij.openapi.wm.ex.ToolWindowManagerListener" />
     </projectListeners>
@@ -177,6 +180,12 @@
                     text="Stack Trace"
                     description="Collect stack trace"
                     icon="RiderIcons.Stacktrace.Stacktrace">
+            </action>
+            <action id="DiagnosticsClient.ToolWindow.Explorer.LiveChartSession.Start"
+                    class="com.github.rafaelldi.diagnosticsclientplugin.actions.chart.StartLiveChartSessionAction"
+                    text="Monitor Chart"
+                    description="Monitor chart"
+                    icon="AllIcons.Actions.Stub">
             </action>
             <separator/>
             <action id="DiagnosticsClient.ToolWindow.Explorer.Help"

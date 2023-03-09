@@ -40,6 +40,6 @@ class LiveCounterSessionController(project: Project) :
     }
 
     override fun sessionNotFound(pid: Int) = liveSessionNotFound(COUNTERS, pid, project)
-    override fun sessionStarted(pid: Int) =  liveSessionStarted(COUNTERS, pid, project)
+    override fun sessionStarted(pid: Int) = liveSessionStarted(COUNTERS, pid, project)
     override fun sessionFinished(pid: Int) = liveSessionFinished(COUNTERS, pid, project)
 }

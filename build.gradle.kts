@@ -9,7 +9,7 @@ plugins {
     id("org.jetbrains.intellij") version "1.13.2"
     id("org.jetbrains.changelog") version "2.0.0"
     id("org.jetbrains.qodana") version "0.1.13"
-    id("com.jetbrains.rdgen") version "2023.1.1" // https://search.maven.org/artifact/com.jetbrains.rd/rd-gen
+    id("com.jetbrains.rdgen") version "2023.2.0" // https://search.maven.org/artifact/com.jetbrains.rd/rd-gen
 }
 
 group = properties("pluginGroup")
