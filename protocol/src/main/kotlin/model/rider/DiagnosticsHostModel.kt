@@ -136,7 +136,8 @@ object DiagnosticsHostModel : Ext(SolutionModel.Solution) {
 
     private val ChartValueType = enum("ChartValueType") {
         +"Cpu"
-        +"Memory"
+        +"WorkingSet"
+        +"GcHeapSize"
     }
 
     init {

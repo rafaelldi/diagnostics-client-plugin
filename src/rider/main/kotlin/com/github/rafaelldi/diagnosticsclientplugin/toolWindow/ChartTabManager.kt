@@ -32,7 +32,7 @@ class ChartTabManager(private val project: Project) : LifetimedService() {
         val contentFactory = ContentFactory.getInstance()
         val liveChartSessionTab = LiveChartSessionTab(pid, session, this, lt)
         val content = contentFactory.createContent(liveChartSessionTab, "Chart for $pid", true)
-        content.icon = AllIcons.Actions.Stub
+        content.icon = AllIcons.RunConfigurations.TestCustom
         content.putUserData(ToolWindow.SHOW_CONTENT_ICON, true)
         lt.bracketIfAlive(
             { toolWindow.contentManager.addContent(content) },
@@ -43,11 +43,11 @@ class ChartTabManager(private val project: Project) : LifetimedService() {
 
     private fun sessionStatusChanged(isActive: Boolean, content: Content) {
         if (isActive) {
-            content.icon = ExecutionUtil.getLiveIndicator(AllIcons.Actions.Stub)
+            content.icon = ExecutionUtil.getLiveIndicator(AllIcons.RunConfigurations.TestCustom)
             val toolWindow = DiagnosticsTabManager.getToolWindow(project) ?: return
             toolWindow.contentManager.setSelectedContent(content, true, true)
         } else {
-            content.icon = AllIcons.Actions.Stub
+            content.icon = AllIcons.RunConfigurations.TestCustom
         }
     }
 

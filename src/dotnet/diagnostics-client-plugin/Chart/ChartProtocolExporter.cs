@@ -10,7 +10,9 @@ namespace DiagnosticsClientPlugin.Chart;
 internal sealed class ChartProtocolExporter
 {
     private const string CpuCounterName = "CPU Usage";
-    
+    private const string GcHeapSizeCounterName = "GC Heap Size";
+    private const string WorkingSetCounterName = "Working Set";
+
     private readonly LiveChartSession _session;
     private readonly ChannelReader<ValueCounter> _reader;
 
@@ -47,11 +49,12 @@ internal sealed class ChartProtocolExporter
         var offset = new DateTimeOffset(counter.TimeStamp);
         var timestamp = offset.ToUnixTimeSeconds();
 
-        if (counter.Name == CpuCounterName)
+        return counter.Name switch
         {
-            return new ChartValue(timestamp, counter.Value, ChartValueType.Cpu);
-        }
-
-        return null;
+            CpuCounterName => new ChartValue(timestamp, counter.Value, ChartValueType.Cpu),
+            GcHeapSizeCounterName => new ChartValue(timestamp, counter.Value, ChartValueType.GcHeapSize),
+            WorkingSetCounterName => new ChartValue(timestamp, counter.Value, ChartValueType.WorkingSet),
+            _ => null
+        };
     }
 }

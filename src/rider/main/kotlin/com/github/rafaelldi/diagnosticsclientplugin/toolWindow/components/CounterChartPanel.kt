@@ -40,9 +40,7 @@ class CounterChartPanel : BorderLayoutPanel() {
         dataset {
             lineColor = JBColor.BLUE
             fillColor = JBColor.BLUE.transparent(0.5)
-            overlays = listOf(
-                TitleOverlay("CPU")
-            )
+            overlays = listOf(TitleOverlay("CPU"))
         }
         borderPainted = true
         margins = JBUI.insets(28, 15, 25, 15)
@@ -54,7 +52,7 @@ class CounterChartPanel : BorderLayoutPanel() {
             yMax = 100.0
         }
         grid {
-            yLines = generator(25.0)
+            yLines = generator(200.0)
             xLines = generator(1L)
             xPainter {
                 paintLine = (value) % 10 == 0L
@@ -63,12 +61,19 @@ class CounterChartPanel : BorderLayoutPanel() {
                 }
             }
         }
-        dataset {
-            lineColor = JBColor.ORANGE
-            fillColor = JBColor.ORANGE.transparent(0.5)
-            overlays = listOf(
-                TitleOverlay("Memory")
-            )
+        datasets {
+            dataset {
+                label = "GC Heap Size"
+                lineColor = JBColor.RED
+                fillColor = JBColor.RED.transparent(0.5)
+                stacked = true
+                overlays = listOf(TitleOverlay("Memory"))
+            }
+            dataset {
+                label = "Working Set"
+                lineColor = JBColor.ORANGE
+                fillColor = JBColor.ORANGE.transparent(0.5)
+            }
         }
         borderPainted = true
         margins = JBUI.insets(28, 15, 25, 15)
@@ -92,10 +97,17 @@ class CounterChartPanel : BorderLayoutPanel() {
             cpuChart.ranges.xMax = timestamp
         }
 
-        if (chartValue.type == ChartValueType.Memory) {
-            memoryChart.add(timestamp, chartValue.value * 100)
+        if (chartValue.type == ChartValueType.GcHeapSize) {
+            memoryChart["GC Heap Size"].add(timestamp to chartValue.value)
             memoryChart.ranges.xMin = timestamp - timeRange
             memoryChart.ranges.xMax = timestamp
+        }
+
+        if (chartValue.type == ChartValueType.WorkingSet) {
+            memoryChart["Working Set"].add(timestamp to chartValue.value)
+            memoryChart.ranges.xMin = timestamp - timeRange
+            memoryChart.ranges.xMax = timestamp
+            memoryChart.ranges.yMax = maxOf(memoryChart.ranges.yMax, chartValue.value)
         }
 
         repaint()

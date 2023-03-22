@@ -26,7 +26,7 @@ internal sealed class ChartMonitoringSessionEnvelope
         _exporter = new ChartProtocolExporter(session, channel.Reader);
         var configuration = new CounterProducerConfiguration(
             Guid.NewGuid().ToString(),
-            "System.Runtime[cpu-usage]",
+            "System.Runtime[cpu-usage,gc-heap-size,working-set]",
             null,
             1,
             1000,

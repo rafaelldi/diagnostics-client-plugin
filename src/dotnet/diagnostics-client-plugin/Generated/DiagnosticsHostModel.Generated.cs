@@ -136,7 +136,7 @@ namespace DiagnosticsClientPlugin.Generated
     
     
     
-    protected override long SerializationHash => -1213115828340234768L;
+    protected override long SerializationHash => -8447152889813447689L;
     
     protected override Action<ISerializers> Register => RegisterDeclaredTypesSerializers;
     public static void RegisterDeclaredTypesSerializers(ISerializers serializers)
@@ -301,12 +301,13 @@ namespace DiagnosticsClientPlugin.Generated
   /// </summary>
   public enum ChartValueType {
     Cpu,
-    Memory
+    WorkingSet,
+    GcHeapSize
   }
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:161</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:162</p>
   /// </summary>
   public sealed class CollectDumpCommand : IPrintable, IEquatable<CollectDumpCommand>
   {
@@ -424,7 +425,7 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:178</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:179</p>
   /// </summary>
   public sealed class CollectStackTraceCommand : IPrintable, IEquatable<CollectStackTraceCommand>
   {
@@ -619,7 +620,7 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:172</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:173</p>
   /// </summary>
   public sealed class DumpCollectionResult : IPrintable, IEquatable<DumpCollectionResult>
   {
@@ -704,7 +705,7 @@ namespace DiagnosticsClientPlugin.Generated
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:163</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:164</p>
   /// </summary>
   public enum DumpType {
     Full,

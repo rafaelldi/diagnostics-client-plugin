@@ -185,7 +185,7 @@
                     class="com.github.rafaelldi.diagnosticsclientplugin.actions.chart.StartLiveChartSessionAction"
                     text="Monitor Chart"
                     description="Monitor chart"
-                    icon="AllIcons.Actions.Stub">
+                    icon="AllIcons.RunConfigurations.TestCustom">
             </action>
             <separator/>
             <action id="DiagnosticsClient.ToolWindow.Explorer.Help"
