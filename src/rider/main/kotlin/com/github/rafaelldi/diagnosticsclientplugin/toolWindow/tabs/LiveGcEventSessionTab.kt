@@ -3,7 +3,7 @@ package com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs
 import com.github.rafaelldi.diagnosticsclientplugin.generated.GcEvent
 import com.github.rafaelldi.diagnosticsclientplugin.generated.LiveGcEventSession
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.GcEventTabManager
-import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.components.GcEventTableComponent
+import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.components.GcEventTable
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ActionGroup
 import com.intellij.openapi.actionSystem.ActionManager
@@ -26,11 +26,11 @@ class LiveGcEventSessionTab(
             DataKey.create("DiagnosticsClient.ToolWindow.GcEventMonitoringTab")
     }
 
-    private val table: GcEventTableComponent
+    private val table: GcEventTable
 
     private val panel: JPanel = JPanel().apply {
         layout = BorderLayout()
-        table = GcEventTableComponent()
+        table = GcEventTable()
         add(JBScrollPane(table))
     }
 

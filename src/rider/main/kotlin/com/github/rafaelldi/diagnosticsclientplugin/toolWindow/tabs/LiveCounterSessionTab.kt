@@ -3,7 +3,7 @@ package com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs
 import com.github.rafaelldi.diagnosticsclientplugin.generated.Counter
 import com.github.rafaelldi.diagnosticsclientplugin.generated.LiveCounterSession
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.CounterTabManager
-import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.components.CounterTableComponent
+import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.components.CounterTable
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ActionGroup
 import com.intellij.openapi.actionSystem.ActionManager
@@ -27,11 +27,11 @@ class LiveCounterSessionTab(
             DataKey.create("DiagnosticsClient.ToolWindow.CounterMonitoringTab")
     }
 
-    private val table: CounterTableComponent
+    private val table: CounterTable
 
     private val panel: JPanel = JPanel().apply {
         layout = BorderLayout()
-        table = CounterTableComponent()
+        table = CounterTable()
         add(JBScrollPane(table))
     }
 

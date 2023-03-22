@@ -82,6 +82,10 @@ object DiagnosticsHostModel : Ext(SolutionModel.Solution) {
         field("predefinedProviders", immutableList(PredefinedProvider))
     }
 
+    private val LiveChartSession = classdef extends LiveSession {
+        source("valueReceived", ChartValue).async
+    }
+
     private val Counter = structdef {
         field("name", string)
         field("tags", string.nullable)
@@ -124,6 +128,18 @@ object DiagnosticsHostModel : Ext(SolutionModel.Solution) {
         field("content", string)
     }
 
+    private val ChartValue = structdef {
+        field("timeStamp", long)
+        field("value", double)
+        field("type", ChartValueType)
+    }
+
+    private val ChartValueType = enum("ChartValueType") {
+        +"Cpu"
+        +"WorkingSet"
+        +"GcHeapSize"
+    }
+
     init {
         setting(CSharp50Generator.Namespace, "DiagnosticsClientPlugin.Generated")
         setting(Kotlin11Generator.Namespace, "com.github.rafaelldi.diagnosticsclientplugin.generated")
@@ -139,6 +155,8 @@ object DiagnosticsHostModel : Ext(SolutionModel.Solution) {
 
         map("persistentTraceSessions", int, PersistentTraceSession)
         map("liveTraceSessions", int, LiveTraceSession)
+
+        map("liveChartSessions", int, LiveChartSession)
 
         call("collectDump",
             structdef("CollectDumpCommand") {

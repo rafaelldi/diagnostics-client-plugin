@@ -4,15 +4,12 @@ package com.github.rafaelldi.diagnosticsclientplugin.generated
 import com.jetbrains.rd.framework.*
 import com.jetbrains.rd.framework.base.*
 import com.jetbrains.rd.framework.impl.*
-
-import com.jetbrains.rd.util.lifetime.*
+import com.jetbrains.rd.util.Date
 import com.jetbrains.rd.util.reactive.*
-import com.jetbrains.rd.util.string.*
-import com.jetbrains.rd.util.*
-import kotlin.time.Duration
+import com.jetbrains.rd.util.string.IPrintable
+import com.jetbrains.rd.util.string.PrettyPrinter
+import com.jetbrains.rd.util.string.print
 import kotlin.reflect.KClass
-import kotlin.jvm.JvmStatic
-
 
 
 /**
@@ -27,6 +24,7 @@ class DiagnosticsHostModel private constructor(
     private val _triggerGc: RdSignal<Int>,
     private val _persistentTraceSessions: RdMap<Int, PersistentTraceSession>,
     private val _liveTraceSessions: RdMap<Int, LiveTraceSession>,
+    private val _liveChartSessions: RdMap<Int, LiveChartSession>,
     private val _collectDump: RdCall<CollectDumpCommand, DumpCollectionResult>,
     private val _collectStackTrace: RdCall<CollectStackTraceCommand, String>
 ) : RdExtBase() {
@@ -44,10 +42,13 @@ class DiagnosticsHostModel private constructor(
             serializers.register(LiveCounterSession)
             serializers.register(LiveGcEventSession)
             serializers.register(LiveTraceSession)
+            serializers.register(LiveChartSession)
             serializers.register(Counter)
             serializers.register(GcEvent)
             serializers.register(PredefinedProvider.marshaller)
             serializers.register(Trace)
+            serializers.register(ChartValue)
+            serializers.register(ChartValueType.marshaller)
             serializers.register(CollectDumpCommand)
             serializers.register(DumpCollectionResult)
             serializers.register(CollectStackTraceCommand)
@@ -57,12 +58,9 @@ class DiagnosticsHostModel private constructor(
             serializers.register(PersistentSession_Unknown)
             serializers.register(LiveSession_Unknown)
         }
-        
-        
-        
-        
-        
-        const val serializationHash = -9062585593263317337L
+
+
+        const val serializationHash = -8447152889813447689L
         
     }
     override val serializersOwner: ISerializersOwner get() = DiagnosticsHostModel
@@ -76,6 +74,7 @@ class DiagnosticsHostModel private constructor(
     val triggerGc: ISignal<Int> get() = _triggerGc
     val persistentTraceSessions: IMutableViewableMap<Int, PersistentTraceSession> get() = _persistentTraceSessions
     val liveTraceSessions: IMutableViewableMap<Int, LiveTraceSession> get() = _liveTraceSessions
+    val liveChartSessions: IMutableViewableMap<Int, LiveChartSession> get() = _liveChartSessions
     val collectDump: IRdCall<CollectDumpCommand, DumpCollectionResult> get() = _collectDump
     val collectStackTrace: IRdCall<CollectStackTraceCommand, String> get() = _collectStackTrace
     //methods
@@ -89,6 +88,7 @@ class DiagnosticsHostModel private constructor(
         bindableChildren.add("triggerGc" to _triggerGc)
         bindableChildren.add("persistentTraceSessions" to _persistentTraceSessions)
         bindableChildren.add("liveTraceSessions" to _liveTraceSessions)
+        bindableChildren.add("liveChartSessions" to _liveChartSessions)
         bindableChildren.add("collectDump" to _collectDump)
         bindableChildren.add("collectStackTrace" to _collectStackTrace)
     }
@@ -104,6 +104,7 @@ class DiagnosticsHostModel private constructor(
         RdSignal<Int>(FrameworkMarshallers.Int),
         RdMap<Int, PersistentTraceSession>(FrameworkMarshallers.Int, PersistentTraceSession),
         RdMap<Int, LiveTraceSession>(FrameworkMarshallers.Int, LiveTraceSession),
+        RdMap<Int, LiveChartSession>(FrameworkMarshallers.Int, LiveChartSession),
         RdCall<CollectDumpCommand, DumpCollectionResult>(CollectDumpCommand, DumpCollectionResult),
         RdCall<CollectStackTraceCommand, String>(CollectStackTraceCommand, FrameworkMarshallers.String)
     )
@@ -122,6 +123,7 @@ class DiagnosticsHostModel private constructor(
             print("triggerGc = "); _triggerGc.print(printer); println()
             print("persistentTraceSessions = "); _persistentTraceSessions.print(printer); println()
             print("liveTraceSessions = "); _liveTraceSessions.print(printer); println()
+            print("liveChartSessions = "); _liveChartSessions.print(printer); println()
             print("collectDump = "); _collectDump.print(printer); println()
             print("collectStackTrace = "); _collectStackTrace.print(printer); println()
         }
@@ -138,6 +140,7 @@ class DiagnosticsHostModel private constructor(
             _triggerGc.deepClonePolymorphic(),
             _persistentTraceSessions.deepClonePolymorphic(),
             _liveTraceSessions.deepClonePolymorphic(),
+            _liveChartSessions.deepClonePolymorphic(),
             _collectDump.deepClonePolymorphic(),
             _collectStackTrace.deepClonePolymorphic()
         )
@@ -147,9 +150,90 @@ class DiagnosticsHostModel private constructor(
 val com.jetbrains.rd.ide.model.Solution.diagnosticsHostModel get() = getOrCreateExtension("diagnosticsHostModel", ::DiagnosticsHostModel)
 
 
+/**
+ * #### Generated from [DiagnosticsHostModel.kt:131]
+ */
+data class ChartValue(
+    val timeStamp: Long,
+    val value: Double,
+    val type: ChartValueType
+) : IPrintable {
+    //companion
+
+    companion object : IMarshaller<ChartValue> {
+        override val _type: KClass<ChartValue> = ChartValue::class
+
+        @Suppress("UNCHECKED_CAST")
+        override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): ChartValue  {
+            val timeStamp = buffer.readLong()
+            val value = buffer.readDouble()
+            val type = buffer.readEnum<ChartValueType>()
+            return ChartValue(timeStamp, value, type)
+        }
+        
+        override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: ChartValue)  {
+            buffer.writeLong(value.timeStamp)
+            buffer.writeDouble(value.value)
+            buffer.writeEnum(value.type)
+        }
+        
+        
+    }
+    //fields
+    //methods
+    //initializer
+    //secondary constructor
+    //equals trait
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other == null || other::class != this::class) return false
+
+        other as ChartValue
+
+        if (timeStamp != other.timeStamp) return false
+        if (value != other.value) return false
+        return type == other.type
+    }
+    //hash code trait
+    override fun hashCode(): Int {
+        var __r = 0
+        __r = __r * 31 + timeStamp.hashCode()
+        __r = __r * 31 + value.hashCode()
+        __r = __r * 31 + type.hashCode()
+        return __r
+    }
+    //pretty print
+    override fun print(printer: PrettyPrinter)  {
+        printer.println("ChartValue (")
+        printer.indent {
+            print("timeStamp = "); timeStamp.print(printer); println()
+            print("value = "); value.print(printer); println()
+            print("type = "); type.print(printer); println()
+        }
+        printer.print(")")
+    }
+    //deepClone
+    //contexts
+}
+
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:144]
+ * #### Generated from [DiagnosticsHostModel.kt:137]
+ */
+enum class ChartValueType {
+    Cpu,
+    WorkingSet,
+    GcHeapSize;
+
+    companion object {
+        val marshaller = FrameworkMarshallers.enum<ChartValueType>()
+
+    }
+}
+
+
+/**
+ * #### Generated from [DiagnosticsHostModel.kt:162]
  */
 data class CollectDumpCommand (
     val pid: Int,
@@ -188,19 +272,17 @@ data class CollectDumpCommand (
     //initializer
     //secondary constructor
     //equals trait
-    override fun equals(other: Any?): Boolean  {
+    override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || other::class != this::class) return false
-        
+
         other as CollectDumpCommand
-        
+
         if (pid != other.pid) return false
         if (type != other.type) return false
         if (outFolder != other.outFolder) return false
         if (filename != other.filename) return false
-        if (diag != other.diag) return false
-        
-        return true
+        return diag == other.diag
     }
     //hash code trait
     override fun hashCode(): Int  {
@@ -230,7 +312,7 @@ data class CollectDumpCommand (
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:161]
+ * #### Generated from [DiagnosticsHostModel.kt:179]
  */
 data class CollectStackTraceCommand (
     val pid: Int
@@ -257,15 +339,13 @@ data class CollectStackTraceCommand (
     //initializer
     //secondary constructor
     //equals trait
-    override fun equals(other: Any?): Boolean  {
+    override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || other::class != this::class) return false
-        
+
         other as CollectStackTraceCommand
-        
-        if (pid != other.pid) return false
-        
-        return true
+
+        return pid == other.pid
     }
     //hash code trait
     override fun hashCode(): Int  {
@@ -287,7 +367,7 @@ data class CollectStackTraceCommand (
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:85]
+ * #### Generated from [DiagnosticsHostModel.kt:89]
  */
 data class Counter (
     val name: String,
@@ -320,17 +400,15 @@ data class Counter (
     //initializer
     //secondary constructor
     //equals trait
-    override fun equals(other: Any?): Boolean  {
+    override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || other::class != this::class) return false
-        
+
         other as Counter
-        
+
         if (name != other.name) return false
         if (tags != other.tags) return false
-        if (value != other.value) return false
-        
-        return true
+        return value == other.value
     }
     //hash code trait
     override fun hashCode(): Int  {
@@ -370,7 +448,7 @@ enum class CounterFileFormat {
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:155]
+ * #### Generated from [DiagnosticsHostModel.kt:173]
  */
 data class DumpCollectionResult (
     val filePath: String
@@ -397,15 +475,13 @@ data class DumpCollectionResult (
     //initializer
     //secondary constructor
     //equals trait
-    override fun equals(other: Any?): Boolean  {
+    override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || other::class != this::class) return false
-        
+
         other as DumpCollectionResult
-        
-        if (filePath != other.filePath) return false
-        
-        return true
+
+        return filePath == other.filePath
     }
     //hash code trait
     override fun hashCode(): Int  {
@@ -427,7 +503,7 @@ data class DumpCollectionResult (
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:146]
+ * #### Generated from [DiagnosticsHostModel.kt:164]
  */
 enum class DumpType {
     Full, 
@@ -443,7 +519,7 @@ enum class DumpType {
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:91]
+ * #### Generated from [DiagnosticsHostModel.kt:95]
  */
 data class GcEvent (
     val number: Int,
@@ -532,9 +608,7 @@ data class GcEvent (
         if (sizeGen1 != other.sizeGen1) return false
         if (sizeGen2 != other.sizeGen2) return false
         if (sizeLoh != other.sizeLoh) return false
-        if (pinnedObjects != other.pinnedObjects) return false
-        
-        return true
+        return pinnedObjects == other.pinnedObjects
     }
     //hash code trait
     override fun hashCode(): Int  {
@@ -579,6 +653,85 @@ data class GcEvent (
         printer.print(")")
     }
     //deepClone
+    //contexts
+}
+
+
+/**
+ * #### Generated from [DiagnosticsHostModel.kt:85]
+ */
+class LiveChartSession private constructor(
+    private val _valueReceived: RdSignal<ChartValue>,
+    _active: RdOptionalProperty<Boolean>,
+    _duration: RdProperty<Int?>
+) : LiveSession (
+    _active,
+    _duration
+) {
+    //companion
+    
+    companion object : IMarshaller<LiveChartSession> {
+        override val _type: KClass<LiveChartSession> = LiveChartSession::class
+        
+        @Suppress("UNCHECKED_CAST")
+        override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): LiveChartSession  {
+            val _id = RdId.read(buffer)
+            val _active = RdOptionalProperty.read(ctx, buffer, FrameworkMarshallers.Bool)
+            val _duration = RdProperty.read(ctx, buffer, __IntNullableSerializer)
+            val _valueReceived = RdSignal.read(ctx, buffer, ChartValue)
+            return LiveChartSession(_valueReceived, _active, _duration).withId(_id)
+        }
+        
+        override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: LiveChartSession)  {
+            value.rdid.write(buffer)
+            RdOptionalProperty.write(ctx, buffer, value._active)
+            RdProperty.write(ctx, buffer, value._duration)
+            RdSignal.write(ctx, buffer, value._valueReceived)
+        }
+        
+        private val __IntNullableSerializer = FrameworkMarshallers.Int.nullable()
+        
+    }
+    //fields
+    val valueReceived: IAsyncSignal<ChartValue> get() = _valueReceived
+    //methods
+    //initializer
+    init {
+        _valueReceived.async = true
+    }
+    
+    init {
+        bindableChildren.add("valueReceived" to _valueReceived)
+    }
+    
+    //secondary constructor
+    constructor(
+    ) : this(
+        RdSignal<ChartValue>(ChartValue),
+        RdOptionalProperty<Boolean>(FrameworkMarshallers.Bool),
+        RdProperty<Int?>(null, __IntNullableSerializer)
+    )
+    
+    //equals trait
+    //hash code trait
+    //pretty print
+    override fun print(printer: PrettyPrinter)  {
+        printer.println("LiveChartSession (")
+        printer.indent {
+            print("valueReceived = "); _valueReceived.print(printer); println()
+            print("active = "); _active.print(printer); println()
+            print("duration = "); _duration.print(printer); println()
+        }
+        printer.print(")")
+    }
+    //deepClone
+    override fun deepClone(): LiveChartSession   {
+        return LiveChartSession(
+            _valueReceived.deepClonePolymorphic(),
+            _active.deepClonePolymorphic(),
+            _duration.deepClonePolymorphic()
+        )
+    }
     //contexts
 }
 
@@ -1287,7 +1440,7 @@ class PersistentTraceSession (
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:109]
+ * #### Generated from [DiagnosticsHostModel.kt:113]
  */
 enum class PredefinedProvider {
     Http, 
@@ -1337,16 +1490,14 @@ data class ProcessEnvironmentVariable (
     //initializer
     //secondary constructor
     //equals trait
-    override fun equals(other: Any?): Boolean  {
+    override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || other::class != this::class) return false
-        
+
         other as ProcessEnvironmentVariable
-        
+
         if (key != other.key) return false
-        if (value != other.value) return false
-        
-        return true
+        return value == other.value
     }
     //hash code trait
     override fun hashCode(): Int  {
@@ -1418,18 +1569,16 @@ data class ProcessInfo (
     override fun equals(other: Any?): Boolean  {
         if (this === other) return true
         if (other == null || other::class != this::class) return false
-        
+
         other as ProcessInfo
-        
+
         if (processName != other.processName) return false
         if (filename != other.filename) return false
         if (startTime != other.startTime) return false
         if (commandLine != other.commandLine) return false
         if (operatingSystem != other.operatingSystem) return false
         if (processArchitecture != other.processArchitecture) return false
-        if (!(environmentVariables contentDeepEquals other.environmentVariables)) return false
-        
-        return true
+        return environmentVariables contentDeepEquals other.environmentVariables
     }
     //hash code trait
     override fun hashCode(): Int  {
@@ -1539,7 +1688,7 @@ class ProcessList private constructor(
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:120]
+ * #### Generated from [DiagnosticsHostModel.kt:124]
  */
 data class Trace (
     val eventName: String,
@@ -1575,18 +1724,16 @@ data class Trace (
     //initializer
     //secondary constructor
     //equals trait
-    override fun equals(other: Any?): Boolean  {
+    override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || other::class != this::class) return false
-        
+
         other as Trace
-        
+
         if (eventName != other.eventName) return false
         if (provider != other.provider) return false
         if (timeStamp != other.timeStamp) return false
-        if (content != other.content) return false
-        
-        return true
+        return content == other.content
     }
     //hash code trait
     override fun hashCode(): Int  {

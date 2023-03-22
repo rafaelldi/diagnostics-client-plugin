@@ -62,4 +62,10 @@ data class TraceModel(
     var loader: Boolean
 ) : LiveModel, PersistentModel
 
+data class ChartModel(
+    override var selectedProcess: DotNetProcess?,
+    override var stoppingType: StoppingType,
+    override var duration: Int
+) : LiveModel
+
 data class MonitoringTimerModel(var stoppingType: StoppingType, var duration: Int)
