@@ -4,9 +4,14 @@
 
 ## [Unreleased]
 
+### Added
+
+- Action to monitor charts
+
 ## [2023.1.0] - 2023-01-19
 
 ### Added
+
 - Action to monitor traces
 - Auto refresh for process tree
 - Environment variables to the process dashboard
