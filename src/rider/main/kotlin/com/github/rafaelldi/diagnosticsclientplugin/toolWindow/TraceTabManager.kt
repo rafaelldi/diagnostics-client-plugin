@@ -1,30 +1,25 @@
 package com.github.rafaelldi.diagnosticsclientplugin.toolWindow
 
+import com.github.rafaelldi.diagnosticsclientplugin.generated.DiagnosticsHostModel
 import com.github.rafaelldi.diagnosticsclientplugin.generated.LiveTraceSession
-import com.github.rafaelldi.diagnosticsclientplugin.generated.diagnosticsHostModel
 import com.github.rafaelldi.diagnosticsclientplugin.services.traces.TraceSessionListener
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.LiveTraceSessionTab
 import com.intellij.execution.runners.ExecutionUtil
 import com.intellij.icons.AllIcons
+import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.wm.ToolWindow
 import com.intellij.ui.content.Content
 import com.intellij.ui.content.ContentFactory
-import com.jetbrains.rd.platform.util.idea.LifetimedService
+import com.jetbrains.rd.ide.model.Solution
+import com.jetbrains.rd.protocol.ProtocolExtListener
 import com.jetbrains.rd.util.lifetime.Lifetime
-import com.jetbrains.rider.projectView.solution
 
-class TraceTabManager(private val project: Project) : LifetimedService() {
+@Service
+class TraceTabManager(private val project: Project) {
     companion object {
         fun getInstance(project: Project): TraceTabManager = project.service()
-    }
-
-    init {
-        val model = project.solution.diagnosticsHostModel
-        model.liveTraceSessions.view(serviceLifetime) { lt, pid, session ->
-            addTraceSessionTab(lt, pid, session)
-        }
     }
 
     private fun addTraceSessionTab(lt: Lifetime, pid: Int, session: LiveTraceSession) {
@@ -59,5 +54,18 @@ class TraceTabManager(private val project: Project) : LifetimedService() {
         val toolWindow = DiagnosticsTabManager.getToolWindow(project) ?: return
         val content = toolWindow.contentManager.findContent("Traces for $pid") ?: return
         toolWindow.contentManager.setSelectedContent(content, true, true)
+    }
+
+    class ProtocolListener : ProtocolExtListener<Solution, DiagnosticsHostModel> {
+        override fun extensionCreated(
+            lifetime: Lifetime,
+            project: Project,
+            parent: Solution,
+            model: DiagnosticsHostModel
+        ) {
+            model.liveTraceSessions.view(lifetime) { lt, pid, session ->
+                getInstance(project).addTraceSessionTab(lt, pid, session)
+            }
+        }
     }
 }

@@ -1,30 +1,25 @@
 package com.github.rafaelldi.diagnosticsclientplugin.toolWindow
 
+import com.github.rafaelldi.diagnosticsclientplugin.generated.DiagnosticsHostModel
 import com.github.rafaelldi.diagnosticsclientplugin.generated.LiveGcEventSession
-import com.github.rafaelldi.diagnosticsclientplugin.generated.diagnosticsHostModel
 import com.github.rafaelldi.diagnosticsclientplugin.services.gc.GcEventSessionListener
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.LiveGcEventSessionTab
 import com.intellij.execution.runners.ExecutionUtil
 import com.intellij.icons.AllIcons
+import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.wm.ToolWindow
 import com.intellij.ui.content.Content
 import com.intellij.ui.content.ContentFactory
-import com.jetbrains.rd.platform.util.idea.LifetimedService
+import com.jetbrains.rd.ide.model.Solution
+import com.jetbrains.rd.protocol.ProtocolExtListener
 import com.jetbrains.rd.util.lifetime.Lifetime
-import com.jetbrains.rider.projectView.solution
 
-class GcEventTabManager(private val project: Project) : LifetimedService() {
+@Service
+class GcEventTabManager(private val project: Project) {
     companion object {
         fun getInstance(project: Project): GcEventTabManager = project.service()
-    }
-
-    init {
-        val model = project.solution.diagnosticsHostModel
-        model.liveGcEventSessions.view(serviceLifetime) { lt, pid, session ->
-            addGcEventSessionTab(lt, pid, session)
-        }
     }
 
     private fun addGcEventSessionTab(lt: Lifetime, pid: Int, session: LiveGcEventSession) {
@@ -59,5 +54,18 @@ class GcEventTabManager(private val project: Project) : LifetimedService() {
         val toolWindow = DiagnosticsTabManager.getToolWindow(project) ?: return
         val content = toolWindow.contentManager.findContent("GC for $pid") ?: return
         toolWindow.contentManager.setSelectedContent(content, true, true)
+    }
+
+    class ProtocolListener : ProtocolExtListener<Solution, DiagnosticsHostModel> {
+        override fun extensionCreated(
+            lifetime: Lifetime,
+            project: Project,
+            parent: Solution,
+            model: DiagnosticsHostModel
+        ) {
+            model.liveGcEventSessions.view(lifetime) { lt, pid, session ->
+                getInstance(project).addGcEventSessionTab(lt, pid, session)
+            }
+        }
     }
 }

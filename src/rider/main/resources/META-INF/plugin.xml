@@ -15,10 +15,22 @@
                     factoryClass="com.github.rafaelldi.diagnosticsclientplugin.toolWindow.DiagnosticsToolWindowFactory"/>
         <webHelpProvider implementation="com.github.rafaelldi.diagnosticsclientplugin.DiagnosticsClientHelpProvider"/>
 
-        <projectService serviceImplementation="com.github.rafaelldi.diagnosticsclientplugin.toolWindow.CounterTabManager" preload="true"/>
-        <projectService serviceImplementation="com.github.rafaelldi.diagnosticsclientplugin.toolWindow.GcEventTabManager" preload="true"/>
-        <projectService serviceImplementation="com.github.rafaelldi.diagnosticsclientplugin.toolWindow.TraceTabManager" preload="true"/>
-        <projectService serviceImplementation="com.github.rafaelldi.diagnosticsclientplugin.toolWindow.ChartTabManager" preload="true"/>
+        <rd.extListener endpoint="IDE Frontend"
+                        location="SolutionModel.solutions.diagnosticsHostModel"
+                        extClass="com.github.rafaelldi.diagnosticsclientplugin.generated.DiagnosticsHostModel"
+                        handler="com.github.rafaelldi.diagnosticsclientplugin.toolWindow.CounterTabManager$ProtocolListener"/>
+        <rd.extListener endpoint="IDE Frontend"
+                        location="SolutionModel.solutions.diagnosticsHostModel"
+                        extClass="com.github.rafaelldi.diagnosticsclientplugin.generated.DiagnosticsHostModel"
+                        handler="com.github.rafaelldi.diagnosticsclientplugin.toolWindow.GcEventTabManager$ProtocolListener"/>
+        <rd.extListener endpoint="IDE Frontend"
+                        location="SolutionModel.solutions.diagnosticsHostModel"
+                        extClass="com.github.rafaelldi.diagnosticsclientplugin.generated.DiagnosticsHostModel"
+                        handler="com.github.rafaelldi.diagnosticsclientplugin.toolWindow.TraceTabManager$ProtocolListener"/>
+        <rd.extListener endpoint="IDE Frontend"
+                        location="SolutionModel.solutions.diagnosticsHostModel"
+                        extClass="com.github.rafaelldi.diagnosticsclientplugin.generated.DiagnosticsHostModel"
+                        handler="com.github.rafaelldi.diagnosticsclientplugin.toolWindow.ChartTabManager$ProtocolListener"/>
 
         <notificationGroup id="Diagnostics Client" displayType="BALLOON"/>
     </extensions>

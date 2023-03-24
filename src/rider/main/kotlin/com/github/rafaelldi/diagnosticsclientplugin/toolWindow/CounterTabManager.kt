@@ -1,30 +1,25 @@
 package com.github.rafaelldi.diagnosticsclientplugin.toolWindow
 
+import com.github.rafaelldi.diagnosticsclientplugin.generated.DiagnosticsHostModel
 import com.github.rafaelldi.diagnosticsclientplugin.generated.LiveCounterSession
-import com.github.rafaelldi.diagnosticsclientplugin.generated.diagnosticsHostModel
 import com.github.rafaelldi.diagnosticsclientplugin.services.counters.CounterSessionListener
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.LiveCounterSessionTab
 import com.intellij.execution.runners.ExecutionUtil
+import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.wm.ToolWindow
 import com.intellij.ui.content.Content
 import com.intellij.ui.content.ContentFactory
-import com.jetbrains.rd.platform.util.idea.LifetimedService
+import com.jetbrains.rd.ide.model.Solution
+import com.jetbrains.rd.protocol.ProtocolExtListener
 import com.jetbrains.rd.util.lifetime.Lifetime
-import com.jetbrains.rider.projectView.solution
 import icons.DiagnosticsClientIcons
 
-class CounterTabManager(private val project: Project) : LifetimedService() {
+@Service
+class CounterTabManager(private val project: Project) {
     companion object {
         fun getInstance(project: Project): CounterTabManager = project.service()
-    }
-
-    init {
-        val model = project.solution.diagnosticsHostModel
-        model.liveCounterSessions.view(serviceLifetime) { lt, pid, session ->
-            addCounterSessionTab(lt, pid, session)
-        }
     }
 
     private fun addCounterSessionTab(lt: Lifetime, pid: Int, session: LiveCounterSession) {
@@ -59,5 +54,18 @@ class CounterTabManager(private val project: Project) : LifetimedService() {
         val toolWindow = DiagnosticsTabManager.getToolWindow(project) ?: return
         val content = toolWindow.contentManager.findContent("Counters for $pid") ?: return
         toolWindow.contentManager.setSelectedContent(content, true, true)
+    }
+
+    class ProtocolListener : ProtocolExtListener<Solution, DiagnosticsHostModel> {
+        override fun extensionCreated(
+            lifetime: Lifetime,
+            project: Project,
+            parent: Solution,
+            model: DiagnosticsHostModel
+        ) {
+            model.liveCounterSessions.view(lifetime) { lt, pid, session ->
+                getInstance(project).addCounterSessionTab(lt, pid, session)
+            }
+        }
     }
 }
