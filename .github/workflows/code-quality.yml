@@ -7,16 +7,6 @@ on:
       - main
 
 jobs:
-  qodana:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-      - name: 'Qodana Scan'
-        uses: JetBrains/qodana-action@v2022.3.4
-        env:
-          QODANA_TOKEN: ${{ secrets.QODANA_TOKEN }}
   qodana-backend:
     runs-on: ubuntu-latest
     steps:
