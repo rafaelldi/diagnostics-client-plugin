@@ -17,3 +17,32 @@ jobs:
         uses: JetBrains/qodana-action@v2022.3.4
         env:
           QODANA_TOKEN: ${{ secrets.QODANA_TOKEN }}
+  qodana-backend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: 'Use qodana-backend config'
+        run: cp qodana-backend.yaml qodana.yaml
+      - name: 'Qodana Backend'
+        uses: JetBrains/qodana-action@v2022.3.4
+        env:
+          QODANA_TOKEN: ${{ secrets.QODANA_TOKEN }}
+        with:
+          artifact-name: qodana-backend
+
+  qodana-frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: 'Use qodana-frontend config'
+        run: cp qodana-frontend.yaml qodana.yaml
+      - name: 'Qodana Frontend'
+        uses: JetBrains/qodana-action@v2022.3.4
+        env:
+          QODANA_TOKEN: ${{ secrets.QODANA_TOKEN }}
+        with:
+          artifact-name: qodana-frontend

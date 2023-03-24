@@ -1,0 +1,4 @@
+version: 1.0
+profile:
+  name: qodana.recommended
+linter: jetbrains/qodana-jvm:2022.3
