@@ -103,6 +103,7 @@ internal static class DiagnosticsClientExtensions
         );
     }
 
+    // ReSharper disable once UnusedMember.Global
     internal static void ResumeRuntime(DiagnosticsClient client)
     {
         ResumeRuntimeMethod?.Invoke(client, Array.Empty<object>());

@@ -24,7 +24,7 @@ internal sealed class TraceMonitoringSessionEnvelope
         var traceProducerConfiguration = new TraceProducerConfiguration(session.PredefinedProviders);
         _producer = new TraceProducer(pid, traceProducerConfiguration, channel.Writer, lifetime);
 
-        session.Active.WhenTrue(lifetime, lt => Handle(lt));
+        session.Active.WhenTrue(lifetime, Handle);
     }
 
     private void Handle(Lifetime lt)

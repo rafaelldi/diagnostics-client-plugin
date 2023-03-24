@@ -12,7 +12,7 @@ internal sealed class GcEventMonitoringHandler
     public GcEventMonitoringHandler(ISolution solution, Lifetime lifetime)
     {
         var hostModel = solution.GetProtocolSolution().GetDiagnosticsHostModel();
-        hostModel.LiveGcEventSessions.View(lifetime, (lt, pid, session) => Handle(lt, pid, session));
+        hostModel.LiveGcEventSessions.View(lifetime, Handle);
     }
 
     private static void Handle(Lifetime lt, int pid, LiveGcEventSession session)

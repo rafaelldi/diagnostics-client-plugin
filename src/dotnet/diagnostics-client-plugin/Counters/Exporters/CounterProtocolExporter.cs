@@ -23,11 +23,10 @@ internal sealed class CounterProtocolExporter
         {
             while (await _reader.WaitToReadAsync(Lifetime.AsyncLocal.Value))
             {
-                if (_reader.TryRead(out var counter))
-                {
-                    var key = string.IsNullOrEmpty(counter.Tags) ? counter.Name : $"{counter.Name}-{counter.Tags}";
-                    _session.Counters[key] = new Counter(counter.DisplayName, counter.Tags, counter.Value);
-                }
+                if (!_reader.TryRead(out var counter)) continue;
+
+                var key = string.IsNullOrEmpty(counter.Tags) ? counter.Name : $"{counter.Name}-{counter.Tags}";
+                _session.Counters[key] = new Counter(counter.DisplayName, counter.Tags, counter.Value);
             }
         }
         catch (OperationCanceledException)

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+// ReSharper disable ReplaceSliceWithRangeIndexer
 
 namespace DiagnosticsClientPlugin.Counters.Producer;
 
@@ -20,6 +21,7 @@ internal static class CounterCollectionParser
 
         for (var i = 0; i < collectionString.Length; i++)
         {
+            // ReSharper disable once ConvertIfStatementToSwitchStatement
             if (collectionString[i] == '[')
             {
                 insideInternalList = true;

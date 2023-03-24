@@ -58,18 +58,17 @@ internal sealed class EfEventHandler : IEventHandler
         var sb = new StringBuilder();
         foreach (var argument in arguments)
         {
-            if (argument.TryGetValue("Key", out var key) && argument.TryGetValue("Value", out var value))
+            if (!argument.TryGetValue("Key", out var key) || !argument.TryGetValue("Value", out var value)) continue;
+
+            var keyString = key?.ToString();
+            var valueString = value?.ToString();
+
+            if (string.IsNullOrEmpty(keyString) || string.IsNullOrEmpty(valueString))
             {
-                var keyString = key?.ToString();
-                var valueString = value?.ToString();
-
-                if (string.IsNullOrEmpty(keyString) || string.IsNullOrEmpty(valueString))
-                {
-                    continue;
-                }
-
-                sb.Append($"{keyString} = {valueString}; ");
+                continue;
             }
+
+            sb.Append($"{keyString} = {valueString}; ");
         }
 
         var trace = new ValueTrace(
@@ -80,7 +79,7 @@ internal sealed class EfEventHandler : IEventHandler
         );
         _writer.TryWrite(trace);
     }
-    
+
     private static string GetEventName(TraceEvent evt) => evt.EventName switch
     {
         "Activity2/Start" => "Command Started",

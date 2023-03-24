@@ -8,6 +8,7 @@ using JetBrains.Collections.Viewable;
 using JetBrains.Lifetimes;
 using JetBrains.ProjectModel;
 using JetBrains.RdBackend.Common.Features;
+// ReSharper disable SuggestBaseTypeForParameter
 
 namespace DiagnosticsClientPlugin.Counters;
 
@@ -17,7 +18,7 @@ internal sealed class CounterCollectionHandler
     public CounterCollectionHandler(ISolution solution, Lifetime lifetime)
     {
         var hostModel = solution.GetProtocolSolution().GetDiagnosticsHostModel();
-        hostModel.PersistentCounterSessions.View(lifetime, (lt, pid, session) => Handle(lt, pid, session));
+        hostModel.PersistentCounterSessions.View(lifetime, Handle);
     }
 
     private static void Handle(Lifetime lt, int pid, PersistentCounterSession session)

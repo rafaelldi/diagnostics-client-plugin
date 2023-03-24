@@ -12,15 +12,6 @@ internal sealed class TraceProducer
 {
     private readonly EventPipeSessionManager _sessionManager;
     private readonly TraceProducerConfiguration _configuration;
-
-    private readonly HttpEventHandler _httpEventHandler;
-    private readonly AspNetEventHandler _aspNetEventHandler;
-    private readonly EfEventHandler _efEventHandler;
-    private readonly ExceptionEventHandler _exceptionEventHandler;
-    private readonly ThreadEventHandler _threadEventHandler;
-    private readonly ContentionEventHandler _contentionEventHandler;
-    private readonly TaskEventHandler _taskEventHandler;
-    private readonly LoaderEventHandler _loaderEventHandler;
     private readonly List<IEventHandler> _handlers;
 
     public TraceProducer(

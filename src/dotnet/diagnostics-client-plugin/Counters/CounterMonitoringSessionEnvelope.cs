@@ -6,6 +6,7 @@ using DiagnosticsClientPlugin.Counters.Producer;
 using DiagnosticsClientPlugin.Generated;
 using JetBrains.Collections.Viewable;
 using JetBrains.Lifetimes;
+// ReSharper disable SuggestBaseTypeForParameter
 
 namespace DiagnosticsClientPlugin.Counters;
 
@@ -26,7 +27,7 @@ internal sealed class CounterMonitoringSessionEnvelope
         _exporter = CreateExporter(session, channel);
         _producer = CreateProducer(pid, session, channel, lifetime);
 
-        session.Active.WhenTrue(lifetime, lt => Handle(lt));
+        session.Active.WhenTrue(lifetime, Handle);
     }
 
     private void Handle(Lifetime lt)

@@ -28,13 +28,12 @@ internal sealed class ChartProtocolExporter
         {
             while (await _reader.WaitToReadAsync(Lifetime.AsyncLocal.Value))
             {
-                if (_reader.TryRead(out var counter))
+                if (!_reader.TryRead(out var counter)) continue;
+
+                var chartValue = Map(counter);
+                if (chartValue is not null)
                 {
-                    var chartValue = Map(counter);
-                    if (chartValue is not null)
-                    {
-                        _session.ValueReceived.Fire(chartValue);
-                    }
+                    _session.ValueReceived.Fire(chartValue);
                 }
             }
         }

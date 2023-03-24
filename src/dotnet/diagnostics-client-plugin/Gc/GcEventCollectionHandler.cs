@@ -14,7 +14,7 @@ internal sealed class GcEventCollectionHandler
     public GcEventCollectionHandler(ISolution solution, Lifetime lifetime)
     {
         var hostModel = solution.GetProtocolSolution().GetDiagnosticsHostModel();
-        hostModel.PersistentGcEventSessions.View(lifetime, (lt, pid, session) => Handle(lt, pid, session));
+        hostModel.PersistentGcEventSessions.View(lifetime, Handle);
     }
 
     private static void Handle(Lifetime lt, int pid, PersistentGcEventSession session)

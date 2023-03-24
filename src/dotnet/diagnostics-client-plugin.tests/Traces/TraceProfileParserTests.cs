@@ -7,7 +7,7 @@ using Should;
 using static Microsoft.Diagnostics.Tracing.Parsers.ClrTraceEventParser;
 using static DiagnosticsClientPlugin.Common.Providers;
 
-namespace DiagnosticsClientPlugin.Basic.Tests.Traces;
+namespace DiagnosticsClientPlugin.Tests.Traces;
 
 public class TraceProfileParserTests
 {

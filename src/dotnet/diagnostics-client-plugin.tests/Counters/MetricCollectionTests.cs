@@ -2,7 +2,7 @@
 using NUnit.Framework;
 using Should;
 
-namespace DiagnosticsClientPlugin.Basic.Tests.Counters;
+namespace DiagnosticsClientPlugin.Tests.Counters;
 
 public class MetricCollectionTests
 {

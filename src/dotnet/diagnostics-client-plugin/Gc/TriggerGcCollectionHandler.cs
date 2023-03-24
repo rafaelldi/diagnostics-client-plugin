@@ -14,7 +14,7 @@ internal sealed class TriggerGcCollectionHandler
     public TriggerGcCollectionHandler(ISolution solution, Lifetime lifetime)
     {
         var hostModel = solution.GetProtocolSolution().GetDiagnosticsHostModel();
-        hostModel.TriggerGc.Advise(lifetime, pid => Handle(pid));
+        hostModel.TriggerGc.Advise(lifetime, Handle);
     }
 
     private static void Handle(int pid)

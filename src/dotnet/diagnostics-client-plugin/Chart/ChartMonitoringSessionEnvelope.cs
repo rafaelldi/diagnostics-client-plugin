@@ -34,7 +34,7 @@ internal sealed class ChartMonitoringSessionEnvelope
         );
         _producer = new CounterProducer(pid, configuration, channel.Writer, lifetime);
 
-        session.Active.WhenTrue(lifetime, lt => Handle(lt));
+        session.Active.WhenTrue(lifetime, Handle);
     }
 
     private void Handle(Lifetime lt)

@@ -6,6 +6,7 @@ using DiagnosticsClientPlugin.Common;
 using DiagnosticsClientPlugin.EventPipes;
 using JetBrains.Lifetimes;
 using Microsoft.Diagnostics.Tracing;
+// ReSharper disable ReplaceSliceWithRangeIndexer
 
 namespace DiagnosticsClientPlugin.Counters.Producer;
 
@@ -217,7 +218,7 @@ internal sealed class CounterProducer
     )
     {
         var displayUnits = string.IsNullOrEmpty(units) ? "Count" : units;
-        return new(
+        return new ValueCounter(
             timeStamp,
             name,
             $"{name} ({displayUnits} / {_configuration.RefreshInterval} sec)",

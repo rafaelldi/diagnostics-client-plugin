@@ -25,7 +25,7 @@ internal sealed class StackTraceCollectionHandler
         hostModel.CollectStackTrace.Set(async (lt, command) => await CollectAsync(command, lt));
     }
 
-    private async Task<string> CollectAsync(CollectStackTraceCommand command, Lifetime lifetime)
+    private static async Task<string> CollectAsync(CollectStackTraceCommand command, Lifetime lifetime)
     {
         var sessionFilename = $"{Path.GetRandomFileName()}.nettrace";
         var sessionFilePath = Path.Combine(Path.GetTempPath(), sessionFilename);
@@ -50,7 +50,7 @@ internal sealed class StackTraceCollectionHandler
         return stackTraces;
     }
 
-    private async Task CollectTracesAsync(CollectStackTraceCommand command, string sessionFilePath, Lifetime lifetime)
+    private static async Task CollectTracesAsync(CollectStackTraceCommand command, string sessionFilePath, Lifetime lifetime)
     {
         var providers = new[] { EventPipeProviderFactory.CreateSampleProvider() };
         var sessionManager = new EventPipeSessionManager(command.Pid);
@@ -58,6 +58,7 @@ internal sealed class StackTraceCollectionHandler
 
         using var fileStream = new FileStream(sessionFilePath, FileMode.Create, FileAccess.Write);
 
+        // ReSharper disable once MethodSupportsCancellation
         var copyTask = session.EventStream.CopyToAsync(fileStream, 81920);
 
         try
@@ -74,7 +75,7 @@ internal sealed class StackTraceCollectionHandler
         await copyTask;
     }
 
-    private string ParseSessionFile(string traceLogFilePath)
+    private static string ParseSessionFile(string traceLogFilePath)
     {
         using var symbolReader = new SymbolReader(TextWriter.Null)
         {
@@ -112,7 +113,8 @@ internal sealed class StackTraceCollectionHandler
         return stackTraces;
     }
 
-    private string SerializeStackTraces(Dictionary<int, StackSourceSample> samplesByThread,
+    private static string SerializeStackTraces(Dictionary<int, StackSourceSample> samplesByThread,
+        // ReSharper disable once SuggestBaseTypeForParameter
         MutableTraceEventStackSource stackSource)
     {
         var sb = new StringBuilder();

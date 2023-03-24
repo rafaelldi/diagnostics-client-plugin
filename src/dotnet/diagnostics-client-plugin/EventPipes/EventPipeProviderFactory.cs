@@ -5,6 +5,7 @@ using DiagnosticsClientPlugin.Traces;
 using Microsoft.Diagnostics.NETCore.Client;
 using Microsoft.Diagnostics.Tracing.Parsers;
 using static DiagnosticsClientPlugin.Common.Providers;
+// ReSharper disable ParameterTypeCanBeEnumerable.Global
 
 namespace DiagnosticsClientPlugin.EventPipes;
 

@@ -22,7 +22,7 @@ internal sealed class ProcessHandler
     public ProcessHandler(ISolution solution, Lifetime lifetime)
     {
         _model = solution.GetProtocolSolution().GetDiagnosticsHostModel();
-        _model.ProcessList.Active.WhenTrue(lifetime, lt => Handle(lt));
+        _model.ProcessList.Active.WhenTrue(lifetime, Handle);
     }
 
     private void Handle(Lifetime lt)
@@ -52,13 +52,8 @@ internal sealed class ProcessHandler
 
         var existingProcesses = _model.ProcessList.Items.Keys.ToArray();
         var newProcesses = new Dictionary<int, ProcessInfo>(processes.Count);
-        foreach (var pid in processes)
+        foreach (var pid in processes.Where(pid => !existingProcesses.Contains(pid)))
         {
-            if (existingProcesses.Contains(pid))
-            {
-                continue;
-            }
-
             try
             {
                 var process = Process.GetProcessById(pid);
@@ -67,9 +62,9 @@ internal sealed class ProcessHandler
                 var filename = process.MainModule?.FileName;
                 var startTime = process.StartTime.ToString(CultureInfo.CurrentCulture);
                 var environment = client
-                                      .GetProcessEnvironment()
-                                      .Select(it => new ProcessEnvironmentVariable(it.Key, it.Value))
-                                      .ToArray();
+                    .GetProcessEnvironment()
+                    .Select(it => new ProcessEnvironmentVariable(it.Key, it.Value))
+                    .ToArray();
 
                 var processInfo = new ProcessInfo(
                     process.ProcessName,

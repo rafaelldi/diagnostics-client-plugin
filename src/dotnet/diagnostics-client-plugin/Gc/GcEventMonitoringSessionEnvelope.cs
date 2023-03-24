@@ -23,7 +23,7 @@ internal sealed class GcEventMonitoringSessionEnvelope
         _exporter = new GcEventProtocolExporter(session, channel.Reader);
         _producer = new GcEventProducer(pid, channel.Writer, lifetime);
 
-        session.Active.WhenTrue(lifetime, lt => Handle(lt));
+        session.Active.WhenTrue(lifetime, Handle);
     }
 
     private void Handle(Lifetime lt)

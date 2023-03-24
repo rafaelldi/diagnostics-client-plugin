@@ -6,6 +6,7 @@ using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Microsoft.Diagnostics.NETCore.Client;
 using static DiagnosticsClientPlugin.Common.DiagnosticsClientExtensions;
+// ReSharper disable ParameterTypeCanBeEnumerable.Global
 
 namespace DiagnosticsClientPlugin.EventPipes;
 
@@ -21,6 +22,7 @@ internal sealed class EventPipeSessionManager : IAsyncDisposable
         _client = new DiagnosticsClient(pid);
     }
 
+    // ReSharper disable once UnusedMember.Global
     internal EventPipeSessionManager(string fileName, string arguments)
     {
         var transportName = GetTransportName();

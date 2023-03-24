@@ -12,7 +12,7 @@ internal sealed class ChartMonitoringHandler
     public ChartMonitoringHandler(ISolution solution, Lifetime lifetime)
     {
         var hostModel = solution.GetProtocolSolution().GetDiagnosticsHostModel();
-        hostModel.LiveChartSessions.View(lifetime, (lt, pid, session) => Handle(lt, pid, session));
+        hostModel.LiveChartSessions.View(lifetime, Handle);
     }
 
     private static void Handle(Lifetime lt, int pid, LiveChartSession session)

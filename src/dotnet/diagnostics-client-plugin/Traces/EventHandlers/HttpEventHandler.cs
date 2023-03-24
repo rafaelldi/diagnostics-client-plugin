@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Text;
 using System.Threading.Channels;
 using DiagnosticsClientPlugin.Common;
@@ -59,18 +58,17 @@ internal sealed class HttpEventHandler : IEventHandler
         var sb = new StringBuilder();
         foreach (var argument in arguments)
         {
-            if (argument.TryGetValue("Key", out var key) && argument.TryGetValue("Value", out var value))
+            if (!argument.TryGetValue("Key", out var key) || !argument.TryGetValue("Value", out var value)) continue;
+
+            var keyString = key?.ToString();
+            var valueString = value?.ToString();
+
+            if (string.IsNullOrEmpty(keyString) || string.IsNullOrEmpty(valueString))
             {
-                var keyString = key?.ToString();
-                var valueString = value?.ToString();
-
-                if (string.IsNullOrEmpty(keyString) || string.IsNullOrEmpty(valueString))
-                {
-                    continue;
-                }
-
-                sb.Append($"{keyString} = {valueString}; ");
+                continue;
             }
+
+            sb.Append($"{keyString} = {valueString}; ");
         }
 
         var trace = new ValueTrace(

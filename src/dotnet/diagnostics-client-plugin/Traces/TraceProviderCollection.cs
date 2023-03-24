@@ -5,6 +5,7 @@ using DiagnosticsClientPlugin.Generated;
 using JetBrains.Util;
 using Microsoft.Diagnostics.NETCore.Client;
 using static DiagnosticsClientPlugin.EventPipes.EventPipeProviderFactory;
+// ReSharper disable ParameterTypeCanBeEnumerable.Local
 
 namespace DiagnosticsClientPlugin.Traces;
 
@@ -28,8 +29,8 @@ internal sealed class TraceProviderCollection
         EventPipeProviders = CreateTraceProviders(providers);
     }
 
-    private void MergeProviders(
-        List<TraceProvider> providers,
+    private static void MergeProviders(
+        ICollection<TraceProvider> providers,
         IReadOnlyCollection<TraceProvider> profileProviders,
         IReadOnlyCollection<TraceProvider> predefinedProviders)
     {

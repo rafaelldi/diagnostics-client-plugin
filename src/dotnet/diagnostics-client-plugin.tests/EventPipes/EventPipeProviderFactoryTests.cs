@@ -9,7 +9,7 @@ using NUnit.Framework;
 using Should;
 using static DiagnosticsClientPlugin.Common.Providers;
 
-namespace DiagnosticsClientPlugin.Basic.Tests.EventPipes;
+namespace DiagnosticsClientPlugin.Tests.EventPipes;
 
 public class EventPipeProviderFactoryTests
 {

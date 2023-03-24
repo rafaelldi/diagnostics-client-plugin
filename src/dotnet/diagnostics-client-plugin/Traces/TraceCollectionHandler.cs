@@ -15,7 +15,7 @@ internal sealed class TraceCollectionHandler
     public TraceCollectionHandler(ISolution solution, Lifetime lifetime)
     {
         var hostModel = solution.GetProtocolSolution().GetDiagnosticsHostModel();
-        hostModel.PersistentTraceSessions.View(lifetime, (lt, pid, session) => Handle(lt, pid, session));
+        hostModel.PersistentTraceSessions.View(lifetime, Handle);
     }
 
     private static void Handle(Lifetime lt, int pid, PersistentTraceSession session)
@@ -31,6 +31,7 @@ internal sealed class TraceCollectionHandler
         var cancellationToken = lt.ToCancellationToken();
         cancellationToken.Register(() => EventPipeSessionManager.StopSession(eventPipeSession));
 
+        // ReSharper disable once MethodSupportsCancellation
         var copyTask = eventPipeSession.EventStream.CopyToAsync(fileStream, 81920);
         lt.StartAttachedAsync(TaskScheduler.Default, async () => await copyTask);
     }

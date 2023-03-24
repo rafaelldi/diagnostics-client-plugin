@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.Tracing;
+// ReSharper disable ReplaceSliceWithRangeIndexer
 
 namespace DiagnosticsClientPlugin.Traces;
 

@@ -12,7 +12,7 @@ internal sealed class TraceMonitoringHandler
     public TraceMonitoringHandler(ISolution solution, Lifetime lifetime)
     {
         var hostModel = solution.GetProtocolSolution().GetDiagnosticsHostModel();
-        hostModel.LiveTraceSessions.View(lifetime, (lt, pid, session) => Handle(lt, pid, session));
+        hostModel.LiveTraceSessions.View(lifetime, Handle);
     }
 
     private static void Handle(Lifetime lt, int pid, LiveTraceSession session)

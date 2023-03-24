@@ -46,7 +46,7 @@ internal sealed class GcEventProducer
         source.AddCallbackOnProcessStart(tp =>
         {
             tp.AddCallbackOnDotNetRuntimeLoad(runtime =>
-                runtime.GCEnd += (process, gc) => HandleEvent(process, gc));
+                runtime.GCEnd += HandleEvent);
         });
 
         return Task.Run(() =>  source.Process(), Lifetime.AsyncLocal.Value);

@@ -14,20 +14,19 @@ internal static class PredefinedProviderConverter
     internal static List<TraceProvider> Convert(List<PredefinedProvider> predefinedProviders)
     {
         var providers = predefinedProviders
-            .Select(it => ConvertPredefinedProvider(it))
+            .Select(ConvertPredefinedProvider)
             .Where(it => it != null)
             .ToList();
 
         var filterAndPayloadSpecs = GetFilterAndPayloadSpecs(predefinedProviders);
-        if (filterAndPayloadSpecs.Any())
-        {
-            var filterAndPayloadString = string.Join("\n", filterAndPayloadSpecs);
-            providers.Add(new TraceProvider(MicrosoftDiagnosticSource, EventLevel.Verbose, (long)Events,
-                new Dictionary<string, string> { { FilterAndPayloadSpecs, filterAndPayloadString } })
-            );
-        }
+        if (!filterAndPayloadSpecs.Any()) return providers!;
 
-        return providers;
+        var filterAndPayloadString = string.Join("\n", filterAndPayloadSpecs);
+        providers.Add(new TraceProvider(MicrosoftDiagnosticSource, EventLevel.Verbose, (long)Events,
+            new Dictionary<string, string> { { FilterAndPayloadSpecs, filterAndPayloadString } })
+        );
+
+        return providers!;
     }
 
     private static TraceProvider? ConvertPredefinedProvider(PredefinedProvider provider) =>
@@ -46,7 +45,7 @@ internal static class PredefinedProviderConverter
             _ => null
         };
 
-    private static List<string> GetFilterAndPayloadSpecs(List<PredefinedProvider> predefinedProviders)
+    private static List<string> GetFilterAndPayloadSpecs(ICollection<PredefinedProvider> predefinedProviders)
     {
         var filterAndPayloadSpecs = new List<string>();
 

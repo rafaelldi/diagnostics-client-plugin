@@ -3,7 +3,7 @@ using NUnit.Framework;
 using Should;
 using static DiagnosticsClientPlugin.Common.Providers;
 
-namespace DiagnosticsClientPlugin.Basic.Tests.Counters;
+namespace DiagnosticsClientPlugin.Tests.Counters;
 
 public class CounterProviderCollectionTests
 {
