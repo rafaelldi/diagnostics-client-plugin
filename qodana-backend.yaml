@@ -4,3 +4,8 @@ profile:
 linter: jetbrains/qodana-dotnet:2022.3-eap
 dot-net:
   solution: diagnostics-client-plugin.sln
+exclude:
+  - name: All
+    paths:
+      - DiagnosticsClientPlugin/Generated
+      - DiagnosticsClientPlugin/Tests
