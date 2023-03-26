@@ -2,10 +2,10 @@ version: 1.0
 profile:
   name: qodana.recommended
 linter: jetbrains/qodana-jvm:2022.3-eap
+include:
+  - name: CheckDependencyLicenses
 exclude:
   - name: All
     paths:
-      - model/rider/DiagnosticsHostModel
-      - com/github/rafaelldi/diagnosticsclientplugin/generated
-include:
-  - name: CheckDependencyLicenses
+      - src/rider/main/kotlin/com/github/rafaelldi/diagnosticsclientplugin/generated
+      - protocol/src/main/kotlin/model/rider
