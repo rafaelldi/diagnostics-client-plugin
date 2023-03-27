@@ -19,7 +19,6 @@ import javax.swing.event.ListSelectionListener
 
 class ProcessExplorerTab(private val processList: ProcessList, lt: Lifetime) :
     SimpleToolWindowPanel(false), ListSelectionListener {
-
     companion object {
         const val SPLITTER_PROPORTION = 0.3F
         val PROCESS_EXPLORE_TAB: DataKey<ProcessExplorerTab> =

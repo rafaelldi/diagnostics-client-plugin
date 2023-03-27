@@ -1,8 +1,5 @@
 package com.github.rafaelldi.diagnosticsclientplugin.services.traces
 
-import com.github.rafaelldi.diagnosticsclientplugin.common.persistentSessionAlreadyExists
-import com.github.rafaelldi.diagnosticsclientplugin.common.persistentSessionFinished
-import com.github.rafaelldi.diagnosticsclientplugin.common.persistentSessionStarted
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.StoppingType
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.TraceModel
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.map
@@ -25,10 +22,12 @@ class PersistentTraceSessionController(project: Project) :
         private const val TRACES = "Traces"
     }
 
+    override val artifactType = TRACES
+    override val canBeOpened = false
     override val sessions = project.solution.diagnosticsHostModel.persistentTraceSessions
 
     init {
-        sessions.view(projectComponentLifetime) { lt, pid, session ->
+        sessions.view(serviceLifetime) { lt, pid, session ->
             viewSession(pid, session, lt)
         }
     }
@@ -71,10 +70,4 @@ class PersistentTraceSessionController(project: Project) :
 
         return providers
     }
-
-    override fun sessionAlreadyExists(pid: Int) = persistentSessionAlreadyExists(TRACES, pid, project)
-    override fun sessionStarted(pid: Int) = persistentSessionStarted(TRACES, pid, project)
-    override fun sessionFinished(pid: Int, session: PersistentTraceSession) =
-        persistentSessionFinished(TRACES, pid, session.filePath, false, project)
-
 }

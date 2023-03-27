@@ -13,6 +13,7 @@
                     icon="DiagnosticsClientIcons.ToolWindow"
                     canCloseContents="true"
                     factoryClass="com.github.rafaelldi.diagnosticsclientplugin.toolWindow.DiagnosticsToolWindowFactory"/>
+
         <webHelpProvider implementation="com.github.rafaelldi.diagnosticsclientplugin.DiagnosticsClientHelpProvider"/>
 
         <rd.extListener endpoint="IDE Frontend"

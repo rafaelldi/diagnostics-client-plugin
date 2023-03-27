@@ -1,8 +1,5 @@
 package com.github.rafaelldi.diagnosticsclientplugin.services.gc
 
-import com.github.rafaelldi.diagnosticsclientplugin.common.persistentSessionAlreadyExists
-import com.github.rafaelldi.diagnosticsclientplugin.common.persistentSessionFinished
-import com.github.rafaelldi.diagnosticsclientplugin.common.persistentSessionStarted
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.GcEventModel
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.StoppingType
 import com.github.rafaelldi.diagnosticsclientplugin.generated.PersistentGcEventSession
@@ -23,10 +20,12 @@ class PersistentGcEventSessionController(project: Project) :
         private const val GC_EVENTS = "GC events"
     }
 
+    override val artifactType = GC_EVENTS
+    override val canBeOpened = true
     override val sessions = project.solution.diagnosticsHostModel.persistentGcEventSessions
 
     init {
-        sessions.view(projectComponentLifetime) { lt, pid, session ->
+        sessions.view(serviceLifetime) { lt, pid, session ->
             viewSession(pid, session, lt)
         }
     }
@@ -39,9 +38,4 @@ class PersistentGcEventSessionController(project: Project) :
 
         return PersistentGcEventSession(duration, filePath)
     }
-
-    override fun sessionAlreadyExists(pid: Int) = persistentSessionAlreadyExists(GC_EVENTS, pid, project)
-    override fun sessionStarted(pid: Int) = persistentSessionStarted(GC_EVENTS, pid, project)
-    override fun sessionFinished(pid: Int, session: PersistentGcEventSession) =
-        persistentSessionFinished(GC_EVENTS, pid, session.filePath, true, project)
 }

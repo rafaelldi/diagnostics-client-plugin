@@ -14,11 +14,10 @@ import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.progress.withBackgroundProgressIndicator
 import com.intellij.openapi.project.Project
-import com.jetbrains.rd.platform.util.idea.ProtocolSubscribedProjectComponent
 import com.jetbrains.rider.projectView.solution
 
 @Service
-class DumpCollectionController(project: Project) : ProtocolSubscribedProjectComponent(project) {
+class DumpCollectionController(private val project: Project) {
     companion object {
         fun getInstance(project: Project): DumpCollectionController = project.service()
     }

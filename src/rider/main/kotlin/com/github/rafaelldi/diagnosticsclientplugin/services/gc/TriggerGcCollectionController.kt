@@ -5,11 +5,10 @@ import com.github.rafaelldi.diagnosticsclientplugin.generated.diagnosticsHostMod
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
-import com.jetbrains.rd.platform.util.idea.ProtocolSubscribedProjectComponent
 import com.jetbrains.rider.projectView.solution
 
 @Service
-class TriggerGcCollectionController(project: Project) : ProtocolSubscribedProjectComponent(project) {
+class TriggerGcCollectionController(project: Project) {
     companion object {
         fun getInstance(project: Project): TriggerGcCollectionController = project.service()
     }

@@ -7,6 +7,8 @@ import com.intellij.openapi.wm.ToolWindowFactory
 
 class DiagnosticsToolWindowFactory : ToolWindowFactory, DumbAware {
     override fun createToolWindowContent(project: Project, toolWindow: ToolWindow) {
-        DiagnosticsTabManager.getInstance(project).createExplorerTab(toolWindow)
+        val tabManager = DiagnosticsTabManager.getInstance(project)
+        tabManager.createExplorerTab(toolWindow)
+        tabManager.createRecentArtifactTab(toolWindow)
     }
 }
