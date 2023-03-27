@@ -1,6 +1,5 @@
 package com.github.rafaelldi.diagnosticsclientplugin.toolWindow.components
 
-import com.github.rafaelldi.diagnosticsclientplugin.utils.DiagnosticsArtifact
 import com.intellij.ui.ColoredListCellRenderer
 import com.intellij.ui.components.JBList
 import java.nio.file.Path
@@ -8,8 +7,8 @@ import javax.swing.JList
 import javax.swing.ListSelectionModel
 import kotlin.io.path.pathString
 
-class RecentArtifactList : JBList<DiagnosticsArtifact>() {
-    private val listModel = createDefaultListModel<DiagnosticsArtifact>()
+class RecentArtifactList : JBList<Path>() {
+    private val listModel = createDefaultListModel<Path>()
 
     init {
         model = listModel
@@ -19,22 +18,22 @@ class RecentArtifactList : JBList<DiagnosticsArtifact>() {
     }
 
     val selectedArtifactPath: Path?
-        get() = selectedValue?.path
+        get() = selectedValue
 
-    fun add(artifact: DiagnosticsArtifact) {
-        if (!listModel.elements().asSequence().map { it.path }.contains(artifact.path)) {
-            listModel.addElement(artifact)
+    fun add(artifactPath: Path) {
+        if (!listModel.elements().asSequence().contains(artifactPath)) {
+            listModel.addElement(artifactPath)
         }
     }
 
-    fun remove(artifact: DiagnosticsArtifact) {
-        listModel.removeElement(artifact)
+    fun remove(artifactPath: Path) {
+        listModel.removeElement(artifactPath)
     }
 
-    private class CellRenderer : ColoredListCellRenderer<DiagnosticsArtifact>() {
+    private class CellRenderer : ColoredListCellRenderer<Path>() {
         override fun customizeCellRenderer(
-            list: JList<out DiagnosticsArtifact>,
-            value: DiagnosticsArtifact?,
+            list: JList<out Path>,
+            value: Path?,
             index: Int,
             selected: Boolean,
             hasFocus: Boolean
@@ -43,7 +42,7 @@ class RecentArtifactList : JBList<DiagnosticsArtifact>() {
                 return
             }
 
-            append(value.path.pathString)
+            append(value.pathString)
         }
     }
 }

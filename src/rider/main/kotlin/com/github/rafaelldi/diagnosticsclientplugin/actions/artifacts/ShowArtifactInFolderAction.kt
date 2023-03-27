@@ -14,6 +14,8 @@ class ShowArtifactInFolderAction : AnAction() {
         val selectedPath = tab.selectedArtifactPath ?: return
         if (selectedPath.exists()) {
             RevealFileAction.openFile(selectedPath)
+        } else {
+            tab.removeArtifact(selectedPath)
         }
     }
 

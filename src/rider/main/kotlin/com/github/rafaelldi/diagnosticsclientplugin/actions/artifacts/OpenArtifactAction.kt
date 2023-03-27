@@ -14,8 +14,12 @@ class OpenArtifactAction : AnAction() {
         val project = e.project ?: return
         val tab = e.getData(RecentArtifactTab.RECENT_ARTIFACT_TAB) ?: return
         val selectedPath = tab.selectedArtifactPath ?: return
-        if (selectedPath.exists() && (selectedPath.extension == "csv" || selectedPath.extension == "json")) {
-            OpenFileAction.openFile(selectedPath.pathString, project)
+        if (selectedPath.exists()) {
+            if ((selectedPath.extension == "csv" || selectedPath.extension == "json")) {
+                OpenFileAction.openFile(selectedPath.pathString, project)
+            }
+        } else {
+            tab.removeArtifact(selectedPath)
         }
     }
 
