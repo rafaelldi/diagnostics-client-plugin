@@ -1,21 +1,24 @@
 package com.github.rafaelldi.diagnosticsclientplugin.actions.artifacts
 
+import com.github.rafaelldi.diagnosticsclientplugin.common.fileDoesNotExist
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.RecentArtifactTab
 import com.intellij.ide.actions.RevealFileAction
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import kotlin.io.path.exists
+import kotlin.io.path.pathString
 
 class ShowArtifactInFolderAction : AnAction() {
     override fun actionPerformed(e: AnActionEvent) {
-        e.project ?: return
+        val project = e.project ?: return
         val tab = e.getData(RecentArtifactTab.RECENT_ARTIFACT_TAB) ?: return
         val selectedPath = tab.selectedArtifactPath ?: return
         if (selectedPath.exists()) {
             RevealFileAction.openFile(selectedPath)
         } else {
             tab.removeArtifact(selectedPath)
+            fileDoesNotExist(selectedPath.pathString, project)
         }
     }
 

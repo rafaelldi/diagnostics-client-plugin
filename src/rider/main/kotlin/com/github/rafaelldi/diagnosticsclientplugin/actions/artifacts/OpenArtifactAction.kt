@@ -1,5 +1,6 @@
 package com.github.rafaelldi.diagnosticsclientplugin.actions.artifacts
 
+import com.github.rafaelldi.diagnosticsclientplugin.common.fileDoesNotExist
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.RecentArtifactTab
 import com.intellij.ide.actions.OpenFileAction
 import com.intellij.openapi.actionSystem.ActionUpdateThread
@@ -20,6 +21,7 @@ class OpenArtifactAction : AnAction() {
             }
         } else {
             tab.removeArtifact(selectedPath)
+            fileDoesNotExist(selectedPath.pathString, project)
         }
     }
 
