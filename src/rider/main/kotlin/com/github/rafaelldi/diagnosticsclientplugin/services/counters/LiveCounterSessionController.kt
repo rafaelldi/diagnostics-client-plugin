@@ -23,7 +23,7 @@ class LiveCounterSessionController(project: Project) :
     override val sessions = project.solution.diagnosticsHostModel.liveCounterSessions
 
     init {
-        sessions.view(projectComponentLifetime) { lt, pid, session ->
+        sessions.view(serviceLifetime) { lt, pid, session ->
             viewSession(pid, session, lt)
         }
     }

@@ -58,3 +58,11 @@ fun liveSessionNotFound(type: String, pid: Int, project: Project) = Notification
     NotificationType.ERROR
 )
     .notify(project)
+
+fun fileDoesNotExist(path: String, project: Project) = Notification(
+    "Diagnostics Client",
+    "File doesn't exist",
+    "Unable to find the file: $path",
+    NotificationType.ERROR
+)
+    .notify(project)

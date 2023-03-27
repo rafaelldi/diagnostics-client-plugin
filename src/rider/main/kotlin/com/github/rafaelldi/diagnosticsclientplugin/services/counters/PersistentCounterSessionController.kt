@@ -1,8 +1,5 @@
 package com.github.rafaelldi.diagnosticsclientplugin.services.counters
 
-import com.github.rafaelldi.diagnosticsclientplugin.common.persistentSessionAlreadyExists
-import com.github.rafaelldi.diagnosticsclientplugin.common.persistentSessionFinished
-import com.github.rafaelldi.diagnosticsclientplugin.common.persistentSessionStarted
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.CounterFileFormat
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.CounterModel
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.StoppingType
@@ -25,10 +22,12 @@ class PersistentCounterSessionController(project: Project) :
         private const val COUNTERS = "Counters"
     }
 
+    override val artifactType = COUNTERS
+    override val canBeOpened = true
     override val sessions = project.solution.diagnosticsHostModel.persistentCounterSessions
 
     init {
-        sessions.view(projectComponentLifetime) { lt, pid, session ->
+        sessions.view(serviceLifetime) { lt, pid, session ->
             viewSession(pid, session, lt)
         }
     }
@@ -71,9 +70,4 @@ class PersistentCounterSessionController(project: Project) :
 
         return Path(model.path, filename).pathString
     }
-
-    override fun sessionAlreadyExists(pid: Int) = persistentSessionAlreadyExists(COUNTERS, pid, project)
-    override fun sessionStarted(pid: Int) = persistentSessionStarted(COUNTERS, pid, project)
-    override fun sessionFinished(pid: Int, session: PersistentCounterSession) =
-        persistentSessionFinished(COUNTERS, pid, session.filePath, true, project)
 }

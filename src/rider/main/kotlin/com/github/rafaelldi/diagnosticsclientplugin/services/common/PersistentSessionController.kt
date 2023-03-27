@@ -1,19 +1,25 @@
 package com.github.rafaelldi.diagnosticsclientplugin.services.common
 
+import com.github.rafaelldi.diagnosticsclientplugin.common.persistentSessionAlreadyExists
+import com.github.rafaelldi.diagnosticsclientplugin.common.persistentSessionFinished
+import com.github.rafaelldi.diagnosticsclientplugin.common.persistentSessionStarted
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.PersistentModel
 import com.github.rafaelldi.diagnosticsclientplugin.generated.PersistentSession
+import com.github.rafaelldi.diagnosticsclientplugin.topics.ArtifactListener
 import com.intellij.openapi.project.Project
 import com.jetbrains.rd.framework.util.createTerminatedAfter
-import com.jetbrains.rd.platform.util.idea.ProtocolSubscribedProjectComponent
+import com.jetbrains.rd.platform.util.idea.LifetimedService
 import com.jetbrains.rd.util.addUnique
 import com.jetbrains.rd.util.lifetime.Lifetime
 import com.jetbrains.rd.util.reactive.IMutableViewableMap
 import kotlinx.coroutines.Dispatchers
 import java.time.Duration
 
-abstract class PersistentSessionController<TSession : PersistentSession, TModel : PersistentModel>(project: Project) :
-    ProtocolSubscribedProjectComponent(project) {
+abstract class PersistentSessionController<TSession : PersistentSession, TModel : PersistentModel>(protected val project: Project) :
+    LifetimedService() {
 
+    protected abstract val artifactType: String
+    protected abstract val canBeOpened: Boolean
     protected abstract val sessions: IMutableViewableMap<Int, TSession>
 
     fun startSession(model: TModel) {
@@ -26,7 +32,7 @@ abstract class PersistentSessionController<TSession : PersistentSession, TModel 
 
         val session = createSession(model)
         try {
-            sessions.addUnique(projectComponentLifetime, pid, session)
+            sessions.addUnique(serviceLifetime, pid, session)
         } catch (e: IllegalArgumentException) {
             sessionAlreadyExists(pid)
         }
@@ -51,11 +57,15 @@ abstract class PersistentSessionController<TSession : PersistentSession, TModel 
 
         lt.bracketIfAlive(
             { sessionStarted(pid) },
-            { sessionFinished(pid, session) }
+            {
+                sessionFinished(pid, session)
+                project.messageBus.syncPublisher(ArtifactListener.TOPIC).artifactCreated(session.filePath)
+            }
         )
     }
 
-    protected abstract fun sessionAlreadyExists(pid: Int)
-    protected abstract fun sessionStarted(pid: Int)
-    protected abstract fun sessionFinished(pid: Int, session: TSession)
+    private fun sessionAlreadyExists(pid: Int) = persistentSessionAlreadyExists(artifactType, pid, project)
+    private fun sessionStarted(pid: Int) = persistentSessionStarted(artifactType, pid, project)
+    private fun sessionFinished(pid: Int, session: TSession) =
+        persistentSessionFinished(artifactType, pid, session.filePath, canBeOpened, project)
 }

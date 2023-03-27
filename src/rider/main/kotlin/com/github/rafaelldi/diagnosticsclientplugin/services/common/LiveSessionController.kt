@@ -5,7 +5,7 @@ import com.github.rafaelldi.diagnosticsclientplugin.dialogs.StoppingType
 import com.github.rafaelldi.diagnosticsclientplugin.generated.LiveSession
 import com.intellij.openapi.project.Project
 import com.jetbrains.rd.framework.util.createTerminatedAfter
-import com.jetbrains.rd.platform.util.idea.ProtocolSubscribedProjectComponent
+import com.jetbrains.rd.platform.util.idea.LifetimedService
 import com.jetbrains.rd.util.addUnique
 import com.jetbrains.rd.util.lifetime.Lifetime
 import com.jetbrains.rd.util.reactive.IMutableViewableMap
@@ -13,8 +13,8 @@ import com.jetbrains.rd.util.reactive.whenTrue
 import kotlinx.coroutines.Dispatchers
 import java.time.Duration
 
-abstract class LiveSessionController<TSession : LiveSession, TModel : LiveModel>(project: Project) :
-    ProtocolSubscribedProjectComponent(project) {
+abstract class LiveSessionController<TSession : LiveSession, TModel : LiveModel>(protected val project: Project) :
+    LifetimedService() {
 
     protected abstract val sessions: IMutableViewableMap<Int, TSession>
 
@@ -35,7 +35,7 @@ abstract class LiveSessionController<TSession : LiveSession, TModel : LiveModel>
 
         val session = createSession(model)
         try {
-            sessions.addUnique(projectComponentLifetime, pid, session)
+            sessions.addUnique(serviceLifetime, pid, session)
         } catch (e: IllegalArgumentException) {
             // do nothing
         }

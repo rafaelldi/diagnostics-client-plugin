@@ -24,7 +24,7 @@ class LiveTraceSessionController(project: Project) :
     override val sessions = project.solution.diagnosticsHostModel.liveTraceSessions
 
     init {
-        sessions.view(projectComponentLifetime) { lt, pid, session ->
+        sessions.view(serviceLifetime) { lt, pid, session ->
             viewSession(pid, session, lt)
         }
     }

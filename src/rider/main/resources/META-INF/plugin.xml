@@ -13,6 +13,7 @@
                     icon="DiagnosticsClientIcons.ToolWindow"
                     canCloseContents="true"
                     factoryClass="com.github.rafaelldi.diagnosticsclientplugin.toolWindow.DiagnosticsToolWindowFactory"/>
+
         <webHelpProvider implementation="com.github.rafaelldi.diagnosticsclientplugin.DiagnosticsClientHelpProvider"/>
 
         <rd.extListener endpoint="IDE Frontend"
@@ -250,6 +251,20 @@
                     text="Pause Session"
                     description="Pause trace monitoring session"
                     icon="AllIcons.Actions.Pause">
+            </action>
+        </group>
+        <group id="DiagnosticsClient.ToolWindow.RecentArtifacts">
+            <action id="DiagnosticsClient.ToolWindow.RecentArtifacts.ShowInFolder"
+                    class="com.github.rafaelldi.diagnosticsclientplugin.actions.artifacts.ShowArtifactInFolderAction"
+                    text="Show In Folder"
+                    description="Show artifact in folder"
+                    icon="AllIcons.Actions.MenuOpen">
+            </action>
+            <action id="DiagnosticsClient.ToolWindow.RecentArtifacts.Open"
+                    class="com.github.rafaelldi.diagnosticsclientplugin.actions.artifacts.OpenArtifactAction"
+                    text="Open"
+                    description="Open artifact"
+                    icon="AllIcons.Actions.Preview">
             </action>
         </group>
     </actions>
