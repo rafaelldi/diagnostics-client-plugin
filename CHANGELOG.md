@@ -7,6 +7,7 @@
 ### Added
 
 - Action to monitor charts
+- Recent Artifacts tab
 
 ## [2023.1.0] - 2023-01-19
 
