@@ -196,9 +196,15 @@
             </action>
             <action id="DiagnosticsClient.ToolWindow.Explorer.LiveChartSession.Start"
                     class="com.github.rafaelldi.diagnosticsclientplugin.actions.chart.StartLiveChartSessionAction"
-                    text="Monitor Chart"
-                    description="Monitor chart"
+                    text="Monitor Charts"
+                    description="Monitor charts"
                     icon="AllIcons.RunConfigurations.TestCustom">
+            </action>
+            <action id="DiagnosticsClient.ToolWindow.Explorer.AttachDebugger"
+                    class="com.github.rafaelldi.diagnosticsclientplugin.actions.AttachDebuggerAction"
+                    text="Attach to Process"
+                    description="Attach debugger to process"
+                    icon="AllIcons.Debugger.AttachToProcess">
             </action>
             <separator/>
             <action id="DiagnosticsClient.ToolWindow.Explorer.Help"
