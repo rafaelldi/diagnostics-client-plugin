@@ -10,6 +10,10 @@
 - Recent Artifacts tab
 - Attach debugger action
 
+### Changed
+
+- Support for Rider 2023.1
+
 ## [2023.1.0] - 2023-01-19
 
 ### Added
