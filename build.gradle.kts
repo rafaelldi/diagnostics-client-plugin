@@ -133,9 +133,10 @@ tasks {
         changeNotes.set(properties("pluginVersion").map { pluginVersion ->
             with(changelog) {
                 renderItem(
-                    getOrNull(pluginVersion)
-                        ?: runCatching { getLatest() }.getOrElse { getUnreleased() },
-                    Changelog.OutputType.HTML,
+                    (getOrNull(pluginVersion) ?: getUnreleased())
+                        .withHeader(false)
+                        .withEmptySections(false),
+                    Changelog.OutputType.HTML
                 )
             }
         })
