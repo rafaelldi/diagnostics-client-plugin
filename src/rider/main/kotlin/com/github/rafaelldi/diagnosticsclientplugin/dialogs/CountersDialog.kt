@@ -1,7 +1,11 @@
 package com.github.rafaelldi.diagnosticsclientplugin.dialogs
 
+import com.github.rafaelldi.diagnosticsclientplugin.DiagnosticsClientBundle
 import com.github.rafaelldi.diagnosticsclientplugin.services.counters.CounterSettings
-import com.github.rafaelldi.diagnosticsclientplugin.utils.*
+import com.github.rafaelldi.diagnosticsclientplugin.utils.DotNetProcess
+import com.github.rafaelldi.diagnosticsclientplugin.utils.isValidCounterProviderList
+import com.github.rafaelldi.diagnosticsclientplugin.utils.isValidFilename
+import com.github.rafaelldi.diagnosticsclientplugin.utils.isValidMetricList
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogWrapper
@@ -22,8 +26,12 @@ class CountersDialog(
 
     init {
         init()
-        val action = if (persistent) "Collect" else "Monitor"
-        title = "$action Counters"
+        title =
+            if (persistent) DiagnosticsClientBundle.message("dialog.counters.title.collect")
+            else DiagnosticsClientBundle.message("dialog.counters.title.monitor")
+        val action =
+            if (persistent) DiagnosticsClientBundle.message("dialog.counters.button.collect")
+            else DiagnosticsClientBundle.message("dialog.counters.button.monitor")
         setOKButtonText(action)
     }
 
@@ -33,12 +41,12 @@ class CountersDialog(
 
         val ps = processes.sortedBy { it.pid }.toList()
 
-        row("Process:") {
+        row(DiagnosticsClientBundle.message("dialog.counters.row.process")) {
             comboBox(ps, SimpleListCellRenderer.create("") { "${it.pid} - ${it.name}" })
                 .align(Align.FILL)
                 .validationOnApply {
                     if (it.selectedItem == null) {
-                        return@validationOnApply error("Please select a process")
+                        return@validationOnApply error(DiagnosticsClientBundle.message("dialog.counters.row.process.error"))
                     } else {
                         return@validationOnApply null
                     }
@@ -46,93 +54,93 @@ class CountersDialog(
                 .bindItemNullable(model::selectedProcess)
         }.bottomGap(BottomGap.SMALL)
 
-        row("Refresh interval (sec.):") {
+        row(DiagnosticsClientBundle.message("dialog.counters.row.refresh.interval")) {
             spinner(1..3600, 1)
                 .bindIntValue(model::interval)
         }.bottomGap(BottomGap.SMALL)
 
         buttonsGroup {
-            row("Stop:") {
+            row(DiagnosticsClientBundle.message("dialog.counters.row.stop")) {
                 radioButton(StoppingType.Manually.label, StoppingType.Manually)
                 periodStoppingType = radioButton(StoppingType.AfterPeriod.label, StoppingType.AfterPeriod)
             }
         }.bind(model::stoppingType)
-        row("Duration (sec.):") {
+        row(DiagnosticsClientBundle.message("dialog.counters.row.duration")) {
             spinner(1..3600, 1)
                 .bindIntValue(model::duration)
                 .enabledIf(periodStoppingType.selected)
         }.bottomGap(BottomGap.SMALL)
 
-        row("Providers:") {
+        row(DiagnosticsClientBundle.message("dialog.counters.row.providers")) {
             expandableTextField()
                 .align(Align.FILL)
                 .validationOnInput {
                     if (isValidCounterProviderList(it.text)) {
                         return@validationOnInput null
                     } else {
-                        return@validationOnInput error("Invalid providers format")
+                        return@validationOnInput error(DiagnosticsClientBundle.message("dialog.counters.row.providers.error"))
                     }
                 }
                 .bindText(model::providers)
         }
-        collapsibleGroup("Metrics") {
+        collapsibleGroup(DiagnosticsClientBundle.message("dialog.counters.group.metrics")) {
             row {
-                metricsEnablingFlag = checkBox("Enable metrics")
+                metricsEnablingFlag = checkBox(DiagnosticsClientBundle.message("dialog.counters.row.enable.metrics"))
             }
-            row("List of metrics:") {
+            row(DiagnosticsClientBundle.message("dialog.counters.row.list.of.metrics")) {
                 expandableTextField()
                     .align(Align.FILL)
                     .validationOnInput {
                         if (isValidMetricList(it.text)) {
                             return@validationOnInput null
                         } else {
-                            return@validationOnInput error("Invalid metrics format")
+                            return@validationOnInput error(DiagnosticsClientBundle.message("dialog.counters.row.list.of.metrics.error"))
                         }
                     }
                     .bindText(model::metrics)
                     .enabledIf(metricsEnablingFlag.selected)
             }
-            row("Maximum number of time series") {
+            row(DiagnosticsClientBundle.message("dialog.counters.row.number.of.time.series")) {
                 intTextField()
                     .bindIntText(model::maxTimeSeries)
                     .enabledIf(metricsEnablingFlag.selected)
             }
-            row("Maximum number of histograms") {
+            row(DiagnosticsClientBundle.message("dialog.counters.row.number.of.histograms")) {
                 intTextField()
                     .bindIntText(model::maxHistograms)
                     .enabledIf(metricsEnablingFlag.selected)
             }
         }
-        group("File Settings") {
+        group(DiagnosticsClientBundle.message("dialog.counters.group.file.settings")) {
             buttonsGroup {
-                row("File format:") {
+                row(DiagnosticsClientBundle.message("dialog.counters.row.file.format")) {
                     for (format in CounterFileFormat.values()) {
                         radioButton(format.name, format)
                     }
                 }
             }.bind(model::format)
-            row("Output filename:") {
+            row(DiagnosticsClientBundle.message("dialog.counters.row.output.filename")) {
                 textField()
                     .align(Align.FILL)
                     .validationOnInput {
                         if (isValidFilename(it.text)) {
                             return@validationOnInput null
                         } else {
-                            return@validationOnInput error("Invalid filename")
+                            return@validationOnInput error(DiagnosticsClientBundle.message("dialog.counters.row.output.filename.error"))
                         }
                     }
                     .bindText(model::filename)
             }
-            row("Output folder:") {
+            row(DiagnosticsClientBundle.message("dialog.counters.row.output.folder")) {
                 textFieldWithBrowseButton(
-                    "Select Path",
+                    DiagnosticsClientBundle.message("dialog.counters.row.output.folder.dialog.title"),
                     project,
                     FileChooserDescriptorFactory.createSingleFolderDescriptor()
                 )
                     .align(Align.FILL)
                     .validationOnApply {
                         if (persistent && it.text.isEmpty()) {
-                            return@validationOnApply error("Please choose a folder")
+                            return@validationOnApply error(DiagnosticsClientBundle.message("dialog.counters.row.output.folder.error"))
                         } else {
                             return@validationOnApply null
                         }

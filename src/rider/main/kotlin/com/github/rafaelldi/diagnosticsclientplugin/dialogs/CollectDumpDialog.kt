@@ -1,5 +1,6 @@
 package com.github.rafaelldi.diagnosticsclientplugin.dialogs
 
+import com.github.rafaelldi.diagnosticsclientplugin.DiagnosticsClientBundle
 import com.github.rafaelldi.diagnosticsclientplugin.services.DumpSettings
 import com.github.rafaelldi.diagnosticsclientplugin.utils.DotNetProcess
 import com.github.rafaelldi.diagnosticsclientplugin.utils.isValidFilename
@@ -19,55 +20,55 @@ class CollectDumpDialog(
 
     init {
         init()
-        title = "Collect Dump"
-        setOKButtonText("Collect")
+        title = DiagnosticsClientBundle.message("dialog.collect.dump.title")
+        setOKButtonText(DiagnosticsClientBundle.message("dialog.collect.dump.button"))
     }
 
     override fun createCenterPanel(): JComponent = panel {
         val ps = processes.sortedBy { it.pid }.toList()
 
-        row("Process:") {
+        row(DiagnosticsClientBundle.message("dialog.collect.dump.row.process")) {
             comboBox(ps, SimpleListCellRenderer.create("") { "${it.pid} - ${it.name}" })
                 .align(Align.FILL)
                 .bindItemNullable(model::selectedProcess)
         }.bottomGap(BottomGap.SMALL)
 
-        row("Type:") {
-            comboBox(DumpType.values().toList())
+        row(DiagnosticsClientBundle.message("dialog.collect.dump.row.type")) {
+            comboBox(DumpType.values().toList(), SimpleListCellRenderer.create("") { it.label })
                 .bindItem(model::type.toNullableProperty())
         }.bottomGap(BottomGap.SMALL)
 
-        row("Output folder:") {
+        row(DiagnosticsClientBundle.message("dialog.collect.dump.row.output.folder")) {
             textFieldWithBrowseButton(
-                "Select Path",
+                DiagnosticsClientBundle.message("dialog.collect.dump.row.output.folder.dialog.title"),
                 project,
                 FileChooserDescriptorFactory.createSingleFolderDescriptor()
             )
                 .align(Align.FILL)
                 .validationOnApply {
                     if (it.text.isEmpty()) {
-                        return@validationOnApply error("Please choose a folder")
+                        return@validationOnApply error(DiagnosticsClientBundle.message("dialog.collect.dump.row.output.folder.error"))
                     } else {
                         return@validationOnApply null
                     }
                 }
                 .bindText(model::path)
         }
-        row("Output filename:") {
+        row(DiagnosticsClientBundle.message("dialog.collect.dump.row.output.filename")) {
             textField()
                 .align(Align.FILL)
                 .validationOnInput {
                     if (isValidFilename(it.text)) {
                         return@validationOnInput null
                     } else {
-                        return@validationOnInput error("Invalid filename")
+                        return@validationOnInput error(DiagnosticsClientBundle.message("dialog.collect.dump.row.output.filename.error"))
                     }
                 }
                 .bindText(model::filename)
         }.bottomGap(BottomGap.SMALL)
 
         row {
-            checkBox("Enables diagnostic logging")
+            checkBox(DiagnosticsClientBundle.message("dialog.collect.dump.row.diagnostic.logging"))
                 .bindSelected(model::diag)
         }
     }

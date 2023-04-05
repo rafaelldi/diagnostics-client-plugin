@@ -1,5 +1,6 @@
 package com.github.rafaelldi.diagnosticsclientplugin.dialogs
 
+import com.github.rafaelldi.diagnosticsclientplugin.DiagnosticsClientBundle
 import com.github.rafaelldi.diagnosticsclientplugin.services.traces.TraceSettings
 import com.github.rafaelldi.diagnosticsclientplugin.utils.DotNetProcess
 import com.github.rafaelldi.diagnosticsclientplugin.utils.isValidFilename
@@ -37,8 +38,12 @@ class TraceDialog(
 
     init {
         init()
-        val action = if (persistent) "Collect" else "Monitor"
-        title = "$action Traces"
+        title =
+            if (persistent) DiagnosticsClientBundle.message("dialog.traces.title.collect")
+            else DiagnosticsClientBundle.message("dialog.traces.title.monitor")
+        val action =
+            if (persistent) DiagnosticsClientBundle.message("dialog.traces.button.collect")
+            else DiagnosticsClientBundle.message("dialog.traces.button.monitor")
         setOKButtonText(action)
     }
 
@@ -47,12 +52,12 @@ class TraceDialog(
 
         val ps = processes.sortedBy { it.pid }.toList()
 
-        row("Process:") {
+        row(DiagnosticsClientBundle.message("dialog.traces.row.process")) {
             comboBox(ps, SimpleListCellRenderer.create("") { "${it.pid} - ${it.name}" })
                 .align(Align.FILL)
                 .validationOnApply {
                     if (it.selectedItem == null) {
-                        return@validationOnApply error("Please select a process")
+                        return@validationOnApply error(DiagnosticsClientBundle.message("dialog.traces.row.process.error"))
                     } else {
                         return@validationOnApply null
                     }
@@ -61,12 +66,12 @@ class TraceDialog(
         }.bottomGap(BottomGap.SMALL)
 
         buttonsGroup {
-            row("Stop:") {
+            row(DiagnosticsClientBundle.message("dialog.traces.row.stop")) {
                 radioButton(StoppingType.Manually.label, StoppingType.Manually)
                 periodStoppingType = radioButton(StoppingType.AfterPeriod.label, StoppingType.AfterPeriod)
             }
         }.bind(model::stoppingType)
-        row("Duration (sec.):") {
+        row(DiagnosticsClientBundle.message("dialog.traces.row.duration")) {
             spinner(1..3600, 1)
                 .bindIntValue(model::duration)
                 .enabledIf(periodStoppingType.selected)
