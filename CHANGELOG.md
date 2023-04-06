@@ -4,20 +4,19 @@
 
 ## [Unreleased]
 
-### Added
+## [2023.1.1] - 2023-04-06
 
+### Added
 - Action to monitor charts
 - Recent Artifacts tab
 - Attach debugger action
 
 ### Changed
-
 - Support for Rider 2023.1
 
 ## [2023.1.0] - 2023-01-19
 
 ### Added
-
 - Action to monitor traces
 - Auto refresh for process tree
 - Environment variables to the process dashboard
@@ -62,7 +61,8 @@
 - Actions to monitor and collect counters
 - Action to collect traces
 
-[Unreleased]: https://github.com/rafaelldi/diagnostics-client-plugin/compare/v2023.1.0...HEAD
+[Unreleased]: https://github.com/rafaelldi/diagnostics-client-plugin/compare/v2023.1.1...HEAD
+[2023.1.1]: https://github.com/rafaelldi/diagnostics-client-plugin/compare/v2023.1.0...v2023.1.1
 [2023.1.0]: https://github.com/rafaelldi/diagnostics-client-plugin/compare/v2022.3.0...v2023.1.0
 [2022.3.0]: https://github.com/rafaelldi/diagnostics-client-plugin/compare/v1.2.0...v2022.3.0
 [1.2.0]: https://github.com/rafaelldi/diagnostics-client-plugin/compare/v1.1.0...v1.2.0
