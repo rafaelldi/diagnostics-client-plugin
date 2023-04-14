@@ -2,6 +2,7 @@
 
 package com.github.rafaelldi.diagnosticsclientplugin.services
 
+import com.github.rafaelldi.diagnosticsclientplugin.DiagnosticsClientBundle
 import com.github.rafaelldi.diagnosticsclientplugin.actions.notification.RevealFileAction
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.CollectDumpModel
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.map
@@ -28,11 +29,11 @@ class DumpCollectionController(private val project: Project) {
         val pid = model.selectedProcess?.pid ?: return
 
         val command = CollectDumpCommand(pid, model.type.map(), model.path, model.filename, model.diag)
-        withBackgroundProgressIndicator(project, "Collecting memory dump") {
+        withBackgroundProgressIndicator(project, DiagnosticsClientBundle.message("progress.collecting.memory.dump")) {
             val result = hostModel.collectDump.startSuspending(command)
             Notification(
                 "Diagnostics Client",
-                "Dump collected",
+                DiagnosticsClientBundle.message("notifications.dump.collected"),
                 "",
                 NotificationType.INFORMATION
             )

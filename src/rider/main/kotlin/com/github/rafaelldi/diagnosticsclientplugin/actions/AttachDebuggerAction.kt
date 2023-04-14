@@ -1,5 +1,6 @@
 package com.github.rafaelldi.diagnosticsclientplugin.actions
 
+import com.github.rafaelldi.diagnosticsclientplugin.DiagnosticsClientBundle
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.ProcessExplorerTab
 import com.intellij.execution.process.impl.ProcessListUtil
 import com.intellij.openapi.actionSystem.ActionUpdateThread
@@ -16,7 +17,7 @@ class AttachDebuggerAction : AnAction() {
         val tab = e.getData(ProcessExplorerTab.PROCESS_EXPLORE_TAB) ?: return
         val selected = tab.selectedProcess ?: return
 
-        runBackgroundableTask("Attach debugger", e.project) {
+        runBackgroundableTask(DiagnosticsClientBundle.message("progress.attach.debugger"), e.project) {
             val processInfo =
                 ProcessListUtil.getProcessList().firstOrNull { it.pid == selected.pid } ?: return@runBackgroundableTask
             val attachHost = LocalAttachHost.INSTANCE

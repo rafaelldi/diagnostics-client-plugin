@@ -1,5 +1,6 @@
 package com.github.rafaelldi.diagnosticsclientplugin.toolWindow
 
+import com.github.rafaelldi.diagnosticsclientplugin.DiagnosticsClientBundle
 import com.github.rafaelldi.diagnosticsclientplugin.generated.diagnosticsHostModel
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.ProcessExplorerTab
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.RecentArtifactTab
@@ -25,7 +26,7 @@ class DiagnosticsTabManager(private val project: Project) : LifetimedService() {
         val contentFactory = ContentFactory.getInstance()
         val processExplorerTab =
             ProcessExplorerTab(project.solution.diagnosticsHostModel.processList, serviceLifetime)
-        val content = contentFactory.createContent(processExplorerTab, "Explorer", true)
+        val content = contentFactory.createContent(processExplorerTab, DiagnosticsClientBundle.message("tool.window.explorer"), true)
         content.isCloseable = false
         toolWindow.contentManager.addContent(content)
     }
@@ -33,7 +34,7 @@ class DiagnosticsTabManager(private val project: Project) : LifetimedService() {
     fun createRecentArtifactTab(toolWindow: ToolWindow) {
         val contentFactory = ContentFactory.getInstance()
         val recentArtifactTab = RecentArtifactTab(project, serviceLifetime)
-        val content = contentFactory.createContent(recentArtifactTab, "Recent Artifacts", true)
+        val content = contentFactory.createContent(recentArtifactTab, DiagnosticsClientBundle.message("tool.window.recent.artifacts"), true)
         content.isCloseable = false
         toolWindow.contentManager.addContent(content)
     }

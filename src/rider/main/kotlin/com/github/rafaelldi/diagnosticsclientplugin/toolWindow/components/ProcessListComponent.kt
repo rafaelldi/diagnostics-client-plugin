@@ -1,5 +1,6 @@
 package com.github.rafaelldi.diagnosticsclientplugin.toolWindow.components
 
+import com.github.rafaelldi.diagnosticsclientplugin.DiagnosticsClientBundle
 import com.github.rafaelldi.diagnosticsclientplugin.generated.ProcessInfo
 import com.intellij.ide.CopyProvider
 import com.intellij.openapi.actionSystem.ActionUpdateThread
@@ -19,7 +20,7 @@ class ProcessListComponent : JBList<Pair<Int, ProcessInfo>>(), CopyProvider {
 
     init {
         model = listModel
-        emptyText.text = "Loading..."
+        emptyText.text = DiagnosticsClientBundle.message("process.list.loading")
         selectionMode = ListSelectionModel.SINGLE_SELECTION
         cellRenderer = CellRenderer()
         ListSpeedSearch(this) { it.second.processName }

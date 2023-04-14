@@ -77,75 +77,75 @@ class TraceDialog(
                 .enabledIf(periodStoppingType.selected)
         }
 
-        group("Providers") {
-            row("Profile:") {
+        group(DiagnosticsClientBundle.message("dialog.traces.group.providers")) {
+            row(DiagnosticsClientBundle.message("dialog.traces.row.profile")) {
                 profileComboBox = comboBox(TracingProfile.values().toList())
                     .bindItem(model::profile.toNullableProperty())
             }
-            row("Providers:") {
+            row(DiagnosticsClientBundle.message("dialog.traces.row.providers")) {
                 providerTextField = expandableTextField()
                     .align(Align.FILL)
                     .bindText(model::providers)
             }
         }.visible(persistent)
 
-        collapsibleGroup("Predefined Providers") {
+        collapsibleGroup(DiagnosticsClientBundle.message("dialog.traces.group.predefined.providers")) {
             threeColumnsRow({
-                httpCheckBox = checkBox("Http")
+                httpCheckBox = checkBox(DiagnosticsClientBundle.message("dialog.traces.row.http"))
                     .bindSelected(model::http)
             }, {
                 @Suppress("DialogTitleCapitalization")
-                aspNetCheckBox = checkBox("ASP.NET Core")
+                aspNetCheckBox = checkBox(DiagnosticsClientBundle.message("dialog.traces.row.asp.net.core"))
                     .bindSelected(model::aspNet)
             }, {
                 @Suppress("DialogTitleCapitalization")
-                efCheckBox = checkBox("EF Core")
+                efCheckBox = checkBox(DiagnosticsClientBundle.message("dialog.traces.row.ef.core"))
                     .bindSelected(model::ef)
             })
             threeColumnsRow({
-                tasksCheckBox = checkBox("Tasks")
+                tasksCheckBox = checkBox(DiagnosticsClientBundle.message("dialog.traces.row.tasks"))
                     .bindSelected(model::tasks)
             }, {
-                threadsCheckBox = checkBox("Threads")
+                threadsCheckBox = checkBox(DiagnosticsClientBundle.message("dialog.traces.row.threads"))
                     .bindSelected(model::threads)
             }, {
-                contentionsCheckBox = checkBox("Contentions")
+                contentionsCheckBox = checkBox(DiagnosticsClientBundle.message("dialog.traces.row.contentions"))
                     .bindSelected(model::contentions)
             })
             twoColumnsRow({
-                exceptionsCheckBox = checkBox("Exceptions")
+                exceptionsCheckBox = checkBox(DiagnosticsClientBundle.message("dialog.traces.row.exceptions"))
                     .bindSelected(model::exceptions)
             }, {
-                loaderCheckBox = checkBox("Loader")
+                loaderCheckBox = checkBox(DiagnosticsClientBundle.message("dialog.traces.row.loader"))
                     .bindSelected(model::loader)
             })
         }.apply {
             expanded = !persistent
         }
 
-        group("File Settings") {
-            row("Output filename:") {
+        group(DiagnosticsClientBundle.message("dialog.traces.group.file.settings")) {
+            row(DiagnosticsClientBundle.message("dialog.traces.row.output.filename")) {
                 textField()
                     .align(Align.FILL)
                     .validationOnInput {
                         if (isValidFilename(it.text)) {
                             return@validationOnInput null
                         } else {
-                            return@validationOnInput error("Invalid filename")
+                            return@validationOnInput error(DiagnosticsClientBundle.message("dialog.traces.row.output.filename.error"))
                         }
                     }
                     .bindText(model::filename)
             }
-            row("Output folder:") {
+            row(DiagnosticsClientBundle.message("dialog.traces.row.output.folder")) {
                 textFieldWithBrowseButton(
-                    "Select Path",
+                    DiagnosticsClientBundle.message("dialog.traces.row.output.folder.dialog.title"),
                     project,
                     FileChooserDescriptorFactory.createSingleFolderDescriptor()
                 )
                     .align(Align.FILL)
                     .validationOnApply {
                         if (persistent && it.text.isEmpty()) {
-                            return@validationOnApply error("Please choose a folder")
+                            return@validationOnApply error(DiagnosticsClientBundle.message("dialog.traces.row.output.folder.error"))
                         } else {
                             return@validationOnApply null
                         }
@@ -171,10 +171,10 @@ class TraceDialog(
 
         return if (persistent) {
             if (isProviderSelected || isProfileSelected || isPredefinedProviderSelected) null
-            else ValidationInfo("Please specify a provider or select a profile")
+            else ValidationInfo(DiagnosticsClientBundle.message("dialog.traces.validation.specify.provider.or.profile"))
         } else {
             if (isPredefinedProviderSelected) null
-            else ValidationInfo("Please select a provider")
+            else ValidationInfo(DiagnosticsClientBundle.message("dialog.traces.validation.select.provider"))
         }
     }
 

@@ -2,6 +2,7 @@
 
 package com.github.rafaelldi.diagnosticsclientplugin.services
 
+import com.github.rafaelldi.diagnosticsclientplugin.DiagnosticsClientBundle
 import com.github.rafaelldi.diagnosticsclientplugin.generated.CollectStackTraceCommand
 import com.github.rafaelldi.diagnosticsclientplugin.generated.DiagnosticsHostModel
 import com.github.rafaelldi.diagnosticsclientplugin.generated.diagnosticsHostModel
@@ -21,7 +22,7 @@ class StackTraceCollectionController(private val project: Project) {
 
     suspend fun collectStackTrace(pid: Int): String {
         val command = CollectStackTraceCommand(pid)
-        return withBackgroundProgressIndicator(project, "Collecting stack trace") {
+        return withBackgroundProgressIndicator(project, DiagnosticsClientBundle.message("progress.collecting.stack.trace")) {
             return@withBackgroundProgressIndicator hostModel.collectStackTrace.startSuspending(command)
         }
     }

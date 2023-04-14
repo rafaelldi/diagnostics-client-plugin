@@ -1,5 +1,6 @@
 package com.github.rafaelldi.diagnosticsclientplugin.common
 
+import com.github.rafaelldi.diagnosticsclientplugin.DiagnosticsClientBundle
 import com.github.rafaelldi.diagnosticsclientplugin.actions.notification.OpenFileAction
 import com.github.rafaelldi.diagnosticsclientplugin.actions.notification.RevealFileAction
 import com.intellij.notification.Notification
@@ -8,8 +9,8 @@ import com.intellij.openapi.project.Project
 
 fun persistentSessionStarted(type: String, pid: Int, project: Project) = Notification(
     "Diagnostics Client",
-    "$type collection started",
-    "Session for process $pid started",
+    DiagnosticsClientBundle.message("notifications.collection.started", type),
+    DiagnosticsClientBundle.message("notifications.session.for.process.started", pid),
     NotificationType.INFORMATION
 )
     .notify(project)
@@ -17,8 +18,8 @@ fun persistentSessionStarted(type: String, pid: Int, project: Project) = Notific
 fun persistentSessionFinished(type: String, pid: Int, filePath: String, openFile: Boolean, project: Project) =
     Notification(
         "Diagnostics Client",
-        "$type collection finished",
-        "Session for process $pid finished",
+        DiagnosticsClientBundle.message("notifications.collection.finished", type),
+        DiagnosticsClientBundle.message("notifications.session.for.process.finished", pid),
         NotificationType.INFORMATION
     )
         .addAction(
@@ -29,7 +30,7 @@ fun persistentSessionFinished(type: String, pid: Int, filePath: String, openFile
 
 fun persistentSessionAlreadyExists(type: String, pid: Int, project: Project) = Notification(
     "Diagnostics Client",
-    "$type collection session for $pid already exists",
+    DiagnosticsClientBundle.message("notifications.collection.session.exists", type, pid),
     "",
     NotificationType.WARNING
 )
@@ -37,23 +38,23 @@ fun persistentSessionAlreadyExists(type: String, pid: Int, project: Project) = N
 
 fun liveSessionStarted(type: String, pid: Int, project: Project) = Notification(
     "Diagnostics Client",
-    "$type monitoring started",
-    "Session for process $pid started",
+    DiagnosticsClientBundle.message("notifications.monitoring.started", type),
+    DiagnosticsClientBundle.message("notifications.session.for.process.started", pid),
     NotificationType.INFORMATION
 )
     .notify(project)
 
 fun liveSessionFinished(type: String, pid: Int, project: Project) = Notification(
     "Diagnostics Client",
-    "$type monitoring finished",
-    "Session for process $pid finished",
+    DiagnosticsClientBundle.message("notifications.monitoring.finished", type),
+    DiagnosticsClientBundle.message("notifications.session.for.process.finished", pid),
     NotificationType.INFORMATION
 )
     .notify(project)
 
 fun liveSessionNotFound(type: String, pid: Int, project: Project) = Notification(
     "Diagnostics Client",
-    "$type monitoring session for $pid not found",
+    DiagnosticsClientBundle.message("notifications.monitoring.session.not.found", type, pid),
     "",
     NotificationType.ERROR
 )
@@ -61,8 +62,8 @@ fun liveSessionNotFound(type: String, pid: Int, project: Project) = Notification
 
 fun fileDoesNotExist(path: String, project: Project) = Notification(
     "Diagnostics Client",
-    "File doesn't exist",
-    "Unable to find the file: $path",
+    DiagnosticsClientBundle.message("notifications.file.doesnt.exist"),
+    DiagnosticsClientBundle.message("notifications.unable.to.find.file", path),
     NotificationType.ERROR
 )
     .notify(project)

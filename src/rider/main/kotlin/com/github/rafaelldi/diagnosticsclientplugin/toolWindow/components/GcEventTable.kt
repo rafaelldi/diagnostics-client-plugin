@@ -1,26 +1,27 @@
 package com.github.rafaelldi.diagnosticsclientplugin.toolWindow.components
 
+import com.github.rafaelldi.diagnosticsclientplugin.DiagnosticsClientBundle
 import com.github.rafaelldi.diagnosticsclientplugin.generated.GcEvent
 import com.intellij.ui.table.JBTable
 import javax.swing.table.DefaultTableModel
 
 class GcEventTable : JBTable() {
     companion object {
-        private const val NUMBER_COLUMN_TITLE = "Number"
-        private const val GENERATION_COLUMN_TITLE = "Gen"
-        private const val REASON_COLUMN_TITLE = "Trigger Reason"
-        private const val PAUSE_COLUMN_TITLE = "Pause MSec"
-        private const val PEAK_COLUMN_TITLE = "Peak MB"
-        private const val AFTER_COLUMN_TITLE = "After MB"
-        private const val RATIO_COLUMN_TITLE = "Ratio"
-        private const val PROMOTED_COLUMN_TITLE = "Promoted MB"
-        private const val ALLOCATED_COLUMN_TITLE = "Allocated MB"
-        private const val ALLOCATION_RATE_COLUMN_TITLE = "Allocation Rate"
-        private const val GEN0_COLUMN_TITLE = "Gen0 MB"
-        private const val GEN1_COLUMN_TITLE = "Gen1 MB"
-        private const val GEN2_COLUMN_TITLE = "Gen2 MB"
-        private const val LOH_COLUMN_TITLE = "LOH MB"
-        private const val PINNED_OBJECTS_COLUMN_TITLE = "Pinned Objects"
+        private val NUMBER_COLUMN_TITLE = DiagnosticsClientBundle.message("gc.table.number.column")
+        private val GENERATION_COLUMN_TITLE = DiagnosticsClientBundle.message("gc.table.gen.column")
+        private val REASON_COLUMN_TITLE = DiagnosticsClientBundle.message("gc.table.trigger.reason.column")
+        private val PAUSE_COLUMN_TITLE = DiagnosticsClientBundle.message("gc.table.pause.column")
+        private val PEAK_COLUMN_TITLE = DiagnosticsClientBundle.message("gc.table.peak.column")
+        private val AFTER_COLUMN_TITLE = DiagnosticsClientBundle.message("gc.table.after.column")
+        private val RATIO_COLUMN_TITLE = DiagnosticsClientBundle.message("gc.table.ratio.column")
+        private val PROMOTED_COLUMN_TITLE = DiagnosticsClientBundle.message("gc.table.promoted.column")
+        private val ALLOCATED_COLUMN_TITLE = DiagnosticsClientBundle.message("gc.table.allocated.column")
+        private val ALLOCATION_RATE_COLUMN_TITLE = DiagnosticsClientBundle.message("gc.table.allocation.rate.column")
+        private val GEN0_COLUMN_TITLE = DiagnosticsClientBundle.message("gc.table.gen.0.column")
+        private val GEN1_COLUMN_TITLE = DiagnosticsClientBundle.message("gc.table.gen.1.column")
+        private val GEN2_COLUMN_TITLE = DiagnosticsClientBundle.message("gc.table.gen.2.column")
+        private val LOH_COLUMN_TITLE = DiagnosticsClientBundle.message("gc.table.loh.column")
+        private val PINNED_OBJECTS_COLUMN_TITLE = DiagnosticsClientBundle.message("gc.table.pinned.objects.column")
     }
 
     private val tableModel: DefaultTableModel =

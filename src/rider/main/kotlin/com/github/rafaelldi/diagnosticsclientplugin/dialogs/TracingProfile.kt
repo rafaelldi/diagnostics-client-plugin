@@ -1,10 +1,12 @@
 package com.github.rafaelldi.diagnosticsclientplugin.dialogs
 
+import com.github.rafaelldi.diagnosticsclientplugin.DiagnosticsClientBundle
+
 enum class TracingProfile(private val label: String) {
-    None("none"),
-    CpuSampling("cpu-sampling"),
-    GcVerbose("gc-verbose"),
-    GcCollect("gc-collect");
+    None(DiagnosticsClientBundle.message("dialog.tracing.profile.none")),
+    CpuSampling(DiagnosticsClientBundle.message("dialog.tracing.profile.cpu.sampling")),
+    GcVerbose(DiagnosticsClientBundle.message("dialog.tracing.profile.gc.verbose")),
+    GcCollect(DiagnosticsClientBundle.message("dialog.tracing.profile.gc.collect"));
 
     override fun toString() = label
 }

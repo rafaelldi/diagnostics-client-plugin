@@ -1,5 +1,6 @@
 package com.github.rafaelldi.diagnosticsclientplugin.toolWindow.components
 
+import com.github.rafaelldi.diagnosticsclientplugin.DiagnosticsClientBundle
 import com.intellij.ui.ColoredListCellRenderer
 import com.intellij.ui.components.JBList
 import java.nio.file.Path
@@ -12,7 +13,7 @@ class RecentArtifactList : JBList<Path>() {
 
     init {
         model = listModel
-        emptyText.text = "No recent artifacts"
+        emptyText.text = DiagnosticsClientBundle.message("artifact.list.empty")
         selectionMode = ListSelectionModel.SINGLE_SELECTION
         cellRenderer = CellRenderer()
     }

@@ -1,5 +1,6 @@
 package com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs
 
+import com.github.rafaelldi.diagnosticsclientplugin.DiagnosticsClientBundle
 import com.github.rafaelldi.diagnosticsclientplugin.generated.LiveTraceSession
 import com.github.rafaelldi.diagnosticsclientplugin.generated.PredefinedProvider
 import com.github.rafaelldi.diagnosticsclientplugin.generated.Trace
@@ -100,14 +101,14 @@ class LiveTraceSessionTab(
 
     private fun getProviderName(provider: PredefinedProvider): String =  when (provider)
     {
-        PredefinedProvider.Http -> "HTTP"
-        PredefinedProvider.AspNet -> "ASP NET CORE"
-        PredefinedProvider.EF -> "EF CORE"
-        PredefinedProvider.Exceptions -> "EXCEPTIONS"
-        PredefinedProvider.Threads -> "THREADS"
-        PredefinedProvider.Contentions -> "CONTENTIONS"
-        PredefinedProvider.Tasks -> "TASKS"
-        PredefinedProvider.Loader -> "LOADER"
+        PredefinedProvider.Http -> DiagnosticsClientBundle.message("live.trace.tab.predefined.provider.http")
+        PredefinedProvider.AspNet -> DiagnosticsClientBundle.message("live.trace.tab.predefined.provider.asp.net.core")
+        PredefinedProvider.EF -> DiagnosticsClientBundle.message("live.trace.tab.predefined.provider.ef.core")
+        PredefinedProvider.Exceptions -> DiagnosticsClientBundle.message("live.trace.tab.predefined.provider.exceptions")
+        PredefinedProvider.Threads -> DiagnosticsClientBundle.message("live.trace.tab.predefined.provider.threads")
+        PredefinedProvider.Contentions -> DiagnosticsClientBundle.message("live.trace.tab.predefined.provider.contentions")
+        PredefinedProvider.Tasks -> DiagnosticsClientBundle.message("live.trace.tab.predefined.provider.tasks")
+        PredefinedProvider.Loader -> DiagnosticsClientBundle.message("live.trace.tab.predefined.provider.loader")
     }
 
     override fun getData(dataId: String): Any? {

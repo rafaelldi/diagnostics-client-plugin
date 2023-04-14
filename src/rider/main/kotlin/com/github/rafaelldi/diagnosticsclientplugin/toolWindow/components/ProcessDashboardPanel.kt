@@ -1,5 +1,6 @@
 package com.github.rafaelldi.diagnosticsclientplugin.toolWindow.components
 
+import com.github.rafaelldi.diagnosticsclientplugin.DiagnosticsClientBundle
 import com.github.rafaelldi.diagnosticsclientplugin.generated.ProcessInfo
 import com.intellij.icons.AllIcons
 import com.intellij.ide.actions.RevealFileAction
@@ -34,26 +35,26 @@ class ProcessDashboardPanel(
                     .gap(RightGap.COLUMNS)
                 val startCounterSession =
                     ActionManager.getInstance().getAction("DiagnosticsClient.ToolWindow.QuickActions.Counters")
-                button("Monitor Counters", startCounterSession)
+                button(DiagnosticsClientBundle.message("dashboard.button.monitor.counters"), startCounterSession)
                     .applyToComponent { icon = DiagnosticsClientIcons.Counters }
                     .gap(RightGap.SMALL)
                 val startGcEventSession =
                     ActionManager.getInstance().getAction("DiagnosticsClient.ToolWindow.QuickActions.GcEvents")
-                button("Monitor GC Events", startGcEventSession)
+                button(DiagnosticsClientBundle.message("dashboard.button.monitor.gc.events"), startGcEventSession)
                     .applyToComponent { icon = AllIcons.Actions.GC }
                     .gap(RightGap.SMALL)
                 val startTraceSession =
                     ActionManager.getInstance().getAction("DiagnosticsClient.ToolWindow.QuickActions.Traces")
-                button("Monitor Traces", startTraceSession)
+                button(DiagnosticsClientBundle.message("dashboard.button.monitor.traces"), startTraceSession)
                     .applyToComponent { icon = AllIcons.Toolwindows.ToolWindowMessages }
             }
             separator()
             row {
-                label("Properties").bold()
+                label(DiagnosticsClientBundle.message("dashboard.row.properties")).bold()
             }.bottomGap(BottomGap.SMALL)
             row {
                 val filename = processInfo.filename ?: ""
-                copyableLabel("Filename = $filename")
+                copyableLabel(DiagnosticsClientBundle.message("dashboard.row.filename", filename))
                 inlineIconButton(AllIcons.General.InlineCopyHover, AllIcons.General.InlineCopy, filename) {
                     CopyPasteManager.getInstance().setContents(StringSelection(it))
                 }
@@ -66,7 +67,7 @@ class ProcessDashboardPanel(
             }
             row {
                 val startTime = processInfo.startTime ?: ""
-                copyableLabel("Start Time = $startTime")
+                copyableLabel(DiagnosticsClientBundle.message("dashboard.row.start.time", startTime))
                 if (processInfo.startTime.isNullOrEmpty().not()) {
                     inlineIconButton(AllIcons.General.InlineCopyHover, AllIcons.General.InlineCopy, startTime) {
                         CopyPasteManager.getInstance().setContents(StringSelection(it))
@@ -75,7 +76,7 @@ class ProcessDashboardPanel(
             }
             row {
                 val commandLine = processInfo.commandLine ?: ""
-                copyableLabel("Command Line = $commandLine")
+                copyableLabel(DiagnosticsClientBundle.message("dashboard.row.command.line", commandLine))
                 if (processInfo.commandLine.isNullOrEmpty().not()) {
                     inlineIconButton(AllIcons.General.InlineCopyHover, AllIcons.General.InlineCopy, commandLine) {
                         CopyPasteManager.getInstance().setContents(StringSelection(it))
@@ -84,7 +85,7 @@ class ProcessDashboardPanel(
             }
             row {
                 val operatingSystem = processInfo.operatingSystem ?: ""
-                copyableLabel("Operating System = $operatingSystem")
+                copyableLabel(DiagnosticsClientBundle.message("dashboard.row.operating.system", operatingSystem))
                 if (processInfo.operatingSystem.isNullOrEmpty().not()) {
                     inlineIconButton(
                         AllIcons.General.InlineCopyHover,
@@ -97,7 +98,7 @@ class ProcessDashboardPanel(
             }
             row {
                 val architecture = processInfo.processArchitecture ?: ""
-                copyableLabel("Process Architecture = $architecture")
+                copyableLabel(DiagnosticsClientBundle.message("dashboard.row.process.architecture", architecture))
                 if (processInfo.processArchitecture.isNullOrEmpty().not()) {
                     inlineIconButton(AllIcons.General.InlineCopyHover, AllIcons.General.InlineCopy, architecture) {
                         CopyPasteManager.getInstance().setContents(StringSelection(it))
@@ -107,7 +108,7 @@ class ProcessDashboardPanel(
             separator()
             if (processInfo.environmentVariables.isNotEmpty()) {
                 row {
-                    label("Environment variables").bold()
+                    label(DiagnosticsClientBundle.message("dashboard.row.environment.variables")).bold()
                 }.bottomGap(BottomGap.SMALL)
                 for (envVar in processInfo.environmentVariables) {
                     row {
