@@ -1,9 +1,10 @@
 version: 1.0
 profile:
   name: qodana.recommended
-linter: jetbrains/qodana-jvm:2022.3-eap
+linter: jetbrains/qodana-jvm:2022.3
 include:
   - name: CheckDependencyLicenses
+projectJDK: 17
 exclude:
   - name: All
     paths:
