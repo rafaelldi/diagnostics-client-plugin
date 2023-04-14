@@ -7,6 +7,8 @@
     <depends>com.intellij.modules.platform</depends>
     <depends>com.intellij.modules.rider</depends>
 
+    <resource-bundle>messages.DiagnosticsClientBundle</resource-bundle>
+
     <extensions defaultExtensionNs="com.intellij">
         <toolWindow id="Diagnostics Client"
                     anchor="bottom"
@@ -53,157 +55,108 @@
         <group id="DiagnosticsClient.ToolWindow.QuickActions">
             <action id="DiagnosticsClient.ToolWindow.QuickActions.Counters"
                     class="com.github.rafaelldi.diagnosticsclientplugin.actions.quick.StartLiveCounterSessionQuickAction"
-                    text="Monitor Counters"
-                    description="Start monitoring counters"
                     icon="DiagnosticsClientIcons.Counters">
             </action>
             <action id="DiagnosticsClient.ToolWindow.QuickActions.GcEvents"
                     class="com.github.rafaelldi.diagnosticsclientplugin.actions.quick.StartLiveGcEventSessionQuickAction"
-                    text="Monitor GC Events"
-                    description="Start monitoring GC events"
                     icon="AllIcons.Actions.GC">
             </action>
             <action id="DiagnosticsClient.ToolWindow.QuickActions.Traces"
                     class="com.github.rafaelldi.diagnosticsclientplugin.actions.quick.StartLiveTraceSessionQuickAction"
-                    text="Monitor Traces"
-                    description="Start monitoring traces"
                     icon="AllIcons.Toolwindows.ToolWindowMessages">
             </action>
         </group>
         <group id="DiagnosticsClient.ToolWindow.Explorer">
             <group id="DiagnosticsClient.ToolWindow.Explorer.Counters"
                    icon="DiagnosticsClientIcons.Counters"
-                   text="Counters"
                    popup="true">
                 <action id="DiagnosticsClient.ToolWindow.Explorer.LiveCounterSession.Start"
                         class="com.github.rafaelldi.diagnosticsclientplugin.actions.counters.StartLiveCounterSessionAction"
-                        text="Monitor Counters"
-                        description="Start monitoring counters"
                         icon="AllIcons.Actions.Show">
                 </action>
                 <action id="DiagnosticsClient.ToolWindow.Explorer.LiveCounterSession.Resume"
                         class="com.github.rafaelldi.diagnosticsclientplugin.actions.counters.ResumeLiveCounterSessionAction"
-                        text="Resume Session"
-                        description="Resume counter monitoring session"
                         icon="AllIcons.Actions.Resume">
                 </action>
                 <action id="DiagnosticsClient.ToolWindow.Explorer.LiveCounterSession.Pause"
                         class="com.github.rafaelldi.diagnosticsclientplugin.actions.counters.PauseLiveCounterSessionAction"
-                        text="Pause Session"
-                        description="Pause counter monitoring session"
                         icon="AllIcons.Actions.Pause">
                 </action>
                 <action id="DiagnosticsClient.ToolWindow.Explorer.PersistentCounterSession.Start"
                         class="com.github.rafaelldi.diagnosticsclientplugin.actions.counters.StartPersistentCounterSessionAction"
-                        text="Collect Counters"
-                        description="Collect counters and export them to a file"
                         icon="AllIcons.Actions.MenuSaveall">
                 </action>
                 <action id="DiagnosticsClient.ToolWindow.Explorer.PersistentCounterSession.Stop"
                         class="com.github.rafaelldi.diagnosticsclientplugin.actions.counters.StopPersistentCounterSessionAction"
-                        text="Stop Collecting Counters"
-                        description="Stop collecting counters"
                         icon="AllIcons.Actions.Suspend">
                 </action>
             </group>
             <group id="DiagnosticsClient.ToolWindow.Explorer.Gc"
                    icon="AllIcons.Actions.GC"
-                   text="GC"
                    popup="true">
                 <action id="DiagnosticsClient.ToolWindow.Explorer.LiveGcEventSession.Start"
                         class="com.github.rafaelldi.diagnosticsclientplugin.actions.gc.StartLiveGcEventSessionAction"
-                        text="Monitor GC Events"
-                        description="Start monitoring GC events"
                         icon="AllIcons.Actions.Show">
                 </action>
                 <action id="DiagnosticsClient.ToolWindow.Explorer.LiveGcEventSession.Resume"
                         class="com.github.rafaelldi.diagnosticsclientplugin.actions.gc.ResumeLiveGcEventSessionAction"
-                        text="Resume Session"
-                        description="Resume GC event monitoring session"
                         icon="AllIcons.Actions.Resume">
                 </action>
                 <action id="DiagnosticsClient.ToolWindow.Explorer.LiveGcEventSession.Pause"
                         class="com.github.rafaelldi.diagnosticsclientplugin.actions.gc.PauseLiveGcEventSessionAction"
-                        text="Pause Session"
-                        description="Pause GC event monitoring session"
                         icon="AllIcons.Actions.Pause">
                 </action>
                 <action id="DiagnosticsClient.ToolWindow.Explorer.PersistentGcEventSession.Start"
                         class="com.github.rafaelldi.diagnosticsclientplugin.actions.gc.StartPersistentGcEventSessionAction"
-                        text="Collect GC Events"
-                        description="Collect GC events and save them to a file"
                         icon="AllIcons.Actions.MenuSaveall">
                 </action>
                 <action id="DiagnosticsClient.ToolWindow.Explorer.PersistentGcEventSession.Stop"
                         class="com.github.rafaelldi.diagnosticsclientplugin.actions.gc.StopPersistentGcEventSessionAction"
-                        text="Stop Collecting GC Events"
-                        description="Stop collecting GC events"
                         icon="AllIcons.Actions.Suspend">
                 </action>
                 <action id="DiagnosticsClient.ToolWindow.Explorer.TriggerGcCollection"
                         class="com.github.rafaelldi.diagnosticsclientplugin.actions.gc.TriggerGcCollectionAction"
-                        text="Trigger GC"
-                        description="Trigger GC"
                         icon="AllIcons.Actions.Lightning">
                 </action>
             </group>
             <group id="DiagnosticsClient.ToolWindow.Explorer.Traces"
                    icon="AllIcons.Toolwindows.ToolWindowMessages"
-                   text="Traces"
                    popup="true">
                 <action id="DiagnosticsClient.ToolWindow.Explorer.LiveTraceSession.Start"
                         class="com.github.rafaelldi.diagnosticsclientplugin.actions.traces.StartLiveTraceSessionAction"
-                        text="Monitor Traces"
-                        description="Start monitoring traces"
                         icon="AllIcons.Actions.Show">
                 </action>
                 <action id="DiagnosticsClient.ToolWindow.Explorer.LiveTraceSession.Resume"
                         class="com.github.rafaelldi.diagnosticsclientplugin.actions.traces.ResumeLiveTraceSessionAction"
-                        text="Resume Session"
-                        description="Resume trace monitoring session"
                         icon="AllIcons.Actions.Resume">
                 </action>
                 <action id="DiagnosticsClient.ToolWindow.Explorer.LiveTraceSession.Pause"
                         class="com.github.rafaelldi.diagnosticsclientplugin.actions.traces.PauseLiveTraceSessionAction"
-                        text="Pause Session"
-                        description="Pause trace monitoring session"
                         icon="AllIcons.Actions.Pause">
                 </action>
                 <action id="DiagnosticsClient.ToolWindow.Explorer.PersistentTraceSession.Start"
                         class="com.github.rafaelldi.diagnosticsclientplugin.actions.traces.StartPersistentTraceSessionAction"
-                        text="Collect Traces"
-                        description="Start collecting traces"
                         icon="AllIcons.Actions.MenuSaveall">
                 </action>
                 <action id="DiagnosticsClient.ToolWindow.Explorer.PersistentTraceSession.Stop"
                         class="com.github.rafaelldi.diagnosticsclientplugin.actions.traces.StopPersistentTraceSessionAction"
-                        text="Stop Collecting Traces"
-                        description="Stop collecting traces"
                         icon="AllIcons.Actions.Suspend">
                 </action>
             </group>
             <action id="DiagnosticsClient.ToolWindow.Explorer.CollectDump"
                     class="com.github.rafaelldi.diagnosticsclientplugin.actions.CollectDumpAction"
-                    text="Memory Dump"
-                    description="Collect memory dump"
                     icon="AllIcons.Actions.Dump">
             </action>
             <action id="DiagnosticsClient.ToolWindow.Explorer.CollectStackTrace"
                     class="com.github.rafaelldi.diagnosticsclientplugin.actions.CollectStackTraceAction"
-                    text="Stack Trace"
-                    description="Collect stack trace"
                     icon="RiderIcons.Stacktrace.Stacktrace">
             </action>
             <action id="DiagnosticsClient.ToolWindow.Explorer.LiveChartSession.Start"
                     class="com.github.rafaelldi.diagnosticsclientplugin.actions.chart.StartLiveChartSessionAction"
-                    text="Monitor Charts"
-                    description="Monitor charts"
                     icon="AllIcons.RunConfigurations.TestCustom">
             </action>
             <action id="DiagnosticsClient.ToolWindow.Explorer.AttachDebugger"
                     class="com.github.rafaelldi.diagnosticsclientplugin.actions.AttachDebuggerAction"
-                    text="Attach to Process"
-                    description="Attach debugger to process"
                     icon="AllIcons.Debugger.AttachToProcess">
             </action>
             <separator/>
@@ -214,62 +167,44 @@
         <group id="DiagnosticsClient.ToolWindow.CounterSession">
             <action id="DiagnosticsClient.ToolWindow.LiveCounterSession.Resume"
                     class="com.github.rafaelldi.diagnosticsclientplugin.actions.counters.ResumeLiveCounterSessionAction"
-                    text="Resume Session"
-                    description="Resume counter monitoring session"
                     icon="AllIcons.Actions.Resume">
             </action>
             <action id="DiagnosticsClient.ToolWindow.LiveCounterSession.Pause"
                     class="com.github.rafaelldi.diagnosticsclientplugin.actions.counters.PauseLiveCounterSessionAction"
-                    text="Pause Session"
-                    description="Pause counter monitoring session"
                     icon="AllIcons.Actions.Pause">
             </action>
         </group>
         <group id="DiagnosticsClient.ToolWindow.GcEventSession">
             <action id="DiagnosticsClient.ToolWindow.LiveGcEventSession.Resume"
                     class="com.github.rafaelldi.diagnosticsclientplugin.actions.gc.ResumeLiveGcEventSessionAction"
-                    text="Resume Session"
-                    description="Resume GC event monitoring session"
                     icon="AllIcons.Actions.Resume">
             </action>
             <action id="DiagnosticsClient.ToolWindow.LiveGcEventSession.Pause"
                     class="com.github.rafaelldi.diagnosticsclientplugin.actions.gc.PauseLiveGcEventSessionAction"
-                    text="Pause Session"
-                    description="Pause GC event monitoring session"
                     icon="AllIcons.Actions.Pause">
             </action>
             <action id="DiagnosticsClient.ToolWindow.GcSession.TriggerCollection"
                     class="com.github.rafaelldi.diagnosticsclientplugin.actions.gc.TriggerGcCollectionSessionAction"
-                    text="Trigger GC"
-                    description="Trigger GC"
                     icon="AllIcons.Actions.Lightning">
             </action>
         </group>
         <group id="DiagnosticsClient.ToolWindow.TraceSession">
             <action id="DiagnosticsClient.ToolWindow.LiveTraceSession.Resume"
                     class="com.github.rafaelldi.diagnosticsclientplugin.actions.traces.ResumeLiveTraceSessionAction"
-                    text="Resume Session"
-                    description="Resume trace monitoring session"
                     icon="AllIcons.Actions.Resume">
             </action>
             <action id="DiagnosticsClient.ToolWindow.LiveTraceSession.Pause"
                     class="com.github.rafaelldi.diagnosticsclientplugin.actions.traces.PauseLiveTraceSessionAction"
-                    text="Pause Session"
-                    description="Pause trace monitoring session"
                     icon="AllIcons.Actions.Pause">
             </action>
         </group>
         <group id="DiagnosticsClient.ToolWindow.RecentArtifacts">
             <action id="DiagnosticsClient.ToolWindow.RecentArtifacts.ShowInFolder"
                     class="com.github.rafaelldi.diagnosticsclientplugin.actions.artifacts.ShowArtifactInFolderAction"
-                    text="Show In Folder"
-                    description="Show artifact in folder"
                     icon="AllIcons.Actions.MenuOpen">
             </action>
             <action id="DiagnosticsClient.ToolWindow.RecentArtifacts.Open"
                     class="com.github.rafaelldi.diagnosticsclientplugin.actions.artifacts.OpenArtifactAction"
-                    text="Open"
-                    description="Open artifact"
                     icon="AllIcons.Actions.Preview">
             </action>
         </group>

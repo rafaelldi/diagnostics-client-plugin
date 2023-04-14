@@ -1,5 +1,6 @@
 package com.github.rafaelldi.diagnosticsclientplugin.dialogs
 
+import com.github.rafaelldi.diagnosticsclientplugin.DiagnosticsClientBundle
 import com.github.rafaelldi.diagnosticsclientplugin.services.chart.ChartSettings
 import com.github.rafaelldi.diagnosticsclientplugin.utils.DotNetProcess
 import com.intellij.openapi.project.Project
@@ -19,8 +20,8 @@ class ChartDialog(
 
     init {
         init()
-        title = "Monitor Chart"
-        setOKButtonText("Monitor")
+        title = DiagnosticsClientBundle.message("dialog.chart.title")
+        setOKButtonText(DiagnosticsClientBundle.message("dialog.chart.button"))
     }
 
     override fun createCenterPanel(): JComponent = panel {
@@ -28,12 +29,12 @@ class ChartDialog(
 
         val ps = processes.sortedBy { it.pid }.toList()
 
-        row("Process:") {
+        row(DiagnosticsClientBundle.message("dialog.chart.row.process")) {
             comboBox(ps, SimpleListCellRenderer.create("") { "${it.pid} - ${it.name}" })
                 .align(Align.FILL)
                 .validationOnApply {
                     if (it.selectedItem == null) {
-                        return@validationOnApply error("Please select a process")
+                        return@validationOnApply error(DiagnosticsClientBundle.message("dialog.chart.row.process.error"))
                     } else {
                         return@validationOnApply null
                     }
@@ -42,12 +43,12 @@ class ChartDialog(
         }.bottomGap(BottomGap.SMALL)
 
         buttonsGroup {
-            row("Stop:") {
+            row(DiagnosticsClientBundle.message("dialog.chart.row.stop")) {
                 radioButton(StoppingType.Manually.label, StoppingType.Manually)
                 periodStoppingType = radioButton(StoppingType.AfterPeriod.label, StoppingType.AfterPeriod)
             }
         }.bind(model::stoppingType)
-        row("Duration (sec.):") {
+        row(DiagnosticsClientBundle.message("dialog.chart.row.duration")) {
             spinner(1..3600, 1)
                 .bindIntValue(model::duration)
                 .enabledIf(periodStoppingType.selected)

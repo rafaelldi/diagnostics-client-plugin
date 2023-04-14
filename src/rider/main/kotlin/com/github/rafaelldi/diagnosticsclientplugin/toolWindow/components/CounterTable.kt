@@ -1,14 +1,15 @@
 package com.github.rafaelldi.diagnosticsclientplugin.toolWindow.components
 
+import com.github.rafaelldi.diagnosticsclientplugin.DiagnosticsClientBundle
 import com.github.rafaelldi.diagnosticsclientplugin.generated.Counter
 import com.intellij.ui.table.JBTable
 import javax.swing.table.DefaultTableModel
 
 class CounterTable : JBTable() {
     companion object {
-        private const val COUNTER_COLUMN_TITLE = "Counter"
-        private const val TAGS_COLUMN_TITLE = "Tags"
-        private const val VALUE_COLUMN_TITLE = "Value"
+        private val COUNTER_COLUMN_TITLE = DiagnosticsClientBundle.message("counter.table.counter.column")
+        private val TAGS_COLUMN_TITLE = DiagnosticsClientBundle.message("counter.table.tags.column")
+        private val VALUE_COLUMN_TITLE = DiagnosticsClientBundle.message("counter.table.value.column")
     }
 
     private val counterRowMap: MutableMap<String, Int> = mutableMapOf()

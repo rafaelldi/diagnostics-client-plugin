@@ -2,6 +2,7 @@
 
 package com.github.rafaelldi.diagnosticsclientplugin.toolWindow.components
 
+import com.github.rafaelldi.diagnosticsclientplugin.DiagnosticsClientBundle
 import com.github.rafaelldi.diagnosticsclientplugin.generated.ChartValue
 import com.github.rafaelldi.diagnosticsclientplugin.generated.ChartValueType
 import com.intellij.ui.JBColor
@@ -40,7 +41,7 @@ class CounterChartPanel : BorderLayoutPanel() {
         dataset {
             lineColor = JBColor.BLUE
             fillColor = JBColor.BLUE.transparent(0.5)
-            overlays = listOf(TitleOverlay("CPU"))
+            overlays = listOf(TitleOverlay(DiagnosticsClientBundle.message("chart.cpu.title.overlay")))
         }
         borderPainted = true
         margins = JBUI.insets(28, 15, 25, 15)
@@ -67,7 +68,7 @@ class CounterChartPanel : BorderLayoutPanel() {
                 lineColor = JBColor.RED
                 fillColor = JBColor.RED.transparent(0.5)
                 stacked = true
-                overlays = listOf(TitleOverlay("Memory"))
+                overlays = listOf(TitleOverlay(DiagnosticsClientBundle.message("chart.memory.title.overlay")))
             }
             dataset {
                 label = "Working Set"

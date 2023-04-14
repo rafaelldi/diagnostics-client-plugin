@@ -1,5 +1,6 @@
 package com.github.rafaelldi.diagnosticsclientplugin.dialogs
 
+import com.github.rafaelldi.diagnosticsclientplugin.DiagnosticsClientBundle
 import com.github.rafaelldi.diagnosticsclientplugin.services.gc.GcEventSettings
 import com.github.rafaelldi.diagnosticsclientplugin.utils.DotNetProcess
 import com.github.rafaelldi.diagnosticsclientplugin.utils.isValidFilename
@@ -22,8 +23,12 @@ class GcEventDialog(
 
     init {
         init()
-        val action = if (persistent) "Collect" else "Monitor"
-        title = "$action GC Events"
+        title =
+            if (persistent) DiagnosticsClientBundle.message("dialog.gc.title.collect")
+            else DiagnosticsClientBundle.message("dialog.gc.title.monitor")
+        val action =
+            if (persistent) DiagnosticsClientBundle.message("dialog.gc.button.collect")
+            else DiagnosticsClientBundle.message("dialog.gc.button.monitor")
         setOKButtonText(action)
     }
 
@@ -32,12 +37,12 @@ class GcEventDialog(
 
         val ps = processes.sortedBy { it.pid }.toList()
 
-        row("Process:") {
+        row(DiagnosticsClientBundle.message("dialog.gc.row.process")) {
             comboBox(ps, SimpleListCellRenderer.create("") { "${it.pid} - ${it.name}" })
                 .align(Align.FILL)
                 .validationOnApply {
                     if (it.selectedItem == null) {
-                        return@validationOnApply error("Please select a process")
+                        return@validationOnApply error(DiagnosticsClientBundle.message("dialog.gc.row.process.error"))
                     } else {
                         return@validationOnApply null
                     }
@@ -46,40 +51,40 @@ class GcEventDialog(
         }.bottomGap(BottomGap.SMALL)
 
         buttonsGroup {
-            row("Stop:") {
+            row(DiagnosticsClientBundle.message("dialog.gc.row.stop")) {
                 radioButton(StoppingType.Manually.label, StoppingType.Manually)
                 periodStoppingType = radioButton(StoppingType.AfterPeriod.label, StoppingType.AfterPeriod)
             }
         }.bind(model::stoppingType)
-        row("Duration (sec.):") {
+        row(DiagnosticsClientBundle.message("dialog.gc.row.duration")) {
             spinner(1..3600, 1)
                 .bindIntValue(model::duration)
                 .enabledIf(periodStoppingType.selected)
         }
 
-        group("File Settings") {
-            row("Output filename:") {
+        group(DiagnosticsClientBundle.message("dialog.gc.group.file.settings")) {
+            row(DiagnosticsClientBundle.message("dialog.gc.row.output.filename")) {
                 textField()
                     .align(Align.FILL)
                     .validationOnInput {
                         if (isValidFilename(it.text)) {
                             return@validationOnInput null
                         } else {
-                            return@validationOnInput error("Invalid filename")
+                            return@validationOnInput error(DiagnosticsClientBundle.message("dialog.gc.row.output.filename.error"))
                         }
                     }
                     .bindText(model::filename)
             }
-            row("Output folder:") {
+            row(DiagnosticsClientBundle.message("dialog.gc.row.output.folder")) {
                 textFieldWithBrowseButton(
-                    "Select Path",
+                    DiagnosticsClientBundle.message("dialog.gc.row.output.folder.dialog.title"),
                     project,
                     FileChooserDescriptorFactory.createSingleFolderDescriptor()
                 )
                     .align(Align.FILL)
                     .validationOnApply {
                         if (persistent && it.text.isEmpty()) {
-                            return@validationOnApply error("Please choose a folder")
+                            return@validationOnApply error(DiagnosticsClientBundle.message("dialog.gc.row.output.folder.error"))
                         } else {
                             return@validationOnApply null
                         }

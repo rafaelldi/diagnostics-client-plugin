@@ -1,6 +1,8 @@
 package com.github.rafaelldi.diagnosticsclientplugin.dialogs
 
+import com.github.rafaelldi.diagnosticsclientplugin.DiagnosticsClientBundle
+
 enum class StoppingType(val label: String) {
-    AfterPeriod("After a period"),
-    Manually("Manually")
+    AfterPeriod(DiagnosticsClientBundle.message("dialog.stopping.type.after.period")),
+    Manually(DiagnosticsClientBundle.message("dialog.stopping.type.manually"))
 }
