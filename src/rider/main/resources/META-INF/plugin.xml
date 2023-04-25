@@ -10,10 +10,11 @@
     <resource-bundle>messages.DiagnosticsClientBundle</resource-bundle>
 
     <extensions defaultExtensionNs="com.intellij">
-        <toolWindow id="Diagnostics Client"
+        <toolWindow id="Diagnostics"
                     anchor="bottom"
                     icon="DiagnosticsClientIcons.ToolWindow"
                     canCloseContents="true"
+                    doNotActivateOnStart="true"
                     factoryClass="com.github.rafaelldi.diagnosticsclientplugin.toolWindow.DiagnosticsToolWindowFactory"/>
 
         <webHelpProvider implementation="com.github.rafaelldi.diagnosticsclientplugin.DiagnosticsClientHelpProvider"/>
@@ -39,13 +40,13 @@
     </extensions>
 
     <projectListeners>
-        <listener class="com.github.rafaelldi.diagnosticsclientplugin.services.counters.CounterSessionListenerService"
+        <listener class="com.github.rafaelldi.diagnosticsclientplugin.services.counters.LiveCounterSessionController$CounterSessionListenerInst"
                   topic="com.github.rafaelldi.diagnosticsclientplugin.services.counters.CounterSessionListener"/>
-        <listener class="com.github.rafaelldi.diagnosticsclientplugin.services.gc.GcEventSessionListenerService"
+        <listener class="com.github.rafaelldi.diagnosticsclientplugin.services.gc.LiveGcEventSessionController$GcEventSessionListenerImpl"
                   topic="com.github.rafaelldi.diagnosticsclientplugin.services.gc.GcEventSessionListener"/>
-        <listener class="com.github.rafaelldi.diagnosticsclientplugin.services.traces.TraceSessionListenerService"
+        <listener class="com.github.rafaelldi.diagnosticsclientplugin.services.traces.LiveTraceSessionController$TraceSessionListenerImpl"
                   topic="com.github.rafaelldi.diagnosticsclientplugin.services.traces.TraceSessionListener"/>
-        <listener class="com.github.rafaelldi.diagnosticsclientplugin.services.chart.ChartSessionListenerService"
+        <listener class="com.github.rafaelldi.diagnosticsclientplugin.services.chart.LiveChartSessionController$ChartSessionListenerImpl"
                   topic="com.github.rafaelldi.diagnosticsclientplugin.services.chart.ChartSessionListener" />
         <listener class="com.github.rafaelldi.diagnosticsclientplugin.toolWindow.DiagnosticsToolWindowListener"
                   topic="com.intellij.openapi.wm.ex.ToolWindowManagerListener" />

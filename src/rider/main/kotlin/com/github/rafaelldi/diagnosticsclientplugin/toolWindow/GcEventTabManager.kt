@@ -3,6 +3,7 @@ package com.github.rafaelldi.diagnosticsclientplugin.toolWindow
 import com.github.rafaelldi.diagnosticsclientplugin.generated.DiagnosticsHostModel
 import com.github.rafaelldi.diagnosticsclientplugin.generated.LiveGcEventSession
 import com.github.rafaelldi.diagnosticsclientplugin.services.gc.GcEventSessionListener
+import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.DiagnosticsToolWindowFactory.Companion.DIAGNOSTICS_CLIENT_TOOL_WINDOW
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.LiveGcEventSessionTab
 import com.intellij.execution.runners.ExecutionUtil
 import com.intellij.icons.AllIcons
@@ -10,6 +11,7 @@ import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.wm.ToolWindow
+import com.intellij.openapi.wm.ToolWindowManager
 import com.intellij.ui.content.Content
 import com.intellij.ui.content.ContentFactory
 import com.jetbrains.rd.ide.model.Solution
@@ -23,7 +25,7 @@ class GcEventTabManager(private val project: Project) {
     }
 
     private fun addGcEventSessionTab(lt: Lifetime, pid: Int, session: LiveGcEventSession) {
-        val toolWindow = DiagnosticsTabManager.getToolWindow(project) ?: return
+        val toolWindow = ToolWindowManager.getInstance(project).getToolWindow(DIAGNOSTICS_CLIENT_TOOL_WINDOW) ?: return
         val contentFactory = ContentFactory.getInstance()
         val liveGcEventSessionTab = LiveGcEventSessionTab(pid, session, this, lt)
         val content = contentFactory.createContent(liveGcEventSessionTab, "GC for $pid", true)
@@ -39,7 +41,7 @@ class GcEventTabManager(private val project: Project) {
     private fun sessionStatusChanged(isActive: Boolean, content: Content) {
         if (isActive) {
             content.icon = ExecutionUtil.getLiveIndicator(AllIcons.Actions.GC)
-            val toolWindow = DiagnosticsTabManager.getToolWindow(project) ?: return
+            val toolWindow = ToolWindowManager.getInstance(project).getToolWindow(DIAGNOSTICS_CLIENT_TOOL_WINDOW) ?: return
             toolWindow.contentManager.setSelectedContent(content, true, true)
         } else {
             content.icon = AllIcons.Actions.GC
@@ -51,7 +53,7 @@ class GcEventTabManager(private val project: Project) {
     }
 
     fun activateTab(pid: Int) {
-        val toolWindow = DiagnosticsTabManager.getToolWindow(project) ?: return
+        val toolWindow = ToolWindowManager.getInstance(project).getToolWindow(DIAGNOSTICS_CLIENT_TOOL_WINDOW) ?: return
         val content = toolWindow.contentManager.findContent("GC for $pid") ?: return
         toolWindow.contentManager.setSelectedContent(content, true, true)
     }

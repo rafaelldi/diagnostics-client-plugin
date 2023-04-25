@@ -60,4 +60,10 @@ class LiveTraceSessionController(project: Project) :
     override fun sessionNotFound(pid: Int) = liveSessionNotFound(TRACES, pid, project)
     override fun sessionStarted(pid: Int) = liveSessionStarted(TRACES, pid, project)
     override fun sessionFinished(pid: Int) = liveSessionFinished(TRACES, pid, project)
+
+    class TraceSessionListenerImpl(private val project: Project) : TraceSessionListener {
+        override fun sessionClosed(pid: Int) {
+            getInstance(project).closeSession(pid)
+        }
+    }
 }

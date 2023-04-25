@@ -35,4 +35,10 @@ class LiveGcEventSessionController(project: Project) :
     override fun sessionNotFound(pid: Int) = liveSessionNotFound(GC_EVENTS, pid, project)
     override fun sessionStarted(pid: Int) = liveSessionStarted(GC_EVENTS, pid, project)
     override fun sessionFinished(pid: Int) = liveSessionFinished(GC_EVENTS, pid, project)
+
+    class GcEventSessionListenerImpl(private val project: Project) : GcEventSessionListener {
+        override fun sessionClosed(pid: Int) {
+            getInstance(project).closeSession(pid)
+        }
+    }
 }
