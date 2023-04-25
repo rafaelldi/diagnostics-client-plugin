@@ -1,10 +1,10 @@
 version: 1.0
 profile:
   name: qodana.recommended
-linter: jetbrains/qodana-dotnet:2022.3-eap
+linter: jetbrains/qodana-dotnet:2023.1-eap
 include:
   - name: CheckDependencyLicenses
-dot-net:
+dotnet:
   solution: diagnostics-client-plugin.sln
 exclude:
   - name: All
