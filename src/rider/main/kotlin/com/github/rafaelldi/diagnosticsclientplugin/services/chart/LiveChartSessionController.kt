@@ -33,4 +33,10 @@ class LiveChartSessionController(project: Project) :
     override fun sessionNotFound(pid: Int) = liveSessionNotFound(CHART, pid, project)
     override fun sessionStarted(pid: Int) = liveSessionStarted(CHART, pid, project)
     override fun sessionFinished(pid: Int) = liveSessionFinished(CHART, pid, project)
+
+    class ChartSessionListenerImpl(private val project: Project) : ChartSessionListener {
+        override fun sessionClosed(pid: Int) {
+            getInstance(project).closeSession(pid)
+        }
+    }
 }

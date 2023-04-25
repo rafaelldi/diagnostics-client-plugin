@@ -3,6 +3,7 @@ package com.github.rafaelldi.diagnosticsclientplugin.toolWindow
 import com.github.rafaelldi.diagnosticsclientplugin.generated.DiagnosticsHostModel
 import com.github.rafaelldi.diagnosticsclientplugin.generated.LiveTraceSession
 import com.github.rafaelldi.diagnosticsclientplugin.services.traces.TraceSessionListener
+import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.DiagnosticsToolWindowFactory.Companion.DIAGNOSTICS_CLIENT_TOOL_WINDOW
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.LiveTraceSessionTab
 import com.intellij.execution.runners.ExecutionUtil
 import com.intellij.icons.AllIcons
@@ -10,6 +11,7 @@ import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.wm.ToolWindow
+import com.intellij.openapi.wm.ToolWindowManager
 import com.intellij.ui.content.Content
 import com.intellij.ui.content.ContentFactory
 import com.jetbrains.rd.ide.model.Solution
@@ -23,7 +25,7 @@ class TraceTabManager(private val project: Project) {
     }
 
     private fun addTraceSessionTab(lt: Lifetime, pid: Int, session: LiveTraceSession) {
-        val toolWindow = DiagnosticsTabManager.getToolWindow(project) ?: return
+        val toolWindow = ToolWindowManager.getInstance(project).getToolWindow(DIAGNOSTICS_CLIENT_TOOL_WINDOW) ?: return
         val contentFactory = ContentFactory.getInstance()
         val liveTraceSessionTab = LiveTraceSessionTab(pid, session, this, project, lt)
         val content = contentFactory.createContent(liveTraceSessionTab, "Traces for $pid", true)
@@ -39,7 +41,8 @@ class TraceTabManager(private val project: Project) {
     private fun sessionStatusChanged(isActive: Boolean, content: Content) {
         if (isActive) {
             content.icon = ExecutionUtil.getLiveIndicator(AllIcons.Toolwindows.ToolWindowMessages)
-            val toolWindow = DiagnosticsTabManager.getToolWindow(project) ?: return
+            val toolWindow =
+                ToolWindowManager.getInstance(project).getToolWindow(DIAGNOSTICS_CLIENT_TOOL_WINDOW) ?: return
             toolWindow.contentManager.setSelectedContent(content, true, true)
         } else {
             content.icon = AllIcons.Toolwindows.ToolWindowMessages
@@ -51,7 +54,7 @@ class TraceTabManager(private val project: Project) {
     }
 
     fun activateTab(pid: Int) {
-        val toolWindow = DiagnosticsTabManager.getToolWindow(project) ?: return
+        val toolWindow = ToolWindowManager.getInstance(project).getToolWindow(DIAGNOSTICS_CLIENT_TOOL_WINDOW) ?: return
         val content = toolWindow.contentManager.findContent("Traces for $pid") ?: return
         toolWindow.contentManager.setSelectedContent(content, true, true)
     }

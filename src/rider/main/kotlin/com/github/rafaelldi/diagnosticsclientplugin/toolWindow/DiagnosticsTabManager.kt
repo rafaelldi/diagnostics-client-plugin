@@ -8,32 +8,33 @@ import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.wm.ToolWindow
-import com.intellij.openapi.wm.ToolWindowManager
 import com.intellij.ui.content.ContentFactory
-import com.jetbrains.rd.platform.util.idea.LifetimedService
+import com.jetbrains.rd.platform.util.lifetime
 import com.jetbrains.rider.projectView.solution
 
 @Service
-class DiagnosticsTabManager(private val project: Project) : LifetimedService() {
+class DiagnosticsTabManager(private val project: Project) {
     companion object {
-        private const val DIAGNOSTICS_CLIENT_TOOL_WINDOW = "Diagnostics Client"
         fun getInstance(project: Project): DiagnosticsTabManager = project.service()
-        fun getToolWindow(project: Project): ToolWindow? =
-            ToolWindowManager.getInstance(project).getToolWindow(DIAGNOSTICS_CLIENT_TOOL_WINDOW)
     }
 
     fun createExplorerTab(toolWindow: ToolWindow) {
         val contentFactory = ContentFactory.getInstance()
         val processExplorerTab =
-            ProcessExplorerTab(project.solution.diagnosticsHostModel.processList, serviceLifetime)
+            ProcessExplorerTab(project.solution.diagnosticsHostModel.processList, project.lifetime)
         val content = contentFactory.createContent(processExplorerTab, DiagnosticsClientBundle.message("tool.window.explorer"), true)
         content.isCloseable = false
         toolWindow.contentManager.addContent(content)
+
+        val model = project.solution.diagnosticsHostModel
+        if (toolWindow.isVisible) {
+            model.processList.active.set(true)
+        }
     }
 
     fun createRecentArtifactTab(toolWindow: ToolWindow) {
         val contentFactory = ContentFactory.getInstance()
-        val recentArtifactTab = RecentArtifactTab(project, serviceLifetime)
+        val recentArtifactTab = RecentArtifactTab(project, project.lifetime)
         val content = contentFactory.createContent(recentArtifactTab, DiagnosticsClientBundle.message("tool.window.recent.artifacts"), true)
         content.isCloseable = false
         toolWindow.contentManager.addContent(content)

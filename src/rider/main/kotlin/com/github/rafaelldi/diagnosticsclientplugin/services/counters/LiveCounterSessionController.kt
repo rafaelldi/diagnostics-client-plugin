@@ -42,4 +42,10 @@ class LiveCounterSessionController(project: Project) :
     override fun sessionNotFound(pid: Int) = liveSessionNotFound(COUNTERS, pid, project)
     override fun sessionStarted(pid: Int) = liveSessionStarted(COUNTERS, pid, project)
     override fun sessionFinished(pid: Int) = liveSessionFinished(COUNTERS, pid, project)
+
+    class CounterSessionListenerInst(private val project: Project) : CounterSessionListener {
+        override fun sessionClosed(pid: Int) {
+            getInstance(project).closeSession(pid)
+        }
+    }
 }

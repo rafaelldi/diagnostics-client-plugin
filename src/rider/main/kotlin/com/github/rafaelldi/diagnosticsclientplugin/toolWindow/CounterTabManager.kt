@@ -3,12 +3,14 @@ package com.github.rafaelldi.diagnosticsclientplugin.toolWindow
 import com.github.rafaelldi.diagnosticsclientplugin.generated.DiagnosticsHostModel
 import com.github.rafaelldi.diagnosticsclientplugin.generated.LiveCounterSession
 import com.github.rafaelldi.diagnosticsclientplugin.services.counters.CounterSessionListener
+import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.DiagnosticsToolWindowFactory.Companion.DIAGNOSTICS_CLIENT_TOOL_WINDOW
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.LiveCounterSessionTab
 import com.intellij.execution.runners.ExecutionUtil
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.wm.ToolWindow
+import com.intellij.openapi.wm.ToolWindowManager
 import com.intellij.ui.content.Content
 import com.intellij.ui.content.ContentFactory
 import com.jetbrains.rd.ide.model.Solution
@@ -23,7 +25,7 @@ class CounterTabManager(private val project: Project) {
     }
 
     private fun addCounterSessionTab(lt: Lifetime, pid: Int, session: LiveCounterSession) {
-        val toolWindow = DiagnosticsTabManager.getToolWindow(project) ?: return
+        val toolWindow = ToolWindowManager.getInstance(project).getToolWindow(DIAGNOSTICS_CLIENT_TOOL_WINDOW) ?: return
         val contentFactory = ContentFactory.getInstance()
         val liveCounterSessionTab = LiveCounterSessionTab(pid, session, this, lt)
         val content = contentFactory.createContent(liveCounterSessionTab, "Counters for $pid", true)
@@ -39,7 +41,8 @@ class CounterTabManager(private val project: Project) {
     private fun sessionStatusChanged(isActive: Boolean, content: Content) {
         if (isActive) {
             content.icon = ExecutionUtil.getLiveIndicator(DiagnosticsClientIcons.Counters)
-            val toolWindow = DiagnosticsTabManager.getToolWindow(project) ?: return
+            val toolWindow =
+                ToolWindowManager.getInstance(project).getToolWindow(DIAGNOSTICS_CLIENT_TOOL_WINDOW) ?: return
             toolWindow.contentManager.setSelectedContent(content, true, true)
         } else {
             content.icon = DiagnosticsClientIcons.Counters
@@ -51,7 +54,7 @@ class CounterTabManager(private val project: Project) {
     }
 
     fun activateTab(pid: Int) {
-        val toolWindow = DiagnosticsTabManager.getToolWindow(project) ?: return
+        val toolWindow = ToolWindowManager.getInstance(project).getToolWindow(DIAGNOSTICS_CLIENT_TOOL_WINDOW) ?: return
         val content = toolWindow.contentManager.findContent("Counters for $pid") ?: return
         toolWindow.contentManager.setSelectedContent(content, true, true)
     }
