@@ -7,6 +7,9 @@
 ### Fixed
 - Process explorer issue
 
+### Changed
+- Chart improvements
+
 ## [2023.1.1] - 2023-04-06
 
 ### Added
