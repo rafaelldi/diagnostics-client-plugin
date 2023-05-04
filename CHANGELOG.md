@@ -4,6 +4,8 @@
 
 ## [Unreleased]
 
+## [2023.1.2] - 2023-05-03
+
 ### Fixed
 - Process explorer issue
 
@@ -67,7 +69,8 @@
 - Actions to monitor and collect counters
 - Action to collect traces
 
-[Unreleased]: https://github.com/rafaelldi/diagnostics-client-plugin/compare/v2023.1.1...HEAD
+[Unreleased]: https://github.com/rafaelldi/diagnostics-client-plugin/compare/v2023.1.2...HEAD
+[2023.1.2]: https://github.com/rafaelldi/diagnostics-client-plugin/compare/v2023.1.1...v2023.1.2
 [2023.1.1]: https://github.com/rafaelldi/diagnostics-client-plugin/compare/v2023.1.0...v2023.1.1
 [2023.1.0]: https://github.com/rafaelldi/diagnostics-client-plugin/compare/v2022.3.0...v2023.1.0
 [2022.3.0]: https://github.com/rafaelldi/diagnostics-client-plugin/compare/v1.2.0...v2022.3.0
