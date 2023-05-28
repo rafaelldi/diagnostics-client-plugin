@@ -8,7 +8,7 @@ import com.github.rafaelldi.diagnosticsclientplugin.generated.DiagnosticsHostMod
 import com.github.rafaelldi.diagnosticsclientplugin.generated.diagnosticsHostModel
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
-import com.intellij.openapi.progress.withBackgroundProgressIndicator
+import com.intellij.openapi.progress.withBackgroundProgress
 import com.intellij.openapi.project.Project
 import com.jetbrains.rider.projectView.solution
 
@@ -22,8 +22,8 @@ class StackTraceCollectionController(private val project: Project) {
 
     suspend fun collectStackTrace(pid: Int): String {
         val command = CollectStackTraceCommand(pid)
-        return withBackgroundProgressIndicator(project, DiagnosticsClientBundle.message("progress.collecting.stack.trace")) {
-            return@withBackgroundProgressIndicator hostModel.collectStackTrace.startSuspending(command)
+        return withBackgroundProgress(project, DiagnosticsClientBundle.message("progress.collecting.stack.trace")) {
+            return@withBackgroundProgress hostModel.collectStackTrace.startSuspending(command)
         }
     }
 }

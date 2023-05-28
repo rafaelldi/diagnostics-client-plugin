@@ -13,7 +13,7 @@ import com.intellij.notification.Notification
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
-import com.intellij.openapi.progress.withBackgroundProgressIndicator
+import com.intellij.openapi.progress.withBackgroundProgress
 import com.intellij.openapi.project.Project
 import com.jetbrains.rider.projectView.solution
 
@@ -29,7 +29,7 @@ class DumpCollectionController(private val project: Project) {
         val pid = model.selectedProcess?.pid ?: return
 
         val command = CollectDumpCommand(pid, model.type.map(), model.path, model.filename, model.diag)
-        withBackgroundProgressIndicator(project, DiagnosticsClientBundle.message("progress.collecting.memory.dump")) {
+        withBackgroundProgress(project, DiagnosticsClientBundle.message("progress.collecting.memory.dump")) {
             val result = hostModel.collectDump.startSuspending(command)
             Notification(
                 "Diagnostics Client",
