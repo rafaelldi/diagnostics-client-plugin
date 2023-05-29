@@ -18,15 +18,24 @@ To monitor `EventCounters`, select the process and call the `Monitor Counetrs` a
 
 ![Monitor counters dialog](counters-dialog.png){ width="450" }
 
-In the opened dialog:
+{style="narrow"}
+Process
+: You can change the target process.
 
-- `Process` — you can change the target process.
-- `Refresh interval` — delay between counter value updates.
-- `Stop` — you can choose to stop monitoring by manually calling the `Stop` action or automatically after a certain
-  period of time.
-- `Providers` — a comma-separated list of counter providers. Each provider contains of its name and, optionally, list of
-  metrics `provider-name[metric1,metric2]`. If the list of metrics is not specified, all metrics from that provider will
-  be shown.
+Refresh interval
+: Delay between counter value updates.
+
+Stop
+: Delay between counter value updates.
+
+Refresh interval
+: You can choose to stop monitoring by manually calling the `Stop` action or automatically after a certain period of
+time.
+
+Providers
+: A comma-separated list of counter providers. Each provider contains its name and, optionally, a list of
+metrics `provider-name[metric1,metric2]`. If the list of metrics is not specified, all metrics from that provider will
+be shown.
 
 `Providers` is the field where you specify which counters you want to monitor. The default is `System.Runtime` and it
 includes some basic counters such as `cpu-usage`, `gc-heap-size`, etc. A full list of its counters can be found in the
@@ -52,10 +61,9 @@ the [documentation](https://learn.microsoft.com/en-us/dotnet/core/diagnostics/ev
 ### Export counter values
 
 It is possible to export counter values to a file and analyze them later. To do this, call the `Export Counters` action.
-
-![Export counters dialog](counters-file-settings.png){ width="450" }
-
 In the dialog, you can select the file format, file name and output folder.
+
+![Export counters dialog](counters-file-settings.png){ width="450" border-effect=rounded }
 
 > You can use [CSV Plot](https://www.csvplot.com/) to plot from a CSV file.
 
