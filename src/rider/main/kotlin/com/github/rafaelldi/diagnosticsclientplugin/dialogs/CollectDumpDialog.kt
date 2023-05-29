@@ -30,7 +30,7 @@ class CollectDumpDialog(
         row(DiagnosticsClientBundle.message("dialog.collect.dump.row.process")) {
             comboBox(ps, SimpleListCellRenderer.create("") { "${it.pid} - ${it.name}" })
                 .align(Align.FILL)
-                .bindItemNullable(model::selectedProcess)
+                .bindItem(model::selectedProcess)
         }.bottomGap(BottomGap.SMALL)
 
         row(DiagnosticsClientBundle.message("dialog.collect.dump.row.type")) {

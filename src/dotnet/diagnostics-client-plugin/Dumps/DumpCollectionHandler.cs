@@ -3,7 +3,7 @@ using System.IO;
 using DiagnosticsClientPlugin.Generated;
 using JetBrains.ProjectModel;
 using JetBrains.Rd.Tasks;
-using JetBrains.RdBackend.Common.Features;
+using JetBrains.ReSharper.Feature.Services.Protocol;
 using JetBrains.Util;
 using Microsoft.Diagnostics.NETCore.Client;
 using DumpType = Microsoft.Diagnostics.NETCore.Client.DumpType;
@@ -19,7 +19,7 @@ internal sealed class DumpCollectionHandler
     {
         _logger = logger;
         var hostModel = solution.GetProtocolSolution().GetDiagnosticsHostModel();
-        hostModel.CollectDump.Set((_, command) => Collect(command));
+        hostModel.CollectDump.SetRdTask((_, command) => Collect(command));
     }
 
     private RdTask<DumpCollectionResult> Collect(CollectDumpCommand command)
@@ -31,7 +31,7 @@ internal sealed class DumpCollectionHandler
             var path = Path.Combine(command.OutFolder, command.Filename);
             client.WriteDump(type, path, command.Diag);
 
-            return RdTask<DumpCollectionResult>.Successful(new DumpCollectionResult(path));
+            return RdTask.Successful(new DumpCollectionResult(path));
         }
         catch (Exception ex) when
             (ex is FileNotFoundException
@@ -45,7 +45,7 @@ internal sealed class DumpCollectionHandler
                 or DiagnosticsClientException)
         {
             _logger.Error(ex);
-            return RdTask<DumpCollectionResult>.Faulted(ex);
+            return RdTask.Faulted<DumpCollectionResult>(ex);
         }
     }
 

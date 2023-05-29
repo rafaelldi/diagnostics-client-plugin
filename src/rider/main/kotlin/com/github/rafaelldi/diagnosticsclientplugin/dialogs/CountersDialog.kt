@@ -51,7 +51,7 @@ class CountersDialog(
                         return@validationOnApply null
                     }
                 }
-                .bindItemNullable(model::selectedProcess)
+                .bindItem(model::selectedProcess)
         }.bottomGap(BottomGap.SMALL)
 
         row(DiagnosticsClientBundle.message("dialog.counters.row.refresh.interval")) {

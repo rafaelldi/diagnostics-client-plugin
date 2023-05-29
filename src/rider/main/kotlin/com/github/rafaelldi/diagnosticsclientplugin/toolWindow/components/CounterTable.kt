@@ -8,13 +8,13 @@ import javax.swing.table.DefaultTableModel
 class CounterTable : JBTable() {
     companion object {
         private val COUNTER_COLUMN_TITLE = DiagnosticsClientBundle.message("counter.table.counter.column")
-        private val TAGS_COLUMN_TITLE = DiagnosticsClientBundle.message("counter.table.tags.column")
         private val VALUE_COLUMN_TITLE = DiagnosticsClientBundle.message("counter.table.value.column")
+        private val TAGS_COLUMN_TITLE = DiagnosticsClientBundle.message("counter.table.tags.column")
     }
 
     private val counterRowMap: MutableMap<String, Int> = mutableMapOf()
     private val tableModel: DefaultTableModel =
-        DefaultTableModel(arrayOf(COUNTER_COLUMN_TITLE, TAGS_COLUMN_TITLE, VALUE_COLUMN_TITLE), 0)
+        DefaultTableModel(arrayOf(COUNTER_COLUMN_TITLE, VALUE_COLUMN_TITLE, TAGS_COLUMN_TITLE), 0)
 
     init {
         model = tableModel
@@ -24,16 +24,16 @@ class CounterTable : JBTable() {
 
     fun add(key: String, counter: Counter) {
         val index = (counterRowMap.values.maxOrNull() ?: -1) + 1
-        tableModel.addRow(arrayOf(counter.name, counter.tags, counter.value))
+        tableModel.addRow(arrayOf(counter.name, counter.value, counter.tags))
         counterRowMap[key] = index
     }
 
     fun update(key: String, counter: Counter) {
         val row = counterRowMap[key]
         if (row != null) {
-            val currentValue = tableModel.getValueAt(row, 2)
+            val currentValue = tableModel.getValueAt(row, 1)
             if (currentValue != counter.value) {
-                tableModel.setValueAt(counter.value, row, 2)
+                tableModel.setValueAt(counter.value, row, 1)
             }
         } else {
             add(key, counter)
