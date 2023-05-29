@@ -77,11 +77,13 @@ specified, all metrics for that counter will be shown. Here are some examples:
 - `OpenTelemetry.Instrumentation.Runtime[process.cpu.count],OpenTelemetry.Instrumentation.AspNetCore`
 - `OpenTelemetry.Instrumentation.Runtime[process.cpu.count],OpenTelemetry.Instrumentation.AspNetCore[http.server.duration]`
 
-## See also
-
-* [EventCounters in .NET](https://learn.microsoft.com/en-us/dotnet/core/diagnostics/event-counters)
-* [Well-known EventCounters in .NET](https://learn.microsoft.com/en-us/dotnet/core/diagnostics/available-counters)
-* [.NET metrics](https://learn.microsoft.com/en-us/dotnet/core/diagnostics/metrics)
-* [Metric APIs comparison](https://learn.microsoft.com/en-us/dotnet/core/diagnostics/compare-metric-apis)
-* [What does the .NET application say - Counters and Metrics](https://rafaelldi.blog/posts/counters-and-metrics/)
-* [Monitoring background task](https://rafaelldi.blog/posts/monitoring-background-task/)
+<seealso>
+  <category ref="ext">
+    <a href="https://learn.microsoft.com/en-us/dotnet/core/diagnostics/event-counters">EventCounters in .NET</a>
+    <a href="https://learn.microsoft.com/en-us/dotnet/core/diagnostics/available-counters">Well-known EventCounters in .NET</a>
+    <a href="https://learn.microsoft.com/en-us/dotnet/core/diagnostics/metrics">.NET metrics</a>
+    <a href="https://learn.microsoft.com/en-us/dotnet/core/diagnostics/compare-metric-apis">Metric APIs comparison</a>
+    <a href="https://rafaelldi.blog/posts/counters-and-metrics">What does the .NET application say — Counters and Metrics</a>
+    <a href="https://rafaelldi.blog/posts/monitoring-background-task">Monitoring background task</a>
+  </category>
+</seealso>
