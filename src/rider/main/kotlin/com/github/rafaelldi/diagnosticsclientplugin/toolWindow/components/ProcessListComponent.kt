@@ -23,7 +23,7 @@ class ProcessListComponent : JBList<Pair<Int, ProcessInfo>>(), CopyProvider {
         emptyText.text = DiagnosticsClientBundle.message("process.list.loading")
         selectionMode = ListSelectionModel.SINGLE_SELECTION
         cellRenderer = CellRenderer()
-        ListSpeedSearch(this) { it.second.processName }
+        ListSpeedSearch.installOn(this) { it.second.processName }
     }
 
     val selectedProcess: Pair<Int, String>?

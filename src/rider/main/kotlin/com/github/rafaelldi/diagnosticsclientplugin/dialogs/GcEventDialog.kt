@@ -47,7 +47,7 @@ class GcEventDialog(
                         return@validationOnApply null
                     }
                 }
-                .bindItemNullable(model::selectedProcess)
+                .bindItem(model::selectedProcess)
         }.bottomGap(BottomGap.SMALL)
 
         buttonsGroup {

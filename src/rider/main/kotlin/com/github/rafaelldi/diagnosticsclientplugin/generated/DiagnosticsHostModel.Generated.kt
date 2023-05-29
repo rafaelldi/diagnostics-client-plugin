@@ -58,8 +58,11 @@ class DiagnosticsHostModel private constructor(
             serializers.register(PersistentSession_Unknown)
             serializers.register(LiveSession_Unknown)
         }
-
-
+        
+        
+        
+        
+        
         const val serializationHash = -8447152889813447689L
         
     }
@@ -150,19 +153,20 @@ class DiagnosticsHostModel private constructor(
 val com.jetbrains.rd.ide.model.Solution.diagnosticsHostModel get() = getOrCreateExtension("diagnosticsHostModel", ::DiagnosticsHostModel)
 
 
+
 /**
  * #### Generated from [DiagnosticsHostModel.kt:131]
  */
-data class ChartValue(
+data class ChartValue (
     val timeStamp: Long,
     val value: Double,
     val type: ChartValueType
 ) : IPrintable {
     //companion
-
+    
     companion object : IMarshaller<ChartValue> {
         override val _type: KClass<ChartValue> = ChartValue::class
-
+        
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): ChartValue  {
             val timeStamp = buffer.readLong()
@@ -184,22 +188,22 @@ data class ChartValue(
     //initializer
     //secondary constructor
     //equals trait
-    override fun equals(other: Any?): Boolean {
+    override fun equals(other: Any?): Boolean  {
         if (this === other) return true
         if (other == null || other::class != this::class) return false
-
+        
         other as ChartValue
-
+        
         if (timeStamp != other.timeStamp) return false
         if (value != other.value) return false
         return type == other.type
     }
     //hash code trait
-    override fun hashCode(): Int {
+    override fun hashCode(): Int  {
         var __r = 0
-        __r = __r * 31 + timeStamp.hashCode()
-        __r = __r * 31 + value.hashCode()
-        __r = __r * 31 + type.hashCode()
+        __r = __r*31 + timeStamp.hashCode()
+        __r = __r*31 + value.hashCode()
+        __r = __r*31 + type.hashCode()
         return __r
     }
     //pretty print
@@ -221,13 +225,13 @@ data class ChartValue(
  * #### Generated from [DiagnosticsHostModel.kt:137]
  */
 enum class ChartValueType {
-    Cpu,
-    WorkingSet,
+    Cpu, 
+    WorkingSet, 
     GcHeapSize;
-
+    
     companion object {
         val marshaller = FrameworkMarshallers.enum<ChartValueType>()
-
+        
     }
 }
 
@@ -272,12 +276,12 @@ data class CollectDumpCommand (
     //initializer
     //secondary constructor
     //equals trait
-    override fun equals(other: Any?): Boolean {
+    override fun equals(other: Any?): Boolean  {
         if (this === other) return true
         if (other == null || other::class != this::class) return false
-
+        
         other as CollectDumpCommand
-
+        
         if (pid != other.pid) return false
         if (type != other.type) return false
         if (outFolder != other.outFolder) return false
@@ -339,10 +343,10 @@ data class CollectStackTraceCommand (
     //initializer
     //secondary constructor
     //equals trait
-    override fun equals(other: Any?): Boolean {
+    override fun equals(other: Any?): Boolean  {
         if (this === other) return true
         if (other == null || other::class != this::class) return false
-
+        
         other as CollectStackTraceCommand
 
         return pid == other.pid
@@ -400,12 +404,12 @@ data class Counter (
     //initializer
     //secondary constructor
     //equals trait
-    override fun equals(other: Any?): Boolean {
+    override fun equals(other: Any?): Boolean  {
         if (this === other) return true
         if (other == null || other::class != this::class) return false
-
+        
         other as Counter
-
+        
         if (name != other.name) return false
         if (tags != other.tags) return false
         return value == other.value
@@ -475,10 +479,10 @@ data class DumpCollectionResult (
     //initializer
     //secondary constructor
     //equals trait
-    override fun equals(other: Any?): Boolean {
+    override fun equals(other: Any?): Boolean  {
         if (this === other) return true
         if (other == null || other::class != this::class) return false
-
+        
         other as DumpCollectionResult
 
         return filePath == other.filePath
@@ -1490,12 +1494,12 @@ data class ProcessEnvironmentVariable (
     //initializer
     //secondary constructor
     //equals trait
-    override fun equals(other: Any?): Boolean {
+    override fun equals(other: Any?): Boolean  {
         if (this === other) return true
         if (other == null || other::class != this::class) return false
-
+        
         other as ProcessEnvironmentVariable
-
+        
         if (key != other.key) return false
         return value == other.value
     }
@@ -1569,9 +1573,9 @@ data class ProcessInfo (
     override fun equals(other: Any?): Boolean  {
         if (this === other) return true
         if (other == null || other::class != this::class) return false
-
+        
         other as ProcessInfo
-
+        
         if (processName != other.processName) return false
         if (filename != other.filename) return false
         if (startTime != other.startTime) return false
@@ -1724,12 +1728,12 @@ data class Trace (
     //initializer
     //secondary constructor
     //equals trait
-    override fun equals(other: Any?): Boolean {
+    override fun equals(other: Any?): Boolean  {
         if (this === other) return true
         if (other == null || other::class != this::class) return false
-
+        
         other as Trace
-
+        
         if (eventName != other.eventName) return false
         if (provider != other.provider) return false
         if (timeStamp != other.timeStamp) return false
