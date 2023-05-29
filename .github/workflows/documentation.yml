@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
 
 env:
-  PRODUCT: Writerside/dc
+  PRODUCT: diagnostics-client/dc
   DOC_ARTIFACT: webHelpDC2-all.zip
 
 jobs:

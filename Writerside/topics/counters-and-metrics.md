@@ -50,15 +50,14 @@ provider. There are some examples:
 
 ### Custom counters
 
-It is possible to create your own counters and monitor them (but currently `System.Diagnostics.Metrics` is preferred).
-To do that, we have to implement an `EventSource` and then use its name as a provider. You can find a full example of
-how to do this in
+It is possible to create your own counters and monitor them. To do that, you have to implement an `EventSource` and then
+use its name as a provider. You can find a full example of how to do this in
 the [documentation](https://learn.microsoft.com/en-us/dotnet/core/diagnostics/event-counters#implement-an-eventsource).
 
 ### Export counter values
 
-It is possible to export counter values to a file and analyze them later. To do this, call the `Export Counters` action.
-In the dialog, you can select the file format, file name and output folder.
+Sometimes it is convenient to export the counter values to a file and analyse them later. For this purpose, call the 
+`Export Counters` action. In the dialog, you can select the file format, file name and output folder.
 
 ![Export counters dialog](counters-file-settings.png){ width="450" border-effect=rounded }
 
