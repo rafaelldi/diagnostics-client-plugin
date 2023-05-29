@@ -26,9 +26,6 @@ Refresh interval
 : Delay between counter value updates.
 
 Stop
-: Delay between counter value updates.
-
-Refresh interval
 : You can choose to stop monitoring by manually calling the `Stop` action or automatically after a certain period of
 time.
 
@@ -91,7 +88,7 @@ specified, all metrics for that counter will be shown. Here are some examples:
     <a href="https://learn.microsoft.com/en-us/dotnet/core/diagnostics/available-counters">Well-known EventCounters in .NET</a>
     <a href="https://learn.microsoft.com/en-us/dotnet/core/diagnostics/metrics">.NET metrics</a>
     <a href="https://learn.microsoft.com/en-us/dotnet/core/diagnostics/compare-metric-apis">Metric APIs comparison</a>
-    <a href="https://rafaelldi.blog/posts/counters-and-metrics">What does the .NET application say — Counters and Metrics</a>
+    <a href="https://rafaelldi.blog/posts/counters-and-metrics">Counters and Metrics</a>
     <a href="https://rafaelldi.blog/posts/monitoring-background-task">Monitoring background task</a>
   </category>
 </seealso>
