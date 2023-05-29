@@ -8,6 +8,7 @@ on:
 
 jobs:
   qodana-backend:
+    name: Qodana Backend
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -21,6 +22,7 @@ jobs:
           QODANA_TOKEN: ${{ secrets.QODANA_TOKEN }}
 
   qodana-frontend:
+    name: Qodana Frontend
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
