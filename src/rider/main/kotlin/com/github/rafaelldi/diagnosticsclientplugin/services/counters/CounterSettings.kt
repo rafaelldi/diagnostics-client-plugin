@@ -1,6 +1,8 @@
 package com.github.rafaelldi.diagnosticsclientplugin.services.counters
 
-import com.github.rafaelldi.diagnosticsclientplugin.dialogs.*
+import com.github.rafaelldi.diagnosticsclientplugin.dialogs.CounterFileFormat
+import com.github.rafaelldi.diagnosticsclientplugin.dialogs.CounterModel
+import com.github.rafaelldi.diagnosticsclientplugin.dialogs.StoppingType
 import com.github.rafaelldi.diagnosticsclientplugin.utils.DotNetProcess
 import com.intellij.openapi.components.*
 import com.intellij.openapi.project.Project
@@ -24,6 +26,7 @@ class CounterSettings(project: Project) : SimplePersistentStateComponent<Counter
         state.stoppingType,
         state.duration,
         state.providers ?: "",
+        state.metricsEnabled,
         state.metrics ?: "",
         state.maxTimeSeries,
         state.maxHistograms
@@ -40,6 +43,7 @@ class CounterSettings(project: Project) : SimplePersistentStateComponent<Counter
             stoppingType = model.stoppingType
             duration = model.duration
             providers = model.providers
+            metricsEnabled = model.metricsEnabled
             metrics = model.metrics
             maxTimeSeries = model.maxTimeSeries
             maxHistograms = model.maxHistograms
@@ -54,6 +58,7 @@ class CounterSettings(project: Project) : SimplePersistentStateComponent<Counter
         var stoppingType by enum(StoppingType.AfterPeriod)
         var duration by property(30)
         var providers by string("System.Runtime")
+        var metricsEnabled by property(false)
         var metrics by string("")
         var maxTimeSeries by property(1000)
         var maxHistograms by property(10)

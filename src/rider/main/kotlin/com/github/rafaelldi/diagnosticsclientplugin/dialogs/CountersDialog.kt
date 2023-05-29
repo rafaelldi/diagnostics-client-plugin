@@ -85,7 +85,7 @@ class CountersDialog(
         }
         collapsibleGroup(DiagnosticsClientBundle.message("dialog.counters.group.metrics")) {
             row {
-                metricsEnablingFlag = checkBox(DiagnosticsClientBundle.message("dialog.counters.row.enable.metrics"))
+                metricsEnablingFlag = checkBox(DiagnosticsClientBundle.message("dialog.counters.row.enable.metrics")).bindSelected(model::metricsEnabled)
             }
             row(DiagnosticsClientBundle.message("dialog.counters.row.list.of.metrics")) {
                 expandableTextField()
@@ -110,7 +110,7 @@ class CountersDialog(
                     .bindIntText(model::maxHistograms)
                     .enabledIf(metricsEnablingFlag.selected)
             }
-        }
+        }.expanded = metricsEnablingFlag.selected()
         group(DiagnosticsClientBundle.message("dialog.counters.group.file.settings")) {
             buttonsGroup {
                 row(DiagnosticsClientBundle.message("dialog.counters.row.file.format")) {
