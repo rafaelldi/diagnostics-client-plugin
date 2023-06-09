@@ -14,8 +14,8 @@ import com.intellij.openapi.wm.ToolWindow
 import com.intellij.openapi.wm.ToolWindowManager
 import com.intellij.ui.content.Content
 import com.intellij.ui.content.ContentFactory
-import com.jetbrains.rd.ide.model.Solution
-import com.jetbrains.rd.protocol.ProtocolExtListener
+import com.jetbrains.rd.platform.client.ProtocolProjectSession
+import com.jetbrains.rd.protocol.SolutionExtListener
 import com.jetbrains.rd.util.lifetime.Lifetime
 
 @Service
@@ -53,15 +53,14 @@ class ChartTabManager(private val project: Project) {
         project.messageBus.syncPublisher(ChartSessionListener.TOPIC).sessionClosed(pid)
     }
 
-    class ProtocolListener : ProtocolExtListener<Solution, DiagnosticsHostModel> {
+    class ProtocolListener : SolutionExtListener<DiagnosticsHostModel> {
         override fun extensionCreated(
             lifetime: Lifetime,
-            project: Project,
-            parent: Solution,
+            session: ProtocolProjectSession,
             model: DiagnosticsHostModel
         ) {
-            model.liveChartSessions.view(lifetime) { lt, pid, session ->
-                getInstance(project).addChartSessionTab(lt, pid, session)
+            model.liveChartSessions.view(lifetime) { lt, pid, s ->
+                getInstance(session.project).addChartSessionTab(lt, pid, s)
             }
         }
     }

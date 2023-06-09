@@ -1,7 +1,7 @@
 version: 1.0
 profile:
   name: qodana.recommended
-linter: jetbrains/qodana-jvm:2023.1-eap
+linter: jetbrains/qodana-jvm:latest
 include:
   - name: CheckDependencyLicenses
 projectJDK: 17

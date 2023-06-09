@@ -1,7 +1,7 @@
 version: 1.0
 profile:
   name: qodana.recommended
-linter: jetbrains/qodana-dotnet:2023.1-eap
+linter: jetbrains/qodana-dotnet:latest
 include:
   - name: CheckDependencyLicenses
 dotnet:

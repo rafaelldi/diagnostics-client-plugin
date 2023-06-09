@@ -19,22 +19,14 @@
 
         <webHelpProvider implementation="com.github.rafaelldi.diagnosticsclientplugin.DiagnosticsClientHelpProvider"/>
 
-        <rd.extListener endpoint="IDE Frontend"
-                        location="SolutionModel.solutions.diagnosticsHostModel"
-                        extClass="com.github.rafaelldi.diagnosticsclientplugin.generated.DiagnosticsHostModel"
-                        handler="com.github.rafaelldi.diagnosticsclientplugin.toolWindow.CounterTabManager$ProtocolListener"/>
-        <rd.extListener endpoint="IDE Frontend"
-                        location="SolutionModel.solutions.diagnosticsHostModel"
-                        extClass="com.github.rafaelldi.diagnosticsclientplugin.generated.DiagnosticsHostModel"
-                        handler="com.github.rafaelldi.diagnosticsclientplugin.toolWindow.GcEventTabManager$ProtocolListener"/>
-        <rd.extListener endpoint="IDE Frontend"
-                        location="SolutionModel.solutions.diagnosticsHostModel"
-                        extClass="com.github.rafaelldi.diagnosticsclientplugin.generated.DiagnosticsHostModel"
-                        handler="com.github.rafaelldi.diagnosticsclientplugin.toolWindow.TraceTabManager$ProtocolListener"/>
-        <rd.extListener endpoint="IDE Frontend"
-                        location="SolutionModel.solutions.diagnosticsHostModel"
-                        extClass="com.github.rafaelldi.diagnosticsclientplugin.generated.DiagnosticsHostModel"
-                        handler="com.github.rafaelldi.diagnosticsclientplugin.toolWindow.ChartTabManager$ProtocolListener"/>
+        <rd.solutionExtListener endpoint="IDE Frontend"
+                                listener="com.github.rafaelldi.diagnosticsclientplugin.toolWindow.CounterTabManager$Listener"/>
+        <rd.solutionExtListener endpoint="IDE Frontend"
+                                listener="com.github.rafaelldi.diagnosticsclientplugin.toolWindow.GcEventTabManager$Listener"/>
+        <rd.solutionExtListener endpoint="IDE Frontend"
+                                listener="com.github.rafaelldi.diagnosticsclientplugin.toolWindow.TraceTabManager$Listener"/>
+        <rd.solutionExtListener endpoint="IDE Frontend"
+                                listener="com.github.rafaelldi.diagnosticsclientplugin.toolWindow.ChartTabManager$ProtocolListener"/>
 
         <notificationGroup id="Diagnostics Client" displayType="BALLOON"/>
     </extensions>
@@ -85,7 +77,7 @@
                 </action>
                 <action id="DiagnosticsClient.ToolWindow.Explorer.PersistentCounterSession.Start"
                         class="com.github.rafaelldi.diagnosticsclientplugin.actions.counters.StartPersistentCounterSessionAction"
-                        icon="AllIcons.Actions.MenuSaveall">
+                        icon="AllIcons.ToolbarDecorator.Export">
                 </action>
                 <action id="DiagnosticsClient.ToolWindow.Explorer.PersistentCounterSession.Stop"
                         class="com.github.rafaelldi.diagnosticsclientplugin.actions.counters.StopPersistentCounterSessionAction"
@@ -109,7 +101,7 @@
                 </action>
                 <action id="DiagnosticsClient.ToolWindow.Explorer.PersistentGcEventSession.Start"
                         class="com.github.rafaelldi.diagnosticsclientplugin.actions.gc.StartPersistentGcEventSessionAction"
-                        icon="AllIcons.Actions.MenuSaveall">
+                        icon="AllIcons.ToolbarDecorator.Export">
                 </action>
                 <action id="DiagnosticsClient.ToolWindow.Explorer.PersistentGcEventSession.Stop"
                         class="com.github.rafaelldi.diagnosticsclientplugin.actions.gc.StopPersistentGcEventSessionAction"
@@ -137,7 +129,7 @@
                 </action>
                 <action id="DiagnosticsClient.ToolWindow.Explorer.PersistentTraceSession.Start"
                         class="com.github.rafaelldi.diagnosticsclientplugin.actions.traces.StartPersistentTraceSessionAction"
-                        icon="AllIcons.Actions.MenuSaveall">
+                        icon="AllIcons.ToolbarDecorator.Export">
                 </action>
                 <action id="DiagnosticsClient.ToolWindow.Explorer.PersistentTraceSession.Stop"
                         class="com.github.rafaelldi.diagnosticsclientplugin.actions.traces.StopPersistentTraceSessionAction"

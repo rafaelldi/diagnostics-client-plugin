@@ -13,8 +13,8 @@ import com.intellij.openapi.wm.ToolWindow
 import com.intellij.openapi.wm.ToolWindowManager
 import com.intellij.ui.content.Content
 import com.intellij.ui.content.ContentFactory
-import com.jetbrains.rd.ide.model.Solution
-import com.jetbrains.rd.protocol.ProtocolExtListener
+import com.jetbrains.rd.platform.client.ProtocolProjectSession
+import com.jetbrains.rd.protocol.SolutionExtListener
 import com.jetbrains.rd.util.lifetime.Lifetime
 import icons.DiagnosticsClientIcons
 
@@ -59,15 +59,14 @@ class CounterTabManager(private val project: Project) {
         toolWindow.contentManager.setSelectedContent(content, true, true)
     }
 
-    class ProtocolListener : ProtocolExtListener<Solution, DiagnosticsHostModel> {
+    class Listener : SolutionExtListener<DiagnosticsHostModel> {
         override fun extensionCreated(
             lifetime: Lifetime,
-            project: Project,
-            parent: Solution,
+            session: ProtocolProjectSession,
             model: DiagnosticsHostModel
         ) {
-            model.liveCounterSessions.view(lifetime) { lt, pid, session ->
-                getInstance(project).addCounterSessionTab(lt, pid, session)
+            model.liveCounterSessions.view(lifetime) { lt, pid, s ->
+                getInstance(session.project).addCounterSessionTab(lt, pid, s)
             }
         }
     }
