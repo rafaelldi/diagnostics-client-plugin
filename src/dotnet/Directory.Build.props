@@ -12,7 +12,7 @@
         <DefaultItemExcludes>$(DefaultItemExcludes);obj\**</DefaultItemExcludes>
         <OutputPath>bin\$(MSBuildProjectName)\$(Configuration)\</OutputPath>
 
-        <SdkVersion>2023.2.0-eap04</SdkVersion>
+        <SdkVersion>2023.2.0-eap05</SdkVersion>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)'=='Debug'">
