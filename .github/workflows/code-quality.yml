@@ -17,7 +17,7 @@ jobs:
       - name: 'Use qodana-backend config'
         run: cp qodana-backend.yaml qodana.yaml
       - name: 'Qodana Backend'
-        uses: JetBrains/qodana-action@v2023.1.0
+        uses: JetBrains/qodana-action@v2023.1.5
         env:
           QODANA_TOKEN: ${{ secrets.QODANA_TOKEN }}
 
@@ -31,6 +31,6 @@ jobs:
       - name: 'Use qodana-frontend config'
         run: cp qodana-frontend.yaml qodana.yaml
       - name: 'Qodana Frontend'
-        uses: JetBrains/qodana-action@v2023.1.0
+        uses: JetBrains/qodana-action@v2023.1.5
         env:
           QODANA_TOKEN: ${{ secrets.QODANA_TOKEN }}
