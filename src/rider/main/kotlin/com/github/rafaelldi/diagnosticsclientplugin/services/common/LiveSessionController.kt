@@ -1,8 +1,11 @@
 package com.github.rafaelldi.diagnosticsclientplugin.services.common
 
-import com.github.rafaelldi.diagnosticsclientplugin.dialogs.LiveModel
+import com.github.rafaelldi.diagnosticsclientplugin.common.liveSessionFinished
+import com.github.rafaelldi.diagnosticsclientplugin.common.liveSessionNotFound
+import com.github.rafaelldi.diagnosticsclientplugin.common.liveSessionStarted
+import com.github.rafaelldi.diagnosticsclientplugin.dialogs.LiveSessionModel
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.StoppingType
-import com.github.rafaelldi.diagnosticsclientplugin.generated.LiveSession
+import com.github.rafaelldi.diagnosticsclientplugin.model.LiveSession
 import com.intellij.openapi.project.Project
 import com.jetbrains.rd.framework.util.createTerminatedAfter
 import com.jetbrains.rd.platform.util.idea.LifetimedService
@@ -13,13 +16,25 @@ import com.jetbrains.rd.util.reactive.whenTrue
 import kotlinx.coroutines.Dispatchers
 import java.time.Duration
 
-abstract class LiveSessionController<TSession : LiveSession, TModel : LiveModel>(protected val project: Project) :
+abstract class LiveSessionController<TSession : LiveSession, TModel : LiveSessionModel>(protected val project: Project) :
     LifetimedService() {
 
-    protected abstract val sessions: IMutableViewableMap<Int, TSession>
+    protected abstract val artifactType: String
+
+    fun subscribeTo(sessions: IMutableViewableMap<Int, TSession>, lifetime: Lifetime) {
+        sessions.view(lifetime) { sessionLifetime, pid, session ->
+            viewSession(pid, session, sessionLifetime)
+            addSessionTab(pid, session, lifetime)
+        }
+    }
+
+    protected abstract fun getSessions(): IMutableViewableMap<Int, TSession>?
+
+    fun getSession(pid: Int): TSession? = getSessions()?.get(pid)
 
     fun startSession(model: TModel) {
         val pid = model.selectedProcess?.pid ?: return
+        val sessions = getSessions() ?: return
 
         if (!sessions.contains(pid)) {
             createNewSession(pid, model)
@@ -29,9 +44,9 @@ abstract class LiveSessionController<TSession : LiveSession, TModel : LiveModel>
     }
 
     private fun createNewSession(pid: Int, model: TModel) {
-        if (sessions.contains(pid)) {
-            return
-        }
+        val sessions = getSessions() ?: return
+
+        if (sessions.contains(pid)) return
 
         val session = createSession(model)
         try {
@@ -48,6 +63,8 @@ abstract class LiveSessionController<TSession : LiveSession, TModel : LiveModel>
     }
 
     private fun startExistingSession(pid: Int, stoppingType: StoppingType, duration: Int) {
+        val sessions = getSessions() ?: return
+
         val session = sessions[pid]
         if (session == null) {
             sessionNotFound(pid)
@@ -68,6 +85,8 @@ abstract class LiveSessionController<TSession : LiveSession, TModel : LiveModel>
     }
 
     fun pauseSession(pid: Int) {
+        val sessions = getSessions() ?: return
+
         val session = sessions[pid]
         if (session == null) {
             sessionNotFound(pid)
@@ -80,12 +99,14 @@ abstract class LiveSessionController<TSession : LiveSession, TModel : LiveModel>
     }
 
     fun closeSession(pid: Int) {
-        sessions.remove(pid)
+        getSessions()?.remove(pid)
     }
 
-    protected fun viewSession(pid: Int, session: TSession, lifetime: Lifetime) {
+    private fun viewSession(pid: Int, session: TSession, lifetime: Lifetime) {
         session.active.whenTrue(lifetime) { lt -> viewActiveStatus(pid, session, lt) }
     }
+
+    protected abstract fun addSessionTab(pid: Int, session: TSession, sessionLifetime: Lifetime)
 
     private fun viewActiveStatus(pid: Int, session: TSession, lifetime: Lifetime) {
         val duration = session.duration.value
@@ -105,7 +126,9 @@ abstract class LiveSessionController<TSession : LiveSession, TModel : LiveModel>
         )
     }
 
-    protected abstract fun sessionNotFound(pid: Int)
-    protected abstract fun sessionStarted(pid: Int)
-    protected abstract fun sessionFinished(pid: Int)
+    private fun sessionNotFound(pid: Int) = liveSessionNotFound(artifactType, pid, project)
+
+    private fun sessionStarted(pid: Int) = liveSessionStarted(artifactType, pid, project)
+
+    private fun sessionFinished(pid: Int) = liveSessionFinished(artifactType, pid, project)
 }

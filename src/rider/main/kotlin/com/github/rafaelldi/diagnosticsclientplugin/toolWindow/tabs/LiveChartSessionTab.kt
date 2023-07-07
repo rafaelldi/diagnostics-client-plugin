@@ -1,8 +1,8 @@
 package com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs
 
-import com.github.rafaelldi.diagnosticsclientplugin.generated.ChartValue
-import com.github.rafaelldi.diagnosticsclientplugin.generated.LiveChartSession
-import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.ChartTabManager
+import com.github.rafaelldi.diagnosticsclientplugin.model.ChartValue
+import com.github.rafaelldi.diagnosticsclientplugin.model.LiveChartSession
+import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.ChartSessionTabManager
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.components.CounterChartPanel
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.DataKey
@@ -12,7 +12,7 @@ import com.jetbrains.rd.util.lifetime.Lifetime
 class LiveChartSessionTab(
     override val pid: Int,
     session: LiveChartSession,
-    private val manager: ChartTabManager,
+    private val manager: ChartSessionTabManager,
     lt: Lifetime
 ): SimpleToolWindowPanel(false), MonitoringTab, Disposable {
 

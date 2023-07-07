@@ -1,34 +1,32 @@
 package com.github.rafaelldi.diagnosticsclientplugin.services.counters
 
-import com.github.rafaelldi.diagnosticsclientplugin.common.liveSessionFinished
-import com.github.rafaelldi.diagnosticsclientplugin.common.liveSessionNotFound
-import com.github.rafaelldi.diagnosticsclientplugin.common.liveSessionStarted
-import com.github.rafaelldi.diagnosticsclientplugin.dialogs.CounterModel
-import com.github.rafaelldi.diagnosticsclientplugin.generated.LiveCounterSession
-import com.github.rafaelldi.diagnosticsclientplugin.generated.diagnosticsHostModel
+import com.github.rafaelldi.diagnosticsclientplugin.dialogs.CounterSessionModel
+import com.github.rafaelldi.diagnosticsclientplugin.model.LiveCounterSession
+import com.github.rafaelldi.diagnosticsclientplugin.services.DiagnosticsHost
 import com.github.rafaelldi.diagnosticsclientplugin.services.common.LiveSessionController
+import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.CounterSessionTabManager
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
-import com.jetbrains.rider.projectView.solution
+import com.jetbrains.rd.util.lifetime.Lifetime
 
 @Service
 class LiveCounterSessionController(project: Project) :
-    LiveSessionController<LiveCounterSession, CounterModel>(project) {
+    LiveSessionController<LiveCounterSession, CounterSessionModel>(project) {
     companion object {
         fun getInstance(project: Project): LiveCounterSessionController = project.service()
         private const val COUNTERS = "Counters"
     }
 
-    override val sessions = project.solution.diagnosticsHostModel.liveCounterSessions
+    override val artifactType = COUNTERS
 
-    init {
-        sessions.view(serviceLifetime) { lt, pid, session ->
-            viewSession(pid, session, lt)
-        }
+    override fun getSessions() = DiagnosticsHost.getInstance(project).hostModel?.liveCounterSessions
+
+    override fun addSessionTab(pid: Int, session: LiveCounterSession, sessionLifetime: Lifetime) {
+        CounterSessionTabManager.getInstance(project).addSessionTab(sessionLifetime, pid, session)
     }
 
-    override fun createSession(model: CounterModel): LiveCounterSession {
+    override fun createSession(model: CounterSessionModel): LiveCounterSession {
         val metrics = model.metrics.ifEmpty { null }
         return LiveCounterSession(
             model.interval,
@@ -37,15 +35,5 @@ class LiveCounterSessionController(project: Project) :
             model.maxTimeSeries,
             model.maxHistograms,
         )
-    }
-
-    override fun sessionNotFound(pid: Int) = liveSessionNotFound(COUNTERS, pid, project)
-    override fun sessionStarted(pid: Int) = liveSessionStarted(COUNTERS, pid, project)
-    override fun sessionFinished(pid: Int) = liveSessionFinished(COUNTERS, pid, project)
-
-    class CounterSessionListenerInst(private val project: Project) : CounterSessionListener {
-        override fun sessionClosed(pid: Int) {
-            getInstance(project).closeSession(pid)
-        }
     }
 }

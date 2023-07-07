@@ -5,7 +5,7 @@ enum class CounterFileFormat {
     Json
 }
 
-fun CounterFileFormat.map(): com.github.rafaelldi.diagnosticsclientplugin.generated.CounterFileFormat = when (this) {
-    CounterFileFormat.Csv -> com.github.rafaelldi.diagnosticsclientplugin.generated.CounterFileFormat.Csv
-    CounterFileFormat.Json -> com.github.rafaelldi.diagnosticsclientplugin.generated.CounterFileFormat.Json
+fun CounterFileFormat.map(): com.github.rafaelldi.diagnosticsclientplugin.model.CounterFileFormat = when (this) {
+    CounterFileFormat.Csv -> com.github.rafaelldi.diagnosticsclientplugin.model.CounterFileFormat.Csv
+    CounterFileFormat.Json -> com.github.rafaelldi.diagnosticsclientplugin.model.CounterFileFormat.Json
 }

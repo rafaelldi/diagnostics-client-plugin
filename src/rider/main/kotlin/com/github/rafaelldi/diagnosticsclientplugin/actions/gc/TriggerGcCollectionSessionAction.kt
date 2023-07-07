@@ -1,12 +1,11 @@
 package com.github.rafaelldi.diagnosticsclientplugin.actions.gc
 
-import com.github.rafaelldi.diagnosticsclientplugin.generated.diagnosticsHostModel
+import com.github.rafaelldi.diagnosticsclientplugin.services.gc.LiveGcEventSessionController
 import com.github.rafaelldi.diagnosticsclientplugin.services.gc.TriggerGcCollectionController
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.LiveGcEventSessionTab.Companion.GC_EVENT_MONITORING_TAB
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
-import com.jetbrains.rider.projectView.solution
 
 class TriggerGcCollectionSessionAction : AnAction() {
     override fun actionPerformed(event: AnActionEvent) {
@@ -16,16 +15,15 @@ class TriggerGcCollectionSessionAction : AnAction() {
     }
 
     override fun update(event: AnActionEvent) {
-        val tab = event.getData(GC_EVENT_MONITORING_TAB)
         val project = event.project
+        val tab = event.getData(GC_EVENT_MONITORING_TAB)
         if (tab == null || project == null) {
             event.presentation.isEnabled = false
         } else {
-            val model = project.solution.diagnosticsHostModel
-            val session = model.liveGcEventSessions[tab.pid]
+            val session = LiveGcEventSessionController.getInstance(project).getSession(tab.pid)
             event.presentation.isEnabled = session != null
         }
     }
 
-    override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.EDT
+    override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
 }

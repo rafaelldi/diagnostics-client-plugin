@@ -1,7 +1,7 @@
 package com.github.rafaelldi.diagnosticsclientplugin.toolWindow.components
 
 import com.github.rafaelldi.diagnosticsclientplugin.DiagnosticsClientBundle
-import com.github.rafaelldi.diagnosticsclientplugin.generated.ProcessInfo
+import com.github.rafaelldi.diagnosticsclientplugin.model.ProcessInfo
 import com.intellij.icons.AllIcons
 import com.intellij.ide.actions.RevealFileAction
 import com.intellij.openapi.actionSystem.ActionManager

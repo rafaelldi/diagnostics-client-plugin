@@ -1,7 +1,7 @@
 package com.github.rafaelldi.diagnosticsclientplugin.services.counters
 
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.CounterFileFormat
-import com.github.rafaelldi.diagnosticsclientplugin.dialogs.CounterModel
+import com.github.rafaelldi.diagnosticsclientplugin.dialogs.CounterSessionModel
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.StoppingType
 import com.github.rafaelldi.diagnosticsclientplugin.utils.DotNetProcess
 import com.intellij.openapi.components.*
@@ -17,7 +17,7 @@ class CounterSettings(project: Project) : SimplePersistentStateComponent<Counter
         fun getInstance(project: Project): CounterSettings = project.service()
     }
 
-    fun getModel(selected: DotNetProcess) = CounterModel(
+    fun getModel(selected: DotNetProcess) = CounterSessionModel(
         selected,
         state.path ?: "",
         state.filename ?: "",
@@ -32,7 +32,7 @@ class CounterSettings(project: Project) : SimplePersistentStateComponent<Counter
         state.maxHistograms
     )
 
-    fun update(model: CounterModel, persistent: Boolean) {
+    fun update(model: CounterSessionModel, persistent: Boolean) {
         state.apply {
             if (persistent) {
                 path = model.path

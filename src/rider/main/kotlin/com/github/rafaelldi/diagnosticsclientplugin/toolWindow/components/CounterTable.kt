@@ -1,7 +1,7 @@
 package com.github.rafaelldi.diagnosticsclientplugin.toolWindow.components
 
 import com.github.rafaelldi.diagnosticsclientplugin.DiagnosticsClientBundle
-import com.github.rafaelldi.diagnosticsclientplugin.generated.Counter
+import com.github.rafaelldi.diagnosticsclientplugin.model.Counter
 import com.intellij.ui.table.JBTable
 import javax.swing.table.DefaultTableModel
 

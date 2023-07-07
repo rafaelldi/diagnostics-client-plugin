@@ -3,8 +3,8 @@
 package com.github.rafaelldi.diagnosticsclientplugin.toolWindow.components
 
 import com.github.rafaelldi.diagnosticsclientplugin.DiagnosticsClientBundle
-import com.github.rafaelldi.diagnosticsclientplugin.generated.ChartValue
-import com.github.rafaelldi.diagnosticsclientplugin.generated.ChartValueType
+import com.github.rafaelldi.diagnosticsclientplugin.model.ChartValue
+import com.github.rafaelldi.diagnosticsclientplugin.model.ChartValueType
 import com.intellij.ui.JBColor
 import com.intellij.ui.OnePixelSplitter
 import com.intellij.ui.charts.*

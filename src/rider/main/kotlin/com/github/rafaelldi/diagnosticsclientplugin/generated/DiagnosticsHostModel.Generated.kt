@@ -1,10 +1,11 @@
 @file:Suppress("EXPERIMENTAL_API_USAGE","EXPERIMENTAL_UNSIGNED_LITERALS","PackageDirectoryMismatch","UnusedImport","unused","LocalVariableName","CanBeVal","PropertyName","EnumEntryName","ClassName","ObjectPropertyName","UnnecessaryVariable","SpellCheckingInspection")
-package com.github.rafaelldi.diagnosticsclientplugin.generated
+package com.github.rafaelldi.diagnosticsclientplugin.model
 
 import com.jetbrains.rd.framework.*
 import com.jetbrains.rd.framework.base.*
 import com.jetbrains.rd.framework.impl.*
 import com.jetbrains.rd.util.Date
+import com.jetbrains.rd.util.lifetime.Lifetime
 import com.jetbrains.rd.util.reactive.*
 import com.jetbrains.rd.util.string.IPrintable
 import com.jetbrains.rd.util.string.PrettyPrinter
@@ -13,7 +14,7 @@ import kotlin.reflect.KClass
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:10]
+ * #### Generated from [DiagnosticsHostModel.kt:16]
  */
 class DiagnosticsHostModel private constructor(
     val processList: ProcessList,
@@ -60,10 +61,24 @@ class DiagnosticsHostModel private constructor(
         }
         
         
+        @JvmStatic
+        @JvmName("internalCreateModel")
+        @Deprecated("Use create instead", ReplaceWith("create(lifetime, protocol)"))
+        internal fun createModel(lifetime: Lifetime, protocol: IProtocol): DiagnosticsHostModel  {
+            @Suppress("DEPRECATION")
+            return create(lifetime, protocol)
+        }
+        
+        @JvmStatic
+        @Deprecated("Use protocol.diagnosticsHostModel or revise the extension scope instead", ReplaceWith("protocol.diagnosticsHostModel"))
+        fun create(lifetime: Lifetime, protocol: IProtocol): DiagnosticsHostModel  {
+            DiagnosticsHostRoot.register(protocol.serializers)
+            
+            return DiagnosticsHostModel()
+        }
         
         
-        
-        const val serializationHash = -8447152889813447689L
+        const val serializationHash = 2553511267907261511L
         
     }
     override val serializersOwner: ISerializersOwner get() = DiagnosticsHostModel
@@ -97,7 +112,7 @@ class DiagnosticsHostModel private constructor(
     }
     
     //secondary constructor
-    internal constructor(
+    private constructor(
     ) : this(
         ProcessList(),
         RdMap<Int, PersistentCounterSession>(FrameworkMarshallers.Int, PersistentCounterSession),
@@ -150,12 +165,12 @@ class DiagnosticsHostModel private constructor(
     }
     //contexts
 }
-val com.jetbrains.rd.ide.model.Solution.diagnosticsHostModel get() = getOrCreateExtension("diagnosticsHostModel", ::DiagnosticsHostModel)
+val IProtocol.diagnosticsHostModel get() = getOrCreateExtension(DiagnosticsHostModel::class) { @Suppress("DEPRECATION") DiagnosticsHostModel.create(lifetime, this) }
 
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:131]
+ * #### Generated from [DiagnosticsHostModel.kt:136]
  */
 data class ChartValue (
     val timeStamp: Long,
@@ -222,7 +237,7 @@ data class ChartValue (
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:137]
+ * #### Generated from [DiagnosticsHostModel.kt:142]
  */
 enum class ChartValueType {
     Cpu, 
@@ -237,7 +252,7 @@ enum class ChartValueType {
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:162]
+ * #### Generated from [DiagnosticsHostModel.kt:164]
  */
 data class CollectDumpCommand (
     val pid: Int,
@@ -316,7 +331,7 @@ data class CollectDumpCommand (
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:179]
+ * #### Generated from [DiagnosticsHostModel.kt:181]
  */
 data class CollectStackTraceCommand (
     val pid: Int
@@ -371,7 +386,7 @@ data class CollectStackTraceCommand (
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:89]
+ * #### Generated from [DiagnosticsHostModel.kt:94]
  */
 data class Counter (
     val name: String,
@@ -438,7 +453,7 @@ data class Counter (
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:37]
+ * #### Generated from [DiagnosticsHostModel.kt:42]
  */
 enum class CounterFileFormat {
     Csv, 
@@ -452,7 +467,7 @@ enum class CounterFileFormat {
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:173]
+ * #### Generated from [DiagnosticsHostModel.kt:175]
  */
 data class DumpCollectionResult (
     val filePath: String
@@ -507,7 +522,7 @@ data class DumpCollectionResult (
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:164]
+ * #### Generated from [DiagnosticsHostModel.kt:166]
  */
 enum class DumpType {
     Full, 
@@ -523,7 +538,7 @@ enum class DumpType {
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:95]
+ * #### Generated from [DiagnosticsHostModel.kt:100]
  */
 data class GcEvent (
     val number: Int,
@@ -662,7 +677,7 @@ data class GcEvent (
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:85]
+ * #### Generated from [DiagnosticsHostModel.kt:90]
  */
 class LiveChartSession private constructor(
     private val _valueReceived: RdSignal<ChartValue>,
@@ -741,7 +756,7 @@ class LiveChartSession private constructor(
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:67]
+ * #### Generated from [DiagnosticsHostModel.kt:72]
  */
 class LiveCounterSession private constructor(
     private val _counters: RdMap<String, Counter>,
@@ -859,7 +874,7 @@ class LiveCounterSession private constructor(
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:76]
+ * #### Generated from [DiagnosticsHostModel.kt:81]
  */
 class LiveGcEventSession private constructor(
     private val _gcHappened: RdSignal<GcEvent>,
@@ -938,7 +953,7 @@ class LiveGcEventSession private constructor(
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:62]
+ * #### Generated from [DiagnosticsHostModel.kt:67]
  */
 abstract class LiveSession (
     protected val _active: RdOptionalProperty<Boolean>,
@@ -1052,7 +1067,7 @@ class LiveSession_Unknown (
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:80]
+ * #### Generated from [DiagnosticsHostModel.kt:85]
  */
 class LiveTraceSession private constructor(
     private val _traceReceived: RdSignal<Trace>,
@@ -1138,7 +1153,7 @@ class LiveTraceSession private constructor(
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:36]
+ * #### Generated from [DiagnosticsHostModel.kt:41]
  */
 class PersistentCounterSession (
     val format: CounterFileFormat,
@@ -1225,7 +1240,7 @@ class PersistentCounterSession (
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:48]
+ * #### Generated from [DiagnosticsHostModel.kt:53]
  */
 class PersistentGcEventSession (
     duration: Int?,
@@ -1282,7 +1297,7 @@ class PersistentGcEventSession (
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:31]
+ * #### Generated from [DiagnosticsHostModel.kt:36]
  */
 abstract class PersistentSession (
     val duration: Int?,
@@ -1372,7 +1387,7 @@ class PersistentSession_Unknown (
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:51]
+ * #### Generated from [DiagnosticsHostModel.kt:56]
  */
 class PersistentTraceSession (
     val profile: TracingProfile,
@@ -1444,7 +1459,7 @@ class PersistentTraceSession (
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:113]
+ * #### Generated from [DiagnosticsHostModel.kt:118]
  */
 enum class PredefinedProvider {
     Http, 
@@ -1464,7 +1479,7 @@ enum class PredefinedProvider {
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:11]
+ * #### Generated from [DiagnosticsHostModel.kt:17]
  */
 data class ProcessEnvironmentVariable (
     val key: String,
@@ -1525,7 +1540,7 @@ data class ProcessEnvironmentVariable (
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:16]
+ * #### Generated from [DiagnosticsHostModel.kt:22]
  */
 data class ProcessInfo (
     val processName: String,
@@ -1616,10 +1631,9 @@ data class ProcessInfo (
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:26]
+ * #### Generated from [DiagnosticsHostModel.kt:32]
  */
 class ProcessList private constructor(
-    private val _active: RdOptionalProperty<Boolean>,
     private val _items: RdMap<Int, ProcessInfo>
 ) : RdBindableBase() {
     //companion
@@ -1630,26 +1644,22 @@ class ProcessList private constructor(
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): ProcessList  {
             val _id = RdId.read(buffer)
-            val _active = RdOptionalProperty.read(ctx, buffer, FrameworkMarshallers.Bool)
             val _items = RdMap.read(ctx, buffer, FrameworkMarshallers.Int, ProcessInfo)
-            return ProcessList(_active, _items).withId(_id)
+            return ProcessList(_items).withId(_id)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: ProcessList)  {
             value.rdid.write(buffer)
-            RdOptionalProperty.write(ctx, buffer, value._active)
             RdMap.write(ctx, buffer, value._items)
         }
         
         
     }
     //fields
-    val active: IOptProperty<Boolean> get() = _active
     val items: IMutableViewableMap<Int, ProcessInfo> get() = _items
     //methods
     //initializer
     init {
-        _active.optimizeNested = true
         _items.optimizeNested = true
     }
     
@@ -1658,14 +1668,12 @@ class ProcessList private constructor(
     }
     
     init {
-        bindableChildren.add("active" to _active)
         bindableChildren.add("items" to _items)
     }
     
     //secondary constructor
     constructor(
     ) : this(
-        RdOptionalProperty<Boolean>(FrameworkMarshallers.Bool),
         RdMap<Int, ProcessInfo>(FrameworkMarshallers.Int, ProcessInfo)
     )
     
@@ -1675,7 +1683,6 @@ class ProcessList private constructor(
     override fun print(printer: PrettyPrinter)  {
         printer.println("ProcessList (")
         printer.indent {
-            print("active = "); _active.print(printer); println()
             print("items = "); _items.print(printer); println()
         }
         printer.print(")")
@@ -1683,7 +1690,6 @@ class ProcessList private constructor(
     //deepClone
     override fun deepClone(): ProcessList   {
         return ProcessList(
-            _active.deepClonePolymorphic(),
             _items.deepClonePolymorphic()
         )
     }
@@ -1692,7 +1698,7 @@ class ProcessList private constructor(
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:124]
+ * #### Generated from [DiagnosticsHostModel.kt:129]
  */
 data class Trace (
     val eventName: String,
@@ -1765,7 +1771,7 @@ data class Trace (
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:52]
+ * #### Generated from [DiagnosticsHostModel.kt:57]
  */
 enum class TracingProfile {
     None, 

@@ -9,12 +9,12 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.SimpleToolWindowPanel
 import com.intellij.ui.components.JBScrollPane
 import com.intellij.util.ui.JBUI
-import com.jetbrains.rd.util.lifetime.Lifetime
+import com.jetbrains.rd.platform.util.lifetime
 import java.nio.file.Path
 import javax.swing.event.ListSelectionEvent
 import javax.swing.event.ListSelectionListener
 
-class RecentArtifactTab(project: Project, lt: Lifetime) :
+class RecentArtifactTab(project: Project) :
     SimpleToolWindowPanel(false), ListSelectionListener {
     companion object {
         val RECENT_ARTIFACT_TAB: DataKey<RecentArtifactTab> =
@@ -33,7 +33,7 @@ class RecentArtifactTab(project: Project, lt: Lifetime) :
         setContent(listPanel)
         initActionToolbar()
 
-        lt.bracketIfAlive(
+        project.lifetime.bracketIfAlive(
             { recentArtifactList.addListSelectionListener(this) },
             { recentArtifactList.removeListSelectionListener(this) }
         )

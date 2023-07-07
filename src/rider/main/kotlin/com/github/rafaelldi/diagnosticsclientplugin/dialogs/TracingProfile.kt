@@ -11,9 +11,9 @@ enum class TracingProfile(private val label: String) {
     override fun toString() = label
 }
 
-fun TracingProfile.map(): com.github.rafaelldi.diagnosticsclientplugin.generated.TracingProfile = when (this) {
-    TracingProfile.None -> com.github.rafaelldi.diagnosticsclientplugin.generated.TracingProfile.None
-    TracingProfile.CpuSampling -> com.github.rafaelldi.diagnosticsclientplugin.generated.TracingProfile.CpuSampling
-    TracingProfile.GcVerbose -> com.github.rafaelldi.diagnosticsclientplugin.generated.TracingProfile.GcVerbose
-    TracingProfile.GcCollect -> com.github.rafaelldi.diagnosticsclientplugin.generated.TracingProfile.GcCollect
+fun TracingProfile.map(): com.github.rafaelldi.diagnosticsclientplugin.model.TracingProfile = when (this) {
+    TracingProfile.None -> com.github.rafaelldi.diagnosticsclientplugin.model.TracingProfile.None
+    TracingProfile.CpuSampling -> com.github.rafaelldi.diagnosticsclientplugin.model.TracingProfile.CpuSampling
+    TracingProfile.GcVerbose -> com.github.rafaelldi.diagnosticsclientplugin.model.TracingProfile.GcVerbose
+    TracingProfile.GcCollect -> com.github.rafaelldi.diagnosticsclientplugin.model.TracingProfile.GcCollect
 }

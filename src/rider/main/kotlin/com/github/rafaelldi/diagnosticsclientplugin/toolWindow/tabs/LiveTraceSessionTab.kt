@@ -1,10 +1,10 @@
 package com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs
 
 import com.github.rafaelldi.diagnosticsclientplugin.DiagnosticsClientBundle
-import com.github.rafaelldi.diagnosticsclientplugin.generated.LiveTraceSession
-import com.github.rafaelldi.diagnosticsclientplugin.generated.PredefinedProvider
-import com.github.rafaelldi.diagnosticsclientplugin.generated.Trace
-import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.TraceTabManager
+import com.github.rafaelldi.diagnosticsclientplugin.model.LiveTraceSession
+import com.github.rafaelldi.diagnosticsclientplugin.model.PredefinedProvider
+import com.github.rafaelldi.diagnosticsclientplugin.model.Trace
+import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.TraceSessionTabManager
 import com.intellij.execution.filters.TextConsoleBuilderFactory
 import com.intellij.execution.impl.ConsoleViewImpl
 import com.intellij.execution.process.ConsoleHighlighter
@@ -24,7 +24,7 @@ import javax.swing.JPanel
 class LiveTraceSessionTab(
     override val pid: Int,
     session: LiveTraceSession,
-    private val manager: TraceTabManager,
+    private val manager: TraceSessionTabManager,
     project: Project,
     lt: Lifetime
 ) : SimpleToolWindowPanel(false), MonitoringTab, Disposable {
@@ -117,7 +117,7 @@ class LiveTraceSessionTab(
     }
 
     override fun dispose() {
-        consoleView.dispose()
+        Disposer.dispose(consoleView)
         manager.tabClosed(pid)
     }
 }
