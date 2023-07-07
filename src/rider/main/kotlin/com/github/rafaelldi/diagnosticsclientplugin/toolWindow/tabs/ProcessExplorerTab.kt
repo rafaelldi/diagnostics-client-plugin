@@ -1,62 +1,67 @@
 package com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs
 
-import com.github.rafaelldi.diagnosticsclientplugin.generated.ProcessList
+import com.github.rafaelldi.diagnosticsclientplugin.model.ProcessInfo
+import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.components.LocalProcessNode
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.components.ProcessDashboardPanel
-import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.components.ProcessListComponent
-import com.github.rafaelldi.diagnosticsclientplugin.utils.DotNetProcess
+import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.components.ProcessTreeComponent
+import com.github.rafaelldi.diagnosticsclientplugin.topics.HostListener
+import com.github.rafaelldi.diagnosticsclientplugin.topics.HostProcessListener
 import com.intellij.openapi.actionSystem.ActionGroup
 import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.actionSystem.DataKey
+import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.SimpleToolWindowPanel
 import com.intellij.ui.OnePixelSplitter
+import com.intellij.ui.ScrollPaneFactory
+import com.intellij.ui.SideBorder
 import com.intellij.ui.components.JBPanelWithEmptyText
 import com.intellij.ui.components.JBScrollPane
 import com.intellij.util.ui.JBUI
-import com.jetbrains.rd.util.lifetime.Lifetime
-import com.jetbrains.rd.util.reactive.AddRemove
-import javax.swing.event.ListSelectionEvent
-import javax.swing.event.ListSelectionListener
+import com.jetbrains.rd.platform.util.lifetime
+import javax.swing.event.TreeSelectionEvent
+import javax.swing.event.TreeSelectionListener
 
-class ProcessExplorerTab(private val processList: ProcessList, lt: Lifetime) :
-    SimpleToolWindowPanel(false), ListSelectionListener {
+class ProcessExplorerTab(project: Project) : SimpleToolWindowPanel(false), TreeSelectionListener {
     companion object {
         const val SPLITTER_PROPORTION = 0.3F
-        val PROCESS_EXPLORE_TAB: DataKey<ProcessExplorerTab> =
-            DataKey.create("DiagnosticsClient.ToolWindow.ProcessExplorerTab")
+        val PROCESS_TREE: DataKey<ProcessTreeComponent> = DataKey.create("DiagnosticsClient.ProcessTree")
     }
 
     private val splitter: OnePixelSplitter
-    private val processListComponent: ProcessListComponent = ProcessListComponent()
-
-    var selectedProcess: DotNetProcess? = null
-        private set
-
-    val processes: List<DotNetProcess>
-        get() = processListComponent.processes.map { DotNetProcess(it.first, it.second) }
+    private val processTree: ProcessTreeComponent = ProcessTreeComponent()
 
     init {
-        val listPanel = JBScrollPane(processListComponent)
-        listPanel.border = JBUI.Borders.emptyTop(7)
-
         splitter = OnePixelSplitter(false, SPLITTER_PROPORTION).apply {
-            firstComponent = listPanel
+            firstComponent = ScrollPaneFactory.createScrollPane(processTree, SideBorder.NONE)
             secondComponent = JBPanelWithEmptyText()
         }
 
         setContent(splitter)
         initActionToolbar()
 
-        lt.bracketIfAlive(
-            { processListComponent.addListSelectionListener(this) },
-            { processListComponent.removeListSelectionListener(this) }
+        project.lifetime.bracketIfAlive(
+            { processTree.addTreeSelectionListener(this) },
+            { processTree.removeTreeSelectionListener(this) }
         )
 
-        processList.items.adviseAddRemove(lt) { action, pid, processInfo ->
-            when (action) {
-                AddRemove.Add -> processListComponent.add(pid, processInfo)
-                AddRemove.Remove -> processListComponent.remove(pid, processInfo)
+        project.messageBus.connect().subscribe(HostProcessListener.TOPIC,
+            object : HostProcessListener {
+                override fun processAdded(pid: Int, processInfo: ProcessInfo) {
+                    processTree.addProcessNode(pid, processInfo)
+                }
+
+                override fun processRemoved(pid: Int, processInfo: ProcessInfo) {
+                    processTree.removeProcessNode(pid)
+                }
             }
-        }
+        )
+
+        project.messageBus.connect().subscribe(HostListener.TOPIC,
+            object : HostListener {
+                override fun hostDisconnected() {
+                    processTree.clear()
+                }
+            })
     }
 
     private fun initActionToolbar() {
@@ -67,32 +72,28 @@ class ProcessExplorerTab(private val processList: ProcessList, lt: Lifetime) :
             actionGroup,
             true
         )
-        actionToolbar.targetComponent = processListComponent
+        actionToolbar.targetComponent = this
         toolbar = actionToolbar.component
     }
 
-    override fun valueChanged(e: ListSelectionEvent?) {
+    override fun valueChanged(e: TreeSelectionEvent?) {
         if (e == null) {
             return
         }
 
-        val selected = processListComponent.selectedProcess
-        if (selected != null) {
-            val process = processList.items[selected.first] ?: return
-
-            selectedProcess = DotNetProcess(selected.first, selected.second)
-
-            val processDashboardPanel = JBScrollPane(ProcessDashboardPanel(selected.first, process))
+        val localProcessNode = processTree.selectedNode as? LocalProcessNode
+        if (localProcessNode != null) {
+            val panel = ProcessDashboardPanel(localProcessNode.processId, localProcessNode.processInfo)
+            val processDashboardPanel = JBScrollPane(panel)
             processDashboardPanel.border = JBUI.Borders.empty()
             splitter.secondComponent = processDashboardPanel
         } else {
-            selectedProcess = null
             splitter.secondComponent = JBPanelWithEmptyText()
         }
     }
 
     override fun getData(dataId: String): Any? {
-        if (PROCESS_EXPLORE_TAB.`is`(dataId)) return this
+        if (PROCESS_TREE.`is`(dataId)) return processTree
         return super.getData(dataId)
     }
 }

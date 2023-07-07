@@ -7,7 +7,7 @@ import com.intellij.notification.Notification
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.project.Project
 
-fun persistentSessionStarted(type: String, pid: Int, project: Project) = Notification(
+fun exportSessionStarted(type: String, pid: Int, project: Project) = Notification(
     "Diagnostics Client",
     DiagnosticsClientBundle.message("notifications.collection.started", type),
     DiagnosticsClientBundle.message("notifications.session.for.process.started", pid),
@@ -15,7 +15,7 @@ fun persistentSessionStarted(type: String, pid: Int, project: Project) = Notific
 )
     .notify(project)
 
-fun persistentSessionFinished(type: String, pid: Int, filePath: String, openFile: Boolean, project: Project) =
+fun exportSessionFinished(type: String, pid: Int, filePath: String, openFile: Boolean, project: Project) =
     Notification(
         "Diagnostics Client",
         DiagnosticsClientBundle.message("notifications.collection.finished", type),
@@ -28,7 +28,7 @@ fun persistentSessionFinished(type: String, pid: Int, filePath: String, openFile
         )
         .notify(project)
 
-fun persistentSessionAlreadyExists(type: String, pid: Int, project: Project) = Notification(
+fun exportSessionAlreadyExists(type: String, pid: Int, project: Project) = Notification(
     "Diagnostics Client",
     DiagnosticsClientBundle.message("notifications.collection.session.exists", type, pid),
     "",

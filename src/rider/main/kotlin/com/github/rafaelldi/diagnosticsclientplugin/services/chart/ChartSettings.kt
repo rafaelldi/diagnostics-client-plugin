@@ -1,6 +1,6 @@
 package com.github.rafaelldi.diagnosticsclientplugin.services.chart
 
-import com.github.rafaelldi.diagnosticsclientplugin.dialogs.ChartModel
+import com.github.rafaelldi.diagnosticsclientplugin.dialogs.ChartSessionModel
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.StoppingType
 import com.github.rafaelldi.diagnosticsclientplugin.utils.DotNetProcess
 import com.intellij.openapi.components.*
@@ -12,13 +12,13 @@ class ChartSettings : SimplePersistentStateComponent<ChartSettings.ChartSettings
         fun getInstance(): ChartSettings = service()
     }
 
-    fun getModel(selected: DotNetProcess) = ChartModel(
+    fun getModel(selected: DotNetProcess) = ChartSessionModel(
         selected,
         state.stoppingType,
         state.duration
     )
 
-    fun update(model: ChartModel) {
+    fun update(model: ChartSessionModel) {
         state.apply {
             stoppingType = model.stoppingType
             duration = model.duration

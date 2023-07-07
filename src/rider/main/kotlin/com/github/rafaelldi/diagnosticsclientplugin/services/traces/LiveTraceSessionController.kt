@@ -1,40 +1,38 @@
 package com.github.rafaelldi.diagnosticsclientplugin.services.traces
 
-import com.github.rafaelldi.diagnosticsclientplugin.common.liveSessionFinished
-import com.github.rafaelldi.diagnosticsclientplugin.common.liveSessionNotFound
-import com.github.rafaelldi.diagnosticsclientplugin.common.liveSessionStarted
-import com.github.rafaelldi.diagnosticsclientplugin.dialogs.TraceModel
-import com.github.rafaelldi.diagnosticsclientplugin.generated.LiveTraceSession
-import com.github.rafaelldi.diagnosticsclientplugin.generated.PredefinedProvider
-import com.github.rafaelldi.diagnosticsclientplugin.generated.diagnosticsHostModel
+import com.github.rafaelldi.diagnosticsclientplugin.dialogs.TraceSessionModel
+import com.github.rafaelldi.diagnosticsclientplugin.model.LiveTraceSession
+import com.github.rafaelldi.diagnosticsclientplugin.model.PredefinedProvider
+import com.github.rafaelldi.diagnosticsclientplugin.services.DiagnosticsHost
 import com.github.rafaelldi.diagnosticsclientplugin.services.common.LiveSessionController
+import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.TraceSessionTabManager
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
-import com.jetbrains.rider.projectView.solution
+import com.jetbrains.rd.util.lifetime.Lifetime
 
 @Service
 class LiveTraceSessionController(project: Project) :
-    LiveSessionController<LiveTraceSession, TraceModel>(project) {
+    LiveSessionController<LiveTraceSession, TraceSessionModel>(project) {
     companion object {
         fun getInstance(project: Project): LiveTraceSessionController = project.service()
         private const val TRACES = "Traces"
     }
 
-    override val sessions = project.solution.diagnosticsHostModel.liveTraceSessions
+    override val artifactType = TRACES
 
-    init {
-        sessions.view(serviceLifetime) { lt, pid, session ->
-            viewSession(pid, session, lt)
-        }
+    override fun getSessions() = DiagnosticsHost.getInstance(project).hostModel?.liveTraceSessions
+
+    override fun addSessionTab(pid: Int, session: LiveTraceSession, sessionLifetime: Lifetime) {
+        TraceSessionTabManager.getInstance(project).addSessionTab(sessionLifetime, pid, session)
     }
 
-    override fun createSession(model: TraceModel): LiveTraceSession {
+    override fun createSession(model: TraceSessionModel): LiveTraceSession {
         val providers = getPredefinedProviders(model)
         return LiveTraceSession(providers)
     }
 
-    private fun getPredefinedProviders(model: TraceModel): List<PredefinedProvider> {
+    private fun getPredefinedProviders(model: TraceSessionModel): List<PredefinedProvider> {
         val providers = mutableListOf<PredefinedProvider>()
 
         if (model.http)
@@ -55,15 +53,5 @@ class LiveTraceSessionController(project: Project) :
             providers.add(PredefinedProvider.Loader)
 
         return providers
-    }
-
-    override fun sessionNotFound(pid: Int) = liveSessionNotFound(TRACES, pid, project)
-    override fun sessionStarted(pid: Int) = liveSessionStarted(TRACES, pid, project)
-    override fun sessionFinished(pid: Int) = liveSessionFinished(TRACES, pid, project)
-
-    class TraceSessionListenerImpl(private val project: Project) : TraceSessionListener {
-        override fun sessionClosed(pid: Int) {
-            getInstance(project).closeSession(pid)
-        }
     }
 }

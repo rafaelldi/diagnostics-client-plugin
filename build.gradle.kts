@@ -63,18 +63,10 @@ qodana {
 }
 
 tasks {
-    val dotNetPluginId = properties("dotnetPluginId").get()
-    val buildConfiguration = properties("buildConfiguration").get()
-
     configure<com.jetbrains.rd.generator.gradle.RdGenExtension> {
-        val modelDir = projectDir.resolve("protocol").resolve("src").resolve("main").resolve("kotlin")
-            .resolve("model").resolve("rider")
-        val pluginSourcePath = projectDir.resolve("src")
-        val ktOutput = pluginSourcePath.resolve("rider").resolve("main").resolve("kotlin").resolve("com")
-            .resolve("github").resolve("rafaelldi").resolve("diagnosticsclientplugin").resolve("generated")
-        val csOutput = pluginSourcePath.resolve("dotnet").resolve(dotNetPluginId).resolve("Generated")
+        val modelDir = projectDir.resolve("src/rider/main/kotlin/com/github/rafaelldi/diagnosticsclientplugin/model")
+        val output = projectDir.resolve("src/rider/main/kotlin/com/github/rafaelldi/diagnosticsclientplugin/generated")
 
-        verbose = true
         classpath({
             rdLibDirectory().resolve("rider-model.jar").canonicalPath
         })
@@ -85,33 +77,22 @@ tasks {
         generator {
             language = "kotlin"
             transform = "asis"
-            root = "com.jetbrains.rider.model.nova.ide.IdeRoot"
-            directory = ktOutput.canonicalPath
+            root = "model.rider.DiagnosticsHostRoot"
+            directory = output.canonicalPath
+            generatedFileSuffix = ".Generated"
         }
 
         generator {
             language = "csharp"
             transform = "reversed"
-            root = "com.jetbrains.rider.model.nova.ide.IdeRoot"
-            directory = csOutput.canonicalPath
+            root = "model.rider.DiagnosticsHostRoot"
+            directory = output.canonicalPath
+            generatedFileSuffix = ".Generated"
         }
     }
 
     wrapper {
         gradleVersion = properties("gradleVersion").get()
-    }
-
-    val compileDotNet by registering {
-        doLast {
-            exec {
-                executable("dotnet")
-                args("build", "-c", buildConfiguration, "$dotNetPluginId.sln")
-            }
-        }
-    }
-
-    buildPlugin {
-        dependsOn(compileDotNet)
     }
 
     patchPluginXml {
@@ -146,29 +127,6 @@ tasks {
         }
     }
 
-    prepareSandbox {
-        dependsOn(compileDotNet)
-
-        val outputFolder = file("$projectDir/src/dotnet/$dotNetPluginId/bin/$dotNetPluginId/$buildConfiguration")
-        val dllFiles = listOf(
-            "$outputFolder/${dotNetPluginId}.dll",
-            "$outputFolder/${dotNetPluginId}.pdb",
-            "$outputFolder/Microsoft.Diagnostics.Tracing.TraceEvent.dll",
-            "$outputFolder/Microsoft.Diagnostics.FastSerialization.dll"
-        )
-
-        for (f in dllFiles) {
-            from(f) { into("${rootProject.name}/dotnet") }
-        }
-
-        doLast {
-            for (f in dllFiles) {
-                val file = file(f)
-                if (!file.exists()) throw RuntimeException("File \"$file\" does not exist")
-            }
-        }
-    }
-
     runPluginVerifier {
         ideVersions.set(
             properties("pluginVerifierIdeVersions").get().split(',').map(String::trim).filter(String::isNotEmpty)
@@ -182,11 +140,6 @@ tasks {
         systemProperty("ide.mac.message.dialogs.as.sheets", "false")
         systemProperty("jb.privacy.policy.text", "<!--999.999-->")
         systemProperty("jb.consents.confirmation.enabled", "false")
-    }
-
-    runIde {
-        dependsOn(compileDotNet)
-        maxHeapSize = "1500m"
     }
 
     signPlugin {

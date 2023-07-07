@@ -7,5 +7,6 @@
                  start-page="starter-topic.md">
 
     <toc-element topic="starter-topic.md"/>
+    <toc-element topic="examples-of-counters.md"/>
     <toc-element topic="counters-and-metrics.md"/>
 </instance-profile>

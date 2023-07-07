@@ -2,7 +2,7 @@ package com.github.rafaelldi.diagnosticsclientplugin.dialogs
 
 import com.github.rafaelldi.diagnosticsclientplugin.utils.DotNetProcess
 
-data class CollectDumpModel(
+data class MemoryDumpModel(
     var selectedProcess: DotNetProcess?,
     var type: DumpType,
     var path: String,
@@ -10,19 +10,19 @@ data class CollectDumpModel(
     var diag: Boolean
 )
 
-interface LiveModel {
+interface LiveSessionModel {
     var selectedProcess: DotNetProcess?
     var stoppingType: StoppingType
     var duration: Int
 }
 
-interface PersistentModel {
+interface ExportSessionModel {
     var selectedProcess: DotNetProcess?
     var path: String
     var filename: String
 }
 
-data class CounterModel(
+data class CounterSessionModel(
     override var selectedProcess: DotNetProcess?,
     override var path: String,
     override var filename: String,
@@ -35,17 +35,17 @@ data class CounterModel(
     var metrics: String,
     var maxTimeSeries: Int,
     var maxHistograms: Int
-) : LiveModel, PersistentModel
+) : LiveSessionModel, ExportSessionModel
 
-data class GcEventModel(
+data class GcEventSessionModel(
     override var selectedProcess: DotNetProcess?,
     override var path: String,
     override var filename: String,
     override var stoppingType: StoppingType,
     override var duration: Int
-) : LiveModel, PersistentModel
+) : LiveSessionModel, ExportSessionModel
 
-data class TraceModel(
+data class TraceSessionModel(
     override var selectedProcess: DotNetProcess?,
     override var path: String,
     override var filename: String,
@@ -61,12 +61,12 @@ data class TraceModel(
     var contentions: Boolean,
     var tasks: Boolean,
     var loader: Boolean
-) : LiveModel, PersistentModel
+) : LiveSessionModel, ExportSessionModel
 
-data class ChartModel(
+data class ChartSessionModel(
     override var selectedProcess: DotNetProcess?,
     override var stoppingType: StoppingType,
     override var duration: Int
-) : LiveModel
+) : LiveSessionModel
 
 data class MonitoringTimerModel(var stoppingType: StoppingType, var duration: Int)

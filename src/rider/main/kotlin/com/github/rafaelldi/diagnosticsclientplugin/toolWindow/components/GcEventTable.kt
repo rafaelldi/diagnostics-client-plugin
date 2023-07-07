@@ -1,7 +1,7 @@
 package com.github.rafaelldi.diagnosticsclientplugin.toolWindow.components
 
 import com.github.rafaelldi.diagnosticsclientplugin.DiagnosticsClientBundle
-import com.github.rafaelldi.diagnosticsclientplugin.generated.GcEvent
+import com.github.rafaelldi.diagnosticsclientplugin.model.GcEvent
 import com.intellij.ui.table.JBTable
 import javax.swing.table.DefaultTableModel
 

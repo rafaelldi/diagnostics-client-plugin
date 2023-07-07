@@ -1,6 +1,7 @@
 package com.github.rafaelldi.diagnosticsclientplugin.actions.common
 
-import com.github.rafaelldi.diagnosticsclientplugin.generated.LiveSession
+import com.github.rafaelldi.diagnosticsclientplugin.model.LiveSession
+import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.components.LocalProcessNode
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.MonitoringTab
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.ProcessExplorerTab
 import com.intellij.openapi.actionSystem.ActionUpdateThread
@@ -25,14 +26,15 @@ abstract class PauseLiveSessionAction<TSession : LiveSession, TTab : MonitoringT
         val pid = getProcessId(event)
         if (project == null || pid == null) {
             event.presentation.isEnabledAndVisible = false
+            return
+        }
+
+        val session = getSession(pid, project)
+        val isActive = session?.active?.valueOrNull
+        if (isActive == null) {
+            event.presentation.isEnabledAndVisible = false
         } else {
-            val session = getSession(pid, project)
-            val isActive = session?.active?.valueOrNull
-            if (isActive == null) {
-                event.presentation.isEnabledAndVisible = false
-            } else {
-                event.presentation.isEnabledAndVisible = isActive
-            }
+            event.presentation.isEnabledAndVisible = isActive
         }
     }
 
@@ -40,13 +42,13 @@ abstract class PauseLiveSessionAction<TSession : LiveSession, TTab : MonitoringT
         val tab = event.getData(tabDatKey)
         if (tab != null) return tab.pid
 
-        val explorer = event.getData(ProcessExplorerTab.PROCESS_EXPLORE_TAB)
-        if (explorer != null) return explorer.selectedProcess?.pid
+        val tree = event.getData(ProcessExplorerTab.PROCESS_TREE)
+        if (tree != null) return (tree.selectedNode as? LocalProcessNode)?.processId
 
         return null
     }
 
     protected abstract fun getSession(pid: Int, project: Project): TSession?
 
-    override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.EDT
+    override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
 }

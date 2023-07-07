@@ -1,44 +1,31 @@
 package com.github.rafaelldi.diagnosticsclientplugin.services.gc
 
-import com.github.rafaelldi.diagnosticsclientplugin.common.liveSessionFinished
-import com.github.rafaelldi.diagnosticsclientplugin.common.liveSessionNotFound
-import com.github.rafaelldi.diagnosticsclientplugin.common.liveSessionStarted
-import com.github.rafaelldi.diagnosticsclientplugin.dialogs.GcEventModel
-import com.github.rafaelldi.diagnosticsclientplugin.generated.LiveGcEventSession
-import com.github.rafaelldi.diagnosticsclientplugin.generated.diagnosticsHostModel
+import com.github.rafaelldi.diagnosticsclientplugin.dialogs.GcEventSessionModel
+import com.github.rafaelldi.diagnosticsclientplugin.model.LiveGcEventSession
+import com.github.rafaelldi.diagnosticsclientplugin.services.DiagnosticsHost
 import com.github.rafaelldi.diagnosticsclientplugin.services.common.LiveSessionController
+import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.GcEventSessionTabManager
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
-import com.jetbrains.rider.projectView.solution
+import com.jetbrains.rd.util.lifetime.Lifetime
 
 @Service
 class LiveGcEventSessionController(project: Project) :
-    LiveSessionController<LiveGcEventSession, GcEventModel>(project) {
+    LiveSessionController<LiveGcEventSession, GcEventSessionModel>(project) {
     companion object {
         fun getInstance(project: Project): LiveGcEventSessionController = project.service()
         private const val GC_EVENTS = "GC events"
     }
 
-    override val sessions = project.solution.diagnosticsHostModel.liveGcEventSessions
+    override val artifactType = GC_EVENTS
 
-    init {
-        sessions.view(serviceLifetime) { lt, pid, session ->
-            viewSession(pid, session, lt)
-        }
+    override fun getSessions() =
+        DiagnosticsHost.getInstance(project).hostModel?.liveGcEventSessions
+
+    override fun addSessionTab(pid: Int, session: LiveGcEventSession, sessionLifetime: Lifetime) {
+        GcEventSessionTabManager.getInstance(project).addSessionTab(sessionLifetime, pid, session)
     }
 
-    override fun createSession(model: GcEventModel): LiveGcEventSession {
-        return LiveGcEventSession()
-    }
-
-    override fun sessionNotFound(pid: Int) = liveSessionNotFound(GC_EVENTS, pid, project)
-    override fun sessionStarted(pid: Int) = liveSessionStarted(GC_EVENTS, pid, project)
-    override fun sessionFinished(pid: Int) = liveSessionFinished(GC_EVENTS, pid, project)
-
-    class GcEventSessionListenerImpl(private val project: Project) : GcEventSessionListener {
-        override fun sessionClosed(pid: Int) {
-            getInstance(project).closeSession(pid)
-        }
-    }
+    override fun createSession(model: GcEventSessionModel) = LiveGcEventSession()
 }

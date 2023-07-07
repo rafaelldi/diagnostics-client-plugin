@@ -14,5 +14,3 @@ pluginManagement {
         }
     }
 }
-
-include(":protocol")

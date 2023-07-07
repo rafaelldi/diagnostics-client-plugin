@@ -9,9 +9,9 @@ enum class DumpType(val label: String) {
     Mini(DiagnosticsClientBundle.message("dialog.dump.type.mini"))
 }
 
-fun DumpType.map(): com.github.rafaelldi.diagnosticsclientplugin.generated.DumpType = when (this) {
-    DumpType.Full -> com.github.rafaelldi.diagnosticsclientplugin.generated.DumpType.Full
-    DumpType.Heap -> com.github.rafaelldi.diagnosticsclientplugin.generated.DumpType.Heap
-    DumpType.Triage -> com.github.rafaelldi.diagnosticsclientplugin.generated.DumpType.Triage
-    DumpType.Mini -> com.github.rafaelldi.diagnosticsclientplugin.generated.DumpType.Mini
+fun DumpType.map(): com.github.rafaelldi.diagnosticsclientplugin.model.DumpType = when (this) {
+    DumpType.Full -> com.github.rafaelldi.diagnosticsclientplugin.model.DumpType.Full
+    DumpType.Heap -> com.github.rafaelldi.diagnosticsclientplugin.model.DumpType.Heap
+    DumpType.Triage -> com.github.rafaelldi.diagnosticsclientplugin.model.DumpType.Triage
+    DumpType.Mini -> com.github.rafaelldi.diagnosticsclientplugin.model.DumpType.Mini
 }

@@ -2,7 +2,9 @@
 
 package com.github.rafaelldi.diagnosticsclientplugin.services.traces
 
-import com.github.rafaelldi.diagnosticsclientplugin.dialogs.*
+import com.github.rafaelldi.diagnosticsclientplugin.dialogs.StoppingType
+import com.github.rafaelldi.diagnosticsclientplugin.dialogs.TraceSessionModel
+import com.github.rafaelldi.diagnosticsclientplugin.dialogs.TracingProfile
 import com.github.rafaelldi.diagnosticsclientplugin.utils.DotNetProcess
 import com.intellij.openapi.components.*
 import com.intellij.openapi.project.Project
@@ -26,7 +28,7 @@ class TraceSettings(project: Project) : SimplePersistentStateComponent<TraceSett
         }
     }
 
-    fun getModel(selected: DotNetProcess) = TraceModel(
+    fun getModel(selected: DotNetProcess) = TraceSessionModel(
         selected,
         state.path ?: "",
         state.filename ?: "",
@@ -44,7 +46,7 @@ class TraceSettings(project: Project) : SimplePersistentStateComponent<TraceSett
         false
     )
 
-    fun update(model: TraceModel, persistent: Boolean) {
+    fun update(model: TraceSessionModel, persistent: Boolean) {
         state.apply {
             if (persistent) {
                 path = model.path

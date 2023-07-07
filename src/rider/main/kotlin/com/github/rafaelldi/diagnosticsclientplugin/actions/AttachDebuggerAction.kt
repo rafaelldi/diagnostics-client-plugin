@@ -1,6 +1,7 @@
 package com.github.rafaelldi.diagnosticsclientplugin.actions
 
 import com.github.rafaelldi.diagnosticsclientplugin.DiagnosticsClientBundle
+import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.components.LocalProcessNode
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.ProcessExplorerTab
 import com.intellij.execution.process.impl.ProcessListUtil
 import com.intellij.openapi.actionSystem.ActionUpdateThread
@@ -12,14 +13,15 @@ import com.intellij.xdebugger.attach.LocalAttachHost
 import com.intellij.xdebugger.attach.XAttachDebuggerProvider
 
 class AttachDebuggerAction : AnAction() {
-    override fun actionPerformed(e: AnActionEvent) {
-        val project = e.project ?: return
-        val tab = e.getData(ProcessExplorerTab.PROCESS_EXPLORE_TAB) ?: return
-        val selected = tab.selectedProcess ?: return
+    override fun actionPerformed(event: AnActionEvent) {
+        val project = event.project ?: return
+        val tree = event.getData(ProcessExplorerTab.PROCESS_TREE) ?: return
 
-        runBackgroundableTask(DiagnosticsClientBundle.message("progress.attach.debugger"), e.project) {
-            val processInfo =
-                ProcessListUtil.getProcessList().firstOrNull { it.pid == selected.pid } ?: return@runBackgroundableTask
+        val processNode = tree.selectedNode as? LocalProcessNode ?: return
+
+        runBackgroundableTask(DiagnosticsClientBundle.message("progress.attach.debugger"), event.project) {
+            val processInfo = ProcessListUtil.getProcessList().firstOrNull { it.pid == processNode.processId }
+                ?: return@runBackgroundableTask
             val attachHost = LocalAttachHost.INSTANCE
             val dataHolder = UserDataHolderBase()
             val debugger = XAttachDebuggerProvider.EP.extensionList
@@ -32,14 +34,21 @@ class AttachDebuggerAction : AnAction() {
         }
     }
 
-    override fun update(e: AnActionEvent) {
-        val project = e.project
-        val tab = e.getData(ProcessExplorerTab.PROCESS_EXPLORE_TAB)
-        if (project == null || tab == null) {
-            e.presentation.isEnabled = false
-        } else {
-            e.presentation.isEnabled = tab.selectedProcess != null
+    override fun update(event: AnActionEvent) {
+        val project = event.project
+        val tree = event.getData(ProcessExplorerTab.PROCESS_TREE)
+        if (project == null || tree == null) {
+            event.presentation.isEnabledAndVisible = false
+            return
         }
+
+        val processNode = tree.selectedNode as? LocalProcessNode
+        if (processNode == null) {
+            event.presentation.isEnabledAndVisible = false
+            return
+        }
+
+        event.presentation.isEnabledAndVisible = true
     }
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
