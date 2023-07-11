@@ -4,6 +4,8 @@ Diagnostics Client plugin allows you to monitor your application's counters and 
 first step in investigating a problem. With counters and metrics, you can get a bird's eye view of how your application
 is performing overall. They can give you a good clue as to what the next steps should be.
 
+![Counters and Metrics](counters-and-metrics.png){ width="700" border-effect=rounded }
+
 ## Counters
 
 One way to monitor the performance of your application is to
@@ -11,6 +13,12 @@ use [`EventCounters`](https://learn.microsoft.com/en-us/dotnet/core/diagnostics/
 some libraries provide pre-built counters, but it is also possible to create your own counter. The plugin acts as
 a [dotnet-counters](https://learn.microsoft.com/en-us/dotnet/core/diagnostics/dotnet-counters) tool, allowing you to
 monitor counter values or export them to a file.
+
+> `System.Diagnostics.Metrics` API is now
+> the [preferred](https://learn.microsoft.com/en-us/dotnet/core/diagnostics/compare-metric-apis) way to add metrics to
+> your application. `EventCounters` API will probably not receive any updates or enhancements in the future.
+>
+{style="note"}
 
 ### Counter monitoring
 
@@ -36,8 +44,9 @@ be shown.
 
 `Providers` is the field where you specify which counters you want to monitor. The default is `System.Runtime` and it
 includes some basic counters such as `cpu-usage`, `gc-heap-size`, etc. A full list of its counters can be found in the
-[documentation](https://learn.microsoft.com/en-us/dotnet/core/diagnostics/available-counters), as well as some other
-providers (e.g. `Microsoft.AspNetCore.Hosting`, `Microsoft-AspNetCore-Server-Kestrel`, `System.Net.Http`, etc.).
+[page](counter-examples.md), as well as some other providers (
+e.g. `Microsoft.AspNetCore.Hosting`, `Microsoft-AspNetCore-Server-Kestrel`, `System.Net.Http`, etc.). The
+default value is sufficient if you want to view the most essential metrics.
 
 This field allows you to select not only the provider of interest, but also to filter out some counters from the
 provider. There are some examples:
@@ -52,11 +61,11 @@ provider. There are some examples:
 
 It is possible to create your own counters and monitor them. To do that, you have to implement an `EventSource` and then
 use its name as a provider. You can find a full example of how to do this in
-the [documentation](https://learn.microsoft.com/en-us/dotnet/core/diagnostics/event-counters#implement-an-eventsource).
+the [page](custom-counters.md).
 
 ### Export counter values
 
-Sometimes it is convenient to export the counter values to a file and analyse them later. For this purpose, call the 
+Sometimes it is convenient to export the counter values to a file and analyse them later. For this purpose, call the
 `Export Counters` action. In the dialog, you can select the file format, file name and output folder.
 
 ![Export counters dialog](counters-file-settings.png){ width="450" border-effect=rounded }
@@ -84,10 +93,8 @@ specified, all metrics for that counter will be shown. Here are some examples:
 <seealso>
   <category ref="ext">
     <a href="https://learn.microsoft.com/en-us/dotnet/core/diagnostics/event-counters">EventCounters in .NET</a>
-    <a href="https://learn.microsoft.com/en-us/dotnet/core/diagnostics/available-counters">Well-known EventCounters in .NET</a>
     <a href="https://learn.microsoft.com/en-us/dotnet/core/diagnostics/metrics">.NET metrics</a>
     <a href="https://learn.microsoft.com/en-us/dotnet/core/diagnostics/compare-metric-apis">Metric APIs comparison</a>
     <a href="https://rafaelldi.blog/posts/counters-and-metrics">Counters and Metrics</a>
-    <a href="https://rafaelldi.blog/posts/monitoring-background-task">Monitoring background task</a>
   </category>
 </seealso>

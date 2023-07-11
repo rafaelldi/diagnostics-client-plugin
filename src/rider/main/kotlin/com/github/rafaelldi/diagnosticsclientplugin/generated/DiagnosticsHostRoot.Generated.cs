@@ -68,7 +68,7 @@ namespace DiagnosticsAgent.Model
     public DiagnosticsHostRoot(Lifetime lifetime, IProtocol protocol) : this()
     {
       Identify(protocol.Identities, RdId.Root.Mix("DiagnosticsHostRoot"));
-      Bind(lifetime, protocol, "DiagnosticsHostRoot");
+      this.BindTopLevel(lifetime, protocol, "DiagnosticsHostRoot");
     }
     
     //constants

@@ -48,4 +48,6 @@ class DiagnosticsHostRoot private constructor(
         )
     }
     //contexts
+    //threading
+    override val extThreading: ExtThreadingKind get() = ExtThreadingKind.Default
 }

@@ -157,7 +157,7 @@ namespace DiagnosticsAgent.Model
     public DiagnosticsHostModel(Lifetime lifetime, IProtocol protocol) : this()
     {
       Identify(protocol.Identities, RdId.Root.Mix("DiagnosticsHostModel"));
-      Bind(lifetime, protocol, "DiagnosticsHostModel");
+      this.BindTopLevel(lifetime, protocol, "DiagnosticsHostModel");
     }
     
     //constants

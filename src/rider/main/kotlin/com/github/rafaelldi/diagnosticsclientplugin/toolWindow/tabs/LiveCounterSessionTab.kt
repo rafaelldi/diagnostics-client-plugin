@@ -27,11 +27,10 @@ class LiveCounterSessionTab(
             DataKey.create("DiagnosticsClient.ToolWindow.CounterMonitoringTab")
     }
 
-    private val table: CounterTable
+    private val table: CounterTable = CounterTable()
 
     private val panel: JPanel = JPanel().apply {
         layout = BorderLayout()
-        table = CounterTable()
         add(JBScrollPane(table))
     }
 

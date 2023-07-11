@@ -32,6 +32,12 @@ class ConnectToAgentAction : AnAction() {
             return
         }
 
+        if (tree.selectedNode == null) {
+            event.presentation.isVisible = true
+            event.presentation.isEnabled = false
+            return
+        }
+
         val localRoot = tree.selectedNode as? LocalRootNode
         if (localRoot == null) {
             event.presentation.isEnabledAndVisible = false

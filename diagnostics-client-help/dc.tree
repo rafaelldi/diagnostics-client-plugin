@@ -3,10 +3,12 @@
         SYSTEM "https://helpserver.labs.jb.gg/help/schemas/mvp/product-profile.dtd">
 
 <instance-profile id="dc"
-                 name="Diagnostics Client"
-                 start-page="starter-topic.md">
+                  name="Diagnostics Client"
+                  start-page="starter-topic.md">
 
     <toc-element topic="starter-topic.md"/>
-    <toc-element topic="examples-of-counters.md"/>
-    <toc-element topic="counters-and-metrics.md"/>
+    <toc-element topic="counters-and-metrics.md">
+        <toc-element topic="counter-examples.md"/>
+        <toc-element topic="custom-counters.md"/>
+    </toc-element>
 </instance-profile>

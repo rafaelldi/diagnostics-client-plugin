@@ -1,8 +1,8 @@
 package com.github.rafaelldi.diagnosticsclientplugin.services
 
+import com.github.rafaelldi.diagnosticsclientplugin.DiagnosticsClientBundle
 import com.github.rafaelldi.diagnosticsclientplugin.actions.notification.InstallGlobalToolAction
 import com.github.rafaelldi.diagnosticsclientplugin.actions.notification.UpdateGlobalToolAction
-import com.intellij.diagnostic.DiagnosticBundle
 import com.intellij.execution.configurations.GeneralCommandLine
 import com.intellij.execution.process.KillableColoredProcessHandler
 import com.intellij.execution.process.ProcessOutput
@@ -23,7 +23,7 @@ class DiagnosticsToolService(private val project: Project) {
     companion object {
         private const val WINDOWS_HOME_VARIABLE = "USERPROFILE"
         private const val LINUX_HOME_VARIABLE = "HOME"
-        private const val CURRENT_VERSION = "2023.2.0-preview2"
+        private const val CURRENT_VERSION = "2023.2.0-preview3"
 
         private val LOG = logger<DiagnosticsToolService>()
 
@@ -47,8 +47,8 @@ class DiagnosticsToolService(private val project: Project) {
         if (!isInstalled) {
             Notification(
                 "Diagnostics Client",
-                DiagnosticBundle.message("notification.global.tool.agent.not.installed"),
-                DiagnosticBundle.message("notification.global.tool.please.install.agent"),
+                DiagnosticsClientBundle.message("notification.global.tool.agent.not.installed"),
+                DiagnosticsClientBundle.message("notification.global.tool.please.install.agent"),
                 NotificationType.WARNING
             )
                 .addAction(InstallGlobalToolAction())
@@ -60,8 +60,8 @@ class DiagnosticsToolService(private val project: Project) {
         if (!isCurrentVersionInstalled) {
             Notification(
                 "Diagnostics Client",
-                DiagnosticBundle.message("notification.global.tool.new.version.available"),
-                DiagnosticBundle.message("notification.global.tool.please.update.agent"),
+                DiagnosticsClientBundle.message("notification.global.tool.new.version.available"),
+                DiagnosticsClientBundle.message("notification.global.tool.please.update.agent"),
                 NotificationType.WARNING
             )
                 .addAction(UpdateGlobalToolAction())
@@ -94,7 +94,7 @@ class DiagnosticsToolService(private val project: Project) {
             withUiContext {
                 Notification(
                     "Diagnostics Client",
-                    DiagnosticBundle.message("notification.global.tool.installed"),
+                    DiagnosticsClientBundle.message("notification.global.tool.installed"),
                     "",
                     NotificationType.INFORMATION
                 )
@@ -104,7 +104,7 @@ class DiagnosticsToolService(private val project: Project) {
             withUiContext {
                 Notification(
                     "Diagnostics Client",
-                    DiagnosticBundle.message("notification.global.tool.installation.failed"),
+                    DiagnosticsClientBundle.message("notification.global.tool.installation.failed"),
                     output.stderr,
                     NotificationType.ERROR
                 )
@@ -125,7 +125,7 @@ class DiagnosticsToolService(private val project: Project) {
             withUiContext {
                 Notification(
                     "Diagnostics Client",
-                    DiagnosticBundle.message("notification.global.tool.updated"),
+                    DiagnosticsClientBundle.message("notification.global.tool.updated"),
                     "",
                     NotificationType.INFORMATION
                 )
@@ -135,7 +135,7 @@ class DiagnosticsToolService(private val project: Project) {
             withUiContext {
                 Notification(
                     "Diagnostics Client",
-                    DiagnosticBundle.message("notification.global.tool.update.failed"),
+                    DiagnosticsClientBundle.message("notification.global.tool.update.failed"),
                     output.stderr,
                     NotificationType.ERROR
                 )
@@ -177,7 +177,7 @@ class DiagnosticsToolService(private val project: Project) {
         val output = getListOfGlobalTools(dotnetPath)
 
         return if (output.checkSuccess(LOG)) {
-            val regex = Regex("^rafaelldi\\.diagnosticsagent\\s+([\\d.]+)", RegexOption.MULTILINE)
+            val regex = Regex("^rafaelldi\\.diagnosticsagent\\s+([\\w.\\-]+)", RegexOption.MULTILINE)
             regex.find(output.stdout)?.groups?.get(1)?.value ?: return null
         } else {
             null

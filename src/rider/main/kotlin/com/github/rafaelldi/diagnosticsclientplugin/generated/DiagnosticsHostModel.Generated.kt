@@ -164,6 +164,8 @@ class DiagnosticsHostModel private constructor(
         )
     }
     //contexts
+    //threading
+    override val extThreading: ExtThreadingKind get() = ExtThreadingKind.Default
 }
 val IProtocol.diagnosticsHostModel get() = getOrCreateExtension(DiagnosticsHostModel::class) { @Suppress("DEPRECATION") DiagnosticsHostModel.create(lifetime, this) }
 
@@ -233,6 +235,7 @@ data class ChartValue (
     }
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -327,6 +330,7 @@ data class CollectDumpCommand (
     }
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -382,6 +386,7 @@ data class CollectStackTraceCommand (
     }
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -449,6 +454,7 @@ data class Counter (
     }
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -518,6 +524,7 @@ data class DumpCollectionResult (
     }
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -673,6 +680,7 @@ data class GcEvent (
     }
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -752,6 +760,7 @@ class LiveChartSession private constructor(
         )
     }
     //contexts
+    //threading
 }
 
 
@@ -870,6 +879,7 @@ class LiveCounterSession private constructor(
         )
     }
     //contexts
+    //threading
 }
 
 
@@ -949,6 +959,7 @@ class LiveGcEventSession private constructor(
         )
     }
     //contexts
+    //threading
 }
 
 
@@ -996,6 +1007,7 @@ abstract class LiveSession (
     //pretty print
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -1063,6 +1075,7 @@ class LiveSession_Unknown (
         )
     }
     //contexts
+    //threading
 }
 
 
@@ -1149,6 +1162,7 @@ class LiveTraceSession private constructor(
         )
     }
     //contexts
+    //threading
 }
 
 
@@ -1236,6 +1250,7 @@ class PersistentCounterSession (
         )
     }
     //contexts
+    //threading
 }
 
 
@@ -1293,6 +1308,7 @@ class PersistentGcEventSession (
         )
     }
     //contexts
+    //threading
 }
 
 
@@ -1327,6 +1343,7 @@ abstract class PersistentSession (
     //pretty print
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -1383,6 +1400,7 @@ class PersistentSession_Unknown (
         )
     }
     //contexts
+    //threading
 }
 
 
@@ -1455,6 +1473,7 @@ class PersistentTraceSession (
         )
     }
     //contexts
+    //threading
 }
 
 
@@ -1536,6 +1555,7 @@ data class ProcessEnvironmentVariable (
     }
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -1627,6 +1647,7 @@ data class ProcessInfo (
     }
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -1694,6 +1715,7 @@ class ProcessList private constructor(
         )
     }
     //contexts
+    //threading
 }
 
 
@@ -1767,6 +1789,7 @@ data class Trace (
     }
     //deepClone
     //contexts
+    //threading
 }
 
 
