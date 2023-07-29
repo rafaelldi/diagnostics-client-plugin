@@ -12,8 +12,8 @@ plugins {
     alias(libs.plugins.rdgen)
 }
 
-group = properties("pluginGroup")
-version = properties("pluginVersion")
+group = properties("pluginGroup").get()
+version = properties("pluginVersion").get()
 
 val rdLibDirectory: () -> File = { file("${tasks.setupDependencies.get().idea.get().classes}/lib/rd") }
 extra["rdLibDirectory"] = rdLibDirectory
