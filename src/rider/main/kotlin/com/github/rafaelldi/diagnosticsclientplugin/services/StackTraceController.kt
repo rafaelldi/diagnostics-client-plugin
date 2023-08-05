@@ -10,7 +10,7 @@ import com.intellij.openapi.progress.withBackgroundProgress
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.rd.util.withUiContext
 
-@Service
+@Service(Service.Level.PROJECT)
 class StackTraceController(private val project: Project) {
     companion object {
         fun getInstance(project: Project): StackTraceController = project.service()

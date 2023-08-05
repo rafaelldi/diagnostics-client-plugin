@@ -13,7 +13,7 @@ import com.intellij.openapi.project.Project
 import kotlin.io.path.Path
 import kotlin.io.path.pathString
 
-@Service
+@Service(Service.Level.PROJECT)
 class TraceExportSessionController(project: Project) :
     ExportSessionController<TraceExportSession, TraceSessionModel>(project) {
     companion object {

@@ -15,7 +15,7 @@ import com.intellij.ui.content.ContentFactory
 import com.jetbrains.rd.util.lifetime.Lifetime
 import icons.DiagnosticsClientIcons
 
-@Service
+@Service(Service.Level.PROJECT)
 class CounterSessionTabManager(private val project: Project) {
     companion object {
         fun getInstance(project: Project): CounterSessionTabManager = project.service()

@@ -10,7 +10,7 @@ import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.jetbrains.rd.util.lifetime.Lifetime
 
-@Service
+@Service(Service.Level.PROJECT)
 class CounterProtocolSessionController(project: Project) :
     ProtocolSessionController<CounterProtocolSession, CounterSessionModel>(project) {
     companion object {

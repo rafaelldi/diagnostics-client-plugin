@@ -15,7 +15,7 @@ import com.intellij.openapi.progress.withBackgroundProgress
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.rd.util.withUiContext
 
-@Service
+@Service(Service.Level.PROJECT)
 class MemoryDumpController(private val project: Project) {
     companion object {
         fun getInstance(project: Project): MemoryDumpController = project.service()

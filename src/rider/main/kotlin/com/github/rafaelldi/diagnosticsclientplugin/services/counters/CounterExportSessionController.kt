@@ -13,7 +13,7 @@ import com.intellij.openapi.project.Project
 import kotlin.io.path.Path
 import kotlin.io.path.pathString
 
-@Service
+@Service(Service.Level.PROJECT)
 class CounterExportSessionController(project: Project) :
     ExportSessionController<CounterExportSession, CounterSessionModel>(project) {
     companion object {

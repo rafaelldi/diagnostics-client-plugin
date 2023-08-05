@@ -10,7 +10,7 @@ import com.jetbrains.rider.projectView.solutionDirectoryPath
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-@Service
+@Service(Service.Level.PROJECT)
 @State(name = "DumpSettings", storages = [(Storage("diagnostics-client.xml"))])
 class MemoryDumpSettings(project: Project) :
     SimplePersistentStateComponent<MemoryDumpSettings.DumpSettingsState>(

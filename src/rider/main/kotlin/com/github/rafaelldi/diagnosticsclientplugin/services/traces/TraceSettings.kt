@@ -12,7 +12,7 @@ import com.jetbrains.rider.projectView.solutionDirectoryPath
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-@Service
+@Service(Service.Level.PROJECT)
 @State(name = "TraceSettings", storages = [(Storage("diagnostics-client.xml"))])
 class TraceSettings(project: Project) : SimplePersistentStateComponent<TraceSettings.TraceSettingsState>(
     TraceSettingsState(project.solutionDirectoryPath.toString(), getDefaultFilename())

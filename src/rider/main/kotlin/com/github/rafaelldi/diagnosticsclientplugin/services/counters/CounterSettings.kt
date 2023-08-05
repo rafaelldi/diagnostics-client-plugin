@@ -8,7 +8,7 @@ import com.intellij.openapi.components.*
 import com.intellij.openapi.project.Project
 import com.jetbrains.rider.projectView.solutionDirectoryPath
 
-@Service
+@Service(Service.Level.PROJECT)
 @State(name = "CounterSettings", storages = [(Storage("diagnostics-client.xml"))])
 class CounterSettings(project: Project) : SimplePersistentStateComponent<CounterSettings.CounterSettingsState>(
     CounterSettingsState(project.solutionDirectoryPath.toString())

@@ -15,7 +15,7 @@ import com.intellij.ui.content.Content
 import com.intellij.ui.content.ContentFactory
 import com.jetbrains.rd.util.lifetime.Lifetime
 
-@Service
+@Service(Service.Level.PROJECT)
 class GcEventSessionTabManager(private val project: Project) {
     companion object {
         fun getInstance(project: Project): GcEventSessionTabManager = project.service()

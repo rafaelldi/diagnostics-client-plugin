@@ -7,7 +7,7 @@ import com.intellij.openapi.components.*
 import com.intellij.openapi.project.Project
 import com.jetbrains.rider.projectView.solutionDirectoryPath
 
-@Service
+@Service(Service.Level.PROJECT)
 @State(name = "GcEventSettings", storages = [(Storage("diagnostics-client.xml"))])
 class GcEventSettings(project: Project) : SimplePersistentStateComponent<GcEventSettings.GcEventSettingsState>(
     GcEventSettingsState(project.solutionDirectoryPath.toString())
