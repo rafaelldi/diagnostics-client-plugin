@@ -9,7 +9,7 @@ import com.intellij.openapi.actionSystem.ActionGroup
 import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.actionSystem.DataKey
 import com.intellij.openapi.ui.SimpleToolWindowPanel
-import com.intellij.ui.components.JBScrollPane
+import com.intellij.ui.ScrollPaneFactory
 import com.jetbrains.rd.util.lifetime.Lifetime
 import java.awt.BorderLayout
 import javax.swing.JPanel
@@ -30,7 +30,8 @@ class CounterProtocolSessionTab(
 
     private val panel: JPanel = JPanel().apply {
         layout = BorderLayout()
-        add(JBScrollPane(table))
+        val scrollPane = ScrollPaneFactory.createScrollPane(table, true)
+        add(scrollPane, BorderLayout.CENTER)
     }
 
     init {
