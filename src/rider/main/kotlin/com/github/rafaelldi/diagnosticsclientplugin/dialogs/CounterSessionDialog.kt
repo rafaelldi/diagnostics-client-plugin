@@ -28,10 +28,10 @@ class CounterSessionDialog(
         init()
         title =
             if (export) DiagnosticsClientBundle.message("dialog.counters.title.collect")
-            else DiagnosticsClientBundle.message("dialog.counters.title.monitor")
+            else DiagnosticsClientBundle.message("dialog.counters.title.watch")
         val action =
             if (export) DiagnosticsClientBundle.message("dialog.counters.button.collect")
-            else DiagnosticsClientBundle.message("dialog.counters.button.monitor")
+            else DiagnosticsClientBundle.message("dialog.counters.button.watch")
         setOKButtonText(action)
     }
 

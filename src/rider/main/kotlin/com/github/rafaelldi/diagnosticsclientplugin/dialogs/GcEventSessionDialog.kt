@@ -25,10 +25,10 @@ class GcEventSessionDialog(
         init()
         title =
             if (export) DiagnosticsClientBundle.message("dialog.gc.title.collect")
-            else DiagnosticsClientBundle.message("dialog.gc.title.monitor")
+            else DiagnosticsClientBundle.message("dialog.gc.title.watch")
         val action =
             if (export) DiagnosticsClientBundle.message("dialog.gc.button.collect")
-            else DiagnosticsClientBundle.message("dialog.gc.button.monitor")
+            else DiagnosticsClientBundle.message("dialog.gc.button.watch")
         setOKButtonText(action)
     }
 

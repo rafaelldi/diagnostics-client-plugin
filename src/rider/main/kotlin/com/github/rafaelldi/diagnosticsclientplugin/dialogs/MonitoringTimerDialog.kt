@@ -12,20 +12,20 @@ class MonitoringTimerDialog(project: Project) : DialogWrapper(project) {
 
     init {
         init()
-        title = DiagnosticsClientBundle.message("dialog.monitor.title")
-        setOKButtonText(DiagnosticsClientBundle.message("dialog.monitor.button"))
+        title = DiagnosticsClientBundle.message("dialog.watch.title")
+        setOKButtonText(DiagnosticsClientBundle.message("dialog.watch.button"))
     }
 
     override fun createCenterPanel(): JComponent = panel {
         lateinit var periodStoppingType: Cell<JBRadioButton>
 
         buttonsGroup {
-            row(DiagnosticsClientBundle.message("dialog.monitor.row.stop")) {
+            row(DiagnosticsClientBundle.message("dialog.watch.row.stop")) {
                 radioButton(StoppingType.Manually.label, StoppingType.Manually)
                 periodStoppingType = radioButton(StoppingType.AfterPeriod.label, StoppingType.AfterPeriod)
             }
         }.bind(model::stoppingType)
-        row(DiagnosticsClientBundle.message("dialog.monitor.row.duration")) {
+        row(DiagnosticsClientBundle.message("dialog.watch.row.duration")) {
             spinner(1..3600, 1)
                 .bindIntValue(model::duration)
                 .enabledIf(periodStoppingType.selected)

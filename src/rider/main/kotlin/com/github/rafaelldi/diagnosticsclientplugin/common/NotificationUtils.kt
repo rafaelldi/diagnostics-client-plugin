@@ -38,7 +38,7 @@ fun exportSessionAlreadyExists(type: String, pid: Int, project: Project) = Notif
 
 fun liveSessionStarted(type: String, pid: Int, project: Project) = Notification(
     "Diagnostics Client",
-    DiagnosticsClientBundle.message("notifications.monitoring.started", type),
+    DiagnosticsClientBundle.message("notifications.watching.started", type),
     DiagnosticsClientBundle.message("notifications.session.for.process.started", pid),
     NotificationType.INFORMATION
 )
@@ -46,7 +46,7 @@ fun liveSessionStarted(type: String, pid: Int, project: Project) = Notification(
 
 fun liveSessionFinished(type: String, pid: Int, project: Project) = Notification(
     "Diagnostics Client",
-    DiagnosticsClientBundle.message("notifications.monitoring.finished", type),
+    DiagnosticsClientBundle.message("notifications.watching.finished", type),
     DiagnosticsClientBundle.message("notifications.session.for.process.finished", pid),
     NotificationType.INFORMATION
 )
@@ -54,7 +54,7 @@ fun liveSessionFinished(type: String, pid: Int, project: Project) = Notification
 
 fun liveSessionNotFound(type: String, pid: Int, project: Project) = Notification(
     "Diagnostics Client",
-    DiagnosticsClientBundle.message("notifications.monitoring.session.not.found", type, pid),
+    DiagnosticsClientBundle.message("notifications.watching.session.not.found", type, pid),
     "",
     NotificationType.ERROR
 )

@@ -40,10 +40,10 @@ class TraceSessionDialog(
         init()
         title =
             if (export) DiagnosticsClientBundle.message("dialog.traces.title.collect")
-            else DiagnosticsClientBundle.message("dialog.traces.title.monitor")
+            else DiagnosticsClientBundle.message("dialog.traces.title.watch")
         val action =
             if (export) DiagnosticsClientBundle.message("dialog.traces.button.collect")
-            else DiagnosticsClientBundle.message("dialog.traces.button.monitor")
+            else DiagnosticsClientBundle.message("dialog.traces.button.watch")
         setOKButtonText(action)
     }
 

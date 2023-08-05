@@ -35,17 +35,17 @@ class ProcessDashboardPanel(
                     .gap(RightGap.COLUMNS)
                 val startCounterSession =
                     ActionManager.getInstance().getAction("DiagnosticsClient.ToolWindow.QuickActions.Counters")
-                button(DiagnosticsClientBundle.message("dashboard.button.monitor.counters"), startCounterSession)
+                button(DiagnosticsClientBundle.message("dashboard.button.watch.counters"), startCounterSession)
                     .applyToComponent { icon = DiagnosticsClientIcons.Counters }
                     .gap(RightGap.SMALL)
                 val startGcEventSession =
                     ActionManager.getInstance().getAction("DiagnosticsClient.ToolWindow.QuickActions.GcEvents")
-                button(DiagnosticsClientBundle.message("dashboard.button.monitor.gc.events"), startGcEventSession)
+                button(DiagnosticsClientBundle.message("dashboard.button.watch.gc.events"), startGcEventSession)
                     .applyToComponent { icon = AllIcons.Actions.GC }
                     .gap(RightGap.SMALL)
                 val startTraceSession =
                     ActionManager.getInstance().getAction("DiagnosticsClient.ToolWindow.QuickActions.Traces")
-                button(DiagnosticsClientBundle.message("dashboard.button.monitor.traces"), startTraceSession)
+                button(DiagnosticsClientBundle.message("dashboard.button.watch.traces"), startTraceSession)
                     .applyToComponent { icon = AllIcons.Toolwindows.ToolWindowMessages }
             }
             separator()
