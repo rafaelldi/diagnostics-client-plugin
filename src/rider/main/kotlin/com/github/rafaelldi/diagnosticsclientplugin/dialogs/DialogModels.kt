@@ -31,7 +31,6 @@ data class CounterSessionModel(
     override var stoppingType: StoppingType,
     override var duration: Int,
     var providers: String,
-    var metricsEnabled: Boolean,
     var metrics: String,
     var maxTimeSeries: Int,
     var maxHistograms: Int

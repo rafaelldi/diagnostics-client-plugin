@@ -10,7 +10,6 @@ import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.ui.SimpleListCellRenderer
-import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.components.JBRadioButton
 import com.intellij.ui.dsl.builder.*
 import javax.swing.JComponent
@@ -37,7 +36,6 @@ class CounterSessionDialog(
 
     override fun createCenterPanel(): JComponent = panel {
         lateinit var periodStoppingType: Cell<JBRadioButton>
-        lateinit var metricsEnablingFlag: Cell<JBCheckBox>
 
         val ps = processes.sortedBy { it.pid }.toList()
 
@@ -54,11 +52,6 @@ class CounterSessionDialog(
                 .bindItem(model::selectedProcess)
         }.bottomGap(BottomGap.SMALL)
 
-        row(DiagnosticsClientBundle.message("dialog.counters.row.refresh.interval")) {
-            spinner(1..3600, 1)
-                .bindIntValue(model::interval)
-        }.bottomGap(BottomGap.SMALL)
-
         buttonsGroup {
             row(DiagnosticsClientBundle.message("dialog.counters.row.stop")) {
                 radioButton(StoppingType.Manually.label, StoppingType.Manually)
@@ -71,46 +64,48 @@ class CounterSessionDialog(
                 .enabledIf(periodStoppingType.selected)
         }.bottomGap(BottomGap.SMALL)
 
-        row(DiagnosticsClientBundle.message("dialog.counters.row.providers")) {
+        row(DiagnosticsClientBundle.message("dialog.counters.row.counters")) {
             expandableTextField()
                 .align(Align.FILL)
                 .validationOnInput {
                     if (isValidCounterProviderList(it.text)) {
                         return@validationOnInput null
                     } else {
-                        return@validationOnInput error(DiagnosticsClientBundle.message("dialog.counters.row.providers.error"))
+                        return@validationOnInput error(DiagnosticsClientBundle.message("dialog.counters.row.counters.error"))
                     }
                 }
                 .bindText(model::providers)
         }
-        collapsibleGroup(DiagnosticsClientBundle.message("dialog.counters.group.metrics")) {
-            row {
-                metricsEnablingFlag = checkBox(DiagnosticsClientBundle.message("dialog.counters.row.enable.metrics")).bindSelected(model::metricsEnabled)
-            }
-            row(DiagnosticsClientBundle.message("dialog.counters.row.list.of.metrics")) {
-                expandableTextField()
-                    .align(Align.FILL)
-                    .validationOnInput {
-                        if (isValidMetricList(it.text)) {
-                            return@validationOnInput null
-                        } else {
-                            return@validationOnInput error(DiagnosticsClientBundle.message("dialog.counters.row.list.of.metrics.error"))
-                        }
+
+        row(DiagnosticsClientBundle.message("dialog.counters.row.list.of.metrics")) {
+            expandableTextField()
+                .align(Align.FILL)
+                .validationOnInput {
+                    if (isValidMetricList(it.text)) {
+                        return@validationOnInput null
+                    } else {
+                        return@validationOnInput error(DiagnosticsClientBundle.message("dialog.counters.row.list.of.metrics.error"))
                     }
-                    .bindText(model::metrics)
-                    .enabledIf(metricsEnablingFlag.selected)
-            }
+                }
+                .bindText(model::metrics)
+        }
+
+        val advancedGroupExpanded = model.interval != 1 || model.maxTimeSeries != 1000 || model.maxHistograms != 10
+        collapsibleGroup(DiagnosticsClientBundle.message("dialog.counters.group.advanced.settings")) {
+            row(DiagnosticsClientBundle.message("dialog.counters.row.refresh.interval")) {
+                spinner(1..3600, 1)
+                    .bindIntValue(model::interval)
+            }.bottomGap(BottomGap.SMALL)
             row(DiagnosticsClientBundle.message("dialog.counters.row.number.of.time.series")) {
                 intTextField()
                     .bindIntText(model::maxTimeSeries)
-                    .enabledIf(metricsEnablingFlag.selected)
             }
             row(DiagnosticsClientBundle.message("dialog.counters.row.number.of.histograms")) {
                 intTextField()
                     .bindIntText(model::maxHistograms)
-                    .enabledIf(metricsEnablingFlag.selected)
             }
-        }.expanded = metricsEnablingFlag.selected()
+        }.expanded = advancedGroupExpanded
+
         group(DiagnosticsClientBundle.message("dialog.counters.group.file.settings")) {
             buttonsGroup {
                 row(DiagnosticsClientBundle.message("dialog.counters.row.file.format")) {

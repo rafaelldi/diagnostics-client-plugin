@@ -8,6 +8,7 @@
 - Extracted [Diagnostics Agent](https://github.com/rafaelldi/diagnostics-agent) to a separate tool
 - Created a [plugin documentation portal](https://rafaelldi.blog/diagnostics-client-plugin)
 - Support for Rider 2023.2
+- Improve counters dialog
 
 ## [2023.1.2] - 2023-05-03
 
