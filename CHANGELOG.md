@@ -4,6 +4,9 @@
 
 ## [Unreleased]
 
+### Changed
+- Extract [Diagnostics Agent](https://github.com/rafaelldi/diagnostics-agent) to a separate tool
+
 ## [2023.1.2] - 2023-05-03
 
 ### Fixed
