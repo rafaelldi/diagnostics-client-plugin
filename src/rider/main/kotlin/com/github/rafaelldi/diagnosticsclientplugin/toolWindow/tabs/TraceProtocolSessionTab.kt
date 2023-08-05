@@ -89,14 +89,14 @@ class TraceProtocolSessionTab(
             PredefinedProvider.Loader -> LOADER_OUTPUT
         }
 
-        consoleView.print(dateFormat.format(trace.timeStamp), ConsoleViewContentType.NORMAL_OUTPUT)
-        consoleView.print(" [", ConsoleViewContentType.NORMAL_OUTPUT)
+        consoleView.print(dateFormat.format(trace.timeStamp), providerContentType)
+        consoleView.print(" [", providerContentType)
         consoleView.print(getProviderName(trace.provider), providerContentType)
         consoleView.print(" - ", providerContentType)
         consoleView.print(trace.eventName, providerContentType)
-        consoleView.print("] ", ConsoleViewContentType.NORMAL_OUTPUT)
-        consoleView.print(trace.content, ConsoleViewContentType.NORMAL_OUTPUT)
-        consoleView.print("\n", ConsoleViewContentType.NORMAL_OUTPUT)
+        consoleView.print("] ", providerContentType)
+        consoleView.print(trace.content, providerContentType)
+        consoleView.print("\n", providerContentType)
     }
 
     private fun getProviderName(provider: PredefinedProvider): String =  when (provider)
