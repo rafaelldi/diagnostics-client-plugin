@@ -10,7 +10,7 @@ data class MemoryDumpModel(
     var diag: Boolean
 )
 
-interface LiveSessionModel {
+interface ProtocolSessionModel {
     var selectedProcess: DotNetProcess?
     var stoppingType: StoppingType
     var duration: Int
@@ -35,7 +35,7 @@ data class CounterSessionModel(
     var metrics: String,
     var maxTimeSeries: Int,
     var maxHistograms: Int
-) : LiveSessionModel, ExportSessionModel
+) : ProtocolSessionModel, ExportSessionModel
 
 data class GcEventSessionModel(
     override var selectedProcess: DotNetProcess?,
@@ -43,7 +43,7 @@ data class GcEventSessionModel(
     override var filename: String,
     override var stoppingType: StoppingType,
     override var duration: Int
-) : LiveSessionModel, ExportSessionModel
+) : ProtocolSessionModel, ExportSessionModel
 
 data class TraceSessionModel(
     override var selectedProcess: DotNetProcess?,
@@ -61,12 +61,12 @@ data class TraceSessionModel(
     var contentions: Boolean,
     var tasks: Boolean,
     var loader: Boolean
-) : LiveSessionModel, ExportSessionModel
+) : ProtocolSessionModel, ExportSessionModel
 
 data class ChartSessionModel(
     override var selectedProcess: DotNetProcess?,
     override var stoppingType: StoppingType,
     override var duration: Int
-) : LiveSessionModel
+) : ProtocolSessionModel
 
 data class MonitoringTimerModel(var stoppingType: StoppingType, var duration: Int)

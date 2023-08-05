@@ -5,13 +5,13 @@ package com.github.rafaelldi.diagnosticsclientplugin.services
 import com.github.rafaelldi.diagnosticsclientplugin.DiagnosticsClientBundle
 import com.github.rafaelldi.diagnosticsclientplugin.model.DiagnosticsHostModel
 import com.github.rafaelldi.diagnosticsclientplugin.model.diagnosticsHostModel
-import com.github.rafaelldi.diagnosticsclientplugin.services.chart.LiveChartSessionController
-import com.github.rafaelldi.diagnosticsclientplugin.services.counters.ExportCounterSessionController
-import com.github.rafaelldi.diagnosticsclientplugin.services.counters.LiveCounterSessionController
-import com.github.rafaelldi.diagnosticsclientplugin.services.gc.ExportGcEventSessionController
-import com.github.rafaelldi.diagnosticsclientplugin.services.gc.LiveGcEventSessionController
-import com.github.rafaelldi.diagnosticsclientplugin.services.traces.ExportTraceSessionController
-import com.github.rafaelldi.diagnosticsclientplugin.services.traces.LiveTraceSessionController
+import com.github.rafaelldi.diagnosticsclientplugin.services.chart.ChartProtocolSessionController
+import com.github.rafaelldi.diagnosticsclientplugin.services.counters.CounterExportSessionController
+import com.github.rafaelldi.diagnosticsclientplugin.services.counters.CounterProtocolSessionController
+import com.github.rafaelldi.diagnosticsclientplugin.services.gc.GcEventExportSessionController
+import com.github.rafaelldi.diagnosticsclientplugin.services.gc.GcEventProtocolSessionController
+import com.github.rafaelldi.diagnosticsclientplugin.services.traces.TraceExportSessionController
+import com.github.rafaelldi.diagnosticsclientplugin.services.traces.TraceProtocolSessionController
 import com.github.rafaelldi.diagnosticsclientplugin.topics.HostListener
 import com.github.rafaelldi.diagnosticsclientplugin.topics.HostProcessListener
 import com.intellij.execution.process.ProcessEvent
@@ -31,7 +31,7 @@ import com.jetbrains.rd.util.reactive.AddRemove
 import com.jetbrains.rdclient.protocol.RdDispatcher
 import com.jetbrains.rider.util.NetUtils
 
-@Service
+@Service(Service.Level.PROJECT)
 class DiagnosticsHost(private val project: Project) : LifetimedService() {
     companion object {
         private const val INITIAL_PORT = 57800
@@ -118,13 +118,13 @@ class DiagnosticsHost(private val project: Project) : LifetimedService() {
             }
         }
 
-        ExportCounterSessionController.getInstance(project).subscribeTo(model.persistentCounterSessions, lifetime)
-        ExportGcEventSessionController.getInstance(project).subscribeTo(model.persistentGcEventSessions, lifetime)
-        ExportTraceSessionController.getInstance(project).subscribeTo(model.persistentTraceSessions, lifetime)
+        CounterExportSessionController.getInstance(project).subscribeTo(model.counterExportSessions, lifetime)
+        GcEventExportSessionController.getInstance(project).subscribeTo(model.gcEventExportSessions, lifetime)
+        TraceExportSessionController.getInstance(project).subscribeTo(model.traceExportSessions, lifetime)
 
-        LiveCounterSessionController.getInstance(project).subscribeTo(model.liveCounterSessions, lifetime)
-        LiveGcEventSessionController.getInstance(project).subscribeTo(model.liveGcEventSessions, lifetime)
-        LiveTraceSessionController.getInstance(project).subscribeTo(model.liveTraceSessions, lifetime)
-        LiveChartSessionController.getInstance(project).subscribeTo(model.liveChartSessions, lifetime)
+        CounterProtocolSessionController.getInstance(project).subscribeTo(model.counterProtocolSessions, lifetime)
+        GcEventProtocolSessionController.getInstance(project).subscribeTo(model.gcEventProtocolSessions, lifetime)
+        TraceProtocolSessionController.getInstance(project).subscribeTo(model.traceProtocolSessions, lifetime)
+        ChartProtocolSessionController.getInstance(project).subscribeTo(model.chartProtocolSessions, lifetime)
     }
 }

@@ -1,9 +1,9 @@
 package com.github.rafaelldi.diagnosticsclientplugin.toolWindow
 
-import com.github.rafaelldi.diagnosticsclientplugin.model.LiveChartSession
-import com.github.rafaelldi.diagnosticsclientplugin.services.chart.LiveChartSessionController
+import com.github.rafaelldi.diagnosticsclientplugin.model.ChartProtocolSession
+import com.github.rafaelldi.diagnosticsclientplugin.services.chart.ChartProtocolSessionController
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.DiagnosticsToolWindowFactory.Companion.DIAGNOSTICS_CLIENT_TOOL_WINDOW
-import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.LiveChartSessionTab
+import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.ChartProtocolSessionTab
 import com.intellij.execution.runners.ExecutionUtil
 import com.intellij.icons.AllIcons
 import com.intellij.openapi.components.Service
@@ -21,11 +21,11 @@ class ChartSessionTabManager(private val project: Project) {
         fun getInstance(project: Project): ChartSessionTabManager = project.service()
     }
 
-    fun addSessionTab(sessionLifetime: Lifetime, pid: Int, session: LiveChartSession) {
+    fun addSessionTab(sessionLifetime: Lifetime, pid: Int, session: ChartProtocolSession) {
         val toolWindow = ToolWindowManager.getInstance(project).getToolWindow(DIAGNOSTICS_CLIENT_TOOL_WINDOW) ?: return
         val contentFactory = ContentFactory.getInstance()
-        val liveChartSessionTab = LiveChartSessionTab(pid, session, this, sessionLifetime)
-        val content = contentFactory.createContent(liveChartSessionTab, "Chart for $pid", true)
+        val chartProtocolSessionTab = ChartProtocolSessionTab(pid, session, this, sessionLifetime)
+        val content = contentFactory.createContent(chartProtocolSessionTab, "Chart for $pid", true)
         content.icon = AllIcons.RunConfigurations.TestCustom
         content.putUserData(ToolWindow.SHOW_CONTENT_ICON, true)
         sessionLifetime.bracketIfAlive(
@@ -47,6 +47,6 @@ class ChartSessionTabManager(private val project: Project) {
     }
 
     fun tabClosed(pid: Int) {
-        LiveChartSessionController.getInstance(project).closeSession(pid)
+        ChartProtocolSessionController.getInstance(project).closeSession(pid)
     }
 }

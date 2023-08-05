@@ -3,9 +3,9 @@ package com.github.rafaelldi.diagnosticsclientplugin.services.common
 import com.github.rafaelldi.diagnosticsclientplugin.common.liveSessionFinished
 import com.github.rafaelldi.diagnosticsclientplugin.common.liveSessionNotFound
 import com.github.rafaelldi.diagnosticsclientplugin.common.liveSessionStarted
-import com.github.rafaelldi.diagnosticsclientplugin.dialogs.LiveSessionModel
+import com.github.rafaelldi.diagnosticsclientplugin.dialogs.ProtocolSessionModel
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.StoppingType
-import com.github.rafaelldi.diagnosticsclientplugin.model.LiveSession
+import com.github.rafaelldi.diagnosticsclientplugin.model.ProtocolSession
 import com.intellij.openapi.project.Project
 import com.jetbrains.rd.framework.util.createTerminatedAfter
 import com.jetbrains.rd.platform.util.idea.LifetimedService
@@ -16,7 +16,7 @@ import com.jetbrains.rd.util.reactive.whenTrue
 import kotlinx.coroutines.Dispatchers
 import java.time.Duration
 
-abstract class LiveSessionController<TSession : LiveSession, TModel : LiveSessionModel>(protected val project: Project) :
+abstract class ProtocolSessionController<TSession : ProtocolSession, TModel : ProtocolSessionModel>(protected val project: Project) :
     LifetimedService() {
 
     protected abstract val artifactType: String

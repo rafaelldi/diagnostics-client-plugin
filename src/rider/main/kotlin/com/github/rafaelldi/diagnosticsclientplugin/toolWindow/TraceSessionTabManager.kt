@@ -1,9 +1,9 @@
 package com.github.rafaelldi.diagnosticsclientplugin.toolWindow
 
-import com.github.rafaelldi.diagnosticsclientplugin.model.LiveTraceSession
-import com.github.rafaelldi.diagnosticsclientplugin.services.traces.LiveTraceSessionController
+import com.github.rafaelldi.diagnosticsclientplugin.model.TraceProtocolSession
+import com.github.rafaelldi.diagnosticsclientplugin.services.traces.TraceProtocolSessionController
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.DiagnosticsToolWindowFactory.Companion.DIAGNOSTICS_CLIENT_TOOL_WINDOW
-import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.LiveTraceSessionTab
+import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.TraceProtocolSessionTab
 import com.intellij.execution.runners.ExecutionUtil
 import com.intellij.icons.AllIcons
 import com.intellij.openapi.components.Service
@@ -21,11 +21,11 @@ class TraceSessionTabManager(private val project: Project) {
         fun getInstance(project: Project): TraceSessionTabManager = project.service()
     }
 
-    fun addSessionTab(sessionLifetime: Lifetime, pid: Int, session: LiveTraceSession) {
+    fun addSessionTab(sessionLifetime: Lifetime, pid: Int, session: TraceProtocolSession) {
         val toolWindow = ToolWindowManager.getInstance(project).getToolWindow(DIAGNOSTICS_CLIENT_TOOL_WINDOW) ?: return
         val contentFactory = ContentFactory.getInstance()
-        val liveTraceSessionTab = LiveTraceSessionTab(pid, session, this, project, sessionLifetime)
-        val content = contentFactory.createContent(liveTraceSessionTab, "Traces for $pid", true)
+        val traceProtocolSessionTab = TraceProtocolSessionTab(pid, session, this, project, sessionLifetime)
+        val content = contentFactory.createContent(traceProtocolSessionTab, "Traces for $pid", true)
         content.icon = AllIcons.Toolwindows.ToolWindowMessages
         content.putUserData(ToolWindow.SHOW_CONTENT_ICON, true)
         sessionLifetime.bracketIfAlive(
@@ -47,7 +47,7 @@ class TraceSessionTabManager(private val project: Project) {
     }
 
     fun tabClosed(pid: Int) {
-        LiveTraceSessionController.getInstance(project).closeSession(pid)
+        TraceProtocolSessionController.getInstance(project).closeSession(pid)
     }
 
     fun activateTab(pid: Int) {

@@ -1,9 +1,9 @@
 package com.github.rafaelldi.diagnosticsclientplugin.toolWindow
 
-import com.github.rafaelldi.diagnosticsclientplugin.model.LiveGcEventSession
-import com.github.rafaelldi.diagnosticsclientplugin.services.gc.LiveGcEventSessionController
+import com.github.rafaelldi.diagnosticsclientplugin.model.GcEventProtocolSession
+import com.github.rafaelldi.diagnosticsclientplugin.services.gc.GcEventProtocolSessionController
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.DiagnosticsToolWindowFactory.Companion.DIAGNOSTICS_CLIENT_TOOL_WINDOW
-import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.LiveGcEventSessionTab
+import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.GcEventProtocolSessionTab
 import com.intellij.execution.runners.ExecutionUtil
 import com.intellij.icons.AllIcons
 import com.intellij.openapi.components.Service
@@ -21,11 +21,11 @@ class GcEventSessionTabManager(private val project: Project) {
         fun getInstance(project: Project): GcEventSessionTabManager = project.service()
     }
 
-    fun addSessionTab(sessionLifetime: Lifetime, pid: Int, session: LiveGcEventSession) {
+    fun addSessionTab(sessionLifetime: Lifetime, pid: Int, session: GcEventProtocolSession) {
         val toolWindow = ToolWindowManager.getInstance(project).getToolWindow(DIAGNOSTICS_CLIENT_TOOL_WINDOW) ?: return
         val contentFactory = ContentFactory.getInstance()
-        val liveGcEventSessionTab = LiveGcEventSessionTab(pid, session, this, sessionLifetime)
-        val content = contentFactory.createContent(liveGcEventSessionTab, "GC for $pid", true)
+        val gcEventProtocolSessionTab = GcEventProtocolSessionTab(pid, session, this, sessionLifetime)
+        val content = contentFactory.createContent(gcEventProtocolSessionTab, "GC for $pid", true)
         content.icon = AllIcons.Actions.GC
         content.putUserData(ToolWindow.SHOW_CONTENT_ICON, true)
         sessionLifetime.bracketIfAlive(
@@ -46,7 +46,7 @@ class GcEventSessionTabManager(private val project: Project) {
     }
 
     fun tabClosed(pid: Int) {
-        LiveGcEventSessionController.getInstance(project).closeSession(pid)
+        GcEventProtocolSessionController.getInstance(project).closeSession(pid)
     }
 
     fun activateTab(pid: Int) {

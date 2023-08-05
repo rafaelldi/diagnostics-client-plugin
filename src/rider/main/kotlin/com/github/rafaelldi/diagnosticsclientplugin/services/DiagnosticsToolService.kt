@@ -18,12 +18,12 @@ import com.intellij.openapi.util.SystemInfo
 import com.intellij.util.EnvironmentUtil
 import com.jetbrains.rider.runtime.RiderDotNetActiveRuntimeHost
 
-@Service
+@Service(Service.Level.PROJECT)
 class DiagnosticsToolService(private val project: Project) {
     companion object {
         private const val WINDOWS_HOME_VARIABLE = "USERPROFILE"
         private const val LINUX_HOME_VARIABLE = "HOME"
-        private const val CURRENT_VERSION = "2023.2.0-preview3"
+        private const val CURRENT_VERSION = "2023.2.0"
 
         private val LOG = logger<DiagnosticsToolService>()
 

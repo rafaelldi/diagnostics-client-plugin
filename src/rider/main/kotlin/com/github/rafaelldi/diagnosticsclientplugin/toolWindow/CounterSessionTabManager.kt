@@ -1,9 +1,9 @@
 package com.github.rafaelldi.diagnosticsclientplugin.toolWindow
 
-import com.github.rafaelldi.diagnosticsclientplugin.model.LiveCounterSession
-import com.github.rafaelldi.diagnosticsclientplugin.services.counters.LiveCounterSessionController
+import com.github.rafaelldi.diagnosticsclientplugin.model.CounterProtocolSession
+import com.github.rafaelldi.diagnosticsclientplugin.services.counters.CounterProtocolSessionController
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.DiagnosticsToolWindowFactory.Companion.DIAGNOSTICS_CLIENT_TOOL_WINDOW
-import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.LiveCounterSessionTab
+import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.CounterProtocolSessionTab
 import com.intellij.execution.runners.ExecutionUtil
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
@@ -21,11 +21,11 @@ class CounterSessionTabManager(private val project: Project) {
         fun getInstance(project: Project): CounterSessionTabManager = project.service()
     }
 
-    fun addSessionTab(sessionLifetime: Lifetime, pid: Int, session: LiveCounterSession) {
+    fun addSessionTab(sessionLifetime: Lifetime, pid: Int, session: CounterProtocolSession) {
         val toolWindow = ToolWindowManager.getInstance(project).getToolWindow(DIAGNOSTICS_CLIENT_TOOL_WINDOW) ?: return
         val contentFactory = ContentFactory.getInstance()
-        val liveCounterSessionTab = LiveCounterSessionTab(pid, session, this, sessionLifetime)
-        val content = contentFactory.createContent(liveCounterSessionTab, "Counters for $pid", true)
+        val counterProtocolSessionTab = CounterProtocolSessionTab(pid, session, this, sessionLifetime)
+        val content = contentFactory.createContent(counterProtocolSessionTab, "Counters for $pid", true)
         content.icon = DiagnosticsClientIcons.Counters
         content.putUserData(ToolWindow.SHOW_CONTENT_ICON, true)
         sessionLifetime.bracketIfAlive(
@@ -47,7 +47,7 @@ class CounterSessionTabManager(private val project: Project) {
     }
 
     fun tabClosed(pid: Int) {
-        LiveCounterSessionController.getInstance(project).closeSession(pid)
+        CounterProtocolSessionController.getInstance(project).closeSession(pid)
     }
 
     fun activateTab(pid: Int) {

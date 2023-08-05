@@ -1,19 +1,19 @@
 package com.github.rafaelldi.diagnosticsclientplugin.actions.counters
 
 import com.github.rafaelldi.diagnosticsclientplugin.actions.common.PauseLiveSessionAction
-import com.github.rafaelldi.diagnosticsclientplugin.model.LiveCounterSession
-import com.github.rafaelldi.diagnosticsclientplugin.services.counters.LiveCounterSessionController
-import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.LiveCounterSessionTab
-import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.LiveCounterSessionTab.Companion.COUNTER_MONITORING_TAB
+import com.github.rafaelldi.diagnosticsclientplugin.model.CounterProtocolSession
+import com.github.rafaelldi.diagnosticsclientplugin.services.counters.CounterProtocolSessionController
+import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.CounterProtocolSessionTab
+import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.CounterProtocolSessionTab.Companion.COUNTER_MONITORING_TAB
 import com.intellij.openapi.project.Project
 
-class PauseLiveCounterSessionAction : PauseLiveSessionAction<LiveCounterSession, LiveCounterSessionTab>() {
+class PauseLiveCounterSessionAction : PauseLiveSessionAction<CounterProtocolSession, CounterProtocolSessionTab>() {
     override val tabDatKey = COUNTER_MONITORING_TAB
 
     override fun pauseSession(pid: Int, project: Project) {
-        LiveCounterSessionController.getInstance(project).pauseSession(pid)
+        CounterProtocolSessionController.getInstance(project).pauseSession(pid)
     }
 
     override fun getSession(pid: Int, project: Project) =
-        LiveCounterSessionController.getInstance(project).getSession(pid)
+        CounterProtocolSessionController.getInstance(project).getSession(pid)
 }

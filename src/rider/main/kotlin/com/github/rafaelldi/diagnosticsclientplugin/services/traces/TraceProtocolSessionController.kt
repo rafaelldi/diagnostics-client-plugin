@@ -1,45 +1,35 @@
 package com.github.rafaelldi.diagnosticsclientplugin.services.traces
 
-import com.github.rafaelldi.diagnosticsclientplugin.dialogs.StoppingType
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.TraceSessionModel
-import com.github.rafaelldi.diagnosticsclientplugin.dialogs.map
-import com.github.rafaelldi.diagnosticsclientplugin.model.PersistentTraceSession
 import com.github.rafaelldi.diagnosticsclientplugin.model.PredefinedProvider
+import com.github.rafaelldi.diagnosticsclientplugin.model.TraceProtocolSession
 import com.github.rafaelldi.diagnosticsclientplugin.services.DiagnosticsHost
-import com.github.rafaelldi.diagnosticsclientplugin.services.common.ExportSessionController
+import com.github.rafaelldi.diagnosticsclientplugin.services.common.ProtocolSessionController
+import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.TraceSessionTabManager
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
-import kotlin.io.path.Path
-import kotlin.io.path.pathString
+import com.jetbrains.rd.util.lifetime.Lifetime
 
 @Service
-class ExportTraceSessionController(project: Project) :
-    ExportSessionController<PersistentTraceSession, TraceSessionModel>(project) {
+class TraceProtocolSessionController(project: Project) :
+    ProtocolSessionController<TraceProtocolSession, TraceSessionModel>(project) {
     companion object {
-        fun getInstance(project: Project): ExportTraceSessionController = project.service()
+        fun getInstance(project: Project): TraceProtocolSessionController = project.service()
         private const val TRACES = "Traces"
     }
 
     override val artifactType = TRACES
-    override val canBeOpened = false
 
-    override fun getSessions() = DiagnosticsHost.getInstance(project).hostModel?.persistentTraceSessions
+    override fun getSessions() = DiagnosticsHost.getInstance(project).hostModel?.traceProtocolSessions
 
-    override fun createSession(model: TraceSessionModel): PersistentTraceSession {
-        val filePath = Path(model.path, model.filename).pathString
-        val duration =
-            if (model.stoppingType == StoppingType.AfterPeriod) model.duration
-            else null
-        val predefinedProvider = getPredefinedProviders(model)
+    override fun addSessionTab(pid: Int, session: TraceProtocolSession, sessionLifetime: Lifetime) {
+        TraceSessionTabManager.getInstance(project).addSessionTab(sessionLifetime, pid, session)
+    }
 
-        return PersistentTraceSession(
-            model.profile.map(),
-            model.providers,
-            predefinedProvider,
-            duration,
-            filePath
-        )
+    override fun createSession(model: TraceSessionModel): TraceProtocolSession {
+        val providers = getPredefinedProviders(model)
+        return TraceProtocolSession(providers)
     }
 
     private fun getPredefinedProviders(model: TraceSessionModel): List<PredefinedProvider> {

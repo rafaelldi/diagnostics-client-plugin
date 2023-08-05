@@ -4,7 +4,7 @@ import com.github.rafaelldi.diagnosticsclientplugin.common.exportSessionAlreadyE
 import com.github.rafaelldi.diagnosticsclientplugin.common.exportSessionFinished
 import com.github.rafaelldi.diagnosticsclientplugin.common.exportSessionStarted
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.ExportSessionModel
-import com.github.rafaelldi.diagnosticsclientplugin.model.PersistentSession
+import com.github.rafaelldi.diagnosticsclientplugin.model.ExportSession
 import com.github.rafaelldi.diagnosticsclientplugin.topics.ArtifactListener
 import com.intellij.openapi.project.Project
 import com.jetbrains.rd.framework.util.createTerminatedAfter
@@ -15,7 +15,7 @@ import com.jetbrains.rd.util.reactive.IMutableViewableMap
 import kotlinx.coroutines.Dispatchers
 import java.time.Duration
 
-abstract class ExportSessionController<TSession : PersistentSession, TModel : ExportSessionModel>(protected val project: Project) :
+abstract class ExportSessionController<TSession : ExportSession, TModel : ExportSessionModel>(protected val project: Project) :
     LifetimedService() {
 
     protected abstract val artifactType: String
@@ -71,7 +71,7 @@ abstract class ExportSessionController<TSession : PersistentSession, TModel : Ex
             { sessionStarted(pid) },
             {
                 sessionFinished(pid, session)
-                project.messageBus.syncPublisher(ArtifactListener.TOPIC).artifactCreated(session.filePath)
+                project.messageBus.syncPublisher(ArtifactListener.TOPIC).artifactCreated(session.exportFilePath)
             }
         )
     }
@@ -83,5 +83,5 @@ abstract class ExportSessionController<TSession : PersistentSession, TModel : Ex
         exportSessionStarted(artifactType, pid, project)
 
     private fun sessionFinished(pid: Int, session: TSession) =
-        exportSessionFinished(artifactType, pid, session.filePath, canBeOpened, project)
+        exportSessionFinished(artifactType, pid, session.exportFilePath, canBeOpened, project)
 }

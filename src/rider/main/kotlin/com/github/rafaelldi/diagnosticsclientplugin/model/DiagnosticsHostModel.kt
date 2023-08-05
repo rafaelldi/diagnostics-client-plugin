@@ -33,12 +33,12 @@ object DiagnosticsHostModel : Ext(DiagnosticsHostRoot) {
         map("items", int, ProcessInfo).async
     }
 
-    private val PersistentSession = baseclass {
+    private val ExportSession = baseclass {
         field("duration", int.nullable)
-        field("filePath", string)
+        field("exportFilePath", string)
     }
 
-    private val PersistentCounterSession = classdef extends PersistentSession {
+    private val CounterExportSession = classdef extends ExportSession {
         field("format", enum("CounterFileFormat") {
             +"Csv"
             +"Json"
@@ -50,10 +50,10 @@ object DiagnosticsHostModel : Ext(DiagnosticsHostRoot) {
         field("maxHistograms", int)
     }
 
-    private val PersistentGcEventSession = classdef extends PersistentSession {
+    private val GcEventExportSession = classdef extends ExportSession {
     }
 
-    private val PersistentTraceSession = classdef extends PersistentSession {
+    private val TraceExportSession = classdef extends ExportSession {
         field("profile", enum("TracingProfile") {
             +"None"
             +"CpuSampling"
@@ -64,13 +64,13 @@ object DiagnosticsHostModel : Ext(DiagnosticsHostRoot) {
         field("predefinedProviders", immutableList(PredefinedProvider))
     }
 
-    private val LiveSession = baseclass {
+    private val ProtocolSession = baseclass {
         property("active", bool)
         property("duration", int.nullable)
     }
 
-    private val LiveCounterSession = classdef extends LiveSession {
-        map("counters", string, Counter).async
+    private val CounterProtocolSession = classdef extends ProtocolSession {
+        source("counterReceived", Counter).async
         field("refreshInterval", int)
         field("providers", string)
         field("metrics", string.nullable)
@@ -78,16 +78,16 @@ object DiagnosticsHostModel : Ext(DiagnosticsHostRoot) {
         field("maxHistograms", int)
     }
 
-    private val LiveGcEventSession = classdef extends LiveSession {
+    private val GcEventProtocolSession = classdef extends ProtocolSession {
         source("gcHappened", GcEvent).async
     }
 
-    private val LiveTraceSession = classdef extends LiveSession {
+    private val TraceProtocolSession = classdef extends ProtocolSession {
         source("traceReceived", Trace).async
         field("predefinedProviders", immutableList(PredefinedProvider))
     }
 
-    private val LiveChartSession = classdef extends LiveSession {
+    private val ChartProtocolSession = classdef extends ProtocolSession {
         source("valueReceived", ChartValue).async
     }
 
@@ -148,17 +148,16 @@ object DiagnosticsHostModel : Ext(DiagnosticsHostRoot) {
     init {
         field("processList", ProcessList)
 
-        map("persistentCounterSessions", int, PersistentCounterSession)
-        map("liveCounterSessions", int, LiveCounterSession)
+        map("counterExportSessions", int, CounterExportSession)
+        map("counterProtocolSessions", int, CounterProtocolSession)
 
-        map("persistentGcEventSessions", int, PersistentGcEventSession)
-        map("liveGcEventSessions", int, LiveGcEventSession)
-        source("triggerGc", int)
+        map("gcEventExportSessions", int, GcEventExportSession)
+        map("gcEventProtocolSessions", int, GcEventProtocolSession)
 
-        map("persistentTraceSessions", int, PersistentTraceSession)
-        map("liveTraceSessions", int, LiveTraceSession)
+        map("traceExportSessions", int, TraceExportSession)
+        map("traceProtocolSessions", int, TraceProtocolSession)
 
-        map("liveChartSessions", int, LiveChartSession)
+        map("chartProtocolSessions", int, ChartProtocolSession)
 
         call("collectDump",
             structdef("CollectDumpCommand") {

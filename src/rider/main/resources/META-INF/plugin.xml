@@ -93,10 +93,6 @@
                         class="com.github.rafaelldi.diagnosticsclientplugin.actions.gc.StopExportGcEventSessionAction"
                         icon="AllIcons.Actions.Suspend">
                 </action>
-                <action id="DiagnosticsClient.ToolWindow.Explorer.TriggerGcCollection"
-                        class="com.github.rafaelldi.diagnosticsclientplugin.actions.gc.TriggerGcCollectionAction"
-                        icon="AllIcons.Actions.Lightning">
-                </action>
             </group>
             <group id="DiagnosticsClient.ToolWindow.Explorer.Traces"
                    icon="AllIcons.Toolwindows.ToolWindowMessages"
@@ -161,10 +157,6 @@
             <action id="DiagnosticsClient.ToolWindow.LiveGcEventSession.Pause"
                     class="com.github.rafaelldi.diagnosticsclientplugin.actions.gc.PauseLiveGcEventSessionAction"
                     icon="AllIcons.Actions.Pause">
-            </action>
-            <action id="DiagnosticsClient.ToolWindow.GcSession.TriggerCollection"
-                    class="com.github.rafaelldi.diagnosticsclientplugin.actions.gc.TriggerGcCollectionSessionAction"
-                    icon="AllIcons.Actions.Lightning">
             </action>
         </group>
         <group id="DiagnosticsClient.ToolWindow.TraceSession">

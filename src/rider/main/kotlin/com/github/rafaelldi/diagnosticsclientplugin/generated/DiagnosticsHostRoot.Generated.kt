@@ -1,10 +1,18 @@
 @file:Suppress("EXPERIMENTAL_API_USAGE","EXPERIMENTAL_UNSIGNED_LITERALS","PackageDirectoryMismatch","UnusedImport","unused","LocalVariableName","CanBeVal","PropertyName","EnumEntryName","ClassName","ObjectPropertyName","UnnecessaryVariable","SpellCheckingInspection")
 package com.github.rafaelldi.diagnosticsclientplugin.model
 
-import com.jetbrains.rd.framework.ISerializers
-import com.jetbrains.rd.framework.base.ISerializersOwner
-import com.jetbrains.rd.framework.base.RdExtBase
-import com.jetbrains.rd.util.string.PrettyPrinter
+import com.jetbrains.rd.framework.*
+import com.jetbrains.rd.framework.base.*
+import com.jetbrains.rd.framework.impl.*
+
+import com.jetbrains.rd.util.lifetime.*
+import com.jetbrains.rd.util.reactive.*
+import com.jetbrains.rd.util.string.*
+import com.jetbrains.rd.util.*
+import kotlin.time.Duration
+import kotlin.reflect.KClass
+import kotlin.jvm.JvmStatic
+
 
 
 /**

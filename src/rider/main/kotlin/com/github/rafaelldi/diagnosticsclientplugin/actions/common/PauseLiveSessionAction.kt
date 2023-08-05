@@ -1,6 +1,6 @@
 package com.github.rafaelldi.diagnosticsclientplugin.actions.common
 
-import com.github.rafaelldi.diagnosticsclientplugin.model.LiveSession
+import com.github.rafaelldi.diagnosticsclientplugin.model.ProtocolSession
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.components.LocalProcessNode
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.MonitoringTab
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.ProcessExplorerTab
@@ -10,7 +10,7 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.DataKey
 import com.intellij.openapi.project.Project
 
-abstract class PauseLiveSessionAction<TSession : LiveSession, TTab : MonitoringTab> : AnAction() {
+abstract class PauseLiveSessionAction<TSession : ProtocolSession, TTab : MonitoringTab> : AnAction() {
     protected abstract val tabDatKey: DataKey<TTab>
 
     override fun actionPerformed(event: AnActionEvent) {

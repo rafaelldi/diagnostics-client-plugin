@@ -22,29 +22,19 @@ class CounterTable : JBTable() {
 
     override fun isCellEditable(row: Int, column: Int): Boolean = false
 
-    fun add(key: String, counter: Counter) {
-        val index = (counterRowMap.values.maxOrNull() ?: -1) + 1
-        tableModel.addRow(arrayOf(counter.name, counter.value, counter.tags))
-        counterRowMap[key] = index
-    }
-
-    fun update(key: String, counter: Counter) {
+    fun addOrUpdate(counter: Counter) {
+        val key = "${counter.name}${if (counter.tags != null) "-${counter.tags}" else ""}"
         val row = counterRowMap[key]
+
         if (row != null) {
             val currentValue = tableModel.getValueAt(row, 1)
             if (currentValue != counter.value) {
                 tableModel.setValueAt(counter.value, row, 1)
             }
         } else {
-            add(key, counter)
-        }
-    }
-
-    fun remove(key: String) {
-        val row = counterRowMap[key]
-        if (row != null) {
-            tableModel.removeRow(row)
-            counterRowMap.remove(key)
+            val index = (counterRowMap.values.maxOrNull() ?: -1) + 1
+            tableModel.addRow(arrayOf(counter.name, counter.value, counter.tags))
+            counterRowMap[key] = index
         }
     }
 }

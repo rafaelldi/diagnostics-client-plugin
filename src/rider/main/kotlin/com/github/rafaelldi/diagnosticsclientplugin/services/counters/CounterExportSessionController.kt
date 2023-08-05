@@ -4,7 +4,7 @@ import com.github.rafaelldi.diagnosticsclientplugin.dialogs.CounterFileFormat
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.CounterSessionModel
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.StoppingType
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.map
-import com.github.rafaelldi.diagnosticsclientplugin.model.PersistentCounterSession
+import com.github.rafaelldi.diagnosticsclientplugin.model.CounterExportSession
 import com.github.rafaelldi.diagnosticsclientplugin.services.DiagnosticsHost
 import com.github.rafaelldi.diagnosticsclientplugin.services.common.ExportSessionController
 import com.intellij.openapi.components.Service
@@ -14,26 +14,26 @@ import kotlin.io.path.Path
 import kotlin.io.path.pathString
 
 @Service
-class ExportCounterSessionController(project: Project) :
-    ExportSessionController<PersistentCounterSession, CounterSessionModel>(project) {
+class CounterExportSessionController(project: Project) :
+    ExportSessionController<CounterExportSession, CounterSessionModel>(project) {
     companion object {
-        fun getInstance(project: Project): ExportCounterSessionController = project.service()
+        fun getInstance(project: Project): CounterExportSessionController = project.service()
         private const val COUNTERS = "Counters"
     }
 
     override val artifactType = COUNTERS
     override val canBeOpened = true
 
-    override fun getSessions() = DiagnosticsHost.getInstance(project).hostModel?.persistentCounterSessions
+    override fun getSessions() = DiagnosticsHost.getInstance(project).hostModel?.counterExportSessions
 
-    override fun createSession(model: CounterSessionModel): PersistentCounterSession {
+    override fun createSession(model: CounterSessionModel): CounterExportSession {
         val filePath = calculateFilePath(model)
         val metrics = model.metrics.ifEmpty { null }
         val duration =
             if (model.stoppingType == StoppingType.AfterPeriod) model.duration
             else null
 
-        return PersistentCounterSession(
+        return CounterExportSession(
             model.format.map(),
             model.interval,
             model.providers,

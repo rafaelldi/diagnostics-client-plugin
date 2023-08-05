@@ -1,9 +1,9 @@
 package com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs
 
 import com.github.rafaelldi.diagnosticsclientplugin.DiagnosticsClientBundle
-import com.github.rafaelldi.diagnosticsclientplugin.model.LiveTraceSession
 import com.github.rafaelldi.diagnosticsclientplugin.model.PredefinedProvider
 import com.github.rafaelldi.diagnosticsclientplugin.model.Trace
+import com.github.rafaelldi.diagnosticsclientplugin.model.TraceProtocolSession
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.TraceSessionTabManager
 import com.intellij.execution.filters.TextConsoleBuilderFactory
 import com.intellij.execution.impl.ConsoleViewImpl
@@ -21,15 +21,15 @@ import java.awt.BorderLayout
 import java.text.SimpleDateFormat
 import javax.swing.JPanel
 
-class LiveTraceSessionTab(
+class TraceProtocolSessionTab(
     override val pid: Int,
-    session: LiveTraceSession,
+    session: TraceProtocolSession,
     private val manager: TraceSessionTabManager,
     project: Project,
     lt: Lifetime
 ) : SimpleToolWindowPanel(false), MonitoringTab, Disposable {
     companion object {
-        val TRACE_MONITORING_TAB: DataKey<LiveTraceSessionTab> =
+        val TRACE_MONITORING_TAB: DataKey<TraceProtocolSessionTab> =
             DataKey.create("DiagnosticsClient.ToolWindow.TraceMonitoringTab")
 
         private val HTTP_OUTPUT = ConsoleViewContentType("HTTP_OUTPUT", ConsoleHighlighter.BLUE)
