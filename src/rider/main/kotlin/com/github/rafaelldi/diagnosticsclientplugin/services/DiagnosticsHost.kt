@@ -22,6 +22,7 @@ import com.intellij.openapi.progress.withBackgroundProgress
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.rd.createNestedDisposable
 import com.intellij.openapi.rd.util.withUiContext
+import com.intellij.util.application
 import com.jetbrains.rd.framework.*
 import com.jetbrains.rd.framework.util.nextTrueValue
 import com.jetbrains.rd.platform.util.idea.LifetimedService
@@ -45,11 +46,13 @@ class DiagnosticsHost(private val project: Project) : LifetimedService() {
         private set
 
     suspend fun connectToAgent() {
+        application.assertIsNonDispatchThread()
+
         if (!agentLifetime.isTerminated) return
 
         val toolService = DiagnosticsToolService.getInstance(project)
 
-        val isGlobalToolReady = withUiContext { toolService.checkGlobalTool() }
+        val isGlobalToolReady = toolService.checkGlobalTool()
         if (!isGlobalToolReady) {
             return
         }

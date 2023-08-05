@@ -1,3 +1,5 @@
+@file:Suppress("UnstableApiUsage")
+
 package com.github.rafaelldi.diagnosticsclientplugin.services
 
 import com.github.rafaelldi.diagnosticsclientplugin.DiagnosticsClientBundle
@@ -16,6 +18,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.rd.util.withUiContext
 import com.intellij.openapi.util.SystemInfo
 import com.intellij.util.EnvironmentUtil
+import com.intellij.util.application
 import com.jetbrains.rider.runtime.RiderDotNetActiveRuntimeHost
 
 @Service(Service.Level.PROJECT)
@@ -41,31 +44,37 @@ class DiagnosticsToolService(private val project: Project) {
         fun getInstance(project: Project) = project.service<DiagnosticsToolService>()
     }
 
-    fun checkGlobalTool(): Boolean {
+    suspend fun checkGlobalTool(): Boolean {
+        application.assertIsNonDispatchThread()
+
         val dotnetPath = getDotnetPath() ?: return false
         val isInstalled = isGlobalToolInstalled(dotnetPath)
         if (!isInstalled) {
-            Notification(
-                "Diagnostics Client",
-                DiagnosticsClientBundle.message("notification.global.tool.agent.not.installed"),
-                DiagnosticsClientBundle.message("notification.global.tool.please.install.agent"),
-                NotificationType.WARNING
-            )
-                .addAction(InstallGlobalToolAction())
-                .notify(project)
+            withUiContext {
+                Notification(
+                    "Diagnostics Client",
+                    DiagnosticsClientBundle.message("notification.global.tool.agent.not.installed"),
+                    DiagnosticsClientBundle.message("notification.global.tool.please.install.agent"),
+                    NotificationType.WARNING
+                )
+                    .addAction(InstallGlobalToolAction())
+                    .notify(project)
+            }
             return false
         }
 
         val isCurrentVersionInstalled = isCurrentVersionInstalled(dotnetPath)
         if (!isCurrentVersionInstalled) {
-            Notification(
-                "Diagnostics Client",
-                DiagnosticsClientBundle.message("notification.global.tool.new.version.available"),
-                DiagnosticsClientBundle.message("notification.global.tool.please.update.agent"),
-                NotificationType.WARNING
-            )
-                .addAction(UpdateGlobalToolAction())
-                .notify(project)
+            withUiContext {
+                Notification(
+                    "Diagnostics Client",
+                    DiagnosticsClientBundle.message("notification.global.tool.new.version.available"),
+                    DiagnosticsClientBundle.message("notification.global.tool.please.update.agent"),
+                    NotificationType.WARNING
+                )
+                    .addAction(UpdateGlobalToolAction())
+                    .notify(project)
+            }
             return false
         }
 
@@ -83,6 +92,8 @@ class DiagnosticsToolService(private val project: Project) {
     }
 
     suspend fun installGlobalTool() {
+        application.assertIsNonDispatchThread()
+
         val dotnetPath = getDotnetPath() ?: return
 
         val commandLine = GeneralCommandLine()
@@ -114,6 +125,8 @@ class DiagnosticsToolService(private val project: Project) {
     }
 
     suspend fun updateGlobalTool() {
+        application.assertIsNonDispatchThread()
+
         val dotnetPath = getDotnetPath() ?: return
 
         val commandLine = GeneralCommandLine()
