@@ -2,19 +2,31 @@ name: Help Pages
 on:
   workflow_dispatch:
 
+permissions:
+  pages: write
+  id-token: write
+
 env:
-  PRODUCT: diagnostics-client-help/dc
-  DOC_ARTIFACT: webHelpDC2-all.zip
+  INSTANCE: diagnostics-client-help/dc
+  ARTIFACT: webHelpDC2-all.zip
+  DOCKER_VERSION: 2.1.1479-p3869
 
 jobs:
-  build-job:
+  build:
     name: Build Help Pages
     runs-on: ubuntu-latest
     steps:
+
       - name: 'Checkout repository'
         uses: actions/checkout@v3
+
       - name: 'Build Writerside docs using Docker'
         uses: JetBrains/writerside-github-action@v4
+        with:
+          instance: ${{ env.INSTANCE }}
+          artifact: ${{ env.ARTIFACT }}
+          docker-version: ${{ env.DOCKER_VERSION }}
+
       - name: 'Upload documentation'
         uses: actions/upload-artifact@v3
         with:
@@ -24,29 +36,33 @@ jobs:
 
   deploy:
     name: Deploy Help Pages
-    needs: build-job
+    needs: build
     runs-on: ubuntu-latest
-    permissions:
-      pages: write      # to deploy to Pages
-      id-token: write   # to verify the deployment originates from an appropriate source
+
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
+
     steps:
+
       - name: 'Download artifact'
         uses: actions/download-artifact@v3
         with:
           name: help
+
       - name: 'Unzip artifact'
         uses: montudor/action-zip@v1
         with:
           args: unzip -qq ${{ env.DOC_ARTIFACT }} -d dir
+
       - name: 'Setup Pages'
         uses: actions/configure-pages@v3
+
       - name: 'Upload artifact'
         uses: actions/upload-pages-artifact@v2
         with:
           path: dir
+
       - name: 'Deploy to GitHub Pages'
         id: deployment
         uses: actions/deploy-pages@v2
