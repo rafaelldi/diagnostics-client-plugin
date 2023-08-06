@@ -24,6 +24,6 @@ fun isValidCounterProviderList(providers: String): Boolean = counterProvidersReg
 // OpenTelemetry.Instrumentation.Runtime[process.cpu.count],OpenTelemetry.Instrumentation.AspNetCore[http.server.duration]
 // OpenTelemetry.Instrumentation.Runtime [ process.cpu.count ] , OpenTelemetry.Instrumentation.AspNetCore [ http.server.duration ]
 private const val METRIC_LIST_PATTERN =
-    "^\\s*[\\w\\-.]+\\s*(?:\\[\\s*[\\w-.]+(?:\\s*,\\s*[\\w-.]+)*\\s*]\\s*)?(?:,\\s*[\\w\\-.]+\\s*(?:\\[\\s*[\\w-.]+(?:\\s*,\\s*[\\w-.]+)*\\s*])?\\s*)*\\s*\$"
+    "^(?:\\s*[\\w\\-.]+\\s*(?:\\[\\s*[\\w-.]+(?:\\s*,\\s*[\\w-.]+)*\\s*]\\s*)?(?:,\\s*[\\w\\-.]+\\s*(?:\\[\\s*[\\w-.]+(?:\\s*,\\s*[\\w-.]+)*\\s*])?\\s*)*)?\\s*\$"
 private val metricListRegex = Regex(METRIC_LIST_PATTERN)
 fun isValidMetricList(providers: String): Boolean = metricListRegex.matches(providers)
