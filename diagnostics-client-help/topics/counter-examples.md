@@ -5,7 +5,7 @@ This page shows some built-in `EventCounters` that may be useful for monitoring 
 ## How to specify providers and counters
 
 Select one or more providers and their counters and put them in the `Providers` field in comma separated format. If you
-want to monitor all counters of one provider, do not specify square brackets. For
+want to watch all counters of one provider, do not specify square brackets. For
 example, `System.Runtime[cpu-usage,working-set],Microsoft.AspNetCore.Hosting`
 or `System.Runtime[cpu-usage,working-set],Microsoft.AspNetCore.Hosting[total-requests]`.
 

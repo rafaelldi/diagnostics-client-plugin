@@ -50,7 +50,7 @@ async Task CounterProducingTask()
 }
 ```
 
-To monitor a new counter, you need to specify the name of the `EventSource` (`Example.MyEventCounterSource`) in
+To watch a new counter, you need to specify the name of the `EventSource` (`Example.MyEventCounterSource`) in
 the `Providers` field.
 
 ![Monitor counters dialog with custom provider](custom-event-provider.png){ width="450" }

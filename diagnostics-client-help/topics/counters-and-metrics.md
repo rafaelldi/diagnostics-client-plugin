@@ -10,9 +10,9 @@ is performing overall. They can give you a good clue as to what the next steps s
 
 One way to monitor the performance of your application is to
 use [`EventCounters`](https://learn.microsoft.com/en-us/dotnet/core/diagnostics/event-counters). The runtime itself and
-some libraries provide pre-built counters, but it is also possible to create your own counter. The plugin acts as
-a [dotnet-counters](https://learn.microsoft.com/en-us/dotnet/core/diagnostics/dotnet-counters) tool, allowing you to
-monitor counter values or export them to a file.
+some libraries provide pre-built counters, but it is also possible to [create your own counter](custom-counters.md). The
+plugin acts as a [dotnet-counters](https://learn.microsoft.com/en-us/dotnet/core/diagnostics/dotnet-counters) tool,
+allowing you to watch counter values or export them to a file.
 
 > `System.Diagnostics.Metrics` API is now
 > the [preferred](https://learn.microsoft.com/en-us/dotnet/core/diagnostics/compare-metric-apis) way to add metrics to
@@ -20,29 +20,43 @@ monitor counter values or export them to a file.
 >
 {style="note"}
 
-### Counter monitoring
+### Watch counter values
 
-To monitor `EventCounters`, select the process and call the `Monitor Counetrs` action.
+To monitor `EventCounters`, select the process and call the `Watch Counetrs` action.
 
-![Monitor counters dialog](counters-dialog.png){ width="450" }
+![Watch counters dialog](counters-dialog.png){ width="450" }
 
 {style="narrow"}
 Process
 : You can change the target process.
 
-Refresh interval
-: Delay between counter value updates.
-
 Stop
 : You can choose to stop monitoring by manually calling the `Stop` action or automatically after a certain period of
 time.
 
-Providers
+Counters
 : A comma-separated list of counter providers. Each provider contains its name and, optionally, a list of
 metrics `provider-name[metric1,metric2]`. If the list of metrics is not specified, all metrics from that provider will
 be shown.
 
-`Providers` is the field where you specify which counters you want to monitor. The default is `System.Runtime` and it
+Metrics
+: A comma-separated list of meters. Optionally, you can specify a list of metrics for a specific meter in the
+format `meter-name[metric1,metric2]`.
+
+Refresh interval
+: Delay between counter value updates.
+
+Maximum number of time series
+: The maximum number of time series that can be tracked. Each unique combination of provider name, metric name, and
+dimension values counts as one time series. Tracking more time series uses more memory in the target process so this
+bound guards against unintentional high memory use.
+
+Maximum number of histograms
+: The maximum number of histograms that can be tracked. Each unique combination of provider name, histogram name, and
+dimension values counts as one histogram. Tracking more histograms uses more memory in the target process so this bound
+guards against unintentional high memory use.
+
+`Counters` is the field where you specify which counters you want to watch. The default is `System.Runtime` and it
 includes some basic counters such as `cpu-usage`, `gc-heap-size`, etc. A full list of its counters can be found in the
 [page](counter-examples.md), as well as some other providers (
 e.g. `Microsoft.AspNetCore.Hosting`, `Microsoft-AspNetCore-Server-Kestrel`, `System.Net.Http`, etc.). The
@@ -59,7 +73,7 @@ provider. There are some examples:
 
 ### Custom counters
 
-It is possible to create your own counters and monitor them. To do that, you have to implement an `EventSource` and then
+It is possible to create your own counters and watch them. To do that, you have to implement an `EventSource` and then
 use its name as a provider. You can find a full example of how to do this in
 the [page](custom-counters.md).
 
@@ -75,12 +89,12 @@ Sometimes it is convenient to export the counter values to a file and analyse th
 ## Metrics
 
 A more modern approach to reporting application metrics is to use
-the [`System.Diagnostics.Metrics`](https://learn.microsoft.com/en-us/dotnet/core/diagnostics/metrics) API. To monitor
-them, you can use the `Metrics` section in the action dialog.
+the [`System.Diagnostics.Metrics`](https://learn.microsoft.com/en-us/dotnet/core/diagnostics/metrics) API. To watch
+them, you can use the `Metrics` field in the action dialog.
 
-![Monitor counters dialog with metrics enabled](metrics-dialog.png){ width="450" }
+![Watch counters dialog with metrics enabled](metrics-dialog.png){ width="450" }
 
-The `List of metrics` field follows the same format as the `Providers` field: a comma-separated list of meters. Each
+The `Metrics` field follows the same format as the `Providers` field: a comma-separated list of meters. Each
 meter contains its name and, optionally, a list of metrics `meter-name[metric1,metric2]`. If no metric list is
 specified, all metrics for that counter will be shown. Here are some examples:
 
