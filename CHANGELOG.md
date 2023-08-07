@@ -4,6 +4,8 @@
 
 ## [Unreleased]
 
+## [2023.2.0] - 2023-08-07
+
 ### Changed
 - Extracted [Diagnostics Agent](https://github.com/rafaelldi/diagnostics-agent) to a separate tool
 - Created a [plugin documentation portal](https://rafaelldi.blog/diagnostics-client-plugin)
@@ -75,7 +77,8 @@
 - Actions to monitor and collect counters
 - Action to collect traces
 
-[Unreleased]: https://github.com/rafaelldi/diagnostics-client-plugin/compare/v2023.1.2...HEAD
+[Unreleased]: https://github.com/rafaelldi/diagnostics-client-plugin/compare/v2023.2.0...HEAD
+[2023.2.0]: https://github.com/rafaelldi/diagnostics-client-plugin/compare/v2023.1.2...v2023.2.0
 [2023.1.2]: https://github.com/rafaelldi/diagnostics-client-plugin/compare/v2023.1.1...v2023.1.2
 [2023.1.1]: https://github.com/rafaelldi/diagnostics-client-plugin/compare/v2023.1.0...v2023.1.1
 [2023.1.0]: https://github.com/rafaelldi/diagnostics-client-plugin/compare/v2022.3.0...v2023.1.0
