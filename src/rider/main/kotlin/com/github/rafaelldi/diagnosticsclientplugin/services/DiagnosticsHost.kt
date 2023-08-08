@@ -52,30 +52,30 @@ class DiagnosticsHost(private val project: Project) : LifetimedService() {
 
         val toolService = DiagnosticsToolService.getInstance(project)
 
-        val isGlobalToolReady = toolService.checkGlobalTool()
-        if (!isGlobalToolReady) {
-            return
-        }
+//        val isGlobalToolReady = toolService.checkGlobalTool()
+//        if (!isGlobalToolReady) {
+//            return
+//        }
 
         withBackgroundProgress(project, DiagnosticsClientBundle.message("diagnostics.host.connect.progress")) {
             val lifetimeDefinition = agentLifetime.next()
 
-            val port = NetUtils.findFreePort(INITIAL_PORT)
+            val port = INITIAL_PORT//NetUtils.findFreePort(INITIAL_PORT)
 
-            val processHandler = DiagnosticsToolService.getInstance(project).run(port)
-            lifetimeDefinition.onTermination {
-                if (!processHandler.isProcessTerminating && !processHandler.isProcessTerminated) {
-                    processHandler.killProcess()
-                }
-            }
-            processHandler.addProcessListener(object : ProcessListener {
-                override fun processTerminated(event: ProcessEvent) {
-                    lifetimeDefinition.executeIfAlive {
-                        lifetimeDefinition.terminate(true)
-                    }
-                }
-            }, lifetimeDefinition.createNestedDisposable())
-            processHandler.startNotify()
+//            val processHandler = DiagnosticsToolService.getInstance(project).run(port)
+//            lifetimeDefinition.onTermination {
+//                if (!processHandler.isProcessTerminating && !processHandler.isProcessTerminated) {
+//                    processHandler.killProcess()
+//                }
+//            }
+//            processHandler.addProcessListener(object : ProcessListener {
+//                override fun processTerminated(event: ProcessEvent) {
+//                    lifetimeDefinition.executeIfAlive {
+//                        lifetimeDefinition.terminate(true)
+//                    }
+//                }
+//            }, lifetimeDefinition.createNestedDisposable())
+//            processHandler.startNotify()
 
             val model = connectToProtocol(port, lifetimeDefinition.lifetime)
 

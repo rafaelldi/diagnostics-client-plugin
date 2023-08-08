@@ -10,5 +10,7 @@
     <toc-element topic="counters-and-metrics.md">
         <toc-element topic="counter-examples.md"/>
         <toc-element topic="custom-counters.md"/>
+        <toc-element topic="metrics-examples.md"/>
+        <toc-element topic="custom-metrics.md"/>
     </toc-element>
 </instance-profile>

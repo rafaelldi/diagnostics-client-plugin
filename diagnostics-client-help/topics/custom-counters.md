@@ -1,5 +1,7 @@
 # Create custom counters
 
+This page shows how to create a new custom `EventCounter` for your project and monitor it with the plugin.
+
 To add your own counter to the application, you need to implement
 the [System.Diagnostics.Tracing.EventSource](https://learn.microsoft.com/en-us/dotnet/api/system.diagnostics.tracing.eventsource).
 The simplest one may look like this:
