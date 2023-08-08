@@ -88,7 +88,7 @@ object DiagnosticsHostModel : Ext(DiagnosticsHostRoot) {
     }
 
     private val ChartProtocolSession = classdef extends ProtocolSession {
-        source("valueReceived", ChartValue).async
+        source("eventReceived", ChartEvent).async
     }
 
     private val Counter = structdef {
@@ -133,16 +133,19 @@ object DiagnosticsHostModel : Ext(DiagnosticsHostRoot) {
         field("content", string)
     }
 
-    private val ChartValue = structdef {
+    private val ChartEvent = structdef {
         field("timeStamp", long)
         field("value", double)
-        field("type", ChartValueType)
+        field("type", ChartEventType)
+        field("label", string.nullable)
     }
 
-    private val ChartValueType = enum("ChartValueType") {
+    private val ChartEventType = enum("ChartEventType") {
         +"Cpu"
         +"WorkingSet"
         +"GcHeapSize"
+        +"Gc"
+        +"Exception"
     }
 
     init {

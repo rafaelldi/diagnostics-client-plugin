@@ -129,7 +129,7 @@ namespace DiagnosticsAgent.Model
     
     
     
-    protected override long SerializationHash => 7667229416102078676L;
+    protected override long SerializationHash => -4546765254926434371L;
     
     protected override Action<ISerializers> Register => RegisterDeclaredTypesSerializers;
     public static void RegisterDeclaredTypesSerializers(ISerializers serializers)
@@ -188,20 +188,141 @@ namespace DiagnosticsAgent.Model
   
   
   /// <summary>
+  /// <p>Generated from: DiagnosticsHostModel.kt:136</p>
+  /// </summary>
+  public sealed class ChartEvent : IPrintable, IEquatable<ChartEvent>
+  {
+    //fields
+    //public fields
+    public long TimeStamp {get; private set;}
+    public double Value {get; private set;}
+    public ChartEventType Type {get; private set;}
+    [CanBeNull] public string Label {get; private set;}
+    
+    //private fields
+    //primary constructor
+    public ChartEvent(
+      long timeStamp,
+      double value,
+      ChartEventType type,
+      [CanBeNull] string label
+    )
+    {
+      TimeStamp = timeStamp;
+      Value = value;
+      Type = type;
+      Label = label;
+    }
+    //secondary constructor
+    //deconstruct trait
+    public void Deconstruct(out long timeStamp, out double value, out ChartEventType type, [CanBeNull] out string label)
+    {
+      timeStamp = TimeStamp;
+      value = Value;
+      type = Type;
+      label = Label;
+    }
+    //statics
+    
+    public static CtxReadDelegate<ChartEvent> Read = (ctx, reader) => 
+    {
+      var timeStamp = reader.ReadLong();
+      var value = reader.ReadDouble();
+      var type = (ChartEventType)reader.ReadInt();
+      var label = ReadStringNullable(ctx, reader);
+      var _result = new ChartEvent(timeStamp, value, type, label);
+      return _result;
+    };
+    public static CtxReadDelegate<string> ReadStringNullable = JetBrains.Rd.Impl.Serializers.ReadString.NullableClass();
+    
+    public static CtxWriteDelegate<ChartEvent> Write = (ctx, writer, value) => 
+    {
+      writer.Write(value.TimeStamp);
+      writer.Write(value.Value);
+      writer.Write((int)value.Type);
+      WriteStringNullable(ctx, writer, value.Label);
+    };
+    public static  CtxWriteDelegate<string> WriteStringNullable = JetBrains.Rd.Impl.Serializers.WriteString.NullableClass();
+    
+    //constants
+    
+    //custom body
+    //methods
+    //equals trait
+    public override bool Equals(object obj)
+    {
+      if (ReferenceEquals(null, obj)) return false;
+      if (ReferenceEquals(this, obj)) return true;
+      if (obj.GetType() != GetType()) return false;
+      return Equals((ChartEvent) obj);
+    }
+    public bool Equals(ChartEvent other)
+    {
+      if (ReferenceEquals(null, other)) return false;
+      if (ReferenceEquals(this, other)) return true;
+      return TimeStamp == other.TimeStamp && Value == other.Value && Type == other.Type && Equals(Label, other.Label);
+    }
+    //hash code trait
+    public override int GetHashCode()
+    {
+      unchecked {
+        var hash = 0;
+        hash = hash * 31 + TimeStamp.GetHashCode();
+        hash = hash * 31 + Value.GetHashCode();
+        hash = hash * 31 + (int) Type;
+        hash = hash * 31 + (Label != null ? Label.GetHashCode() : 0);
+        return hash;
+      }
+    }
+    //pretty print
+    public void Print(PrettyPrinter printer)
+    {
+      printer.Println("ChartEvent (");
+      using (printer.IndentCookie()) {
+        printer.Print("timeStamp = "); TimeStamp.PrintEx(printer); printer.Println();
+        printer.Print("value = "); Value.PrintEx(printer); printer.Println();
+        printer.Print("type = "); Type.PrintEx(printer); printer.Println();
+        printer.Print("label = "); Label.PrintEx(printer); printer.Println();
+      }
+      printer.Print(")");
+    }
+    //toString
+    public override string ToString()
+    {
+      var printer = new SingleLinePrettyPrinter();
+      Print(printer);
+      return printer.ToString();
+    }
+  }
+  
+  
+  /// <summary>
+  /// <p>Generated from: DiagnosticsHostModel.kt:143</p>
+  /// </summary>
+  public enum ChartEventType {
+    Cpu,
+    WorkingSet,
+    GcHeapSize,
+    Gc,
+    Exception
+  }
+  
+  
+  /// <summary>
   /// <p>Generated from: DiagnosticsHostModel.kt:90</p>
   /// </summary>
   public sealed class ChartProtocolSession : ProtocolSession
   {
     //fields
     //public fields
-    [NotNull] public ISignal<ChartValue> ValueReceived => _ValueReceived;
+    [NotNull] public ISignal<ChartEvent> EventReceived => _EventReceived;
     
     //private fields
-    [NotNull] private readonly RdSignal<ChartValue> _ValueReceived;
+    [NotNull] private readonly RdSignal<ChartEvent> _EventReceived;
     
     //primary constructor
     private ChartProtocolSession(
-      [NotNull] RdSignal<ChartValue> valueReceived,
+      [NotNull] RdSignal<ChartEvent> eventReceived,
       [NotNull] RdProperty<bool> active,
       [NotNull] RdProperty<int?> duration
     ) : base (
@@ -209,16 +330,16 @@ namespace DiagnosticsAgent.Model
       duration
      ) 
     {
-      if (valueReceived == null) throw new ArgumentNullException("valueReceived");
+      if (eventReceived == null) throw new ArgumentNullException("eventReceived");
       
-      _ValueReceived = valueReceived;
-      _ValueReceived.Async = true;
-      BindableChildren.Add(new KeyValuePair<string, object>("valueReceived", _ValueReceived));
+      _EventReceived = eventReceived;
+      _EventReceived.Async = true;
+      BindableChildren.Add(new KeyValuePair<string, object>("eventReceived", _EventReceived));
     }
     //secondary constructor
     public ChartProtocolSession (
     ) : this (
-      new RdSignal<ChartValue>(ChartValue.Read, ChartValue.Write),
+      new RdSignal<ChartEvent>(ChartEvent.Read, ChartEvent.Write),
       new RdProperty<bool>(JetBrains.Rd.Impl.Serializers.ReadBool, JetBrains.Rd.Impl.Serializers.WriteBool),
       new RdProperty<int?>(ReadIntNullable, WriteIntNullable)
     ) {}
@@ -230,8 +351,8 @@ namespace DiagnosticsAgent.Model
       var _id = RdId.Read(reader);
       var active = RdProperty<bool>.Read(ctx, reader, JetBrains.Rd.Impl.Serializers.ReadBool, JetBrains.Rd.Impl.Serializers.WriteBool);
       var duration = RdProperty<int?>.Read(ctx, reader, ReadIntNullable, WriteIntNullable);
-      var valueReceived = RdSignal<ChartValue>.Read(ctx, reader, ChartValue.Read, ChartValue.Write);
-      var _result = new ChartProtocolSession(valueReceived, active, duration).WithId(_id);
+      var eventReceived = RdSignal<ChartEvent>.Read(ctx, reader, ChartEvent.Read, ChartEvent.Write);
+      var _result = new ChartProtocolSession(eventReceived, active, duration).WithId(_id);
       return _result;
     };
     public static CtxReadDelegate<int?> ReadIntNullable = JetBrains.Rd.Impl.Serializers.ReadInt.NullableStruct();
@@ -241,7 +362,7 @@ namespace DiagnosticsAgent.Model
       value.RdId.Write(writer);
       RdProperty<bool>.Write(ctx, writer, value._Active);
       RdProperty<int?>.Write(ctx, writer, value._Duration);
-      RdSignal<ChartValue>.Write(ctx, writer, value._ValueReceived);
+      RdSignal<ChartEvent>.Write(ctx, writer, value._EventReceived);
     };
     public static  CtxWriteDelegate<int?> WriteIntNullable = JetBrains.Rd.Impl.Serializers.WriteInt.NullableStruct();
     
@@ -256,7 +377,7 @@ namespace DiagnosticsAgent.Model
     {
       printer.Println("ChartProtocolSession (");
       using (printer.IndentCookie()) {
-        printer.Print("valueReceived = "); _ValueReceived.PrintEx(printer); printer.Println();
+        printer.Print("eventReceived = "); _EventReceived.PrintEx(printer); printer.Println();
         printer.Print("active = "); _Active.PrintEx(printer); printer.Println();
         printer.Print("duration = "); _Duration.PrintEx(printer); printer.Println();
       }
@@ -273,116 +394,7 @@ namespace DiagnosticsAgent.Model
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:136</p>
-  /// </summary>
-  public sealed class ChartValue : IPrintable, IEquatable<ChartValue>
-  {
-    //fields
-    //public fields
-    public long TimeStamp {get; private set;}
-    public double Value {get; private set;}
-    public ChartValueType Type {get; private set;}
-    
-    //private fields
-    //primary constructor
-    public ChartValue(
-      long timeStamp,
-      double value,
-      ChartValueType type
-    )
-    {
-      TimeStamp = timeStamp;
-      Value = value;
-      Type = type;
-    }
-    //secondary constructor
-    //deconstruct trait
-    public void Deconstruct(out long timeStamp, out double value, out ChartValueType type)
-    {
-      timeStamp = TimeStamp;
-      value = Value;
-      type = Type;
-    }
-    //statics
-    
-    public static CtxReadDelegate<ChartValue> Read = (ctx, reader) => 
-    {
-      var timeStamp = reader.ReadLong();
-      var value = reader.ReadDouble();
-      var type = (ChartValueType)reader.ReadInt();
-      var _result = new ChartValue(timeStamp, value, type);
-      return _result;
-    };
-    
-    public static CtxWriteDelegate<ChartValue> Write = (ctx, writer, value) => 
-    {
-      writer.Write(value.TimeStamp);
-      writer.Write(value.Value);
-      writer.Write((int)value.Type);
-    };
-    
-    //constants
-    
-    //custom body
-    //methods
-    //equals trait
-    public override bool Equals(object obj)
-    {
-      if (ReferenceEquals(null, obj)) return false;
-      if (ReferenceEquals(this, obj)) return true;
-      if (obj.GetType() != GetType()) return false;
-      return Equals((ChartValue) obj);
-    }
-    public bool Equals(ChartValue other)
-    {
-      if (ReferenceEquals(null, other)) return false;
-      if (ReferenceEquals(this, other)) return true;
-      return TimeStamp == other.TimeStamp && Value == other.Value && Type == other.Type;
-    }
-    //hash code trait
-    public override int GetHashCode()
-    {
-      unchecked {
-        var hash = 0;
-        hash = hash * 31 + TimeStamp.GetHashCode();
-        hash = hash * 31 + Value.GetHashCode();
-        hash = hash * 31 + (int) Type;
-        return hash;
-      }
-    }
-    //pretty print
-    public void Print(PrettyPrinter printer)
-    {
-      printer.Println("ChartValue (");
-      using (printer.IndentCookie()) {
-        printer.Print("timeStamp = "); TimeStamp.PrintEx(printer); printer.Println();
-        printer.Print("value = "); Value.PrintEx(printer); printer.Println();
-        printer.Print("type = "); Type.PrintEx(printer); printer.Println();
-      }
-      printer.Print(")");
-    }
-    //toString
-    public override string ToString()
-    {
-      var printer = new SingleLinePrettyPrinter();
-      Print(printer);
-      return printer.ToString();
-    }
-  }
-  
-  
-  /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:142</p>
-  /// </summary>
-  public enum ChartValueType {
-    Cpu,
-    WorkingSet,
-    GcHeapSize
-  }
-  
-  
-  /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:163</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:166</p>
   /// </summary>
   public sealed class CollectDumpCommand : IPrintable, IEquatable<CollectDumpCommand>
   {
@@ -500,7 +512,7 @@ namespace DiagnosticsAgent.Model
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:180</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:183</p>
   /// </summary>
   public sealed class CollectStackTraceCommand : IPrintable, IEquatable<CollectStackTraceCommand>
   {
@@ -930,7 +942,7 @@ namespace DiagnosticsAgent.Model
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:174</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:177</p>
   /// </summary>
   public sealed class DumpCollectionResult : IPrintable, IEquatable<DumpCollectionResult>
   {
@@ -1015,7 +1027,7 @@ namespace DiagnosticsAgent.Model
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:165</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:168</p>
   /// </summary>
   public enum DumpType {
     Full,
