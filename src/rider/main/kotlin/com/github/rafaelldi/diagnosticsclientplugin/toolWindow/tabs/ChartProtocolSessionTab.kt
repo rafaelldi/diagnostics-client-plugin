@@ -1,7 +1,7 @@
 package com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs
 
 import com.github.rafaelldi.diagnosticsclientplugin.model.ChartProtocolSession
-import com.github.rafaelldi.diagnosticsclientplugin.model.ChartValue
+import com.github.rafaelldi.diagnosticsclientplugin.model.ChartEvent
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.ChartSessionTabManager
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.components.CounterChartPanel
 import com.intellij.openapi.Disposable
@@ -27,13 +27,13 @@ class ChartProtocolSessionTab(
         setContent(panel)
         initActionToolbar()
 
-        session.valueReceived.advise(lt) { valueReceived(it) }
+        session.eventReceived.advise(lt) { valueReceived(it) }
     }
 
     private fun initActionToolbar() {
     }
 
-    private fun valueReceived(value: ChartValue) {
+    private fun valueReceived(value: ChartEvent) {
         panel.update(value)
     }
 

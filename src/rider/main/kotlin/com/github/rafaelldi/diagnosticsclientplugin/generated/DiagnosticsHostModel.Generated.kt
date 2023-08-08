@@ -49,8 +49,8 @@ class DiagnosticsHostModel private constructor(
             serializers.register(GcEvent)
             serializers.register(PredefinedProvider.marshaller)
             serializers.register(Trace)
-            serializers.register(ChartValue)
-            serializers.register(ChartValueType.marshaller)
+            serializers.register(ChartEvent)
+            serializers.register(ChartEventType.marshaller)
             serializers.register(CollectDumpCommand)
             serializers.register(DumpCollectionResult)
             serializers.register(CollectStackTraceCommand)
@@ -79,7 +79,7 @@ class DiagnosticsHostModel private constructor(
         }
         
         
-        const val serializationHash = 7667229416102078676L
+        const val serializationHash = -4546765254926434371L
         
     }
     override val serializersOwner: ISerializersOwner get() = DiagnosticsHostModel
@@ -168,10 +168,103 @@ val IProtocol.diagnosticsHostModel get() = getOrCreateExtension(DiagnosticsHostM
 
 
 /**
+ * #### Generated from [DiagnosticsHostModel.kt:136]
+ */
+data class ChartEvent (
+    val timeStamp: Long,
+    val value: Double,
+    val type: ChartEventType,
+    val label: String?
+) : IPrintable {
+    //companion
+    
+    companion object : IMarshaller<ChartEvent> {
+        override val _type: KClass<ChartEvent> = ChartEvent::class
+        
+        @Suppress("UNCHECKED_CAST")
+        override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): ChartEvent  {
+            val timeStamp = buffer.readLong()
+            val value = buffer.readDouble()
+            val type = buffer.readEnum<ChartEventType>()
+            val label = buffer.readNullable { buffer.readString() }
+            return ChartEvent(timeStamp, value, type, label)
+        }
+        
+        override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: ChartEvent)  {
+            buffer.writeLong(value.timeStamp)
+            buffer.writeDouble(value.value)
+            buffer.writeEnum(value.type)
+            buffer.writeNullable(value.label) { buffer.writeString(it) }
+        }
+        
+        
+    }
+    //fields
+    //methods
+    //initializer
+    //secondary constructor
+    //equals trait
+    override fun equals(other: Any?): Boolean  {
+        if (this === other) return true
+        if (other == null || other::class != this::class) return false
+        
+        other as ChartEvent
+        
+        if (timeStamp != other.timeStamp) return false
+        if (value != other.value) return false
+        if (type != other.type) return false
+        if (label != other.label) return false
+        
+        return true
+    }
+    //hash code trait
+    override fun hashCode(): Int  {
+        var __r = 0
+        __r = __r*31 + timeStamp.hashCode()
+        __r = __r*31 + value.hashCode()
+        __r = __r*31 + type.hashCode()
+        __r = __r*31 + if (label != null) label.hashCode() else 0
+        return __r
+    }
+    //pretty print
+    override fun print(printer: PrettyPrinter)  {
+        printer.println("ChartEvent (")
+        printer.indent {
+            print("timeStamp = "); timeStamp.print(printer); println()
+            print("value = "); value.print(printer); println()
+            print("type = "); type.print(printer); println()
+            print("label = "); label.print(printer); println()
+        }
+        printer.print(")")
+    }
+    //deepClone
+    //contexts
+    //threading
+}
+
+
+/**
+ * #### Generated from [DiagnosticsHostModel.kt:143]
+ */
+enum class ChartEventType {
+    Cpu, 
+    WorkingSet, 
+    GcHeapSize, 
+    Gc, 
+    Exception;
+    
+    companion object {
+        val marshaller = FrameworkMarshallers.enum<ChartEventType>()
+        
+    }
+}
+
+
+/**
  * #### Generated from [DiagnosticsHostModel.kt:90]
  */
 class ChartProtocolSession private constructor(
-    private val _valueReceived: RdSignal<ChartValue>,
+    private val _eventReceived: RdSignal<ChartEvent>,
     _active: RdOptionalProperty<Boolean>,
     _duration: RdProperty<Int?>
 ) : ProtocolSession (
@@ -188,36 +281,36 @@ class ChartProtocolSession private constructor(
             val _id = RdId.read(buffer)
             val _active = RdOptionalProperty.read(ctx, buffer, FrameworkMarshallers.Bool)
             val _duration = RdProperty.read(ctx, buffer, __IntNullableSerializer)
-            val _valueReceived = RdSignal.read(ctx, buffer, ChartValue)
-            return ChartProtocolSession(_valueReceived, _active, _duration).withId(_id)
+            val _eventReceived = RdSignal.read(ctx, buffer, ChartEvent)
+            return ChartProtocolSession(_eventReceived, _active, _duration).withId(_id)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: ChartProtocolSession)  {
             value.rdid.write(buffer)
             RdOptionalProperty.write(ctx, buffer, value._active)
             RdProperty.write(ctx, buffer, value._duration)
-            RdSignal.write(ctx, buffer, value._valueReceived)
+            RdSignal.write(ctx, buffer, value._eventReceived)
         }
         
         private val __IntNullableSerializer = FrameworkMarshallers.Int.nullable()
         
     }
     //fields
-    val valueReceived: IAsyncSignal<ChartValue> get() = _valueReceived
+    val eventReceived: IAsyncSignal<ChartEvent> get() = _eventReceived
     //methods
     //initializer
     init {
-        _valueReceived.async = true
+        _eventReceived.async = true
     }
     
     init {
-        bindableChildren.add("valueReceived" to _valueReceived)
+        bindableChildren.add("eventReceived" to _eventReceived)
     }
     
     //secondary constructor
     constructor(
     ) : this(
-        RdSignal<ChartValue>(ChartValue),
+        RdSignal<ChartEvent>(ChartEvent),
         RdOptionalProperty<Boolean>(FrameworkMarshallers.Bool),
         RdProperty<Int?>(null, __IntNullableSerializer)
     )
@@ -228,7 +321,7 @@ class ChartProtocolSession private constructor(
     override fun print(printer: PrettyPrinter)  {
         printer.println("ChartProtocolSession (")
         printer.indent {
-            print("valueReceived = "); _valueReceived.print(printer); println()
+            print("eventReceived = "); _eventReceived.print(printer); println()
             print("active = "); _active.print(printer); println()
             print("duration = "); _duration.print(printer); println()
         }
@@ -237,7 +330,7 @@ class ChartProtocolSession private constructor(
     //deepClone
     override fun deepClone(): ChartProtocolSession   {
         return ChartProtocolSession(
-            _valueReceived.deepClonePolymorphic(),
+            _eventReceived.deepClonePolymorphic(),
             _active.deepClonePolymorphic(),
             _duration.deepClonePolymorphic()
         )
@@ -248,92 +341,7 @@ class ChartProtocolSession private constructor(
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:136]
- */
-data class ChartValue (
-    val timeStamp: Long,
-    val value: Double,
-    val type: ChartValueType
-) : IPrintable {
-    //companion
-    
-    companion object : IMarshaller<ChartValue> {
-        override val _type: KClass<ChartValue> = ChartValue::class
-        
-        @Suppress("UNCHECKED_CAST")
-        override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): ChartValue  {
-            val timeStamp = buffer.readLong()
-            val value = buffer.readDouble()
-            val type = buffer.readEnum<ChartValueType>()
-            return ChartValue(timeStamp, value, type)
-        }
-        
-        override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: ChartValue)  {
-            buffer.writeLong(value.timeStamp)
-            buffer.writeDouble(value.value)
-            buffer.writeEnum(value.type)
-        }
-        
-        
-    }
-    //fields
-    //methods
-    //initializer
-    //secondary constructor
-    //equals trait
-    override fun equals(other: Any?): Boolean  {
-        if (this === other) return true
-        if (other == null || other::class != this::class) return false
-        
-        other as ChartValue
-        
-        if (timeStamp != other.timeStamp) return false
-        if (value != other.value) return false
-        if (type != other.type) return false
-        
-        return true
-    }
-    //hash code trait
-    override fun hashCode(): Int  {
-        var __r = 0
-        __r = __r*31 + timeStamp.hashCode()
-        __r = __r*31 + value.hashCode()
-        __r = __r*31 + type.hashCode()
-        return __r
-    }
-    //pretty print
-    override fun print(printer: PrettyPrinter)  {
-        printer.println("ChartValue (")
-        printer.indent {
-            print("timeStamp = "); timeStamp.print(printer); println()
-            print("value = "); value.print(printer); println()
-            print("type = "); type.print(printer); println()
-        }
-        printer.print(")")
-    }
-    //deepClone
-    //contexts
-    //threading
-}
-
-
-/**
- * #### Generated from [DiagnosticsHostModel.kt:142]
- */
-enum class ChartValueType {
-    Cpu, 
-    WorkingSet, 
-    GcHeapSize;
-    
-    companion object {
-        val marshaller = FrameworkMarshallers.enum<ChartValueType>()
-        
-    }
-}
-
-
-/**
- * #### Generated from [DiagnosticsHostModel.kt:163]
+ * #### Generated from [DiagnosticsHostModel.kt:166]
  */
 data class CollectDumpCommand (
     val pid: Int,
@@ -415,7 +423,7 @@ data class CollectDumpCommand (
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:180]
+ * #### Generated from [DiagnosticsHostModel.kt:183]
  */
 data class CollectStackTraceCommand (
     val pid: Int
@@ -760,7 +768,7 @@ class CounterProtocolSession private constructor(
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:174]
+ * #### Generated from [DiagnosticsHostModel.kt:177]
  */
 data class DumpCollectionResult (
     val filePath: String
@@ -818,7 +826,7 @@ data class DumpCollectionResult (
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:165]
+ * #### Generated from [DiagnosticsHostModel.kt:168]
  */
 enum class DumpType {
     Full, 
