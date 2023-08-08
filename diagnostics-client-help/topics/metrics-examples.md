@@ -26,11 +26,11 @@ builder.Services.AddOpenTelemetry()
             .AddMeter("Microsoft.AspNetCore.Hosting")
             .AddMeter("Microsoft.AspNetCore.Server.Kestrel")
             .AddOtlpExporter();
-    })
+    });
 ```
 
-To watch your metrics, specify the added meters in the `Metrics` field and click the `Watch` button (as with
-`EventCounters`, you can specify particular metrics for each meter `meter-name[metric1,metric2]`).
+To watch your metrics, set the added meters in the `Metrics` field and click the `Watch` button (as with
+`EventCounters`, you can specify particular metrics for each meter in a format `meter-name[metric1,metric2]`).
 
 ![Monitor counters dialog with list of meters](common-meters.png){ width="700" border-effect=rounded }
 
