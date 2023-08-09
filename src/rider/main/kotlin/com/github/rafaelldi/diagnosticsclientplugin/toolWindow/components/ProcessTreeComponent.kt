@@ -85,6 +85,9 @@ class ProcessTreeComponent : SimpleTree(), CopyProvider {
         if (selected is LocalRootNode) {
             val action = ActionManager.getInstance().getAction("DiagnosticsClient.ToolWindow.Explorer.Connect")
             ActionUtil.invokeAction(action, this, ActionPlaces.TOOLWINDOW_CONTENT, event, null)
+        } else if (selected is LocalProcessNode) {
+            val action = ActionManager.getInstance().getAction("DiagnosticsClient.ToolWindow.Explorer.LiveChartSession.Start")
+            ActionUtil.invokeAction(action, this, ActionPlaces.TOOLWINDOW_CONTENT, event, null)
         }
     }
 

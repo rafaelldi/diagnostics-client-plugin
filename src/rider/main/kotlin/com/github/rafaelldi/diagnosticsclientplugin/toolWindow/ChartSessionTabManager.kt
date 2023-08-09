@@ -25,7 +25,7 @@ class ChartSessionTabManager(private val project: Project) {
         val toolWindow = ToolWindowManager.getInstance(project).getToolWindow(DIAGNOSTICS_CLIENT_TOOL_WINDOW) ?: return
         val contentFactory = ContentFactory.getInstance()
         val chartProtocolSessionTab = ChartProtocolSessionTab(pid, session, this, sessionLifetime)
-        val content = contentFactory.createContent(chartProtocolSessionTab, "Chart for $pid", true)
+        val content = contentFactory.createContent(chartProtocolSessionTab, "Charts for $pid", true)
         content.icon = AllIcons.RunConfigurations.TestCustom
         content.putUserData(ToolWindow.SHOW_CONTENT_ICON, true)
         sessionLifetime.bracketIfAlive(
@@ -48,5 +48,11 @@ class ChartSessionTabManager(private val project: Project) {
 
     fun tabClosed(pid: Int) {
         ChartProtocolSessionController.getInstance(project).closeSession(pid)
+    }
+
+    fun activateTab(pid: Int) {
+        val toolWindow = ToolWindowManager.getInstance(project).getToolWindow(DIAGNOSTICS_CLIENT_TOOL_WINDOW) ?: return
+        val content = toolWindow.contentManager.findContent("Charts for $pid") ?: return
+        toolWindow.contentManager.setSelectedContent(content, true, true)
     }
 }

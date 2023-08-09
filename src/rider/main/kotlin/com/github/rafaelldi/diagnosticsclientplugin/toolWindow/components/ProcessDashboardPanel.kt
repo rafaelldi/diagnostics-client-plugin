@@ -33,15 +33,15 @@ class ProcessDashboardPanel(
                     .gap(RightGap.SMALL)
                 copyableLabel(pid.toString())
                     .gap(RightGap.COLUMNS)
+                val startChartSession =
+                    ActionManager.getInstance().getAction("DiagnosticsClient.ToolWindow.QuickActions.Charts")
+                button(DiagnosticsClientBundle.message("dashboard.button.watch.charts"), startChartSession)
+                    .applyToComponent { icon = AllIcons.RunConfigurations.TestCustom }
+                    .gap(RightGap.SMALL)
                 val startCounterSession =
                     ActionManager.getInstance().getAction("DiagnosticsClient.ToolWindow.QuickActions.Counters")
                 button(DiagnosticsClientBundle.message("dashboard.button.watch.counters"), startCounterSession)
                     .applyToComponent { icon = DiagnosticsClientIcons.Counters }
-                    .gap(RightGap.SMALL)
-                val startGcEventSession =
-                    ActionManager.getInstance().getAction("DiagnosticsClient.ToolWindow.QuickActions.GcEvents")
-                button(DiagnosticsClientBundle.message("dashboard.button.watch.gc.events"), startGcEventSession)
-                    .applyToComponent { icon = AllIcons.Actions.GC }
                     .gap(RightGap.SMALL)
                 val startTraceSession =
                     ActionManager.getInstance().getAction("DiagnosticsClient.ToolWindow.QuickActions.Traces")

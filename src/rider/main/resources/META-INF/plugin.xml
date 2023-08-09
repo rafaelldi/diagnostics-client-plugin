@@ -24,13 +24,13 @@
 
     <actions>
         <group id="DiagnosticsClient.ToolWindow.QuickActions">
+            <action id="DiagnosticsClient.ToolWindow.QuickActions.Charts"
+                    class="com.github.rafaelldi.diagnosticsclientplugin.actions.quick.StartLiveChartSessionQuickAction"
+                    icon="AllIcons.RunConfigurations.TestCustom">
+            </action>
             <action id="DiagnosticsClient.ToolWindow.QuickActions.Counters"
                     class="com.github.rafaelldi.diagnosticsclientplugin.actions.quick.StartLiveCounterSessionQuickAction"
                     icon="DiagnosticsClientIcons.Counters">
-            </action>
-            <action id="DiagnosticsClient.ToolWindow.QuickActions.GcEvents"
-                    class="com.github.rafaelldi.diagnosticsclientplugin.actions.quick.StartLiveGcEventSessionQuickAction"
-                    icon="AllIcons.Actions.GC">
             </action>
             <action id="DiagnosticsClient.ToolWindow.QuickActions.Traces"
                     class="com.github.rafaelldi.diagnosticsclientplugin.actions.quick.StartLiveTraceSessionQuickAction"
@@ -45,6 +45,10 @@
             <action id="DiagnosticsClient.ToolWindow.Explorer.Disconnect"
                     class="com.github.rafaelldi.diagnosticsclientplugin.actions.DisconnectFromAgentAction"
                     icon="AllIcons.Actions.Suspend">
+            </action>
+            <action id="DiagnosticsClient.ToolWindow.Explorer.LiveChartSession.Start"
+                    class="com.github.rafaelldi.diagnosticsclientplugin.actions.chart.StartLiveChartSessionAction"
+                    icon="AllIcons.RunConfigurations.TestCustom">
             </action>
             <group id="DiagnosticsClient.ToolWindow.Explorer.Counters"
                    icon="DiagnosticsClientIcons.Counters"
@@ -125,10 +129,6 @@
             <action id="DiagnosticsClient.ToolWindow.Explorer.CollectStackTrace"
                     class="com.github.rafaelldi.diagnosticsclientplugin.actions.CollectStackTraceAction"
                     icon="RiderIcons.Stacktrace.Stacktrace">
-            </action>
-            <action id="DiagnosticsClient.ToolWindow.Explorer.LiveChartSession.Start"
-                    class="com.github.rafaelldi.diagnosticsclientplugin.actions.chart.StartLiveChartSessionAction"
-                    icon="AllIcons.RunConfigurations.TestCustom">
             </action>
             <action id="DiagnosticsClient.ToolWindow.Explorer.AttachDebugger"
                     class="com.github.rafaelldi.diagnosticsclientplugin.actions.AttachDebuggerAction"
