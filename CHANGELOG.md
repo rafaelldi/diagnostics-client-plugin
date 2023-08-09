@@ -4,6 +4,9 @@
 
 ## [Unreleased]
 
+### Added
+- GC and exception markers to the chart
+
 ## [2023.2.0] - 2023-08-07
 
 ### Changed
