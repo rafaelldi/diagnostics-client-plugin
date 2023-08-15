@@ -19,8 +19,20 @@
 
         <webHelpProvider implementation="com.github.rafaelldi.diagnosticsclientplugin.DiagnosticsClientHelpProvider"/>
 
+        <applicationConfigurable
+                parentId="tools"
+                instance="com.github.rafaelldi.diagnosticsclientplugin.settings.DiagnosticsClientConfigurable"
+                id="DiagnosticsClient.Configurable"
+                key="configurable.DiagnosticsClient"
+                bundle="messages.DiagnosticsClientBundle"/>
+
         <notificationGroup id="Diagnostics Client" displayType="BALLOON"/>
     </extensions>
+
+    <projectListeners>
+        <listener class="com.github.rafaelldi.diagnosticsclientplugin.listeners.MyExecutionListener"
+                  topic="com.intellij.execution.ExecutionListener"/>
+    </projectListeners>
 
     <actions>
         <group id="DiagnosticsClient.ToolWindow.QuickActions">

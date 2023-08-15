@@ -14,6 +14,7 @@ import com.github.rafaelldi.diagnosticsclientplugin.services.traces.TraceExportS
 import com.github.rafaelldi.diagnosticsclientplugin.services.traces.TraceProtocolSessionController
 import com.github.rafaelldi.diagnosticsclientplugin.topics.HostListener
 import com.github.rafaelldi.diagnosticsclientplugin.topics.HostProcessListener
+import com.github.rafaelldi.diagnosticsclientplugin.utils.DotNetProcess
 import com.intellij.execution.process.ProcessEvent
 import com.intellij.execution.process.ProcessListener
 import com.intellij.openapi.components.Service
@@ -31,6 +32,9 @@ import com.jetbrains.rd.util.lifetime.SequentialLifetimes
 import com.jetbrains.rd.util.reactive.AddRemove
 import com.jetbrains.rdclient.protocol.RdDispatcher
 import com.jetbrains.rider.util.NetUtils
+import kotlinx.coroutines.delay
+import kotlin.io.path.Path
+import kotlin.time.Duration.Companion.seconds
 
 @Service(Service.Level.PROJECT)
 class DiagnosticsHost(private val project: Project) : LifetimedService() {
@@ -90,6 +94,21 @@ class DiagnosticsHost(private val project: Project) : LifetimedService() {
         agentLifetime.terminateCurrent()
         hostModel = null
         project.messageBus.syncPublisher(HostListener.TOPIC).hostDisconnected()
+    }
+
+    suspend fun findProcess(pathString: String): DotNetProcess? = hostModel?.let { model ->
+        val path = Path(pathString)
+        for (i in 0..9) {
+            val values = model.processList.items.toList()
+            val process = values.firstOrNull { it.second.filename != null && Path(it.second.filename!!) == path }
+            if (process != null) {
+                return@let DotNetProcess(process.first, process.second.processName)
+            }
+
+            delay(1.seconds)
+        }
+
+        return@let null
     }
 
     private suspend fun connectToProtocol(port: Int, lifetime: Lifetime): DiagnosticsHostModel = withUiContext {
