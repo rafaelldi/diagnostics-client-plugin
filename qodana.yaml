@@ -13,4 +13,5 @@ exclude:
     paths:
       - .qodana
       - src/rider/main/kotlin/com/github/rafaelldi/diagnosticsclientplugin/generated
-      - protocol/src/main/kotlin/model/rider
+      - src/rider/main/kotlin/com/github/rafaelldi/diagnosticsclientplugin/model
+      - diagnostics-client-help
