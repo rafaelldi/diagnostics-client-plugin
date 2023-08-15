@@ -1,6 +1,6 @@
 package com.github.rafaelldi.diagnosticsclientplugin.actions.stackTrace
 
-import com.github.rafaelldi.diagnosticsclientplugin.services.StackTraceController
+import com.github.rafaelldi.diagnosticsclientplugin.services.stackTrace.StackTraceController
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.components.LocalProcessNode
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.ChartProtocolSessionTab
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.ProcessExplorerTab

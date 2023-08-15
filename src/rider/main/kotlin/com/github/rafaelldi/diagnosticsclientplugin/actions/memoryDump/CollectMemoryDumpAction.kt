@@ -1,8 +1,8 @@
 package com.github.rafaelldi.diagnosticsclientplugin.actions.memoryDump
 
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.MemoryDumpDialog
-import com.github.rafaelldi.diagnosticsclientplugin.services.MemoryDumpController
-import com.github.rafaelldi.diagnosticsclientplugin.services.MemoryDumpSettings
+import com.github.rafaelldi.diagnosticsclientplugin.services.memoryDump.MemoryDumpController
+import com.github.rafaelldi.diagnosticsclientplugin.services.memoryDump.MemoryDumpSettings
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.components.LocalProcessNode
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.ChartProtocolSessionTab
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.ProcessExplorerTab

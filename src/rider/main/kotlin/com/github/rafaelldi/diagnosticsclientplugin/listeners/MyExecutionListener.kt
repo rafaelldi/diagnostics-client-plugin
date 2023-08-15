@@ -1,6 +1,6 @@
 package com.github.rafaelldi.diagnosticsclientplugin.listeners
 
-import com.github.rafaelldi.diagnosticsclientplugin.services.ChartStarterService
+import com.github.rafaelldi.diagnosticsclientplugin.services.chart.ChartStarterService
 import com.intellij.execution.ExecutionListener
 import com.intellij.execution.process.ProcessHandler
 import com.intellij.execution.runners.ExecutionEnvironment

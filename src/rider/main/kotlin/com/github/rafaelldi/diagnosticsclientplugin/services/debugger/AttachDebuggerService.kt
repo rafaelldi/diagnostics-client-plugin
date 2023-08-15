@@ -1,6 +1,6 @@
 @file:Suppress("UnstableApiUsage")
 
-package com.github.rafaelldi.diagnosticsclientplugin.services
+package com.github.rafaelldi.diagnosticsclientplugin.services.debugger
 
 import com.github.rafaelldi.diagnosticsclientplugin.DiagnosticsClientBundle
 import com.intellij.execution.process.impl.ProcessListUtil

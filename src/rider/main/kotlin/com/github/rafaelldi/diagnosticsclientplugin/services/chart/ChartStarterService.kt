@@ -1,8 +1,8 @@
-package com.github.rafaelldi.diagnosticsclientplugin.services
+package com.github.rafaelldi.diagnosticsclientplugin.services.chart
 
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.ChartSessionModel
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.StoppingType
-import com.github.rafaelldi.diagnosticsclientplugin.services.chart.ChartProtocolSessionController
+import com.github.rafaelldi.diagnosticsclientplugin.services.DiagnosticsHost
 import com.github.rafaelldi.diagnosticsclientplugin.settings.DiagnosticsClientSettings
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.DiagnosticsToolWindowFactory
 import com.intellij.openapi.components.Service

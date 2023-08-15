@@ -1,6 +1,6 @@
 package com.github.rafaelldi.diagnosticsclientplugin.actions.debugger
 
-import com.github.rafaelldi.diagnosticsclientplugin.services.AttachDebuggerService
+import com.github.rafaelldi.diagnosticsclientplugin.services.debugger.AttachDebuggerService
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.components.LocalProcessNode
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.ChartProtocolSessionTab.Companion.SESSION_PROCESS_ID
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.ProcessExplorerTab

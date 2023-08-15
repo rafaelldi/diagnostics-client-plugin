@@ -1,9 +1,10 @@
 @file:Suppress("UnstableApiUsage")
 
-package com.github.rafaelldi.diagnosticsclientplugin.services
+package com.github.rafaelldi.diagnosticsclientplugin.services.stackTrace
 
 import com.github.rafaelldi.diagnosticsclientplugin.DiagnosticsClientBundle
 import com.github.rafaelldi.diagnosticsclientplugin.model.CollectStackTraceCommand
+import com.github.rafaelldi.diagnosticsclientplugin.services.DiagnosticsHost
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.progress.withBackgroundProgress

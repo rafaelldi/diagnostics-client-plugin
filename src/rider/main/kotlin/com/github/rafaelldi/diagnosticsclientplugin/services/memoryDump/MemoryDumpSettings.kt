@@ -1,4 +1,4 @@
-package com.github.rafaelldi.diagnosticsclientplugin.services
+package com.github.rafaelldi.diagnosticsclientplugin.services.memoryDump
 
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.DumpType
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.MemoryDumpModel

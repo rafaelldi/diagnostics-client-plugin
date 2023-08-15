@@ -1,7 +1,7 @@
 package com.github.rafaelldi.diagnosticsclientplugin.dialogs
 
 import com.github.rafaelldi.diagnosticsclientplugin.DiagnosticsClientBundle
-import com.github.rafaelldi.diagnosticsclientplugin.services.MemoryDumpSettings
+import com.github.rafaelldi.diagnosticsclientplugin.services.memoryDump.MemoryDumpSettings
 import com.github.rafaelldi.diagnosticsclientplugin.utils.isValidFilename
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
 import com.intellij.openapi.project.Project

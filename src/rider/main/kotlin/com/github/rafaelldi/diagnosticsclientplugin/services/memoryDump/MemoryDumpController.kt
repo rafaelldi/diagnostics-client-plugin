@@ -1,12 +1,13 @@
 @file:Suppress("UnstableApiUsage")
 
-package com.github.rafaelldi.diagnosticsclientplugin.services
+package com.github.rafaelldi.diagnosticsclientplugin.services.memoryDump
 
 import com.github.rafaelldi.diagnosticsclientplugin.DiagnosticsClientBundle
 import com.github.rafaelldi.diagnosticsclientplugin.actions.notification.RevealFileAction
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.MemoryDumpModel
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.map
 import com.github.rafaelldi.diagnosticsclientplugin.model.CollectDumpCommand
+import com.github.rafaelldi.diagnosticsclientplugin.services.DiagnosticsHost
 import com.intellij.notification.Notification
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.components.Service
