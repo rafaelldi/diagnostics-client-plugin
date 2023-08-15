@@ -48,10 +48,4 @@ class GcEventSessionTabManager(private val project: Project) {
     fun tabClosed(pid: Int) {
         GcEventProtocolSessionController.getInstance(project).closeSession(pid)
     }
-
-    fun activateTab(pid: Int) {
-        val toolWindow = ToolWindowManager.getInstance(project).getToolWindow(DIAGNOSTICS_CLIENT_TOOL_WINDOW) ?: return
-        val content = toolWindow.contentManager.findContent("GC for $pid") ?: return
-        toolWindow.contentManager.setSelectedContent(content, true, true)
-    }
 }

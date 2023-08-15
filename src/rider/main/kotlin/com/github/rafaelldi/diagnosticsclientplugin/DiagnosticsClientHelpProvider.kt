@@ -8,7 +8,6 @@ class DiagnosticsClientHelpProvider : WebHelpProvider() {
         private const val HELP_DOCS = "https://rafaelldi.blog/diagnostics-client-plugin"
         private const val MAIN = "starter-topic.html"
         private const val COUNTERS_AND_METRICS = "counters-and-metrics.html"
-        private const val TRACES = "Traces"
     }
 
     override fun getHelpPageUrl(helpTopicId: String): String? {

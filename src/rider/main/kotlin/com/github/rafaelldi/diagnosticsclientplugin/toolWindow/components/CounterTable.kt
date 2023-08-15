@@ -21,7 +21,7 @@ class CounterTable : JBTable() {
         model = tableModel
 
         setShowGrid(false)
-        setIntercellSpacing(JBDimension(0, 0))
+        //intercellSpacing = JBDimension(0, 0)
     }
 
     override fun isCellEditable(row: Int, column: Int): Boolean = false

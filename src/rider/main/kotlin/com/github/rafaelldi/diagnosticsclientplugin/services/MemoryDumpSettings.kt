@@ -2,7 +2,6 @@ package com.github.rafaelldi.diagnosticsclientplugin.services
 
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.DumpType
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.MemoryDumpModel
-import com.github.rafaelldi.diagnosticsclientplugin.utils.DotNetProcess
 import com.intellij.openapi.components.*
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.SystemInfo
