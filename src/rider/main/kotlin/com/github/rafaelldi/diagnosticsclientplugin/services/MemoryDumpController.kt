@@ -22,10 +22,9 @@ class MemoryDumpController(private val project: Project) {
     }
 
     suspend fun collect(model: MemoryDumpModel) {
-        val pid = model.selectedProcess?.pid ?: return
         val hostModel = DiagnosticsHost.getInstance(project).hostModel ?: return
 
-        val command = CollectDumpCommand(pid, model.type.map(), model.path, model.filename, model.diag)
+        val command = CollectDumpCommand(model.pid, model.type.map(), model.path, model.filename, model.diag)
         withBackgroundProgress(project, DiagnosticsClientBundle.message("progress.collecting.memory.dump")) {
             withUiContext {
                 val result = hostModel.collectDump.startSuspending(command)
