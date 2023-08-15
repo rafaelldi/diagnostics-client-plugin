@@ -147,6 +147,10 @@
                     icon="AllIcons.Debugger.AttachToProcess">
             </action>
             <separator/>
+            <action id="DiagnosticsClient.ToolWindow.Explorer.Settings"
+                    class="com.github.rafaelldi.diagnosticsclientplugin.actions.SettingsAction"
+                    icon="AllIcons.General.Settings">
+            </action>
             <action id="DiagnosticsClient.ToolWindow.Explorer.Help"
                     class="com.github.rafaelldi.diagnosticsclientplugin.actions.DiagnosticsClientHelpAction">
             </action>

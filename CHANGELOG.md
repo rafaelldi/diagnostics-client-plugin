@@ -4,6 +4,9 @@
 
 ## [Unreleased]
 
+### Added
+- Go to settings action
+
 ## [2023.2.1] - 2023-08-15
 
 ### Added
