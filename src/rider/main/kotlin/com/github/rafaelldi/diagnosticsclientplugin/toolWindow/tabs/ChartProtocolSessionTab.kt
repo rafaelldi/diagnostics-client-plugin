@@ -5,6 +5,8 @@ import com.github.rafaelldi.diagnosticsclientplugin.model.ChartEvent
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.ChartSessionTabManager
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.components.CounterChartPanel
 import com.intellij.openapi.Disposable
+import com.intellij.openapi.actionSystem.ActionGroup
+import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.actionSystem.DataKey
 import com.intellij.openapi.ui.SimpleToolWindowPanel
 import com.jetbrains.rd.util.lifetime.Lifetime
@@ -17,8 +19,8 @@ class ChartProtocolSessionTab(
 ): SimpleToolWindowPanel(false), MonitoringTab, Disposable {
 
     companion object {
-        val CHART_MONITORING_TAB: DataKey<ChartProtocolSessionTab> =
-            DataKey.create("DiagnosticsClient.ToolWindow.ChartSessionTab")
+        val SESSION_PROCESS_ID: DataKey<Int> =
+            DataKey.create("DiagnosticsClient.ToolWindow.SessionProcessId")
     }
 
     private val panel: CounterChartPanel = CounterChartPanel()
@@ -31,6 +33,15 @@ class ChartProtocolSessionTab(
     }
 
     private fun initActionToolbar() {
+        val actionManager = ActionManager.getInstance()
+        val actionGroup = actionManager.getAction("DiagnosticsClient.ToolWindow.ChartSession") as ActionGroup
+        val actionToolbar = actionManager.createActionToolbar(
+            "DiagnosticsClient.ToolWindow.ChartSession.ActionToolbar",
+            actionGroup,
+            true
+        )
+        actionToolbar.targetComponent = this
+        toolbar = actionToolbar.component
     }
 
     private fun valueReceived(value: ChartEvent) {
@@ -38,7 +49,7 @@ class ChartProtocolSessionTab(
     }
 
     override fun getData(dataId: String): Any? {
-        if (CHART_MONITORING_TAB.`is`(dataId)) return this
+        if (SESSION_PROCESS_ID.`is`(dataId)) return pid
         return super.getData(dataId)
     }
 

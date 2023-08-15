@@ -1,0 +1,36 @@
+@file:Suppress("UnstableApiUsage")
+
+package com.github.rafaelldi.diagnosticsclientplugin.services
+
+import com.github.rafaelldi.diagnosticsclientplugin.DiagnosticsClientBundle
+import com.intellij.execution.process.impl.ProcessListUtil
+import com.intellij.openapi.components.Service
+import com.intellij.openapi.components.service
+import com.intellij.openapi.progress.withBackgroundProgress
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.UserDataHolderBase
+import com.intellij.xdebugger.attach.LocalAttachHost
+import com.intellij.xdebugger.attach.XAttachDebuggerProvider
+
+@Service(Service.Level.PROJECT)
+class AttachDebuggerService(private val project: Project) {
+    companion object {
+        fun getInstance(project: Project): AttachDebuggerService = project.service()
+    }
+
+    suspend fun attach(pid: Int) {
+        withBackgroundProgress(project, DiagnosticsClientBundle.message("progress.attach.debugger")) {
+            val processInfo = ProcessListUtil.getProcessList().firstOrNull { it.pid == pid }
+                ?: return@withBackgroundProgress
+            val attachHost = LocalAttachHost.INSTANCE
+            val dataHolder = UserDataHolderBase()
+            val debugger = XAttachDebuggerProvider.EP.extensionList
+                .filter { it.isAttachHostApplicable(attachHost) }
+                .flatMap { it.getAvailableDebuggers(project, attachHost, processInfo, dataHolder) }
+                .singleOrNull { it.debuggerDisplayName == ".NET Core Debugger" }
+                ?: return@withBackgroundProgress
+
+            debugger.attachDebugSession(project, attachHost, processInfo)
+        }
+    }
+}

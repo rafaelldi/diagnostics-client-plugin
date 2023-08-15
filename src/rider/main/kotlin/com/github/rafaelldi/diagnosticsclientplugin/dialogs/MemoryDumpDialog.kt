@@ -2,7 +2,6 @@ package com.github.rafaelldi.diagnosticsclientplugin.dialogs
 
 import com.github.rafaelldi.diagnosticsclientplugin.DiagnosticsClientBundle
 import com.github.rafaelldi.diagnosticsclientplugin.services.MemoryDumpSettings
-import com.github.rafaelldi.diagnosticsclientplugin.utils.DotNetProcess
 import com.github.rafaelldi.diagnosticsclientplugin.utils.isValidFilename
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
 import com.intellij.openapi.project.Project
@@ -12,11 +11,10 @@ import com.intellij.ui.dsl.builder.*
 import javax.swing.JComponent
 
 class MemoryDumpDialog(
+    pid: Int,
     private val project: Project,
-    selected: DotNetProcess,
-    private val processes: List<DotNetProcess>
 ) : DialogWrapper(project) {
-    private val model = MemoryDumpSettings.getInstance(project).getModel(selected)
+    private val model = MemoryDumpSettings.getInstance(project).getModel(pid)
 
     init {
         init()
@@ -25,14 +23,6 @@ class MemoryDumpDialog(
     }
 
     override fun createCenterPanel(): JComponent = panel {
-        val ps = processes.sortedBy { it.pid }.toList()
-
-        row(DiagnosticsClientBundle.message("dialog.collect.dump.row.process")) {
-            comboBox(ps, SimpleListCellRenderer.create("") { "${it.pid} - ${it.name}" })
-                .align(Align.FILL)
-                .bindItem(model::selectedProcess)
-        }.bottomGap(BottomGap.SMALL)
-
         row(DiagnosticsClientBundle.message("dialog.collect.dump.row.type")) {
             comboBox(DumpType.values().toList(), SimpleListCellRenderer.create("") { it.label })
                 .bindItem(model::type.toNullableProperty())
@@ -54,6 +44,7 @@ class MemoryDumpDialog(
                 }
                 .bindText(model::path)
         }
+
         row(DiagnosticsClientBundle.message("dialog.collect.dump.row.output.filename")) {
             textField()
                 .align(Align.FILL)

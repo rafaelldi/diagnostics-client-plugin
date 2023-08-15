@@ -7,6 +7,7 @@
 ### Added
 - GC and exception markers to the chart
 - Automatically attach charts to a starting process 
+- Some actions to the chart panel
 
 ## [2023.2.0] - 2023-08-07
 

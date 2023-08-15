@@ -135,20 +135,34 @@
                 </action>
             </group>
             <action id="DiagnosticsClient.ToolWindow.Explorer.CollectDump"
-                    class="com.github.rafaelldi.diagnosticsclientplugin.actions.CollectMemoryDumpAction"
+                    class="com.github.rafaelldi.diagnosticsclientplugin.actions.memoryDump.CollectMemoryDumpAction"
                     icon="AllIcons.Actions.Dump">
             </action>
             <action id="DiagnosticsClient.ToolWindow.Explorer.CollectStackTrace"
-                    class="com.github.rafaelldi.diagnosticsclientplugin.actions.CollectStackTraceAction"
+                    class="com.github.rafaelldi.diagnosticsclientplugin.actions.stackTrace.CollectStackTraceAction"
                     icon="RiderIcons.Stacktrace.Stacktrace">
             </action>
             <action id="DiagnosticsClient.ToolWindow.Explorer.AttachDebugger"
-                    class="com.github.rafaelldi.diagnosticsclientplugin.actions.AttachDebuggerAction"
+                    class="com.github.rafaelldi.diagnosticsclientplugin.actions.debugger.AttachDebuggerAction"
                     icon="AllIcons.Debugger.AttachToProcess">
             </action>
             <separator/>
             <action id="DiagnosticsClient.ToolWindow.Explorer.Help"
                     class="com.github.rafaelldi.diagnosticsclientplugin.actions.DiagnosticsClientHelpAction">
+            </action>
+        </group>
+        <group id="DiagnosticsClient.ToolWindow.ChartSession">
+            <action id="DiagnosticsClient.ToolWindow.LiveChartSession.CollectMemoryDump"
+                    class="com.github.rafaelldi.diagnosticsclientplugin.actions.memoryDump.CollectMemoryDumpAction"
+                    icon="AllIcons.Actions.Dump">
+            </action>
+            <action id="DiagnosticsClient.ToolWindow.LiveChartSession.CollectStackTrace"
+                    class="com.github.rafaelldi.diagnosticsclientplugin.actions.stackTrace.CollectStackTraceAction"
+                    icon="RiderIcons.Stacktrace.Stacktrace">
+            </action>
+            <action id="DiagnosticsClient.ToolWindow.LiveChartSession.AttachDebugger"
+                    class="com.github.rafaelldi.diagnosticsclientplugin.actions.debugger.AttachDebuggerAction"
+                    icon="AllIcons.Debugger.AttachToProcess">
             </action>
         </group>
         <group id="DiagnosticsClient.ToolWindow.CounterSession">

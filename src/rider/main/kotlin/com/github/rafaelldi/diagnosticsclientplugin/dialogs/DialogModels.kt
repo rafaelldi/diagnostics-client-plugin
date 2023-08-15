@@ -3,7 +3,7 @@ package com.github.rafaelldi.diagnosticsclientplugin.dialogs
 import com.github.rafaelldi.diagnosticsclientplugin.utils.DotNetProcess
 
 data class MemoryDumpModel(
-    var selectedProcess: DotNetProcess?,
+    var pid: Int,
     var type: DumpType,
     var path: String,
     var filename: String,

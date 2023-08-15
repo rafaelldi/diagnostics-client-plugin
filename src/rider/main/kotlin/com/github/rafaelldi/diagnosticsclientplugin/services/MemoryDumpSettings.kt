@@ -34,8 +34,8 @@ class MemoryDumpSettings(project: Project) :
         }
     }
 
-    fun getModel(selected: DotNetProcess) = MemoryDumpModel(
-        selected,
+    fun getModel(pid: Int) = MemoryDumpModel(
+        pid,
         state.type,
         state.path ?: "",
         state.filename ?: "",
