@@ -7,7 +7,9 @@ import com.github.rafaelldi.diagnosticsclientplugin.actions.notification.RevealF
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.MemoryDumpModel
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.map
 import com.github.rafaelldi.diagnosticsclientplugin.model.CollectDumpCommand
+import com.github.rafaelldi.diagnosticsclientplugin.model.DumpCollectionResult
 import com.github.rafaelldi.diagnosticsclientplugin.services.DiagnosticsHost
+import com.github.rafaelldi.diagnosticsclientplugin.topics.ArtifactListener
 import com.intellij.notification.Notification
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.components.Service
@@ -29,15 +31,18 @@ class MemoryDumpController(private val project: Project) {
         withBackgroundProgress(project, DiagnosticsClientBundle.message("progress.collecting.memory.dump")) {
             withUiContext {
                 val result = hostModel.collectDump.startSuspending(command)
-                Notification(
-                    "Diagnostics Client",
-                    DiagnosticsClientBundle.message("notifications.dump.collected"),
-                    "",
-                    NotificationType.INFORMATION
-                )
-                    .addAction(RevealFileAction(result.filePath))
-                    .notify(project)
+                notify(result)
+                project.messageBus.syncPublisher(ArtifactListener.TOPIC).artifactCreated(result.filePath)
             }
         }
     }
+
+    private fun notify(result: DumpCollectionResult) = Notification(
+        "Diagnostics Client",
+        DiagnosticsClientBundle.message("notifications.dump.collected"),
+        "",
+        NotificationType.INFORMATION
+    )
+        .addAction(RevealFileAction(result.filePath))
+        .notify(project)
 }
