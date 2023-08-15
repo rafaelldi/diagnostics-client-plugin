@@ -3,7 +3,6 @@ package com.github.rafaelldi.diagnosticsclientplugin.toolWindow.components
 import com.github.rafaelldi.diagnosticsclientplugin.DiagnosticsClientBundle
 import com.github.rafaelldi.diagnosticsclientplugin.model.Counter
 import com.intellij.ui.table.JBTable
-import com.intellij.util.ui.JBDimension
 import javax.swing.table.DefaultTableModel
 
 class CounterTable : JBTable() {
@@ -21,7 +20,6 @@ class CounterTable : JBTable() {
         model = tableModel
 
         setShowGrid(false)
-        //intercellSpacing = JBDimension(0, 0)
     }
 
     override fun isCellEditable(row: Int, column: Int): Boolean = false
