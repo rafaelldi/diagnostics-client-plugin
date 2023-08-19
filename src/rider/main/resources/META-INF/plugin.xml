@@ -35,7 +35,7 @@
     </projectListeners>
 
     <actions>
-        <group id="DiagnosticsClient.ToolWindow.QuickActions">
+        <group id="DiagnosticsClient.ToolWindow.QuickActions" searchable="false">
             <action id="DiagnosticsClient.ToolWindow.QuickActions.Charts"
                     class="com.github.rafaelldi.diagnosticsclientplugin.actions.quick.StartLiveChartSessionQuickAction"
                     icon="AllIcons.RunConfigurations.TestCustom">
@@ -49,7 +49,7 @@
                     icon="AllIcons.Toolwindows.ToolWindowMessages">
             </action>
         </group>
-        <group id="DiagnosticsClient.ToolWindow.Explorer">
+        <group id="DiagnosticsClient.ToolWindow.Explorer" searchable="false">
             <action id="DiagnosticsClient.ToolWindow.Explorer.Connect"
                     class="com.github.rafaelldi.diagnosticsclientplugin.actions.ConnectToAgentAction"
                     icon="AllIcons.Actions.Execute">
