@@ -4,7 +4,7 @@
 # plugins
 kotlin = "1.9.10"
 changelog = "2.2.0"
-gradleIntelliJPlugin = "1.15.0"
+gradleIntelliJPlugin = "1.16.0"
 qodana = "0.1.13"
 rdgen = "2023.2.2"
 
