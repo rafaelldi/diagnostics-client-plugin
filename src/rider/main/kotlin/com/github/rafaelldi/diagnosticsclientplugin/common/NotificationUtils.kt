@@ -7,14 +7,6 @@ import com.intellij.notification.Notification
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.project.Project
 
-fun exportSessionStarted(type: String, pid: Int, project: Project) = Notification(
-    "Diagnostics Client",
-    DiagnosticsClientBundle.message("notifications.collection.started", type),
-    DiagnosticsClientBundle.message("notifications.session.for.process.started", pid),
-    NotificationType.INFORMATION
-)
-    .notify(project)
-
 fun exportSessionFinished(type: String, pid: Int, filePath: String, openFile: Boolean, project: Project) =
     Notification(
         "Diagnostics Client",
@@ -27,38 +19,6 @@ fun exportSessionFinished(type: String, pid: Int, filePath: String, openFile: Bo
             else RevealFileAction(filePath)
         )
         .notify(project)
-
-fun exportSessionAlreadyExists(type: String, pid: Int, project: Project) = Notification(
-    "Diagnostics Client",
-    DiagnosticsClientBundle.message("notifications.collection.session.exists", type, pid),
-    "",
-    NotificationType.WARNING
-)
-    .notify(project)
-
-fun liveSessionStarted(type: String, pid: Int, project: Project) = Notification(
-    "Diagnostics Client",
-    DiagnosticsClientBundle.message("notifications.watching.started", type),
-    DiagnosticsClientBundle.message("notifications.session.for.process.started", pid),
-    NotificationType.INFORMATION
-)
-    .notify(project)
-
-fun liveSessionFinished(type: String, pid: Int, project: Project) = Notification(
-    "Diagnostics Client",
-    DiagnosticsClientBundle.message("notifications.watching.finished", type),
-    DiagnosticsClientBundle.message("notifications.session.for.process.finished", pid),
-    NotificationType.INFORMATION
-)
-    .notify(project)
-
-fun liveSessionNotFound(type: String, pid: Int, project: Project) = Notification(
-    "Diagnostics Client",
-    DiagnosticsClientBundle.message("notifications.watching.session.not.found", type, pid),
-    "",
-    NotificationType.ERROR
-)
-    .notify(project)
 
 fun fileDoesNotExist(path: String, project: Project) = Notification(
     "Diagnostics Client",

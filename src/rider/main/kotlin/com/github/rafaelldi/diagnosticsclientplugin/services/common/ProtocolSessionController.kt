@@ -1,18 +1,15 @@
 package com.github.rafaelldi.diagnosticsclientplugin.services.common
 
-import com.github.rafaelldi.diagnosticsclientplugin.common.liveSessionFinished
-import com.github.rafaelldi.diagnosticsclientplugin.common.liveSessionNotFound
-import com.github.rafaelldi.diagnosticsclientplugin.common.liveSessionStarted
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.ProtocolSessionModel
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.StoppingType
 import com.github.rafaelldi.diagnosticsclientplugin.model.ProtocolSession
 import com.intellij.openapi.project.Project
-import com.jetbrains.rd.framework.util.createTerminatedAfter
 import com.jetbrains.rd.platform.util.idea.LifetimedService
 import com.jetbrains.rd.util.addUnique
 import com.jetbrains.rd.util.lifetime.Lifetime
 import com.jetbrains.rd.util.reactive.IMutableViewableMap
 import com.jetbrains.rd.util.reactive.whenTrue
+import com.jetbrains.rd.util.threading.coroutines.createTerminatedAfter
 import kotlinx.coroutines.Dispatchers
 import java.time.Duration
 
@@ -23,7 +20,7 @@ abstract class ProtocolSessionController<TSession : ProtocolSession, TModel : Pr
 
     fun subscribeTo(sessions: IMutableViewableMap<Int, TSession>, lifetime: Lifetime) {
         sessions.view(lifetime) { sessionLifetime, pid, session ->
-            viewSession(pid, session, sessionLifetime)
+            viewSession(session, sessionLifetime)
             addSessionTab(pid, session, lifetime)
         }
     }
@@ -64,12 +61,7 @@ abstract class ProtocolSessionController<TSession : ProtocolSession, TModel : Pr
 
     private fun startExistingSession(pid: Int, stoppingType: StoppingType, duration: Int) {
         val sessions = getSessions() ?: return
-
-        val session = sessions[pid]
-        if (session == null) {
-            sessionNotFound(pid)
-            return
-        }
+        val session = sessions[pid] ?: return
 
         if (session.active.valueOrNull == true) {
             return
@@ -86,12 +78,7 @@ abstract class ProtocolSessionController<TSession : ProtocolSession, TModel : Pr
 
     fun pauseSession(pid: Int) {
         val sessions = getSessions() ?: return
-
-        val session = sessions[pid]
-        if (session == null) {
-            sessionNotFound(pid)
-            return
-        }
+        val session = sessions[pid] ?: return
 
         if (session.active.valueOrNull == true) {
             session.active.set(false)
@@ -102,13 +89,13 @@ abstract class ProtocolSessionController<TSession : ProtocolSession, TModel : Pr
         getSessions()?.remove(pid)
     }
 
-    private fun viewSession(pid: Int, session: TSession, lifetime: Lifetime) {
-        session.active.whenTrue(lifetime) { lt -> viewActiveStatus(pid, session, lt) }
+    private fun viewSession(session: TSession, lifetime: Lifetime) {
+        session.active.whenTrue(lifetime) { lt -> viewActiveStatus(session, lt) }
     }
 
     protected abstract fun addSessionTab(pid: Int, session: TSession, sessionLifetime: Lifetime)
 
-    private fun viewActiveStatus(pid: Int, session: TSession, lifetime: Lifetime) {
+    private fun viewActiveStatus(session: TSession, lifetime: Lifetime) {
         val duration = session.duration.value
         if (duration != null) {
             val timerLifetime =
@@ -119,16 +106,5 @@ abstract class ProtocolSessionController<TSession : ProtocolSession, TModel : Pr
                 }
             }
         }
-
-        lifetime.bracketIfAlive(
-            { sessionStarted(pid) },
-            { sessionFinished(pid) }
-        )
     }
-
-    private fun sessionNotFound(pid: Int) = liveSessionNotFound(artifactType, pid, project)
-
-    private fun sessionStarted(pid: Int) = liveSessionStarted(artifactType, pid, project)
-
-    private fun sessionFinished(pid: Int) = liveSessionFinished(artifactType, pid, project)
 }

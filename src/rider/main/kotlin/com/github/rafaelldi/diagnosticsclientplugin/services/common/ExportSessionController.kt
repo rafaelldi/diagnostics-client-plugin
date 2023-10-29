@@ -1,17 +1,15 @@
 package com.github.rafaelldi.diagnosticsclientplugin.services.common
 
-import com.github.rafaelldi.diagnosticsclientplugin.common.exportSessionAlreadyExists
 import com.github.rafaelldi.diagnosticsclientplugin.common.exportSessionFinished
-import com.github.rafaelldi.diagnosticsclientplugin.common.exportSessionStarted
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.ExportSessionModel
 import com.github.rafaelldi.diagnosticsclientplugin.model.ExportSession
 import com.github.rafaelldi.diagnosticsclientplugin.topics.ArtifactListener
 import com.intellij.openapi.project.Project
-import com.jetbrains.rd.framework.util.createTerminatedAfter
 import com.jetbrains.rd.platform.util.idea.LifetimedService
 import com.jetbrains.rd.util.addUnique
 import com.jetbrains.rd.util.lifetime.Lifetime
 import com.jetbrains.rd.util.reactive.IMutableViewableMap
+import com.jetbrains.rd.util.threading.coroutines.createTerminatedAfter
 import kotlinx.coroutines.Dispatchers
 import java.time.Duration
 
@@ -36,15 +34,13 @@ abstract class ExportSessionController<TSession : ExportSession, TModel : Export
         val sessions = getSessions() ?: return
 
         if (sessions.contains(pid)) {
-            sessionAlreadyExists(pid)
             return
         }
 
         val session = createSession(model)
         try {
             sessions.addUnique(serviceLifetime, pid, session)
-        } catch (e: IllegalArgumentException) {
-            sessionAlreadyExists(pid)
+        } catch (_: IllegalArgumentException) {
         }
     }
 
@@ -67,20 +63,11 @@ abstract class ExportSessionController<TSession : ExportSession, TModel : Export
             }
         }
 
-        lt.bracketIfAlive(
-            { sessionStarted(pid) },
-            {
-                sessionFinished(pid, session)
-                project.messageBus.syncPublisher(ArtifactListener.TOPIC).artifactCreated(session.exportFilePath)
-            }
-        )
+        lt.onTermination {
+            sessionFinished(pid, session)
+            project.messageBus.syncPublisher(ArtifactListener.TOPIC).artifactCreated(session.exportFilePath)
+        }
     }
-
-    private fun sessionAlreadyExists(pid: Int) =
-        exportSessionAlreadyExists(artifactType, pid, project)
-
-    private fun sessionStarted(pid: Int) =
-        exportSessionStarted(artifactType, pid, project)
 
     private fun sessionFinished(pid: Int, session: TSession) =
         exportSessionFinished(artifactType, pid, session.exportFilePath, canBeOpened, project)
