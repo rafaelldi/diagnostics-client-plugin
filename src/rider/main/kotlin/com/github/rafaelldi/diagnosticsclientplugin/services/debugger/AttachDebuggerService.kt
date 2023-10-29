@@ -27,7 +27,7 @@ class AttachDebuggerService(private val project: Project) {
             val debugger = XAttachDebuggerProvider.EP.extensionList
                 .filter { it.isAttachHostApplicable(attachHost) }
                 .flatMap { it.getAvailableDebuggers(project, attachHost, processInfo, dataHolder) }
-                .singleOrNull { it.debuggerDisplayName == ".NET Core Debugger" }
+                .singleOrNull { it.debuggerDisplayName == ".NET Debugger" }
                 ?: return@withBackgroundProgress
 
             debugger.attachDebugSession(project, attachHost, processInfo)
