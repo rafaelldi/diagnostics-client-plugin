@@ -24,7 +24,7 @@ class MemoryDumpDialog(
 
     override fun createCenterPanel(): JComponent = panel {
         row(DiagnosticsClientBundle.message("dialog.collect.dump.row.type")) {
-            comboBox(DumpType.values().toList(), SimpleListCellRenderer.create("") { it.label })
+            comboBox(DumpType.entries.toList(), SimpleListCellRenderer.create("") { it.label })
                 .bindItem(model::type.toNullableProperty())
         }.bottomGap(BottomGap.SMALL)
 

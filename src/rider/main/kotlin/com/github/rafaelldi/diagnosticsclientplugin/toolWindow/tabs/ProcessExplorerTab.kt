@@ -10,6 +10,7 @@ import com.intellij.openapi.actionSystem.ActionGroup
 import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.actionSystem.DataKey
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.rd.util.lifetime
 import com.intellij.openapi.ui.SimpleToolWindowPanel
 import com.intellij.ui.OnePixelSplitter
 import com.intellij.ui.ScrollPaneFactory
@@ -17,7 +18,6 @@ import com.intellij.ui.SideBorder
 import com.intellij.ui.components.JBPanelWithEmptyText
 import com.intellij.ui.components.JBScrollPane
 import com.intellij.util.ui.JBUI
-import com.jetbrains.rd.platform.util.lifetime
 import javax.swing.event.TreeSelectionEvent
 import javax.swing.event.TreeSelectionListener
 

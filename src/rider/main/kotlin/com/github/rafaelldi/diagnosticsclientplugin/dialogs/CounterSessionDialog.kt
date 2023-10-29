@@ -109,7 +109,7 @@ class CounterSessionDialog(
         group(DiagnosticsClientBundle.message("dialog.counters.group.file.settings")) {
             buttonsGroup {
                 row(DiagnosticsClientBundle.message("dialog.counters.row.file.format")) {
-                    for (format in CounterFileFormat.values()) {
+                    for (format in CounterFileFormat.entries) {
                         radioButton(format.name, format)
                     }
                 }

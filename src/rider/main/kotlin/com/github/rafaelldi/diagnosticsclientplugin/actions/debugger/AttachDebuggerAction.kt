@@ -8,7 +8,7 @@ import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.rd.util.launchBackground
-import com.jetbrains.rd.platform.util.lifetime
+import com.intellij.openapi.rd.util.lifetime
 
 class AttachDebuggerAction : AnAction() {
     override fun actionPerformed(event: AnActionEvent) {

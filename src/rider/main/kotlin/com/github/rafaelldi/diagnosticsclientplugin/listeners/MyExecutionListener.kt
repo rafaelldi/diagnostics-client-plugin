@@ -6,7 +6,7 @@ import com.intellij.execution.process.ProcessHandler
 import com.intellij.execution.runners.ExecutionEnvironment
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.rd.util.launchBackground
-import com.jetbrains.rd.platform.util.lifetime
+import com.intellij.openapi.rd.util.lifetime
 import com.jetbrains.rider.run.TerminalProcessHandler
 
 class MyExecutionListener(private val project: Project) : ExecutionListener {

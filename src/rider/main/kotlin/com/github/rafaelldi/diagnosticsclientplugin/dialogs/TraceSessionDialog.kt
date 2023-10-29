@@ -79,7 +79,7 @@ class TraceSessionDialog(
 
         group(DiagnosticsClientBundle.message("dialog.traces.group.providers")) {
             row(DiagnosticsClientBundle.message("dialog.traces.row.profile")) {
-                profileComboBox = comboBox(TracingProfile.values().toList())
+                profileComboBox = comboBox(TracingProfile.entries.toList())
                     .bindItem(model::profile.toNullableProperty())
             }
             row(DiagnosticsClientBundle.message("dialog.traces.row.providers")) {
