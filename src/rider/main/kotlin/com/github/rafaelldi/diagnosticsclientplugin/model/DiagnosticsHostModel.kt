@@ -146,6 +146,8 @@ object DiagnosticsHostModel : Ext(DiagnosticsHostRoot) {
         +"GcHeapSize"
         +"Gc"
         +"Exception"
+        +"ExceptionCount"
+        +"ThreadCount"
     }
 
     init {

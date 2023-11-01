@@ -5,7 +5,7 @@ import com.intellij.openapi.help.WebHelpProvider
 class DiagnosticsClientHelpProvider : WebHelpProvider() {
     companion object {
         const val HELP_ID_PREFIX = "com.github.rafaelldi.diagnosticsclientplugin."
-        private const val HELP_DOCS = "https://rafaelldi.blog/diagnostics-client-plugin"
+        private const val HELP_DOCS = "https://rafaelldi.github.io/diagnostics-client-plugin"
         private const val MAIN = "starter-topic.html"
         private const val COUNTERS_AND_METRICS = "counters-and-metrics.html"
     }

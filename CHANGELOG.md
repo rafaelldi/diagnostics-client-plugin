@@ -6,6 +6,10 @@
 
 ### Added
 - Go to settings action
+- Charts for exception and thread count
+
+### Changed
+- Support for Rider 2023.3
 
 ## [2023.2.1] - 2023-08-15
 

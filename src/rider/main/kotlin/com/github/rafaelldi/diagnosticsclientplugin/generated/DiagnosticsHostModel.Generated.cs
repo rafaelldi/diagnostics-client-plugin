@@ -129,7 +129,7 @@ namespace DiagnosticsAgent.Model
     
     
     
-    protected override long SerializationHash => -4546765254926434371L;
+    protected override long SerializationHash => 86844217649693712L;
     
     protected override Action<ISerializers> Register => RegisterDeclaredTypesSerializers;
     public static void RegisterDeclaredTypesSerializers(ISerializers serializers)
@@ -304,7 +304,9 @@ namespace DiagnosticsAgent.Model
     WorkingSet,
     GcHeapSize,
     Gc,
-    Exception
+    Exception,
+    ExceptionCount,
+    ThreadCount
   }
   
   
@@ -394,7 +396,7 @@ namespace DiagnosticsAgent.Model
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:166</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:168</p>
   /// </summary>
   public sealed class CollectDumpCommand : IPrintable, IEquatable<CollectDumpCommand>
   {
@@ -512,7 +514,7 @@ namespace DiagnosticsAgent.Model
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:183</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:185</p>
   /// </summary>
   public sealed class CollectStackTraceCommand : IPrintable, IEquatable<CollectStackTraceCommand>
   {
@@ -942,7 +944,7 @@ namespace DiagnosticsAgent.Model
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:177</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:179</p>
   /// </summary>
   public sealed class DumpCollectionResult : IPrintable, IEquatable<DumpCollectionResult>
   {
@@ -1027,7 +1029,7 @@ namespace DiagnosticsAgent.Model
   
   
   /// <summary>
-  /// <p>Generated from: DiagnosticsHostModel.kt:168</p>
+  /// <p>Generated from: DiagnosticsHostModel.kt:170</p>
   /// </summary>
   public enum DumpType {
     Full,

@@ -103,6 +103,8 @@ class CounterChartPanel : BorderLayoutPanel() {
     private val exceptionPoints = HashMap<Long, String>()
     private val gcPoints = HashMap<Long, String>()
 
+    private val chartMargins = JBUI.insets(28, 15, 25, 15)
+
     private val cpuChart = lineChart<Long, Double> {
         ranges {
             yMin = 0.0
@@ -112,7 +114,7 @@ class CounterChartPanel : BorderLayoutPanel() {
             yLines = generator(25.0)
             xLines = generator(1L)
             xPainter {
-                paintLine = (value) % 10 == 0L
+                paintLine = (value) % 60 == 0L
                 val hasActiveOverlay = valueOverlays.any { it.mouseLocation != null }
 
                 if (paintLine && !hasActiveOverlay) {
@@ -139,7 +141,7 @@ class CounterChartPanel : BorderLayoutPanel() {
             }
         }
         borderPainted = true
-        margins = JBUI.insets(28, 15, 25, 15)
+        margins = chartMargins
     }
 
     private val memoryChart = lineChart<Long, Double> {
@@ -151,7 +153,7 @@ class CounterChartPanel : BorderLayoutPanel() {
             yLines = generator(200.0)
             xLines = generator(1L)
             xPainter {
-                paintLine = (value) % 10 == 0L
+                paintLine = (value) % 60 == 0L
                 val hasActiveOverlay = valueOverlays.any { it.mouseLocation != null }
 
                 if (paintLine && !hasActiveOverlay) {
@@ -178,9 +180,7 @@ class CounterChartPanel : BorderLayoutPanel() {
                 fillColor = JBColor.ORANGE.transparent(0.5)
                 val valueOverlay = ValueOverlay(this, "MB", gcPoints, false)
                 valueOverlays.add(valueOverlay)
-                overlays = listOf(
-                    valueOverlay
-                )
+                overlays = listOf(valueOverlay)
             }
             dataset {
                 label = "Gc"
@@ -189,24 +189,112 @@ class CounterChartPanel : BorderLayoutPanel() {
             }
         }
         borderPainted = true
-        margins = JBUI.insets(28, 15, 25, 15)
+        margins = chartMargins
+    }
+
+    private val exceptionCountChart = lineChart<Long, Double> {
+        ranges {
+            yMin = 0.0
+            yMax = 30.0
+        }
+        grid {
+            yLines = generator(5.0)
+            xLines = generator(1L)
+            xPainter {
+                paintLine = (value) % 60 == 0L
+                val hasActiveOverlay = valueOverlays.any { it.mouseLocation != null }
+
+                if (paintLine && !hasActiveOverlay) {
+                    label = createTimeLabel(value)
+                }
+            }
+        }
+        datasets {
+            dataset {
+                label = "Number of Exceptions"
+                lineColor = JBColor.PINK
+                fillColor = JBColor.PINK.transparent(0.5)
+                val valueOverlay = ValueOverlay(this, "")
+                valueOverlays.add(valueOverlay)
+                overlays = listOf(
+                    TitleOverlay(DiagnosticsClientBundle.message("chart.exception.title.overlay"), "", this),
+                    valueOverlay
+                )
+            }
+        }
+        borderPainted = true
+        margins = chartMargins
+    }
+
+    private val threadCountChart = lineChart<Long, Double> {
+        ranges {
+            yMin = 0.0
+            yMax = 50.0
+        }
+        grid {
+            yLines = generator(5.0)
+            xLines = generator(1L)
+            xPainter {
+                paintLine = (value) % 60 == 0L
+                val hasActiveOverlay = valueOverlays.any { it.mouseLocation != null }
+
+                if (paintLine && !hasActiveOverlay) {
+                    label = createTimeLabel(value)
+                }
+            }
+        }
+        datasets {
+            dataset {
+                label = "Number of Threads"
+                lineColor = JBColor.CYAN
+                fillColor = JBColor.CYAN.transparent(0.5)
+                val valueOverlay = ValueOverlay(this, "")
+                valueOverlays.add(valueOverlay)
+                overlays = listOf(
+                    TitleOverlay(DiagnosticsClientBundle.message("chart.thread.title.overlay"), "", this),
+                    valueOverlay
+                )
+            }
+        }
+        borderPainted = true
+        margins = chartMargins
     }
 
     init {
-        val splitter = OnePixelSplitter(false).apply {
+        val firstSplitter = OnePixelSplitter(false).apply {
             firstComponent = cpuChart.component
             secondComponent = memoryChart.component
             setResizeEnabled(false)
         }
-        add(splitter)
+        val secondSplitter = OnePixelSplitter(false).apply {
+            firstComponent = exceptionCountChart.component
+            secondComponent = threadCountChart.component
+            setResizeEnabled(false)
+        }
+        val mainSplitter = OnePixelSplitter(false).apply {
+            firstComponent = firstSplitter
+            secondComponent = secondSplitter
+            setResizeEnabled(false)
+        }
+        add(mainSplitter)
 
-        val cpuChartRepaint = ChartMouseAdapter(cpuChart)
-        memoryChart.component.addMouseListener(cpuChartRepaint)
-        memoryChart.component.addMouseMotionListener(cpuChartRepaint)
+        addChartRepaint()
+    }
 
-        val memoryChartRepaint = ChartMouseAdapter(memoryChart)
-        cpuChart.component.addMouseListener(memoryChartRepaint)
-        cpuChart.component.addMouseMotionListener(memoryChartRepaint)
+    private fun addChartRepaint() {
+        val charts = listOf(cpuChart, memoryChart, exceptionCountChart, threadCountChart)
+        for (chart in charts) {
+            val adapter = ChartMouseAdapter(chart)
+            for (chartToListen in charts) {
+                if (chartToListen == chart) continue
+                chartToListen.addChartListeners(adapter)
+            }
+        }
+    }
+
+    private fun XYLineChart<*, *>.addChartListeners(adapter: ChartMouseAdapter) {
+        component.addMouseListener(adapter)
+        component.addMouseMotionListener(adapter)
     }
 
     fun update(chartValue: ChartEvent) {
@@ -246,6 +334,22 @@ class CounterChartPanel : BorderLayoutPanel() {
             memoryChart.ranges.xMax = timestamp
         }
 
+        if (chartValue.type == ChartEventType.ExceptionCount) {
+            val value = chartValue.value
+            exceptionCountChart.add(timestamp, value)
+            exceptionCountChart.ranges.xMin = timestamp - TIME_RANGE
+            exceptionCountChart.ranges.xMax = timestamp
+            exceptionCountChart.ranges.yMax = maxOf(exceptionCountChart.ranges.yMax, chartValue.value)
+        }
+
+        if (chartValue.type == ChartEventType.ThreadCount) {
+            val value = chartValue.value
+            threadCountChart.add(timestamp, value)
+            threadCountChart.ranges.xMin = timestamp - TIME_RANGE
+            threadCountChart.ranges.xMax = timestamp
+            threadCountChart.ranges.yMax = maxOf(threadCountChart.ranges.yMax, chartValue.value)
+        }
+
         repaint()
     }
 
@@ -282,7 +386,7 @@ class CounterChartPanel : BorderLayoutPanel() {
     private inner class ValueOverlay(
         private val xyLineDataset: XYLineDataset<Long, Double>,
         private val label: String,
-        private val pointSet: HashMap<Long, String>,
+        private val pointSet: HashMap<Long, String>? = null,
         private val drawTimeLabel: Boolean = true
     ) : Overlay<LineChart<Long, Double, *>>() {
         override fun paintComponent(g: Graphics2D) {
@@ -291,7 +395,7 @@ class CounterChartPanel : BorderLayoutPanel() {
             val location = overlayWithMouseLocation.mouseLocation ?: return
 
             val x = getXByLocation(location, chartWithMouseLocation) ?: return
-            if (pointSet.contains(x)) return
+            if (pointSet?.contains(x) == true) return
 
             val minMax = chart.findMinMax()
             if (!minMax.isInitialized) return

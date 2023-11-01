@@ -79,7 +79,7 @@ class DiagnosticsHostModel private constructor(
         }
         
         
-        const val serializationHash = -4546765254926434371L
+        const val serializationHash = 86844217649693712L
         
     }
     override val serializersOwner: ISerializersOwner get() = DiagnosticsHostModel
@@ -251,7 +251,9 @@ enum class ChartEventType {
     WorkingSet, 
     GcHeapSize, 
     Gc, 
-    Exception;
+    Exception, 
+    ExceptionCount, 
+    ThreadCount;
     
     companion object {
         val marshaller = FrameworkMarshallers.enum<ChartEventType>()
@@ -341,7 +343,7 @@ class ChartProtocolSession private constructor(
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:166]
+ * #### Generated from [DiagnosticsHostModel.kt:168]
  */
 data class CollectDumpCommand (
     val pid: Int,
@@ -423,7 +425,7 @@ data class CollectDumpCommand (
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:183]
+ * #### Generated from [DiagnosticsHostModel.kt:185]
  */
 data class CollectStackTraceCommand (
     val pid: Int
@@ -768,7 +770,7 @@ class CounterProtocolSession private constructor(
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:177]
+ * #### Generated from [DiagnosticsHostModel.kt:179]
  */
 data class DumpCollectionResult (
     val filePath: String
@@ -826,7 +828,7 @@ data class DumpCollectionResult (
 
 
 /**
- * #### Generated from [DiagnosticsHostModel.kt:168]
+ * #### Generated from [DiagnosticsHostModel.kt:170]
  */
 enum class DumpType {
     Full, 
