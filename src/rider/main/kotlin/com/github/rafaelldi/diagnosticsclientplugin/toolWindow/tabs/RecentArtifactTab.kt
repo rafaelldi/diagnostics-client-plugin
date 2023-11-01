@@ -14,8 +14,7 @@ import java.nio.file.Path
 import javax.swing.event.ListSelectionEvent
 import javax.swing.event.ListSelectionListener
 
-class RecentArtifactTab(project: Project) :
-    SimpleToolWindowPanel(false), ListSelectionListener {
+class RecentArtifactTab(project: Project) : SimpleToolWindowPanel(false), ListSelectionListener {
     companion object {
         val RECENT_ARTIFACT_TAB: DataKey<RecentArtifactTab> =
             DataKey.create("DiagnosticsClient.ToolWindow.RecentArtifactTab")

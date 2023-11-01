@@ -5,6 +5,7 @@ import com.github.rafaelldi.diagnosticsclientplugin.services.counters.CounterPro
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.DiagnosticsToolWindowFactory.Companion.DIAGNOSTICS_CLIENT_TOOL_WINDOW
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.CounterProtocolSessionTab
 import com.intellij.execution.runners.ExecutionUtil
+import com.intellij.icons.AllIcons
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
@@ -26,7 +27,7 @@ class CounterSessionTabManager(private val project: Project) {
         val contentFactory = ContentFactory.getInstance()
         val counterProtocolSessionTab = CounterProtocolSessionTab(pid, session, this, sessionLifetime)
         val content = contentFactory.createContent(counterProtocolSessionTab, "Counters for $pid", true)
-        content.icon = DiagnosticsClientIcons.Counters
+        content.icon = AllIcons.Debugger.Db_primitive
         content.putUserData(ToolWindow.SHOW_CONTENT_ICON, true)
         sessionLifetime.bracketIfAlive(
             { toolWindow.contentManager.addContent(content) },
@@ -37,12 +38,12 @@ class CounterSessionTabManager(private val project: Project) {
 
     private fun sessionStatusChanged(isActive: Boolean, content: Content) {
         if (isActive) {
-            content.icon = ExecutionUtil.getLiveIndicator(DiagnosticsClientIcons.Counters)
+            content.icon = ExecutionUtil.getLiveIndicator(AllIcons.Debugger.Db_primitive)
             val toolWindow =
                 ToolWindowManager.getInstance(project).getToolWindow(DIAGNOSTICS_CLIENT_TOOL_WINDOW) ?: return
             toolWindow.contentManager.setSelectedContent(content, true, true)
         } else {
-            content.icon = DiagnosticsClientIcons.Counters
+            content.icon = AllIcons.Debugger.Db_primitive
         }
     }
 

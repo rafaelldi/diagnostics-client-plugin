@@ -44,7 +44,7 @@
             </action>
             <action id="DiagnosticsClient.ToolWindow.QuickActions.Counters"
                     class="com.github.rafaelldi.diagnosticsclientplugin.actions.quick.StartLiveCounterSessionQuickAction"
-                    icon="DiagnosticsClientIcons.Counters">
+                    icon="AllIcons.Debugger.Db_primitive">
             </action>
             <action id="DiagnosticsClient.ToolWindow.QuickActions.Traces"
                     class="com.github.rafaelldi.diagnosticsclientplugin.actions.quick.StartLiveTraceSessionQuickAction"
@@ -65,7 +65,7 @@
                     icon="AllIcons.RunConfigurations.TestCustom">
             </action>
             <group id="DiagnosticsClient.ToolWindow.Explorer.Counters"
-                   icon="DiagnosticsClientIcons.Counters"
+                   icon="AllIcons.Debugger.Db_primitive"
                    popup="true">
                 <action id="DiagnosticsClient.ToolWindow.Explorer.LiveCounterSession.Start"
                         class="com.github.rafaelldi.diagnosticsclientplugin.actions.counters.StartLiveCounterSessionAction"
@@ -81,7 +81,7 @@
                 </action>
                 <action id="DiagnosticsClient.ToolWindow.Explorer.PersistentCounterSession.Start"
                         class="com.github.rafaelldi.diagnosticsclientplugin.actions.counters.StartExportCounterSessionAction"
-                        icon="AllIcons.ToolbarDecorator.Export">
+                        icon="AllIcons.Actions.MenuSaveall">
                 </action>
                 <action id="DiagnosticsClient.ToolWindow.Explorer.PersistentCounterSession.Stop"
                         class="com.github.rafaelldi.diagnosticsclientplugin.actions.counters.StopExportCounterSessionAction"
@@ -105,7 +105,7 @@
                 </action>
                 <action id="DiagnosticsClient.ToolWindow.Explorer.PersistentGcEventSession.Start"
                         class="com.github.rafaelldi.diagnosticsclientplugin.actions.gc.StartExportGcEventSessionAction"
-                        icon="AllIcons.ToolbarDecorator.Export">
+                        icon="AllIcons.Actions.MenuSaveall">
                 </action>
                 <action id="DiagnosticsClient.ToolWindow.Explorer.PersistentGcEventSession.Stop"
                         class="com.github.rafaelldi.diagnosticsclientplugin.actions.gc.StopExportGcEventSessionAction"
@@ -129,7 +129,7 @@
                 </action>
                 <action id="DiagnosticsClient.ToolWindow.Explorer.PersistentTraceSession.Start"
                         class="com.github.rafaelldi.diagnosticsclientplugin.actions.traces.StartExportTraceSessionAction"
-                        icon="AllIcons.ToolbarDecorator.Export">
+                        icon="AllIcons.Actions.MenuSaveall">
                 </action>
                 <action id="DiagnosticsClient.ToolWindow.Explorer.PersistentTraceSession.Stop"
                         class="com.github.rafaelldi.diagnosticsclientplugin.actions.traces.StopExportTraceSessionAction"

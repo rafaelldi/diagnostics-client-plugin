@@ -41,7 +41,7 @@ class ProcessDashboardPanel(
                 val startCounterSession =
                     ActionManager.getInstance().getAction("DiagnosticsClient.ToolWindow.QuickActions.Counters")
                 button(DiagnosticsClientBundle.message("dashboard.button.watch.counters"), startCounterSession)
-                    .applyToComponent { icon = DiagnosticsClientIcons.Counters }
+                    .applyToComponent { icon = AllIcons.Debugger.Db_primitive }
                     .gap(RightGap.SMALL)
                 val startTraceSession =
                     ActionManager.getInstance().getAction("DiagnosticsClient.ToolWindow.QuickActions.Traces")
