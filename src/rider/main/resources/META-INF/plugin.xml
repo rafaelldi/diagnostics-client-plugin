@@ -19,6 +19,8 @@
 
         <webHelpProvider implementation="com.github.rafaelldi.diagnosticsclientplugin.DiagnosticsClientHelpProvider"/>
 
+        <errorHandler implementation="com.intellij.diagnostic.JetBrainsMarketplaceErrorReportSubmitter"/>
+
         <applicationConfigurable
                 parentId="tools"
                 instance="com.github.rafaelldi.diagnosticsclientplugin.settings.DiagnosticsClientConfigurable"
