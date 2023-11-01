@@ -20,6 +20,7 @@ import com.intellij.openapi.util.SystemInfo
 import com.intellij.util.EnvironmentUtil
 import com.intellij.util.application
 import com.jetbrains.rider.runtime.RiderDotNetActiveRuntimeHost
+import java.nio.charset.StandardCharsets
 
 @Service(Service.Level.PROJECT)
 class DiagnosticsToolService(private val project: Project) {
@@ -86,6 +87,7 @@ class DiagnosticsToolService(private val project: Project) {
         val arguments = listOf("run", "-p", port.toString())
         val cmd = GeneralCommandLine()
             .withExePath(toolPath)
+            .withCharset(StandardCharsets.UTF_8)
             .withParameters(arguments)
 
         return KillableColoredProcessHandler.Silent(cmd)
@@ -98,6 +100,7 @@ class DiagnosticsToolService(private val project: Project) {
 
         val commandLine = GeneralCommandLine()
             .withExePath(dotnetPath)
+            .withCharset(StandardCharsets.UTF_8)
             .withParameters("tool", "install", "Rafaelldi.DiagnosticsAgent", "--global", "--version", CURRENT_VERSION)
         val output = ExecUtil.execAndGetOutput(commandLine)
 
@@ -131,6 +134,7 @@ class DiagnosticsToolService(private val project: Project) {
 
         val commandLine = GeneralCommandLine()
             .withExePath(dotnetPath)
+            .withCharset(StandardCharsets.UTF_8)
             .withParameters("tool", "update", "Rafaelldi.DiagnosticsAgent", "--global", "--version", CURRENT_VERSION)
         val output = ExecUtil.execAndGetOutput(commandLine)
 
@@ -165,6 +169,7 @@ class DiagnosticsToolService(private val project: Project) {
         val commandLine = GeneralCommandLine()
             .withParentEnvironmentType(GeneralCommandLine.ParentEnvironmentType.CONSOLE)
             .withExePath(dotnetPath)
+            .withCharset(StandardCharsets.UTF_8)
             .withParameters("tool", "list", "--global")
 
         return ExecUtil.execAndGetOutput(commandLine)
