@@ -5,12 +5,9 @@ import com.github.rafaelldi.diagnosticsclientplugin.dialogs.MonitoringTimerDialo
 import com.github.rafaelldi.diagnosticsclientplugin.model.GcEventProtocolSession
 import com.github.rafaelldi.diagnosticsclientplugin.services.gc.GcEventProtocolSessionController
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.GcEventProtocolSessionTab
-import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.GcEventProtocolSessionTab.Companion.GC_EVENT_MONITORING_TAB
 import com.intellij.openapi.project.Project
 
 class ResumeLiveGcEventSessionAction : ResumeLiveSessionAction<GcEventProtocolSession, GcEventProtocolSessionTab>() {
-    override val tabDatKey = GC_EVENT_MONITORING_TAB
-
     override fun resumeSession(pid: Int, project: Project) {
         val dialog = MonitoringTimerDialog(project)
         if (dialog.showAndGet()) {

@@ -2,8 +2,8 @@ package com.github.rafaelldi.diagnosticsclientplugin.actions.stackTrace
 
 import com.github.rafaelldi.diagnosticsclientplugin.services.stackTrace.StackTraceController
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.components.LocalProcessNode
-import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.ChartProtocolSessionTab
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.ProcessExplorerTab
+import com.github.rafaelldi.diagnosticsclientplugin.utils.SESSION_PROCESS_ID
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
@@ -33,7 +33,7 @@ class CollectStackTraceAction : AnAction() {
     }
 
     private fun getProcessId(event: AnActionEvent): Int? {
-        val sessionPid = event.getData(ChartProtocolSessionTab.SESSION_PROCESS_ID)
+        val sessionPid = event.getData(SESSION_PROCESS_ID)
         if (sessionPid != null) return sessionPid
 
         val tree = event.getData(ProcessExplorerTab.PROCESS_TREE)

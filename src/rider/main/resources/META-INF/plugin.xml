@@ -178,6 +178,18 @@
                     class="com.github.rafaelldi.diagnosticsclientplugin.actions.counters.PauseLiveCounterSessionAction"
                     icon="AllIcons.Actions.Pause">
             </action>
+            <action id="DiagnosticsClient.ToolWindow.LiveChartSession.CollectMemoryDump"
+                    class="com.github.rafaelldi.diagnosticsclientplugin.actions.memoryDump.CollectMemoryDumpAction"
+                    icon="AllIcons.Actions.Dump">
+            </action>
+            <action id="DiagnosticsClient.ToolWindow.LiveChartSession.CollectStackTrace"
+                    class="com.github.rafaelldi.diagnosticsclientplugin.actions.stackTrace.CollectStackTraceAction"
+                    icon="RiderIcons.Stacktrace.Stacktrace">
+            </action>
+            <action id="DiagnosticsClient.ToolWindow.LiveChartSession.AttachDebugger"
+                    class="com.github.rafaelldi.diagnosticsclientplugin.actions.debugger.AttachDebuggerAction"
+                    icon="AllIcons.Debugger.AttachToProcess">
+            </action>
         </group>
         <group id="DiagnosticsClient.ToolWindow.GcEventSession">
             <action id="DiagnosticsClient.ToolWindow.LiveGcEventSession.Resume"
@@ -188,6 +200,18 @@
                     class="com.github.rafaelldi.diagnosticsclientplugin.actions.gc.PauseLiveGcEventSessionAction"
                     icon="AllIcons.Actions.Pause">
             </action>
+            <action id="DiagnosticsClient.ToolWindow.LiveChartSession.CollectMemoryDump"
+                    class="com.github.rafaelldi.diagnosticsclientplugin.actions.memoryDump.CollectMemoryDumpAction"
+                    icon="AllIcons.Actions.Dump">
+            </action>
+            <action id="DiagnosticsClient.ToolWindow.LiveChartSession.CollectStackTrace"
+                    class="com.github.rafaelldi.diagnosticsclientplugin.actions.stackTrace.CollectStackTraceAction"
+                    icon="RiderIcons.Stacktrace.Stacktrace">
+            </action>
+            <action id="DiagnosticsClient.ToolWindow.LiveChartSession.AttachDebugger"
+                    class="com.github.rafaelldi.diagnosticsclientplugin.actions.debugger.AttachDebuggerAction"
+                    icon="AllIcons.Debugger.AttachToProcess">
+            </action>
         </group>
         <group id="DiagnosticsClient.ToolWindow.TraceSession">
             <action id="DiagnosticsClient.ToolWindow.LiveTraceSession.Resume"
@@ -197,6 +221,18 @@
             <action id="DiagnosticsClient.ToolWindow.LiveTraceSession.Pause"
                     class="com.github.rafaelldi.diagnosticsclientplugin.actions.traces.PauseLiveTraceSessionAction"
                     icon="AllIcons.Actions.Pause">
+            </action>
+            <action id="DiagnosticsClient.ToolWindow.LiveChartSession.CollectMemoryDump"
+                    class="com.github.rafaelldi.diagnosticsclientplugin.actions.memoryDump.CollectMemoryDumpAction"
+                    icon="AllIcons.Actions.Dump">
+            </action>
+            <action id="DiagnosticsClient.ToolWindow.LiveChartSession.CollectStackTrace"
+                    class="com.github.rafaelldi.diagnosticsclientplugin.actions.stackTrace.CollectStackTraceAction"
+                    icon="RiderIcons.Stacktrace.Stacktrace">
+            </action>
+            <action id="DiagnosticsClient.ToolWindow.LiveChartSession.AttachDebugger"
+                    class="com.github.rafaelldi.diagnosticsclientplugin.actions.debugger.AttachDebuggerAction"
+                    icon="AllIcons.Debugger.AttachToProcess">
             </action>
         </group>
         <group id="DiagnosticsClient.ToolWindow.RecentArtifacts">

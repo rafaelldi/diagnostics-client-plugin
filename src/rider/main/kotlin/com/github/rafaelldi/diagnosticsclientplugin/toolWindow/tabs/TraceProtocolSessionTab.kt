@@ -5,6 +5,7 @@ import com.github.rafaelldi.diagnosticsclientplugin.model.PredefinedProvider
 import com.github.rafaelldi.diagnosticsclientplugin.model.Trace
 import com.github.rafaelldi.diagnosticsclientplugin.model.TraceProtocolSession
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.TraceSessionTabManager
+import com.github.rafaelldi.diagnosticsclientplugin.utils.SESSION_PROCESS_ID
 import com.intellij.execution.filters.TextConsoleBuilderFactory
 import com.intellij.execution.impl.ConsoleViewImpl
 import com.intellij.execution.process.ConsoleHighlighter
@@ -12,7 +13,6 @@ import com.intellij.execution.ui.ConsoleViewContentType
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ActionGroup
 import com.intellij.openapi.actionSystem.ActionManager
-import com.intellij.openapi.actionSystem.DataKey
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.SimpleToolWindowPanel
 import com.intellij.openapi.util.Disposer
@@ -29,9 +29,6 @@ class TraceProtocolSessionTab(
     lt: Lifetime
 ) : SimpleToolWindowPanel(false), MonitoringTab, Disposable {
     companion object {
-        val TRACE_MONITORING_TAB: DataKey<TraceProtocolSessionTab> =
-            DataKey.create("DiagnosticsClient.ToolWindow.TraceMonitoringTab")
-
         private val HTTP_OUTPUT = ConsoleViewContentType("HTTP_OUTPUT", ConsoleHighlighter.BLUE)
         private val ASPNET_OUTPUT = ConsoleViewContentType("ASPNET_OUTPUT", ConsoleHighlighter.MAGENTA)
         private val EF_OUTPUT = ConsoleViewContentType("EF_OUTPUT", ConsoleHighlighter.MAGENTA_BRIGHT)
@@ -112,7 +109,7 @@ class TraceProtocolSessionTab(
     }
 
     override fun getData(dataId: String): Any? {
-        if (TRACE_MONITORING_TAB.`is`(dataId)) return this
+        if (SESSION_PROCESS_ID.`is`(dataId)) return pid
         return super.getData(dataId)
     }
 

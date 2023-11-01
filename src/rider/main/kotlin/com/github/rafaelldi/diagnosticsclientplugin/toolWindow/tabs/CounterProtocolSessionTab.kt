@@ -4,10 +4,10 @@ import com.github.rafaelldi.diagnosticsclientplugin.model.Counter
 import com.github.rafaelldi.diagnosticsclientplugin.model.CounterProtocolSession
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.CounterSessionTabManager
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.components.CounterTable
+import com.github.rafaelldi.diagnosticsclientplugin.utils.SESSION_PROCESS_ID
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ActionGroup
 import com.intellij.openapi.actionSystem.ActionManager
-import com.intellij.openapi.actionSystem.DataKey
 import com.intellij.openapi.ui.SimpleToolWindowPanel
 import com.intellij.ui.ScrollPaneFactory
 import com.jetbrains.rd.util.lifetime.Lifetime
@@ -20,11 +20,6 @@ class CounterProtocolSessionTab(
     private val manager: CounterSessionTabManager,
     lt: Lifetime
 ) : SimpleToolWindowPanel(false), MonitoringTab, Disposable {
-
-    companion object {
-        val COUNTER_MONITORING_TAB: DataKey<CounterProtocolSessionTab> =
-            DataKey.create("DiagnosticsClient.ToolWindow.CounterMonitoringTab")
-    }
 
     private val table: CounterTable = CounterTable()
 
@@ -58,7 +53,7 @@ class CounterProtocolSessionTab(
     }
 
     override fun getData(dataId: String): Any? {
-        if (COUNTER_MONITORING_TAB.`is`(dataId)) return this
+        if (SESSION_PROCESS_ID.`is`(dataId)) return pid
         return super.getData(dataId)
     }
 

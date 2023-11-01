@@ -4,15 +4,13 @@ import com.github.rafaelldi.diagnosticsclientplugin.model.ProtocolSession
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.components.LocalProcessNode
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.MonitoringTab
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.ProcessExplorerTab
+import com.github.rafaelldi.diagnosticsclientplugin.utils.SESSION_PROCESS_ID
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.actionSystem.DataKey
 import com.intellij.openapi.project.Project
 
 abstract class ResumeLiveSessionAction<TSession : ProtocolSession, TTab : MonitoringTab> : AnAction() {
-    protected abstract val tabDatKey: DataKey<TTab>
-
     override fun actionPerformed(event: AnActionEvent) {
         val project = event.project ?: return
         val pid = getProcessId(event) ?: return
@@ -39,8 +37,8 @@ abstract class ResumeLiveSessionAction<TSession : ProtocolSession, TTab : Monito
     }
 
     private fun getProcessId(event: AnActionEvent): Int? {
-        val tab = event.getData(tabDatKey)
-        if (tab != null) return tab.pid
+        val sessionPid = event.getData(SESSION_PROCESS_ID)
+        if (sessionPid != null) return sessionPid
 
         val tree = event.getData(ProcessExplorerTab.PROCESS_TREE)
         if (tree != null) return (tree.selectedNode as? LocalProcessNode)?.processId

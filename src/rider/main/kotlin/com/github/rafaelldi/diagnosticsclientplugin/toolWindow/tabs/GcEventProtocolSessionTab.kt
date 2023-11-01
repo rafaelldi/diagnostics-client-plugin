@@ -4,10 +4,10 @@ import com.github.rafaelldi.diagnosticsclientplugin.model.GcEvent
 import com.github.rafaelldi.diagnosticsclientplugin.model.GcEventProtocolSession
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.GcEventSessionTabManager
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.components.GcEventTable
+import com.github.rafaelldi.diagnosticsclientplugin.utils.SESSION_PROCESS_ID
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ActionGroup
 import com.intellij.openapi.actionSystem.ActionManager
-import com.intellij.openapi.actionSystem.DataKey
 import com.intellij.openapi.ui.SimpleToolWindowPanel
 import com.intellij.ui.components.JBScrollPane
 import com.jetbrains.rd.util.lifetime.Lifetime
@@ -20,11 +20,6 @@ class GcEventProtocolSessionTab(
     private val manager: GcEventSessionTabManager,
     lt: Lifetime
 ) : SimpleToolWindowPanel(false), MonitoringTab, Disposable {
-
-    companion object {
-        val GC_EVENT_MONITORING_TAB: DataKey<GcEventProtocolSessionTab> =
-            DataKey.create("DiagnosticsClient.ToolWindow.GcEventMonitoringTab")
-    }
 
     private val table: GcEventTable
 
@@ -58,7 +53,7 @@ class GcEventProtocolSessionTab(
     }
 
     override fun getData(dataId: String): Any? {
-        if (GC_EVENT_MONITORING_TAB.`is`(dataId)) return this
+        if (SESSION_PROCESS_ID.`is`(dataId)) return pid
         return super.getData(dataId)
     }
 

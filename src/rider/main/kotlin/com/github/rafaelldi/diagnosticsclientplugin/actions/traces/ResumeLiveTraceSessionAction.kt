@@ -5,12 +5,9 @@ import com.github.rafaelldi.diagnosticsclientplugin.dialogs.MonitoringTimerDialo
 import com.github.rafaelldi.diagnosticsclientplugin.model.TraceProtocolSession
 import com.github.rafaelldi.diagnosticsclientplugin.services.traces.TraceProtocolSessionController
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.TraceProtocolSessionTab
-import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.TraceProtocolSessionTab.Companion.TRACE_MONITORING_TAB
 import com.intellij.openapi.project.Project
 
 class ResumeLiveTraceSessionAction : ResumeLiveSessionAction<TraceProtocolSession, TraceProtocolSessionTab>() {
-    override val tabDatKey = TRACE_MONITORING_TAB
-
     override fun resumeSession(pid: Int, project: Project) {
         val dialog = MonitoringTimerDialog(project)
         if (dialog.showAndGet()) {
