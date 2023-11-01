@@ -11,7 +11,6 @@ import com.intellij.ui.dsl.builder.RightGap
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.util.ui.JBUI
 import com.intellij.util.ui.components.BorderLayoutPanel
-import icons.DiagnosticsClientIcons
 import icons.RiderIcons
 import java.awt.datatransfer.StringSelection
 import kotlin.io.path.Path

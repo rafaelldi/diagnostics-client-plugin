@@ -14,7 +14,6 @@ import com.intellij.openapi.wm.ToolWindowManager
 import com.intellij.ui.content.Content
 import com.intellij.ui.content.ContentFactory
 import com.jetbrains.rd.util.lifetime.Lifetime
-import icons.DiagnosticsClientIcons
 
 @Service(Service.Level.PROJECT)
 class CounterSessionTabManager(private val project: Project) {
