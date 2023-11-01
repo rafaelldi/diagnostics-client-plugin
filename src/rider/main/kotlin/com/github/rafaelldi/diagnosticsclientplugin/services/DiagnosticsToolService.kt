@@ -26,7 +26,7 @@ class DiagnosticsToolService(private val project: Project) {
     companion object {
         private const val WINDOWS_HOME_VARIABLE = "USERPROFILE"
         private const val LINUX_HOME_VARIABLE = "HOME"
-        private const val CURRENT_VERSION = "2023.2.1"
+        private const val CURRENT_VERSION = "2023.3.0"
 
         private val LOG = logger<DiagnosticsToolService>()
 
