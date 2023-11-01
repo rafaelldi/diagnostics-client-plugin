@@ -25,11 +25,11 @@ import com.intellij.openapi.rd.createNestedDisposable
 import com.intellij.openapi.rd.util.withUiContext
 import com.intellij.util.application
 import com.jetbrains.rd.framework.*
-import com.jetbrains.rd.framework.util.nextTrueValue
 import com.jetbrains.rd.platform.util.idea.LifetimedService
 import com.jetbrains.rd.util.lifetime.Lifetime
 import com.jetbrains.rd.util.lifetime.SequentialLifetimes
 import com.jetbrains.rd.util.reactive.AddRemove
+import com.jetbrains.rd.util.threading.coroutines.nextTrueValueAsync
 import com.jetbrains.rdclient.protocol.RdDispatcher
 import com.jetbrains.rider.util.NetUtils
 import kotlinx.coroutines.delay
@@ -115,7 +115,7 @@ class DiagnosticsHost(private val project: Project) : LifetimedService() {
         val dispatcher = RdDispatcher(lifetime)
         val wire = SocketWire.Client(lifetime, dispatcher, port)
 
-        wire.connected.nextTrueValue(lifetime)
+        wire.connected.nextTrueValueAsync(lifetime).await()
 
         val protocol = Protocol(
             "Diagnostics Host to Agent",
