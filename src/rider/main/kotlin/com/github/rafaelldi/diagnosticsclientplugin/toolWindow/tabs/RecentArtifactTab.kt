@@ -8,8 +8,7 @@ import com.intellij.openapi.actionSystem.DataKey
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.rd.util.lifetime
 import com.intellij.openapi.ui.SimpleToolWindowPanel
-import com.intellij.ui.components.JBScrollPane
-import com.intellij.util.ui.JBUI
+import com.intellij.ui.ScrollPaneFactory
 import java.nio.file.Path
 import javax.swing.event.ListSelectionEvent
 import javax.swing.event.ListSelectionListener
@@ -26,9 +25,7 @@ class RecentArtifactTab(project: Project) : SimpleToolWindowPanel(false), ListSe
         private set
 
     init {
-        val listPanel = JBScrollPane(recentArtifactList)
-        listPanel.border = JBUI.Borders.empty()
-
+        val listPanel = ScrollPaneFactory.createScrollPane(recentArtifactList, true)
         setContent(listPanel)
         initActionToolbar()
 

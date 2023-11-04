@@ -16,10 +16,9 @@ import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.SimpleToolWindowPanel
 import com.intellij.openapi.util.Disposer
+import com.intellij.util.ui.components.BorderLayoutPanel
 import com.jetbrains.rd.util.lifetime.Lifetime
-import java.awt.BorderLayout
 import java.text.SimpleDateFormat
-import javax.swing.JPanel
 
 class TraceProtocolSessionTab(
     override val pid: Int,
@@ -47,9 +46,8 @@ class TraceProtocolSessionTab(
             .apply { setViewer(true) }
             .console as ConsoleViewImpl
 
-    private val panel: JPanel = JPanel().apply {
-        layout = BorderLayout()
-        add(consoleView.component, BorderLayout.CENTER)
+    private val panel = BorderLayoutPanel().apply {
+        addToCenter(consoleView.component)
     }
 
     init {

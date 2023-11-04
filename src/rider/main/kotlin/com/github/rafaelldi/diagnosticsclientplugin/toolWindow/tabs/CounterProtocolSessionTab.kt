@@ -10,9 +10,8 @@ import com.intellij.openapi.actionSystem.ActionGroup
 import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.ui.SimpleToolWindowPanel
 import com.intellij.ui.ScrollPaneFactory
+import com.intellij.util.ui.components.BorderLayoutPanel
 import com.jetbrains.rd.util.lifetime.Lifetime
-import java.awt.BorderLayout
-import javax.swing.JPanel
 
 class CounterProtocolSessionTab(
     override val pid: Int,
@@ -21,12 +20,11 @@ class CounterProtocolSessionTab(
     lt: Lifetime
 ) : SimpleToolWindowPanel(false), MonitoringTab, Disposable {
 
-    private val table: CounterTable = CounterTable()
+    private val table = CounterTable()
 
-    private val panel: JPanel = JPanel().apply {
-        layout = BorderLayout()
+    private val panel = BorderLayoutPanel().apply {
         val scrollPane = ScrollPaneFactory.createScrollPane(table, true)
-        add(scrollPane, BorderLayout.CENTER)
+        addToCenter(scrollPane)
     }
 
     init {

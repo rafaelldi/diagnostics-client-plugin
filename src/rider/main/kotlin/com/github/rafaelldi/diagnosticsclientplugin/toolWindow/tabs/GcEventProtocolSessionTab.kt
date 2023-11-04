@@ -9,10 +9,9 @@ import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ActionGroup
 import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.ui.SimpleToolWindowPanel
-import com.intellij.ui.components.JBScrollPane
+import com.intellij.ui.ScrollPaneFactory
+import com.intellij.util.ui.components.BorderLayoutPanel
 import com.jetbrains.rd.util.lifetime.Lifetime
-import java.awt.BorderLayout
-import javax.swing.JPanel
 
 class GcEventProtocolSessionTab(
     override val pid: Int,
@@ -21,12 +20,11 @@ class GcEventProtocolSessionTab(
     lt: Lifetime
 ) : SimpleToolWindowPanel(false), MonitoringTab, Disposable {
 
-    private val table: GcEventTable
+    private val table = GcEventTable()
 
-    private val panel: JPanel = JPanel().apply {
-        layout = BorderLayout()
-        table = GcEventTable()
-        add(JBScrollPane(table))
+    private val panel = BorderLayoutPanel().apply {
+        val scrollPane = ScrollPaneFactory.createScrollPane(table, true)
+        addToCenter(scrollPane)
     }
 
     init {
