@@ -60,7 +60,7 @@
                     class="com.github.rafaelldi.diagnosticsclientplugin.actions.DisconnectFromAgentAction"
                     icon="AllIcons.Actions.Suspend">
             </action>
-            <action id="DiagnosticsClient.ToolWindow.Explorer.LiveChartSession.Start"
+            <action id="DiagnosticsClient.ToolWindow.Explorer.StartChartSession"
                     class="com.github.rafaelldi.diagnosticsclientplugin.actions.chart.StartLiveChartSessionAction"
                     icon="AllIcons.RunConfigurations.TestCustom">
             </action>
@@ -157,19 +157,21 @@
                     class="com.github.rafaelldi.diagnosticsclientplugin.actions.DiagnosticsClientHelpAction">
             </action>
         </group>
+        <group id="DiagnosticsClient.ToolWindow.Explorer.Popup" searchable="false">
+            <reference ref="DiagnosticsClient.ToolWindow.Explorer.Connect" />
+            <reference ref="DiagnosticsClient.ToolWindow.Explorer.Disconnect" />
+            <reference ref="DiagnosticsClient.ToolWindow.Explorer.StartChartSession" />
+            <reference ref="DiagnosticsClient.ToolWindow.Explorer.Counters" />
+            <reference ref="DiagnosticsClient.ToolWindow.Explorer.Gc" />
+            <reference ref="DiagnosticsClient.ToolWindow.Explorer.Traces" />
+            <reference ref="DiagnosticsClient.ToolWindow.Explorer.CollectDump" />
+            <reference ref="DiagnosticsClient.ToolWindow.Explorer.CollectStackTrace" />
+            <reference ref="DiagnosticsClient.ToolWindow.Explorer.AttachDebugger" />
+        </group>
         <group id="DiagnosticsClient.ToolWindow.ChartSession">
-            <action id="DiagnosticsClient.ToolWindow.ChartSession.CollectMemoryDump"
-                    class="com.github.rafaelldi.diagnosticsclientplugin.actions.memoryDump.CollectMemoryDumpAction"
-                    icon="AllIcons.Actions.Dump">
-            </action>
-            <action id="DiagnosticsClient.ToolWindow.ChartSession.CollectStackTrace"
-                    class="com.github.rafaelldi.diagnosticsclientplugin.actions.stackTrace.CollectStackTraceAction"
-                    icon="RiderIcons.Stacktrace.Stacktrace">
-            </action>
-            <action id="DiagnosticsClient.ToolWindow.ChartSession.AttachDebugger"
-                    class="com.github.rafaelldi.diagnosticsclientplugin.actions.debugger.AttachDebuggerAction"
-                    icon="AllIcons.Debugger.AttachToProcess">
-            </action>
+            <reference ref="DiagnosticsClient.ToolWindow.Explorer.CollectDump" />
+            <reference ref="DiagnosticsClient.ToolWindow.Explorer.CollectStackTrace" />
+            <reference ref="DiagnosticsClient.ToolWindow.Explorer.AttachDebugger" />
         </group>
         <group id="DiagnosticsClient.ToolWindow.CounterSession">
             <action id="DiagnosticsClient.ToolWindow.CounterSession.Resume"
@@ -180,18 +182,9 @@
                     class="com.github.rafaelldi.diagnosticsclientplugin.actions.counters.PauseLiveCounterSessionAction"
                     icon="AllIcons.Actions.Pause">
             </action>
-            <action id="DiagnosticsClient.ToolWindow.CounterSession.CollectMemoryDump"
-                    class="com.github.rafaelldi.diagnosticsclientplugin.actions.memoryDump.CollectMemoryDumpAction"
-                    icon="AllIcons.Actions.Dump">
-            </action>
-            <action id="DiagnosticsClient.ToolWindow.CounterSession.CollectStackTrace"
-                    class="com.github.rafaelldi.diagnosticsclientplugin.actions.stackTrace.CollectStackTraceAction"
-                    icon="RiderIcons.Stacktrace.Stacktrace">
-            </action>
-            <action id="DiagnosticsClient.ToolWindow.CounterSession.AttachDebugger"
-                    class="com.github.rafaelldi.diagnosticsclientplugin.actions.debugger.AttachDebuggerAction"
-                    icon="AllIcons.Debugger.AttachToProcess">
-            </action>
+            <reference ref="DiagnosticsClient.ToolWindow.Explorer.CollectDump" />
+            <reference ref="DiagnosticsClient.ToolWindow.Explorer.CollectStackTrace" />
+            <reference ref="DiagnosticsClient.ToolWindow.Explorer.AttachDebugger" />
         </group>
         <group id="DiagnosticsClient.ToolWindow.GcEventSession">
             <action id="DiagnosticsClient.ToolWindow.GcEventSession.Resume"
@@ -202,18 +195,9 @@
                     class="com.github.rafaelldi.diagnosticsclientplugin.actions.gc.PauseLiveGcEventSessionAction"
                     icon="AllIcons.Actions.Pause">
             </action>
-            <action id="DiagnosticsClient.ToolWindow.GcEventSession.CollectMemoryDump"
-                    class="com.github.rafaelldi.diagnosticsclientplugin.actions.memoryDump.CollectMemoryDumpAction"
-                    icon="AllIcons.Actions.Dump">
-            </action>
-            <action id="DiagnosticsClient.ToolWindow.GcEventSession.CollectStackTrace"
-                    class="com.github.rafaelldi.diagnosticsclientplugin.actions.stackTrace.CollectStackTraceAction"
-                    icon="RiderIcons.Stacktrace.Stacktrace">
-            </action>
-            <action id="DiagnosticsClient.ToolWindow.GcEventSession.AttachDebugger"
-                    class="com.github.rafaelldi.diagnosticsclientplugin.actions.debugger.AttachDebuggerAction"
-                    icon="AllIcons.Debugger.AttachToProcess">
-            </action>
+            <reference ref="DiagnosticsClient.ToolWindow.Explorer.CollectDump" />
+            <reference ref="DiagnosticsClient.ToolWindow.Explorer.CollectStackTrace" />
+            <reference ref="DiagnosticsClient.ToolWindow.Explorer.AttachDebugger" />
         </group>
         <group id="DiagnosticsClient.ToolWindow.TraceSession">
             <action id="DiagnosticsClient.ToolWindow.TraceSession.Resume"
@@ -224,18 +208,9 @@
                     class="com.github.rafaelldi.diagnosticsclientplugin.actions.traces.PauseLiveTraceSessionAction"
                     icon="AllIcons.Actions.Pause">
             </action>
-            <action id="DiagnosticsClient.ToolWindow.TraceSession.CollectMemoryDump"
-                    class="com.github.rafaelldi.diagnosticsclientplugin.actions.memoryDump.CollectMemoryDumpAction"
-                    icon="AllIcons.Actions.Dump">
-            </action>
-            <action id="DiagnosticsClient.ToolWindow.TraceSession.CollectStackTrace"
-                    class="com.github.rafaelldi.diagnosticsclientplugin.actions.stackTrace.CollectStackTraceAction"
-                    icon="RiderIcons.Stacktrace.Stacktrace">
-            </action>
-            <action id="DiagnosticsClient.ToolWindow.TraceSession.AttachDebugger"
-                    class="com.github.rafaelldi.diagnosticsclientplugin.actions.debugger.AttachDebuggerAction"
-                    icon="AllIcons.Debugger.AttachToProcess">
-            </action>
+            <reference ref="DiagnosticsClient.ToolWindow.Explorer.CollectDump" />
+            <reference ref="DiagnosticsClient.ToolWindow.Explorer.CollectStackTrace" />
+            <reference ref="DiagnosticsClient.ToolWindow.Explorer.AttachDebugger" />
         </group>
         <group id="DiagnosticsClient.ToolWindow.RecentArtifacts">
             <action id="DiagnosticsClient.ToolWindow.RecentArtifacts.ShowInFolder"

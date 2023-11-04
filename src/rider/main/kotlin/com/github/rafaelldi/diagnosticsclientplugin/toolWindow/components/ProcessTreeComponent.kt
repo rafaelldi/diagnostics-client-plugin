@@ -2,10 +2,7 @@ package com.github.rafaelldi.diagnosticsclientplugin.toolWindow.components
 
 import com.github.rafaelldi.diagnosticsclientplugin.model.ProcessInfo
 import com.intellij.ide.CopyProvider
-import com.intellij.openapi.actionSystem.ActionManager
-import com.intellij.openapi.actionSystem.ActionPlaces
-import com.intellij.openapi.actionSystem.ActionUpdateThread
-import com.intellij.openapi.actionSystem.DataContext
+import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.actionSystem.ex.ActionUtil
 import com.intellij.openapi.ide.CopyPasteManager
 import com.intellij.ui.ColoredTreeCellRenderer
@@ -39,6 +36,10 @@ class ProcessTreeComponent : SimpleTree(), CopyProvider {
         showsRootHandles = false
         selectionModel.selectionMode = TreeSelectionModel.SINGLE_TREE_SELECTION
         border = JBUI.Borders.emptyTop(5)
+
+        val actionManager = ActionManager.getInstance()
+        val actionGroup = actionManager.getAction("DiagnosticsClient.ToolWindow.Explorer.Popup") as ActionGroup
+        setPopupGroup(actionGroup, ActionPlaces.TOOLWINDOW_POPUP)
 
         TreeSpeedSearch.installOn(this, true) {
             return@installOn when (val node = it.lastPathComponent) {
