@@ -36,14 +36,14 @@ class TraceSettings(project: Project) : SimplePersistentStateComponent<TraceSett
         state.duration,
         state.profile,
         state.providers ?: "",
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false
+        state.http,
+        state.aspNet,
+        state.ef,
+        state.exceptions,
+        state.threads,
+        state.contentions,
+        state.tasks,
+        state.loader
     )
 
     fun update(model: TraceSessionModel, persistent: Boolean) {
@@ -56,6 +56,14 @@ class TraceSettings(project: Project) : SimplePersistentStateComponent<TraceSett
             duration = model.duration
             profile = model.profile
             providers = model.providers
+            http = model.http
+            aspNet = model.aspNet
+            ef = model.ef
+            exceptions = model.exceptions
+            threads = model.threads
+            contentions = model.contentions
+            tasks = model.tasks
+            loader = model.loader
         }
     }
 
@@ -66,5 +74,13 @@ class TraceSettings(project: Project) : SimplePersistentStateComponent<TraceSett
         var duration by property(30)
         var profile by enum(TracingProfile.CpuSampling)
         var providers by string("")
+        var http by property(false)
+        var aspNet by property(false)
+        var ef by property(false)
+        var exceptions by property(false)
+        var threads by property(false)
+        var contentions by property(false)
+        var tasks by property(false)
+        var loader by property(false)
     }
 }
