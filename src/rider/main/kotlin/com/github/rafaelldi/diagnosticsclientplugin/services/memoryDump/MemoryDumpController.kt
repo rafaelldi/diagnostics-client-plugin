@@ -14,9 +14,9 @@ import com.intellij.notification.Notification
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
-import com.intellij.openapi.progress.withBackgroundProgress
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.rd.util.withUiContext
+import com.intellij.platform.ide.progress.withBackgroundProgress
 
 @Service(Service.Level.PROJECT)
 class MemoryDumpController(private val project: Project) {

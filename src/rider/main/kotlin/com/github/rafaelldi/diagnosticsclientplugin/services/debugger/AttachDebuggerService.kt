@@ -6,9 +6,9 @@ import com.github.rafaelldi.diagnosticsclientplugin.DiagnosticsClientBundle
 import com.intellij.execution.process.impl.ProcessListUtil
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
-import com.intellij.openapi.progress.withBackgroundProgress
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.UserDataHolderBase
+import com.intellij.platform.ide.progress.withBackgroundProgress
 import com.intellij.xdebugger.attach.LocalAttachHost
 import com.intellij.xdebugger.attach.XAttachDebuggerProvider
 

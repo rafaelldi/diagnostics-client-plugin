@@ -7,9 +7,9 @@ import com.github.rafaelldi.diagnosticsclientplugin.services.DiagnosticsToolServ
 import com.intellij.notification.Notification
 import com.intellij.notification.NotificationAction
 import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.progress.withBackgroundProgress
 import com.intellij.openapi.rd.util.launchBackground
 import com.intellij.openapi.rd.util.lifetime
+import com.intellij.platform.ide.progress.withBackgroundProgress
 
 class UpdateGlobalToolAction : NotificationAction(DiagnosticsClientBundle.message("notifications.update.global.tool")) {
     override fun actionPerformed(e: AnActionEvent, notification: Notification) {

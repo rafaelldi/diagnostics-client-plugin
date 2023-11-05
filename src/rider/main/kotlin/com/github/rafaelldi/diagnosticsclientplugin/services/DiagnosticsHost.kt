@@ -19,10 +19,10 @@ import com.intellij.execution.process.ProcessEvent
 import com.intellij.execution.process.ProcessListener
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
-import com.intellij.openapi.progress.withBackgroundProgress
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.rd.createNestedDisposable
 import com.intellij.openapi.rd.util.withUiContext
+import com.intellij.platform.ide.progress.withBackgroundProgress
 import com.intellij.util.application
 import com.jetbrains.rd.framework.*
 import com.jetbrains.rd.platform.util.idea.LifetimedService
