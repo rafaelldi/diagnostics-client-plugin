@@ -2,7 +2,7 @@ package com.github.rafaelldi.diagnosticsclientplugin.services.common
 
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.ProtocolSessionModel
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.StoppingType
-import com.github.rafaelldi.diagnosticsclientplugin.model.ProtocolSession
+import com.github.rafaelldi.diagnosticsclientplugin.model.Session
 import com.intellij.openapi.project.Project
 import com.jetbrains.rd.platform.util.idea.LifetimedService
 import com.jetbrains.rd.util.addUnique
@@ -13,7 +13,7 @@ import com.jetbrains.rd.util.threading.coroutines.createTerminatedAfter
 import kotlinx.coroutines.Dispatchers
 import java.time.Duration
 
-abstract class ProtocolSessionController<TSession : ProtocolSession, TModel : ProtocolSessionModel>(protected val project: Project) :
+abstract class SessionController<TSession : Session, TModel : ProtocolSessionModel>(protected val project: Project) :
     LifetimedService() {
 
     protected abstract val artifactType: String

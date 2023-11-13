@@ -1,7 +1,7 @@
 package com.github.rafaelldi.diagnosticsclientplugin.toolWindow
 
 import com.github.rafaelldi.diagnosticsclientplugin.model.GcEventProtocolSession
-import com.github.rafaelldi.diagnosticsclientplugin.services.gc.GcEventProtocolSessionController
+import com.github.rafaelldi.diagnosticsclientplugin.services.gc.GcEventSessionController
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.DiagnosticsToolWindowFactory.Companion.DIAGNOSTICS_CLIENT_TOOL_WINDOW
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.GcEventProtocolSessionTab
 import com.intellij.execution.runners.ExecutionUtil
@@ -46,6 +46,6 @@ class GcEventSessionTabManager(private val project: Project) {
     }
 
     fun tabClosed(pid: Int) {
-        GcEventProtocolSessionController.getInstance(project).closeSession(pid)
+        GcEventSessionController.getInstance(project).closeSession(pid)
     }
 }

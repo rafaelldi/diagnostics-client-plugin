@@ -1,7 +1,7 @@
 package com.github.rafaelldi.diagnosticsclientplugin.toolWindow
 
 import com.github.rafaelldi.diagnosticsclientplugin.model.ChartProtocolSession
-import com.github.rafaelldi.diagnosticsclientplugin.services.chart.ChartProtocolSessionController
+import com.github.rafaelldi.diagnosticsclientplugin.services.chart.ChartSessionController
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.DiagnosticsToolWindowFactory.Companion.DIAGNOSTICS_CLIENT_TOOL_WINDOW
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.ChartProtocolSessionTab
 import com.intellij.execution.runners.ExecutionUtil
@@ -47,7 +47,7 @@ class ChartSessionTabManager(private val project: Project) {
     }
 
     fun tabClosed(pid: Int) {
-        ChartProtocolSessionController.getInstance(project).closeSession(pid)
+        ChartSessionController.getInstance(project).closeSession(pid)
     }
 
     fun activateTab(pid: Int) {

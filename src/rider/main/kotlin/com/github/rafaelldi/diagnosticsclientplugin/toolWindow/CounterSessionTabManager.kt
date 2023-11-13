@@ -1,7 +1,7 @@
 package com.github.rafaelldi.diagnosticsclientplugin.toolWindow
 
 import com.github.rafaelldi.diagnosticsclientplugin.model.CounterProtocolSession
-import com.github.rafaelldi.diagnosticsclientplugin.services.counters.CounterProtocolSessionController
+import com.github.rafaelldi.diagnosticsclientplugin.services.counters.CounterSessionController
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.DiagnosticsToolWindowFactory.Companion.DIAGNOSTICS_CLIENT_TOOL_WINDOW
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.CounterProtocolSessionTab
 import com.intellij.execution.runners.ExecutionUtil
@@ -47,7 +47,7 @@ class CounterSessionTabManager(private val project: Project) {
     }
 
     fun tabClosed(pid: Int) {
-        CounterProtocolSessionController.getInstance(project).closeSession(pid)
+        CounterSessionController.getInstance(project).closeSession(pid)
     }
 
     fun activateTab(pid: Int) {

@@ -1,23 +1,23 @@
 package com.github.rafaelldi.diagnosticsclientplugin.actions.gc
 
-import com.github.rafaelldi.diagnosticsclientplugin.actions.common.ResumeLiveSessionAction
+import com.github.rafaelldi.diagnosticsclientplugin.actions.common.ResumeSessionAction
 import com.github.rafaelldi.diagnosticsclientplugin.dialogs.MonitoringTimerDialog
-import com.github.rafaelldi.diagnosticsclientplugin.model.GcEventProtocolSession
-import com.github.rafaelldi.diagnosticsclientplugin.services.gc.GcEventProtocolSessionController
+import com.github.rafaelldi.diagnosticsclientplugin.model.GcEventSession
+import com.github.rafaelldi.diagnosticsclientplugin.services.gc.GcEventSessionController
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.GcEventProtocolSessionTab
 import com.intellij.openapi.project.Project
 
-class ResumeLiveGcEventSessionAction : ResumeLiveSessionAction<GcEventProtocolSession, GcEventProtocolSessionTab>() {
+class ResumeGcEventSessionAction : ResumeSessionAction<GcEventSession, GcEventProtocolSessionTab>() {
     override fun resumeSession(pid: Int, project: Project) {
         val dialog = MonitoringTimerDialog(project)
         if (dialog.showAndGet()) {
             val model = dialog.getModel()
-            GcEventProtocolSessionController
+            GcEventSessionController
                 .getInstance(project)
                 .resumeSession(pid, model.stoppingType, model.duration)
         }
     }
 
     override fun getSession(pid: Int, project: Project) =
-        GcEventProtocolSessionController.getInstance(project).getSession(pid)
+        GcEventSessionController.getInstance(project).getSession(pid)
 }
