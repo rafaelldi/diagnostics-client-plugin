@@ -5,13 +5,10 @@ package com.github.rafaelldi.diagnosticsclientplugin.services
 import com.github.rafaelldi.diagnosticsclientplugin.DiagnosticsClientBundle
 import com.github.rafaelldi.diagnosticsclientplugin.model.DiagnosticsHostModel
 import com.github.rafaelldi.diagnosticsclientplugin.model.diagnosticsHostModel
-import com.github.rafaelldi.diagnosticsclientplugin.services.chart.ChartProtocolSessionController
-import com.github.rafaelldi.diagnosticsclientplugin.services.counters.CounterExportSessionController
-import com.github.rafaelldi.diagnosticsclientplugin.services.counters.CounterProtocolSessionController
-import com.github.rafaelldi.diagnosticsclientplugin.services.gc.GcEventExportSessionController
-import com.github.rafaelldi.diagnosticsclientplugin.services.gc.GcEventProtocolSessionController
-import com.github.rafaelldi.diagnosticsclientplugin.services.traces.TraceExportSessionController
-import com.github.rafaelldi.diagnosticsclientplugin.services.traces.TraceProtocolSessionController
+import com.github.rafaelldi.diagnosticsclientplugin.services.chart.ChartSessionController
+import com.github.rafaelldi.diagnosticsclientplugin.services.counters.CounterSessionController
+import com.github.rafaelldi.diagnosticsclientplugin.services.gc.GcEventSessionController
+import com.github.rafaelldi.diagnosticsclientplugin.services.traces.TraceSessionController
 import com.github.rafaelldi.diagnosticsclientplugin.topics.HostListener
 import com.github.rafaelldi.diagnosticsclientplugin.topics.HostProcessListener
 import com.github.rafaelldi.diagnosticsclientplugin.utils.DotNetProcess
@@ -19,6 +16,7 @@ import com.intellij.execution.process.ProcessEvent
 import com.intellij.execution.process.ProcessListener
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
+import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.rd.createNestedDisposable
 import com.intellij.openapi.rd.util.withUiContext
@@ -40,6 +38,7 @@ import kotlin.time.Duration.Companion.seconds
 class DiagnosticsHost(private val project: Project) : LifetimedService() {
     companion object {
         private const val INITIAL_PORT = 57800
+        private val LOG = logger<DiagnosticsHost>()
 
         fun getInstance(project: Project) = project.service<DiagnosticsHost>()
     }
@@ -58,6 +57,7 @@ class DiagnosticsHost(private val project: Project) : LifetimedService() {
 
         val isGlobalToolReady = toolService.checkGlobalTool()
         if (!isGlobalToolReady) {
+            LOG.warn("Diagnostics agent isn't ready")
             return
         }
 
@@ -140,13 +140,9 @@ class DiagnosticsHost(private val project: Project) : LifetimedService() {
             }
         }
 
-        CounterExportSessionController.getInstance(project).subscribeTo(model.counterExportSessions, lifetime)
-        GcEventExportSessionController.getInstance(project).subscribeTo(model.gcEventExportSessions, lifetime)
-        TraceExportSessionController.getInstance(project).subscribeTo(model.traceExportSessions, lifetime)
-
-        CounterProtocolSessionController.getInstance(project).subscribeTo(model.counterProtocolSessions, lifetime)
-        GcEventProtocolSessionController.getInstance(project).subscribeTo(model.gcEventProtocolSessions, lifetime)
-        TraceProtocolSessionController.getInstance(project).subscribeTo(model.traceProtocolSessions, lifetime)
-        ChartProtocolSessionController.getInstance(project).subscribeTo(model.chartProtocolSessions, lifetime)
+        CounterSessionController.getInstance(project).subscribeTo(model.counterSessions, lifetime)
+        GcEventSessionController.getInstance(project).subscribeTo(model.gcEventSessions, lifetime)
+        TraceSessionController.getInstance(project).subscribeTo(model.traceSessions, lifetime)
+        ChartSessionController.getInstance(project).subscribeTo(model.chartSessions, lifetime)
     }
 }

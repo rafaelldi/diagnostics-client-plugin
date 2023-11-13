@@ -1,7 +1,7 @@
 package com.github.rafaelldi.diagnosticsclientplugin.toolWindow
 
 import com.github.rafaelldi.diagnosticsclientplugin.model.TraceProtocolSession
-import com.github.rafaelldi.diagnosticsclientplugin.services.traces.TraceProtocolSessionController
+import com.github.rafaelldi.diagnosticsclientplugin.services.traces.TraceSessionController
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.DiagnosticsToolWindowFactory.Companion.DIAGNOSTICS_CLIENT_TOOL_WINDOW
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.TraceProtocolSessionTab
 import com.intellij.execution.runners.ExecutionUtil
@@ -47,7 +47,7 @@ class TraceSessionTabManager(private val project: Project) {
     }
 
     fun tabClosed(pid: Int) {
-        TraceProtocolSessionController.getInstance(project).closeSession(pid)
+        TraceSessionController.getInstance(project).closeSession(pid)
     }
 
     fun activateTab(pid: Int) {

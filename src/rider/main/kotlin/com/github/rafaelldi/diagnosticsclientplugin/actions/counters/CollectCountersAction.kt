@@ -1,16 +1,18 @@
-package com.github.rafaelldi.diagnosticsclientplugin.actions.common
+package com.github.rafaelldi.diagnosticsclientplugin.actions.counters
 
-import com.github.rafaelldi.diagnosticsclientplugin.model.ProtocolSession
+import com.github.rafaelldi.diagnosticsclientplugin.dialogs.CounterSessionDialog
+import com.github.rafaelldi.diagnosticsclientplugin.services.counters.CounterController
+import com.github.rafaelldi.diagnosticsclientplugin.services.counters.CounterSettings
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.components.LocalProcessNode
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.ProcessExplorerTab
-import com.github.rafaelldi.diagnosticsclientplugin.utils.DotNetProcess
 import com.github.rafaelldi.diagnosticsclientplugin.utils.toDotNetProcess
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.project.Project
+import com.intellij.openapi.rd.util.launchOnUi
+import com.intellij.openapi.rd.util.lifetime
 
-abstract class StartLiveSessionQuickAction<TSession : ProtocolSession> : AnAction() {
+class CollectCountersAction : AnAction() {
     override fun actionPerformed(event: AnActionEvent) {
         val project = event.project ?: return
         val tree = event.getData(ProcessExplorerTab.PROCESS_TREE) ?: return
@@ -19,19 +21,15 @@ abstract class StartLiveSessionQuickAction<TSession : ProtocolSession> : AnActio
         val selectedProcess = selectedProcessNode.toDotNetProcess()
         val processes = tree.getLocalProcessNodes().map { it.toDotNetProcess() }
 
-        val session = getSession(selectedProcessNode.processId, project)
-        if (session == null) {
-            startSession(selectedProcess, processes, project)
-        } else {
-            activateTab(selectedProcessNode.processId, project)
+        val dialog = CounterSessionDialog(project, selectedProcess, processes, true)
+        if (dialog.showAndGet()) {
+            val model = dialog.getModel()
+            CounterSettings.getInstance(project).update(model, true)
+            project.lifetime.launchOnUi {
+                CounterController.getInstance(project).collect(model)
+            }
         }
     }
-
-    protected abstract fun getSession(pid: Int, project: Project): TSession?
-
-    protected abstract fun startSession(selected: DotNetProcess, processes: List<DotNetProcess>, project: Project)
-
-    protected abstract fun activateTab(pid: Int, project: Project)
 
     override fun update(event: AnActionEvent) {
         val project = event.project
@@ -42,7 +40,12 @@ abstract class StartLiveSessionQuickAction<TSession : ProtocolSession> : AnActio
         }
 
         val processNode = tree.selectedNode as? LocalProcessNode
-        event.presentation.isEnabledAndVisible = processNode != null
+        if (processNode == null) {
+            event.presentation.isEnabledAndVisible = false
+            return
+        }
+
+        event.presentation.isEnabledAndVisible = true
     }
 
     override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
