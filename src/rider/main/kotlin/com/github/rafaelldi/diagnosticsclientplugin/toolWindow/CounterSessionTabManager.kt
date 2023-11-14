@@ -1,6 +1,6 @@
 package com.github.rafaelldi.diagnosticsclientplugin.toolWindow
 
-import com.github.rafaelldi.diagnosticsclientplugin.model.CounterProtocolSession
+import com.github.rafaelldi.diagnosticsclientplugin.model.CounterSession
 import com.github.rafaelldi.diagnosticsclientplugin.services.counters.CounterSessionController
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.DiagnosticsToolWindowFactory.Companion.DIAGNOSTICS_CLIENT_TOOL_WINDOW
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.CounterProtocolSessionTab
@@ -21,7 +21,7 @@ class CounterSessionTabManager(private val project: Project) {
         fun getInstance(project: Project): CounterSessionTabManager = project.service()
     }
 
-    fun addSessionTab(sessionLifetime: Lifetime, pid: Int, session: CounterProtocolSession) {
+    fun addSessionTab(sessionLifetime: Lifetime, pid: Int, session: CounterSession) {
         val toolWindow = ToolWindowManager.getInstance(project).getToolWindow(DIAGNOSTICS_CLIENT_TOOL_WINDOW) ?: return
         val contentFactory = ContentFactory.getInstance()
         val counterProtocolSessionTab = CounterProtocolSessionTab(pid, session, this, sessionLifetime)

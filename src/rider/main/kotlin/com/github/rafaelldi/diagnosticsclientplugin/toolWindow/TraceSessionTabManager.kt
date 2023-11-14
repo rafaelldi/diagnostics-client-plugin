@@ -1,6 +1,6 @@
 package com.github.rafaelldi.diagnosticsclientplugin.toolWindow
 
-import com.github.rafaelldi.diagnosticsclientplugin.model.TraceProtocolSession
+import com.github.rafaelldi.diagnosticsclientplugin.model.TraceSession
 import com.github.rafaelldi.diagnosticsclientplugin.services.traces.TraceSessionController
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.DiagnosticsToolWindowFactory.Companion.DIAGNOSTICS_CLIENT_TOOL_WINDOW
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.TraceProtocolSessionTab
@@ -21,7 +21,7 @@ class TraceSessionTabManager(private val project: Project) {
         fun getInstance(project: Project): TraceSessionTabManager = project.service()
     }
 
-    fun addSessionTab(sessionLifetime: Lifetime, pid: Int, session: TraceProtocolSession) {
+    fun addSessionTab(sessionLifetime: Lifetime, pid: Int, session: TraceSession) {
         val toolWindow = ToolWindowManager.getInstance(project).getToolWindow(DIAGNOSTICS_CLIENT_TOOL_WINDOW) ?: return
         val contentFactory = ContentFactory.getInstance()
         val traceProtocolSessionTab = TraceProtocolSessionTab(pid, session, this, project, sessionLifetime)

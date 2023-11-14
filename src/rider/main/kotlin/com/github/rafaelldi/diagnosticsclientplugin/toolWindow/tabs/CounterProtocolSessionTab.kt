@@ -1,7 +1,7 @@
 package com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs
 
 import com.github.rafaelldi.diagnosticsclientplugin.model.Counter
-import com.github.rafaelldi.diagnosticsclientplugin.model.CounterProtocolSession
+import com.github.rafaelldi.diagnosticsclientplugin.model.CounterSession
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.CounterSessionTabManager
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.components.CounterTable
 import com.github.rafaelldi.diagnosticsclientplugin.utils.SESSION_PROCESS_ID
@@ -15,7 +15,7 @@ import com.jetbrains.rd.util.lifetime.Lifetime
 
 class CounterProtocolSessionTab(
     override val pid: Int,
-    session: CounterProtocolSession,
+    session: CounterSession,
     private val manager: CounterSessionTabManager,
     lt: Lifetime
 ) : SimpleToolWindowPanel(false), MonitoringTab, Disposable {

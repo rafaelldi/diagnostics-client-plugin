@@ -1,7 +1,7 @@
 package com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs
 
 import com.github.rafaelldi.diagnosticsclientplugin.model.GcEvent
-import com.github.rafaelldi.diagnosticsclientplugin.model.GcEventProtocolSession
+import com.github.rafaelldi.diagnosticsclientplugin.model.GcEventSession
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.GcEventSessionTabManager
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.components.GcEventTable
 import com.github.rafaelldi.diagnosticsclientplugin.utils.SESSION_PROCESS_ID
@@ -15,7 +15,7 @@ import com.jetbrains.rd.util.lifetime.Lifetime
 
 class GcEventProtocolSessionTab(
     override val pid: Int,
-    session: GcEventProtocolSession,
+    session: GcEventSession,
     private val manager: GcEventSessionTabManager,
     lt: Lifetime
 ) : SimpleToolWindowPanel(false), MonitoringTab, Disposable {

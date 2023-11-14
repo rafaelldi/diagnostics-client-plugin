@@ -3,7 +3,7 @@ package com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs
 import com.github.rafaelldi.diagnosticsclientplugin.DiagnosticsClientBundle
 import com.github.rafaelldi.diagnosticsclientplugin.model.PredefinedProvider
 import com.github.rafaelldi.diagnosticsclientplugin.model.Trace
-import com.github.rafaelldi.diagnosticsclientplugin.model.TraceProtocolSession
+import com.github.rafaelldi.diagnosticsclientplugin.model.TraceSession
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.TraceSessionTabManager
 import com.github.rafaelldi.diagnosticsclientplugin.utils.SESSION_PROCESS_ID
 import com.intellij.execution.filters.TextConsoleBuilderFactory
@@ -22,7 +22,7 @@ import java.text.SimpleDateFormat
 
 class TraceProtocolSessionTab(
     override val pid: Int,
-    session: TraceProtocolSession,
+    session: TraceSession,
     private val manager: TraceSessionTabManager,
     project: Project,
     lt: Lifetime
