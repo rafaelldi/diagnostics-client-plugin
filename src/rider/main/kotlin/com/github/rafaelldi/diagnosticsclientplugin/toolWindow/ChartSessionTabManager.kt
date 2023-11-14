@@ -1,6 +1,6 @@
 package com.github.rafaelldi.diagnosticsclientplugin.toolWindow
 
-import com.github.rafaelldi.diagnosticsclientplugin.model.ChartProtocolSession
+import com.github.rafaelldi.diagnosticsclientplugin.model.ChartSession
 import com.github.rafaelldi.diagnosticsclientplugin.services.chart.ChartSessionController
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.DiagnosticsToolWindowFactory.Companion.DIAGNOSTICS_CLIENT_TOOL_WINDOW
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.ChartProtocolSessionTab
@@ -21,7 +21,7 @@ class ChartSessionTabManager(private val project: Project) {
         fun getInstance(project: Project): ChartSessionTabManager = project.service()
     }
 
-    fun addSessionTab(sessionLifetime: Lifetime, pid: Int, session: ChartProtocolSession) {
+    fun addSessionTab(sessionLifetime: Lifetime, pid: Int, session: ChartSession) {
         val toolWindow = ToolWindowManager.getInstance(project).getToolWindow(DIAGNOSTICS_CLIENT_TOOL_WINDOW) ?: return
         val contentFactory = ContentFactory.getInstance()
         val chartProtocolSessionTab = ChartProtocolSessionTab(pid, session, this, sessionLifetime)

@@ -1,7 +1,7 @@
 package com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs
 
 import com.github.rafaelldi.diagnosticsclientplugin.model.ChartEvent
-import com.github.rafaelldi.diagnosticsclientplugin.model.ChartProtocolSession
+import com.github.rafaelldi.diagnosticsclientplugin.model.ChartSession
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.ChartSessionTabManager
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.components.CounterChartPanel
 import com.github.rafaelldi.diagnosticsclientplugin.utils.SESSION_PROCESS_ID
@@ -13,7 +13,7 @@ import com.jetbrains.rd.util.lifetime.Lifetime
 
 class ChartProtocolSessionTab(
     override val pid: Int,
-    session: ChartProtocolSession,
+    session: ChartSession,
     private val manager: ChartSessionTabManager,
     lt: Lifetime
 ): SimpleToolWindowPanel(false), MonitoringTab, Disposable {
