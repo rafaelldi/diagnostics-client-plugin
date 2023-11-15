@@ -1,6 +1,6 @@
 package com.github.rafaelldi.diagnosticsclientplugin.actions.common
 
-import com.github.rafaelldi.diagnosticsclientplugin.model.Session
+import com.github.rafaelldi.diagnosticsclientplugin.model.ProtocolSession
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.components.LocalProcessNode
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.MonitoringTab
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.ProcessExplorerTab
@@ -10,14 +10,14 @@ import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.project.Project
 
-abstract class PauseSessionAction<TSession : Session, TTab : MonitoringTab> : AnAction() {
+abstract class ResumeLiveSessionAction<TSession : ProtocolSession, TTab : MonitoringTab> : AnAction() {
     override fun actionPerformed(event: AnActionEvent) {
         val project = event.project ?: return
         val pid = getProcessId(event) ?: return
-        pauseSession(pid, project)
+        resumeSession(pid, project)
     }
 
-    protected abstract fun pauseSession(pid: Int, project: Project)
+    protected abstract fun resumeSession(pid: Int, project: Project)
 
     override fun update(event: AnActionEvent) {
         val project = event.project
@@ -32,7 +32,7 @@ abstract class PauseSessionAction<TSession : Session, TTab : MonitoringTab> : An
         if (isActive == null) {
             event.presentation.isEnabledAndVisible = false
         } else {
-            event.presentation.isEnabledAndVisible = isActive
+            event.presentation.isEnabledAndVisible = !isActive
         }
     }
 

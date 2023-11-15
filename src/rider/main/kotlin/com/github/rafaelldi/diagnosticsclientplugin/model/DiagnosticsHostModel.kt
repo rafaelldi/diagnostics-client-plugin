@@ -33,12 +33,43 @@ object DiagnosticsHostModel : Ext(DiagnosticsHostRoot) {
         map("items", int, ProcessInfo).async
     }
 
-    private val Session = baseclass {
+    private val ExportSession = baseclass {
+        field("duration", int.nullable)
+        field("exportFilePath", string)
+    }
+
+    private val CounterExportSession = classdef extends ExportSession {
+        field("format", enum("CounterFileFormat") {
+            +"Csv"
+            +"Json"
+        })
+        field("refreshInterval", int)
+        field("providers", string)
+        field("metrics", string.nullable)
+        field("maxTimeSeries", int)
+        field("maxHistograms", int)
+    }
+
+    private val GcEventExportSession = classdef extends ExportSession {
+    }
+
+    private val TraceExportSession = classdef extends ExportSession {
+        field("profile", enum("TracingProfile") {
+            +"None"
+            +"CpuSampling"
+            +"GcVerbose"
+            +"GcCollect"
+        })
+        field("providers", string)
+        field("predefinedProviders", immutableList(PredefinedProvider))
+    }
+
+    private val ProtocolSession = baseclass {
         property("active", bool)
         property("duration", int.nullable)
     }
 
-    private val CounterSession = classdef extends Session {
+    private val CounterProtocolSession = classdef extends ProtocolSession {
         source("counterReceived", Counter).async
         field("refreshInterval", int)
         field("providers", string)
@@ -47,16 +78,16 @@ object DiagnosticsHostModel : Ext(DiagnosticsHostRoot) {
         field("maxHistograms", int)
     }
 
-    private val GcEventSession = classdef extends Session {
+    private val GcEventProtocolSession = classdef extends ProtocolSession {
         source("gcHappened", GcEvent).async
     }
 
-    private val TraceSession = classdef extends Session {
+    private val TraceProtocolSession = classdef extends ProtocolSession {
         source("traceReceived", Trace).async
         field("predefinedProviders", immutableList(PredefinedProvider))
     }
 
-    private val ChartSession = classdef extends Session {
+    private val ChartProtocolSession = classdef extends ProtocolSession {
         source("eventReceived", ChartEvent).async
     }
 
@@ -122,10 +153,16 @@ object DiagnosticsHostModel : Ext(DiagnosticsHostRoot) {
     init {
         field("processList", ProcessList)
 
-        map("counterSessions", int, CounterSession)
-        map("gcEventSessions", int, GcEventSession)
-        map("traceSessions", int, TraceSession)
-        map("chartSessions", int, ChartSession)
+        map("counterExportSessions", int, CounterExportSession)
+        map("counterProtocolSessions", int, CounterProtocolSession)
+
+        map("gcEventExportSessions", int, GcEventExportSession)
+        map("gcEventProtocolSessions", int, GcEventProtocolSession)
+
+        map("traceExportSessions", int, TraceExportSession)
+        map("traceProtocolSessions", int, TraceProtocolSession)
+
+        map("chartProtocolSessions", int, ChartProtocolSession)
 
         call("collectDump",
             structdef("CollectDumpCommand") {
@@ -141,8 +178,7 @@ object DiagnosticsHostModel : Ext(DiagnosticsHostRoot) {
                 field("diag", bool)
             }, structdef("DumpCollectionResult") {
                 field("filePath", string)
-            }
-        )
+            })
 
         call(
             "collectStackTrace",
@@ -150,56 +186,6 @@ object DiagnosticsHostModel : Ext(DiagnosticsHostRoot) {
                 field("pid", int)
             },
             string
-        )
-
-        call(
-            "collectCounters",
-            structdef("CollectCounterCommand") {
-                field("pid", int)
-                field("duration", int.nullable)
-                field("exportFilePath", string)
-                field("format", enum("CounterFileFormat") {
-                    +"Csv"
-                    +"Json"
-                })
-                field("refreshInterval", int)
-                field("providers", string)
-                field("metrics", string.nullable)
-                field("maxTimeSeries", int)
-                field("maxHistograms", int)
-            }, structdef("CounterCollectionResult") {
-                field("filePath", string)
-            }
-        )
-
-        call(
-            "collectGcEvents",
-            structdef("CollectGcEventCommand") {
-                field("pid", int)
-                field("duration", int.nullable)
-                field("exportFilePath", string)
-            }, structdef("GcEventCollectionResult") {
-                field("filePath", string)
-            }
-        )
-
-        call(
-            "collectTraces",
-            structdef("CollectTraceCommand") {
-                field("pid", int)
-                field("duration", int.nullable)
-                field("exportFilePath", string)
-                field("profile", enum("TracingProfile") {
-                    +"None"
-                    +"CpuSampling"
-                    +"GcVerbose"
-                    +"GcCollect"
-                })
-                field("providers", string)
-                field("predefinedProviders", immutableList(PredefinedProvider))
-            }, structdef("TraceCollectionResult") {
-                field("filePath", string)
-            }
         )
     }
 }

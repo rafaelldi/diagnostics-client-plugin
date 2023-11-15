@@ -42,7 +42,7 @@ class ChartStarterService(private val project: Project) {
             val toolWindow = ToolWindowManager.getInstance(project)
                 .getToolWindow(DiagnosticsToolWindowFactory.DIAGNOSTICS_CLIENT_TOOL_WINDOW)
             toolWindow?.show()
-            ChartSessionController.getInstance(project).startSession(model)
+            ChartProtocolSessionController.getInstance(project).startSession(model)
         }
     }
 }

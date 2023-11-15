@@ -1,6 +1,6 @@
 package com.github.rafaelldi.diagnosticsclientplugin.actions.common
 
-import com.github.rafaelldi.diagnosticsclientplugin.model.Session
+import com.github.rafaelldi.diagnosticsclientplugin.model.ProtocolSession
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.components.LocalProcessNode
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.ProcessExplorerTab
 import com.github.rafaelldi.diagnosticsclientplugin.utils.DotNetProcess
@@ -10,7 +10,7 @@ import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.project.Project
 
-abstract class StartSessionAction<TSession : Session> : AnAction() {
+abstract class StartLiveSessionAction<TSession : ProtocolSession> : AnAction() {
     override fun actionPerformed(event: AnActionEvent) {
         val project = event.project ?: return
         val tree = event.getData(ProcessExplorerTab.PROCESS_TREE) ?: return
