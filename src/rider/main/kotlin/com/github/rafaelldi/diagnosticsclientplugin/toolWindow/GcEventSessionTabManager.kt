@@ -1,6 +1,6 @@
 package com.github.rafaelldi.diagnosticsclientplugin.toolWindow
 
-import com.github.rafaelldi.diagnosticsclientplugin.model.GcEventSession
+import com.github.rafaelldi.diagnosticsclientplugin.model.GcEventProtocolSession
 import com.github.rafaelldi.diagnosticsclientplugin.services.gc.GcEventSessionController
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.DiagnosticsToolWindowFactory.Companion.DIAGNOSTICS_CLIENT_TOOL_WINDOW
 import com.github.rafaelldi.diagnosticsclientplugin.toolWindow.tabs.GcEventProtocolSessionTab
@@ -21,7 +21,7 @@ class GcEventSessionTabManager(private val project: Project) {
         fun getInstance(project: Project): GcEventSessionTabManager = project.service()
     }
 
-    fun addSessionTab(sessionLifetime: Lifetime, pid: Int, session: GcEventSession) {
+    fun addSessionTab(sessionLifetime: Lifetime, pid: Int, session: GcEventProtocolSession) {
         val toolWindow = ToolWindowManager.getInstance(project).getToolWindow(DIAGNOSTICS_CLIENT_TOOL_WINDOW) ?: return
         val contentFactory = ContentFactory.getInstance()
         val gcEventProtocolSessionTab = GcEventProtocolSessionTab(pid, session, this, sessionLifetime)
