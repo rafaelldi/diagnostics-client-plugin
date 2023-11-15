@@ -39,15 +39,15 @@
     <actions>
         <group id="DiagnosticsClient.ToolWindow.QuickActions" searchable="false">
             <action id="DiagnosticsClient.ToolWindow.QuickActions.Charts"
-                    class="com.github.rafaelldi.diagnosticsclientplugin.actions.quick.StartChartSessionQuickAction"
+                    class="com.github.rafaelldi.diagnosticsclientplugin.actions.quick.StartLiveChartSessionQuickAction"
                     icon="AllIcons.RunConfigurations.TestCustom">
             </action>
             <action id="DiagnosticsClient.ToolWindow.QuickActions.Counters"
-                    class="com.github.rafaelldi.diagnosticsclientplugin.actions.quick.StartCounterSessionQuickAction"
+                    class="com.github.rafaelldi.diagnosticsclientplugin.actions.quick.StartLiveCounterSessionQuickAction"
                     icon="AllIcons.Debugger.Db_primitive">
             </action>
             <action id="DiagnosticsClient.ToolWindow.QuickActions.Traces"
-                    class="com.github.rafaelldi.diagnosticsclientplugin.actions.quick.StartTraceSessionQuickAction"
+                    class="com.github.rafaelldi.diagnosticsclientplugin.actions.quick.StartLiveTraceSessionQuickAction"
                     icon="AllIcons.Toolwindows.ToolWindowMessages">
             </action>
         </group>
@@ -61,67 +61,79 @@
                     icon="AllIcons.Actions.Suspend">
             </action>
             <action id="DiagnosticsClient.ToolWindow.Explorer.StartChartSession"
-                    class="com.github.rafaelldi.diagnosticsclientplugin.actions.chart.StartChartSessionAction"
+                    class="com.github.rafaelldi.diagnosticsclientplugin.actions.chart.StartLiveChartSessionAction"
                     icon="AllIcons.RunConfigurations.TestCustom">
             </action>
             <group id="DiagnosticsClient.ToolWindow.Explorer.Counters"
                    icon="AllIcons.Debugger.Db_primitive"
                    popup="true">
-                <action id="DiagnosticsClient.ToolWindow.Explorer.Counters.StartSession"
-                        class="com.github.rafaelldi.diagnosticsclientplugin.actions.counters.StartCounterSessionAction"
-                        icon="AllIcons.Actions.Execute">
+                <action id="DiagnosticsClient.ToolWindow.Explorer.LiveCounterSession.Start"
+                        class="com.github.rafaelldi.diagnosticsclientplugin.actions.counters.StartLiveCounterSessionAction"
+                        icon="AllIcons.Actions.Show">
                 </action>
-                <action id="DiagnosticsClient.ToolWindow.Explorer.Counters.ResumeSession"
-                        class="com.github.rafaelldi.diagnosticsclientplugin.actions.counters.ResumeCounterSessionAction"
+                <action id="DiagnosticsClient.ToolWindow.Explorer.LiveCounterSession.Resume"
+                        class="com.github.rafaelldi.diagnosticsclientplugin.actions.counters.ResumeLiveCounterSessionAction"
                         icon="AllIcons.Actions.Resume">
                 </action>
-                <action id="DiagnosticsClient.ToolWindow.Explorer.Counters.PauseSession"
-                        class="com.github.rafaelldi.diagnosticsclientplugin.actions.counters.PauseCounterSessionAction"
+                <action id="DiagnosticsClient.ToolWindow.Explorer.LiveCounterSession.Pause"
+                        class="com.github.rafaelldi.diagnosticsclientplugin.actions.counters.PauseLiveCounterSessionAction"
                         icon="AllIcons.Actions.Pause">
                 </action>
-                <action id="DiagnosticsClient.ToolWindow.Explorer.Counters.Collect"
-                        class="com.github.rafaelldi.diagnosticsclientplugin.actions.counters.CollectCountersAction"
+                <action id="DiagnosticsClient.ToolWindow.Explorer.PersistentCounterSession.Start"
+                        class="com.github.rafaelldi.diagnosticsclientplugin.actions.counters.StartExportCounterSessionAction"
                         icon="AllIcons.Actions.MenuSaveall">
+                </action>
+                <action id="DiagnosticsClient.ToolWindow.Explorer.PersistentCounterSession.Stop"
+                        class="com.github.rafaelldi.diagnosticsclientplugin.actions.counters.StopExportCounterSessionAction"
+                        icon="AllIcons.Actions.Suspend">
                 </action>
             </group>
             <group id="DiagnosticsClient.ToolWindow.Explorer.Gc"
                    icon="AllIcons.Actions.GC"
                    popup="true">
-                <action id="DiagnosticsClient.ToolWindow.Explorer.Gc.StartSession"
-                        class="com.github.rafaelldi.diagnosticsclientplugin.actions.gc.StartGcEventSessionAction"
-                        icon="AllIcons.Actions.Execute">
+                <action id="DiagnosticsClient.ToolWindow.Explorer.LiveGcEventSession.Start"
+                        class="com.github.rafaelldi.diagnosticsclientplugin.actions.gc.StartLiveGcEventSessionAction"
+                        icon="AllIcons.Actions.Show">
                 </action>
-                <action id="DiagnosticsClient.ToolWindow.Explorer.Gc.ResumeSession"
-                        class="com.github.rafaelldi.diagnosticsclientplugin.actions.gc.ResumeGcEventSessionAction"
+                <action id="DiagnosticsClient.ToolWindow.Explorer.LiveGcEventSession.Resume"
+                        class="com.github.rafaelldi.diagnosticsclientplugin.actions.gc.ResumeLiveGcEventSessionAction"
                         icon="AllIcons.Actions.Resume">
                 </action>
-                <action id="DiagnosticsClient.ToolWindow.Explorer.Gc.PauseSession"
-                        class="com.github.rafaelldi.diagnosticsclientplugin.actions.gc.PauseGcEventSessionAction"
+                <action id="DiagnosticsClient.ToolWindow.Explorer.LiveGcEventSession.Pause"
+                        class="com.github.rafaelldi.diagnosticsclientplugin.actions.gc.PauseLiveGcEventSessionAction"
                         icon="AllIcons.Actions.Pause">
                 </action>
-                <action id="DiagnosticsClient.ToolWindow.Explorer.Gc.Collect"
-                        class="com.github.rafaelldi.diagnosticsclientplugin.actions.gc.CollectGcEventsAction"
+                <action id="DiagnosticsClient.ToolWindow.Explorer.PersistentGcEventSession.Start"
+                        class="com.github.rafaelldi.diagnosticsclientplugin.actions.gc.StartExportGcEventSessionAction"
                         icon="AllIcons.Actions.MenuSaveall">
+                </action>
+                <action id="DiagnosticsClient.ToolWindow.Explorer.PersistentGcEventSession.Stop"
+                        class="com.github.rafaelldi.diagnosticsclientplugin.actions.gc.StopExportGcEventSessionAction"
+                        icon="AllIcons.Actions.Suspend">
                 </action>
             </group>
             <group id="DiagnosticsClient.ToolWindow.Explorer.Traces"
                    icon="AllIcons.Toolwindows.ToolWindowMessages"
                    popup="true">
-                <action id="DiagnosticsClient.ToolWindow.Explorer.Traces.StartSession"
-                        class="com.github.rafaelldi.diagnosticsclientplugin.actions.traces.StartTraceSessionAction"
-                        icon="AllIcons.Actions.Execute">
+                <action id="DiagnosticsClient.ToolWindow.Explorer.LiveTraceSession.Start"
+                        class="com.github.rafaelldi.diagnosticsclientplugin.actions.traces.StartLiveTraceSessionAction"
+                        icon="AllIcons.Actions.Show">
                 </action>
-                <action id="DiagnosticsClient.ToolWindow.Explorer.Traces.ResumeSession"
-                        class="com.github.rafaelldi.diagnosticsclientplugin.actions.traces.ResumeTraceSessionAction"
+                <action id="DiagnosticsClient.ToolWindow.Explorer.LiveTraceSession.Resume"
+                        class="com.github.rafaelldi.diagnosticsclientplugin.actions.traces.ResumeLiveTraceSessionAction"
                         icon="AllIcons.Actions.Resume">
                 </action>
-                <action id="DiagnosticsClient.ToolWindow.Explorer.Traces.PauseSession"
-                        class="com.github.rafaelldi.diagnosticsclientplugin.actions.traces.PauseTraceSessionAction"
+                <action id="DiagnosticsClient.ToolWindow.Explorer.LiveTraceSession.Pause"
+                        class="com.github.rafaelldi.diagnosticsclientplugin.actions.traces.PauseLiveTraceSessionAction"
                         icon="AllIcons.Actions.Pause">
                 </action>
-                <action id="DiagnosticsClient.ToolWindow.Explorer.Traces.Collect"
-                        class="com.github.rafaelldi.diagnosticsclientplugin.actions.traces.CollectTracesAction"
+                <action id="DiagnosticsClient.ToolWindow.Explorer.PersistentTraceSession.Start"
+                        class="com.github.rafaelldi.diagnosticsclientplugin.actions.traces.StartExportTraceSessionAction"
                         icon="AllIcons.Actions.MenuSaveall">
+                </action>
+                <action id="DiagnosticsClient.ToolWindow.Explorer.PersistentTraceSession.Stop"
+                        class="com.github.rafaelldi.diagnosticsclientplugin.actions.traces.StopExportTraceSessionAction"
+                        icon="AllIcons.Actions.Suspend">
                 </action>
             </group>
             <action id="DiagnosticsClient.ToolWindow.Explorer.CollectDump"
@@ -163,11 +175,11 @@
         </group>
         <group id="DiagnosticsClient.ToolWindow.CounterSession">
             <action id="DiagnosticsClient.ToolWindow.CounterSession.Resume"
-                    class="com.github.rafaelldi.diagnosticsclientplugin.actions.counters.ResumeCounterSessionAction"
+                    class="com.github.rafaelldi.diagnosticsclientplugin.actions.counters.ResumeLiveCounterSessionAction"
                     icon="AllIcons.Actions.Resume">
             </action>
             <action id="DiagnosticsClient.ToolWindow.CounterSession.Pause"
-                    class="com.github.rafaelldi.diagnosticsclientplugin.actions.counters.PauseCounterSessionAction"
+                    class="com.github.rafaelldi.diagnosticsclientplugin.actions.counters.PauseLiveCounterSessionAction"
                     icon="AllIcons.Actions.Pause">
             </action>
             <reference ref="DiagnosticsClient.ToolWindow.Explorer.CollectDump" />
@@ -176,11 +188,11 @@
         </group>
         <group id="DiagnosticsClient.ToolWindow.GcEventSession">
             <action id="DiagnosticsClient.ToolWindow.GcEventSession.Resume"
-                    class="com.github.rafaelldi.diagnosticsclientplugin.actions.gc.ResumeGcEventSessionAction"
+                    class="com.github.rafaelldi.diagnosticsclientplugin.actions.gc.ResumeLiveGcEventSessionAction"
                     icon="AllIcons.Actions.Resume">
             </action>
             <action id="DiagnosticsClient.ToolWindow.GcEventSession.Pause"
-                    class="com.github.rafaelldi.diagnosticsclientplugin.actions.gc.PauseGcEventSessionAction"
+                    class="com.github.rafaelldi.diagnosticsclientplugin.actions.gc.PauseLiveGcEventSessionAction"
                     icon="AllIcons.Actions.Pause">
             </action>
             <reference ref="DiagnosticsClient.ToolWindow.Explorer.CollectDump" />
@@ -189,11 +201,11 @@
         </group>
         <group id="DiagnosticsClient.ToolWindow.TraceSession">
             <action id="DiagnosticsClient.ToolWindow.TraceSession.Resume"
-                    class="com.github.rafaelldi.diagnosticsclientplugin.actions.traces.ResumeTraceSessionAction"
+                    class="com.github.rafaelldi.diagnosticsclientplugin.actions.traces.ResumeLiveTraceSessionAction"
                     icon="AllIcons.Actions.Resume">
             </action>
             <action id="DiagnosticsClient.ToolWindow.TraceSession.Pause"
-                    class="com.github.rafaelldi.diagnosticsclientplugin.actions.traces.PauseTraceSessionAction"
+                    class="com.github.rafaelldi.diagnosticsclientplugin.actions.traces.PauseLiveTraceSessionAction"
                     icon="AllIcons.Actions.Pause">
             </action>
             <reference ref="DiagnosticsClient.ToolWindow.Explorer.CollectDump" />

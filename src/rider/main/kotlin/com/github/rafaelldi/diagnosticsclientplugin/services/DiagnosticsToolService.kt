@@ -48,20 +48,7 @@ class DiagnosticsToolService(private val project: Project) {
     suspend fun checkGlobalTool(): Boolean {
         application.assertIsNonDispatchThread()
 
-        val dotnetPath = getDotnetPath()
-        if (dotnetPath == null) {
-            withUiContext {
-                Notification(
-                    "Diagnostics Client",
-                    DiagnosticsClientBundle.message("notification.global.tool.unable.locate.dotnet"),
-                    "",
-                    NotificationType.WARNING
-                )
-                    .notify(project)
-            }
-            return false
-        }
-
+        val dotnetPath = getDotnetPath() ?: return false
         val isInstalled = isGlobalToolInstalled(dotnetPath)
         if (!isInstalled) {
             withUiContext {
@@ -82,8 +69,8 @@ class DiagnosticsToolService(private val project: Project) {
             withUiContext {
                 Notification(
                     "Diagnostics Client",
-                    DiagnosticsClientBundle.message("notification.global.tool.version.not.match"),
-                    DiagnosticsClientBundle.message("notification.global.tool.please.update.agent", CURRENT_VERSION),
+                    DiagnosticsClientBundle.message("notification.global.tool.new.version.available"),
+                    DiagnosticsClientBundle.message("notification.global.tool.please.update.agent"),
                     NotificationType.WARNING
                 )
                     .addAction(UpdateGlobalToolAction())
