@@ -48,14 +48,14 @@ class DiagnosticsHost(private val project: Project) : LifetimedService() {
     var hostModel: DiagnosticsHostModel? = null
         private set
 
-    suspend fun connectToAgent(silent: Boolean = false) {
+    suspend fun connectToAgent() {
         application.assertIsNonDispatchThread()
 
         if (!agentLifetime.isTerminated) return
 
         val toolService = DiagnosticsToolService.getInstance(project)
 
-        val isGlobalToolReady = toolService.checkGlobalTool(silent)
+        val isGlobalToolReady = toolService.checkGlobalTool()
         if (!isGlobalToolReady) {
             LOG.warn("Diagnostics agent isn't ready")
             return

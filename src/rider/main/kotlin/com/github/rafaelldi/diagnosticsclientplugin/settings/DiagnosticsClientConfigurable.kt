@@ -11,10 +11,6 @@ class DiagnosticsClientConfigurable :
 
     override fun createPanel() = panel {
         row {
-            checkBox(DiagnosticsClientBundle.message("configurable.DiagnosticsClient.connect.to.agent"))
-                .bindSelected(settings::connectToAgent)
-        }
-        row {
             checkBox(DiagnosticsClientBundle.message("configurable.DiagnosticsClient.show.charts"))
                 .bindSelected(settings::showChartsOnStart)
         }

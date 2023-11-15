@@ -17,12 +17,6 @@ class DiagnosticsClientSettings :
         fun getInstance() = service<DiagnosticsClientSettings>()
     }
 
-    var connectToAgent
-        get() = state.connectToAgent
-        set(value) {
-            state.connectToAgent = value
-        }
-
     var showChartsOnStart
         get() = state.showChartsOnStart
         set(value) {

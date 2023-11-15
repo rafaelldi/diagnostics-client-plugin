@@ -10,8 +10,6 @@
     <resource-bundle>messages.DiagnosticsClientBundle</resource-bundle>
 
     <extensions defaultExtensionNs="com.intellij">
-        <postStartupActivity implementation="com.github.rafaelldi.diagnosticsclientplugin.activity.ConnectToAgentActivity" />
-
         <toolWindow id="Diagnostics"
                     anchor="bottom"
                     icon="DiagnosticsClientIcons.ToolWindow"
