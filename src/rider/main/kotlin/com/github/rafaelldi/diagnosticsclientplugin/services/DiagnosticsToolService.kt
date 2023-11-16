@@ -9,11 +9,15 @@ import com.intellij.execution.configurations.GeneralCommandLine
 import com.intellij.execution.process.KillableColoredProcessHandler
 import com.intellij.execution.process.ProcessOutput
 import com.intellij.execution.util.ExecUtil
+import com.intellij.ide.BrowserUtil
 import com.intellij.notification.Notification
+import com.intellij.notification.NotificationAction
 import com.intellij.notification.NotificationType
+import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.logger
+import com.intellij.openapi.options.ShowSettingsUtil
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.rd.util.withUiContext
 import com.intellij.openapi.util.SystemInfo
@@ -31,6 +35,10 @@ class DiagnosticsToolService(private val project: Project) {
 
         private val LOG = logger<DiagnosticsToolService>()
 
+        private val net8Regex = Regex("^Microsoft\\.NETCore\\.App 8", RegexOption.MULTILINE)
+        private val agentRegex = Regex("^rafaelldi\\.diagnosticsagent", RegexOption.MULTILINE)
+        private val agentVersionRegex = Regex("^rafaelldi\\.diagnosticsagent\\s+([\\w.\\-]+)", RegexOption.MULTILINE)
+
         fun getDefaultGlobalPath(): String {
             val homeFolder =
                 if (SystemInfo.isWindows) EnvironmentUtil.getValue(WINDOWS_HOME_VARIABLE)
@@ -45,36 +53,88 @@ class DiagnosticsToolService(private val project: Project) {
         fun getInstance(project: Project) = project.service<DiagnosticsToolService>()
     }
 
-    suspend fun checkGlobalTool(): Boolean {
+    suspend fun checkGlobalTool(silent: Boolean): Boolean {
         application.assertIsNonDispatchThread()
 
-        val dotnetPath = getDotnetPath() ?: return false
+        val dotnetPath = getDotnetPath()
+        if (dotnetPath == null) {
+            if (!silent) {
+                withUiContext {
+                    Notification(
+                        "Diagnostics Client",
+                        DiagnosticsClientBundle.message("notification.global.tool.unable.locate.dotnet"),
+                        "",
+                        NotificationType.WARNING
+                    )
+                        .addAction(object : NotificationAction(
+                            DiagnosticsClientBundle.message("notification.global.tool.open.settings")
+                        ) {
+                            override fun actionPerformed(e: AnActionEvent, notification: Notification) {
+                                ShowSettingsUtil.getInstance().showSettingsDialog(project, "SolutionBuilderGeneralOptionsPage")
+                            }
+                        })
+                        .notify(project)
+                }
+            }
+            return false
+        }
+
+        val isDotNet8Installed = isDotNet8Installed(dotnetPath)
+        if (!isDotNet8Installed) {
+            if (!silent) {
+                withUiContext {
+                    Notification(
+                        "Diagnostics Client",
+                        DiagnosticsClientBundle.message("notification.global.tool.dotnet.8.not.installed"),
+                        "",
+                        NotificationType.WARNING
+                    )
+                        .addAction(object : NotificationAction(
+                            DiagnosticsClientBundle.message("notification.global.tool.got.to.dotnet.installation")
+                        ) {
+                            override fun actionPerformed(e: AnActionEvent, notification: Notification) {
+                                BrowserUtil.browse("https://dotnet.microsoft.com/download/dotnet/8.0")
+                            }
+                        })
+                        .notify(project)
+                }
+            }
+            return false
+        }
+
         val isInstalled = isGlobalToolInstalled(dotnetPath)
         if (!isInstalled) {
-            withUiContext {
-                Notification(
-                    "Diagnostics Client",
-                    DiagnosticsClientBundle.message("notification.global.tool.agent.not.installed"),
-                    DiagnosticsClientBundle.message("notification.global.tool.please.install.agent"),
-                    NotificationType.WARNING
-                )
-                    .addAction(InstallGlobalToolAction())
-                    .notify(project)
+            if (!silent) {
+                withUiContext {
+                    Notification(
+                        "Diagnostics Client",
+                        DiagnosticsClientBundle.message("notification.global.tool.agent.not.installed"),
+                        DiagnosticsClientBundle.message("notification.global.tool.please.install.agent"),
+                        NotificationType.WARNING
+                    )
+                        .addAction(InstallGlobalToolAction())
+                        .notify(project)
+                }
             }
             return false
         }
 
         val isCurrentVersionInstalled = isCurrentVersionInstalled(dotnetPath)
         if (!isCurrentVersionInstalled) {
-            withUiContext {
-                Notification(
-                    "Diagnostics Client",
-                    DiagnosticsClientBundle.message("notification.global.tool.new.version.available"),
-                    DiagnosticsClientBundle.message("notification.global.tool.please.update.agent"),
-                    NotificationType.WARNING
-                )
-                    .addAction(UpdateGlobalToolAction())
-                    .notify(project)
+            if (!silent) {
+                withUiContext {
+                    Notification(
+                        "Diagnostics Client",
+                        DiagnosticsClientBundle.message("notification.global.tool.version.not.match"),
+                        DiagnosticsClientBundle.message(
+                            "notification.global.tool.please.update.agent",
+                            CURRENT_VERSION
+                        ),
+                        NotificationType.WARNING
+                    )
+                        .addAction(UpdateGlobalToolAction())
+                        .notify(project)
+                }
             }
             return false
         }
@@ -165,6 +225,21 @@ class DiagnosticsToolService(private val project: Project) {
         return RiderDotNetActiveRuntimeHost.getInstance(project).dotNetCoreRuntime.value?.cliExePath
     }
 
+    private fun isDotNet8Installed(dotnetPath: String): Boolean {
+        val commandLine = GeneralCommandLine()
+            .withParentEnvironmentType(GeneralCommandLine.ParentEnvironmentType.CONSOLE)
+            .withExePath(dotnetPath)
+            .withCharset(StandardCharsets.UTF_8)
+            .withParameters("--list-runtimes")
+        val output = ExecUtil.execAndGetOutput(commandLine)
+
+        return if (output.checkSuccess(LOG)) {
+            net8Regex.containsMatchIn(output.stdout)
+        } else {
+            false
+        }
+    }
+
     private fun getListOfGlobalTools(dotnetPath: String): ProcessOutput {
         val commandLine = GeneralCommandLine()
             .withParentEnvironmentType(GeneralCommandLine.ParentEnvironmentType.CONSOLE)
@@ -179,8 +254,7 @@ class DiagnosticsToolService(private val project: Project) {
         val output = getListOfGlobalTools(dotnetPath)
 
         return if (output.checkSuccess(LOG)) {
-            val regex = Regex("^rafaelldi\\.diagnosticsagent", RegexOption.MULTILINE)
-            regex.containsMatchIn(output.stdout)
+            agentRegex.containsMatchIn(output.stdout)
         } else {
             false
         }
@@ -195,8 +269,7 @@ class DiagnosticsToolService(private val project: Project) {
         val output = getListOfGlobalTools(dotnetPath)
 
         return if (output.checkSuccess(LOG)) {
-            val regex = Regex("^rafaelldi\\.diagnosticsagent\\s+([\\w.\\-]+)", RegexOption.MULTILINE)
-            regex.find(output.stdout)?.groups?.get(1)?.value ?: return null
+            agentVersionRegex.find(output.stdout)?.groups?.get(1)?.value ?: return null
         } else {
             null
         }
